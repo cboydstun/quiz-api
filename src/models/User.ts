@@ -1,6 +1,6 @@
 // src/models/User.ts
 
-import mongoose, { Document, Model, Schema } from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
@@ -11,11 +11,11 @@ export interface IUser extends Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const UserSchema: Schema = new Schema({
+const UserSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'USER'], default: 'USER' }
+  role: { type: String, enum: ['USER', 'EDITOR', 'ADMIN', 'SUPER_ADMIN'], default: 'USER' }
 });
 
 UserSchema.pre<IUser>('save', async function(next) {

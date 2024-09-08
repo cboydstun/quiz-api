@@ -2,16 +2,23 @@
 
 import jwt from 'jsonwebtoken';
 import { AuthenticationError } from './errors';
+import { IUser } from '../models/User';
 
-export const generateToken = (user: any): string => {
+export interface DecodedUser {
+  _id: string;
+  email: string;
+  role: string;
+}
+
+export const generateToken = (user: DecodedUser): string => {
   return jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
+    { _id: user._id, email: user.email, role: user.role },
     process.env.JWT_SECRET!,
     { expiresIn: '1d' }
   );
 };
 
-export const checkAuth = async (context: any): Promise<any> => {
+export const checkAuth = (context: any): DecodedUser => {
   const authHeader = context.req.headers.authorization;
   if (!authHeader) {
     throw new AuthenticationError('Authorization header must be provided');
@@ -23,8 +30,8 @@ export const checkAuth = async (context: any): Promise<any> => {
   }
 
   try {
-    const user = jwt.verify(token, process.env.JWT_SECRET!);
-    return user;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedUser;
+    return decoded;
   } catch (error) {
     throw new AuthenticationError('Invalid/Expired token');
   }

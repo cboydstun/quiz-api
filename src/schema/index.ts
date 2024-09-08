@@ -14,7 +14,7 @@ const typeDefs = gql`
     id: ID!
     username: String!
     email: String!
-    role: Role!
+    role: String!
   }
 
   type Question {
@@ -44,9 +44,9 @@ const typeDefs = gql`
   }
 
   type Query {
-    me: User
+    me: User!
     users: [User!]!
-    user(id: ID!): User
+    user(id: ID!): User!
     questions: [Question!]!
     question(id: ID!): Question
   }

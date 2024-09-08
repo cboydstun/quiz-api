@@ -1,6 +1,6 @@
 # User Queries and Mutations
 
-# Register a new user
+# Register a new user x
 
 ```graphql
 mutation RegisterUser {
@@ -22,7 +22,7 @@ mutation RegisterUser {
 }
 ```
 
-# Login
+# Login x
 
 ```graphql
 mutation Login {
@@ -38,7 +38,7 @@ mutation Login {
 }
 ```
 
-# Get current user (requires authentication)
+# Get current user (requires authentication) x
 
 ```graphql
 query Me {
@@ -51,7 +51,7 @@ query Me {
 }
 ```
 
-# Get all users (requires admin permission)
+# Get all users (requires admin permission) x
 
 ```graphql
 query AllUsers {
@@ -64,7 +64,7 @@ query AllUsers {
 }
 ```
 
-# Get a specific user by ID (requires admin permission)
+# Get a specific user by ID (requires admin permission) x
 
 ```graphql
 query GetUser($userId: ID!) {
@@ -77,7 +77,7 @@ query GetUser($userId: ID!) {
 }
 ```
 
-# Change user role (requires admin permission)
+# Change user role (requires admin permission) x
 
 ```graphql
 mutation ChangeUserRole($userId: ID!, $newRole: Role!) {

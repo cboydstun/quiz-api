@@ -24,23 +24,47 @@ type Resolvers = {
   };
 };
 
+interface DecodedUser {
+  id: string;
+  email: string;
+  role: string;
+}
+
 const resolvers: Resolvers = {
   Query: {
     me: async (_, __, context) => {
-      const user = await checkAuth(context);
-      return user;
+      const decodedUser = await checkAuth(context);
+      const user = await User.findById(decodedUser._id);
+      if (!user) {
+        throw new AuthenticationError('User not found');
+      }
+      return {
+        id: user._id.toString(),
+        username: user.username,
+        email: user.email,
+        role: user.role
+      };
     },
     users: async (_, __, context) => {
-      await checkPermission(context, ['SUPER_ADMIN', 'ADMIN']);
+      const user = await checkAuth(context);
+      checkPermission(user, ['SUPER_ADMIN', 'ADMIN']);
       return User.find();
     },
     user: async (_, { id }, context) => {
-      await checkPermission(context, ['SUPER_ADMIN', 'ADMIN']);
+      const decodedUser = await checkAuth(context);
+      await checkPermission(decodedUser, ['SUPER_ADMIN', 'ADMIN']);
+      
       const user = await User.findById(id);
       if (!user) {
         throw new NotFoundError('User not found');
       }
-      return user;
+      
+      return {
+        id: user._id.toString(),
+        username: user.username,
+        email: user.email,
+        role: user.role
+      };
     },
     questions: async () => Question.find().populate('createdBy'),
     question: async (_, { id }) => {
@@ -64,6 +88,7 @@ const resolvers: Resolvers = {
       const token = generateToken(user);
       return { token, user };
     },
+
     login: async (_, { email, password }) => {
       const user = await User.findOne({ email });
       if (!user) {
@@ -80,11 +105,11 @@ const resolvers: Resolvers = {
     },
     createQuestion: async (_, { input }, context) => {
       const user = await checkAuth(context);
-      await checkPermission(context, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
+      await checkPermission(user, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
 
       const question = await Question.create({
         ...input,
-        createdBy: user.id,
+        createdBy: user._id, 
       });
 
       return question;
@@ -108,17 +133,18 @@ const resolvers: Resolvers = {
       return true;
     },
     changeUserRole: async (_, { userId, newRole }, context) => {
-      await checkPermission(context, ['SUPER_ADMIN', 'ADMIN']);
+      const user = await checkAuth(context);
+      await checkPermission(user, ['SUPER_ADMIN', 'ADMIN']);
       
       if (newRole === 'SUPER_ADMIN') {
         throw new ForbiddenError('Cannot change role to SUPER_ADMIN');
       }
       
-      const user = await User.findByIdAndUpdate(userId, { role: newRole }, { new: true });
-      if (!user) {
+      const updatedUser = await User.findByIdAndUpdate(userId, { role: newRole }, { new: true });
+      if (!updatedUser) {
         throw new NotFoundError('User not found');
       }
-      return user;
+      return updatedUser;
     },
   },
 };

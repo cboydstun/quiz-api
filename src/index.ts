@@ -3,34 +3,30 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import * as dotenv from 'dotenv';
 import typeDefs from './schema';
 import resolvers from './resolvers';
-import { errorHandler } from './utils/errors';
 
 dotenv.config();
 
 const startServer = async () => {
   const app = express();
   
+  // Enable CORS for all origins
+  app.use(cors({
+    origin: '*',
+    credentials: true
+  }));
+
   const server = new ApolloServer({
     typeDefs,
     resolvers,
     context: ({ req }) => ({ req }),
-    formatError: (error) => {
-      const formattedError = errorHandler(error);
-      return {
-        message: formattedError.message,
-        extensions: {
-          code: formattedError.code,
-          http: { status: formattedError.status },
-        },
-      };
-    },
   });
 
   await server.start();
-  server.applyMiddleware({ app });
+  server.applyMiddleware({ app, path: '/graphql', cors: false });
 
   await mongoose.connect(process.env.MONGO_URI!);
   console.log('Connected to MongoDB');
