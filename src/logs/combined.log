@@ -1,2 +1,0 @@
-{"level":"info","message":"Connected to MongoDB","service":"user-service","timestamp":"2024-09-08T19:52:54.191Z"}
-{"level":"info","message":"Server is running on http://localhost:4000/graphql","service":"user-service","timestamp":"2024-09-08T19:52:54.196Z"}
