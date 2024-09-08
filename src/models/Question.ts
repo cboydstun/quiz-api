@@ -1,12 +1,13 @@
 // src/models/Question.ts
 
-import mongoose, { Document, Model, Schema } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { IUser } from './User';
 
 export interface IQuestion extends Document {
   questionText: string;
   answers: string[];
   correctAnswer: string;
-  createdBy: string;
+  createdBy: IUser['_id'];
 }
 
 const QuestionSchema: Schema = new Schema({

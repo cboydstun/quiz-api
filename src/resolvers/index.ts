@@ -107,13 +107,32 @@ const resolvers: Resolvers = {
       const user = await checkAuth(context);
       await checkPermission(user, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
 
-      const question = await Question.create({
+      const question = new Question({
         ...input,
-        createdBy: user._id, 
+        createdBy: user._id,
       });
 
-      return question;
+      await question.save();
+
+      // Populate the createdBy field with user details
+      const populatedQuestion = await Question.findById(question._id).populate('createdBy');
+
+      if (!populatedQuestion) {
+        throw new Error('Failed to create question');
+      }
+
+      return {
+        id: populatedQuestion._id.toString(),
+        questionText: populatedQuestion.questionText,
+        answers: populatedQuestion.answers,
+        correctAnswer: populatedQuestion.correctAnswer,
+        createdBy: {
+          id: populatedQuestion.createdBy._id.toString(),
+          username: populatedQuestion.createdBy.username,
+        },
+      };
     },
+
     updateQuestion: async (_, { id, input }, context) => {
       await checkPermission(context, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
       

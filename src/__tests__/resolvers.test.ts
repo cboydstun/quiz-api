@@ -1,5 +1,3 @@
-// src/__tests__/resolvers.test.ts
-
 import resolvers from "../resolvers";
 import {
   UserInputError,
@@ -8,24 +6,15 @@ import {
   NotFoundError,
 } from "../utils/errors";
 import User from "../models/User";
-import Question from "../models/Question";
+import Question, { IQuestion } from "../models/Question";
 import * as authUtils from "../utils/auth";
 import * as permissionUtils from "../utils/permissions";
+import { Model, Document } from "mongoose";
 
 jest.mock("../models/User");
 jest.mock("../utils/auth");
 jest.mock("../utils/permissions");
-
-// Simplified Question mock
-jest.mock("../models/Question", () => {
-  return {
-    find: jest.fn(),
-    findById: jest.fn(),
-    create: jest.fn(),
-    findByIdAndUpdate: jest.fn(),
-    findByIdAndDelete: jest.fn().mockReturnThis(),
-  };
-});
+jest.mock("../models/Question");
 
 describe("Query resolvers", () => {
   describe("me", () => {
@@ -343,33 +332,64 @@ describe("Mutation resolvers", () => {
         answers: ["A", "B", "C"],
         correctAnswer: "A",
       };
-
+    
+      // Mock auth and permission checks
       (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
       (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(true);
-      (Question.create as jest.Mock).mockResolvedValue({ ...input, createdBy: mockUser._id, _id: 'new_question_id' });
+    
+      // Mock Question methods
+      const mockSave = jest.fn().mockResolvedValue({});
+      const MockQuestionInstance = {
+        save: mockSave,
+      } as unknown as Document<unknown, any, IQuestion> & IQuestion;
+      
+      (Question as unknown as jest.MockedFunction<() => typeof MockQuestionInstance>)
+        .mockImplementation(() => MockQuestionInstance);
 
-      const result = await resolvers.Mutation.createQuestion(
-        null,
-        { input },
-        { req: {} } as any
-      );
-
+      (Question.findById as jest.Mock).mockReturnValue({
+        populate: jest.fn().mockResolvedValue({
+          _id: 'new_question_id',
+          questionText: 'New question',
+          answers: ['A', 'B', 'C'],
+          correctAnswer: 'A',
+          createdBy: {
+            _id: 'mockedUserId',
+            username: 'mockedUser',
+          },
+        }),
+      });
+    
+      // Call the resolver
+      const result = await resolvers.Mutation.createQuestion(null, { input }, { req: {} } as any);
+    
+      // Validate that auth checks were called
       expect(authUtils.checkAuth).toHaveBeenCalled();
       expect(permissionUtils.checkPermission).toHaveBeenCalledWith(
         mockUser,
         ["SUPER_ADMIN", "ADMIN", "EDITOR"]
       );
-      expect(Question.create).toHaveBeenCalledWith({
+    
+      // Validate that new Question was created with correct data
+      expect(Question).toHaveBeenCalledWith({
         ...input,
         createdBy: mockUser._id,
       });
+    
+      // Validate that save was called on the new Question instance
+      expect(mockSave).toHaveBeenCalled();
+    
+      // Validate the result
       expect(result).toEqual(expect.objectContaining({
-        ...input,
-        createdBy: mockUser._id,
-        _id: 'new_question_id',
+        id: 'new_question_id',
+        questionText: "New question",
+        answers: ["A", "B", "C"],
+        correctAnswer: "A",
+        createdBy: {
+          id: 'mockedUserId',
+          username: 'mockedUser',
+        },
       }));
     });
-
     it("should throw ForbiddenError for unauthorized users", async () => {
       (authUtils.checkAuth as jest.Mock).mockResolvedValue({
         id: "123",

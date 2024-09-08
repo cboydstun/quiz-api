@@ -1,6 +1,6 @@
 // src/schema/index.ts
 
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
   enum Role {
@@ -43,12 +43,12 @@ const typeDefs = gql`
     correctAnswer: String!
   }
 
-  type Query {
+ type Query {
     me: User!
-    users: [User!]!
     user(id: ID!): User!
+    users: [User!]!
     questions: [Question!]!
-    question(id: ID!): Question
+    question(id: ID!): Question!
   }
 
   type Mutation {
