@@ -262,7 +262,7 @@ mutation UpdateNonExistentQuestion {
 }
 ```
 
-# Try to delete a non-existent question
+# Try to delete a non-existent question ✅
 
 ```graphql
 mutation DeleteNonExistentQuestion {
