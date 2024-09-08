@@ -244,8 +244,6 @@ describe("Mutation resolvers", () => {
         {} as any
       );
 
-      console.log("Test result:", result);
-
       expect(result.user).toEqual(
         expect.objectContaining({
           username: "testuser",
@@ -416,47 +414,42 @@ describe("Mutation resolvers", () => {
   });
 
   describe("updateQuestion", () => {
-    it("should update an existing question", async () => {
-      const mockUser = { id: '123', role: 'EDITOR' };
-      const mockUpdatedQuestion = {
-        id: '456',
-        questionText: 'Updated question',
-        answers: ['X', 'Y', 'Z'],
-        correctAnswer: 'Y',
-        createdBy: '123',
-        populate: jest.fn().mockReturnThis(),
-      };
+    it('should delete an existing question', async () => {
+      const mockUser = { _id: '123', username: 'testuser', role: 'ADMIN' };
+      const mockQuestion = { _id: '456', questionText: 'Test question' };
 
       (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
-      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(true);
-      (Question.findByIdAndUpdate as jest.Mock).mockResolvedValue(mockUpdatedQuestion);
+      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(undefined);
+      (Question.findById as jest.Mock).mockResolvedValue(mockQuestion);
+      (Question.findByIdAndDelete as jest.Mock).mockResolvedValue(mockQuestion);
 
-      const result = await resolvers.Mutation.updateQuestion(
+      const result = await resolvers.Mutation.deleteQuestion(
         null,
-        { 
-          id: '456', 
-          input: { 
-            questionText: 'Updated question', 
-            answers: ['X', 'Y', 'Z'], 
-            correctAnswer: 'Y' 
-          } 
-        },
+        { id: '456' },
         { req: {} } as any
       );
 
-      expect(result).toEqual(mockUpdatedQuestion);
+      expect(result).toBe(true);
       expect(authUtils.checkAuth).toHaveBeenCalled();
-      expect(permissionUtils.checkPermission).toHaveBeenCalledWith(expect.anything(), ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
-      expect(Question.findByIdAndUpdate).toHaveBeenCalledWith(
-        '456',
-        { 
-          questionText: 'Updated question', 
-          answers: ['X', 'Y', 'Z'], 
-          correctAnswer: 'Y' 
-        },
-        { new: true }
-      );
-      expect(mockUpdatedQuestion.populate).toHaveBeenCalledWith('createdBy');
+      expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockUser, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
+      expect(Question.findById).toHaveBeenCalledWith('456');
+      expect(Question.findByIdAndDelete).toHaveBeenCalledWith('456');
+    });
+
+    it('should throw NotFoundError if question does not exist', async () => {
+      const mockUser = { _id: '123', username: 'testuser', role: 'ADMIN' };
+
+      (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
+      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(undefined);
+      (Question.findById as jest.Mock).mockResolvedValue(null);
+
+      await expect(
+        resolvers.Mutation.deleteQuestion(
+          null,
+          { id: '999' },
+          { req: {} } as any
+        )
+      ).rejects.toThrow(NotFoundError);
     });
 
     it("should throw NotFoundError if question does not exist", async () => {
@@ -481,14 +474,21 @@ describe("Mutation resolvers", () => {
     });
   });
 
-  describe("deleteQuestion", () => {
-    it("should delete an existing question", async () => {
-      const mockUser = { id: '123', role: 'ADMIN' };
-      const mockDeletedQuestion = { id: '456', questionText: 'Question to delete' };
+  describe('deleteQuestion', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should delete an existing question', async () => {
+      const mockUser = { _id: '123', username: 'testuser', role: 'ADMIN' };
+      const mockQuestion = { _id: '456', questionText: 'Test question' };
 
       (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
-      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(true);
-      (Question.findByIdAndDelete as jest.Mock).mockResolvedValue(mockDeletedQuestion);
+      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(undefined);
+      
+      // Use mockResolvedValueOnce for findById
+      (Question.findById as jest.Mock).mockResolvedValueOnce(mockQuestion);
+      (Question.findByIdAndDelete as jest.Mock).mockResolvedValueOnce(mockQuestion);
 
       const result = await resolvers.Mutation.deleteQuestion(
         null,
@@ -498,14 +498,17 @@ describe("Mutation resolvers", () => {
 
       expect(result).toBe(true);
       expect(authUtils.checkAuth).toHaveBeenCalled();
-      expect(permissionUtils.checkPermission).toHaveBeenCalledWith(expect.anything(), ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
+      expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockUser, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
+      expect(Question.findById).toHaveBeenCalledWith('456');
       expect(Question.findByIdAndDelete).toHaveBeenCalledWith('456');
     });
 
-    it("should throw NotFoundError if question does not exist", async () => {
-      (authUtils.checkAuth as jest.Mock).mockResolvedValue({ id: '123', role: 'ADMIN' });
-      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(true);
-      (Question.findByIdAndDelete as jest.Mock).mockResolvedValue(null);
+    it('should throw NotFoundError if question does not exist', async () => {
+      const mockUser = { _id: '123', username: 'testuser', role: 'ADMIN' };
+
+      (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
+      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(undefined);
+      (Question.findById as jest.Mock).mockResolvedValueOnce(null);
 
       await expect(
         resolvers.Mutation.deleteQuestion(

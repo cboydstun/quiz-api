@@ -1,6 +1,6 @@
 # User Queries and Mutations
 
-# Register a new user x
+# Register a new user ✅
 
 ```graphql
 mutation RegisterUser {
@@ -22,7 +22,7 @@ mutation RegisterUser {
 }
 ```
 
-# Login x
+# Login ✅
 
 ```graphql
 mutation Login {
@@ -38,7 +38,7 @@ mutation Login {
 }
 ```
 
-# Get current user (requires authentication) x
+# Get current user (requires authentication) ✅
 
 ```graphql
 query Me {
@@ -51,7 +51,7 @@ query Me {
 }
 ```
 
-# Get all users (requires admin permission) x
+# Get all users (requires admin permission) ✅
 
 ```graphql
 query AllUsers {
@@ -64,7 +64,7 @@ query AllUsers {
 }
 ```
 
-# Get a specific user by ID (requires admin permission) x
+# Get a specific user by ID (requires admin permission) ✅
 
 ```graphql
 query GetUser($userId: ID!) {
@@ -77,7 +77,7 @@ query GetUser($userId: ID!) {
 }
 ```
 
-# Change user role (requires admin permission) x
+# Change user role (requires admin permission) ✅
 
 ```graphql
 mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
@@ -92,7 +92,7 @@ mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
 
 # Question Queries and Mutations
 
-# Create a new question (requires editor permission or higher) x
+# Create a new question (requires editor permission or higher) ✅
 
 ```graphql
 mutation CreateQuestion {
@@ -115,7 +115,7 @@ mutation CreateQuestion {
 }
 ```
 
-# Get all questions x
+# Get all questions ✅
 
 ```graphql
 query AllQuestions {
@@ -132,7 +132,7 @@ query AllQuestions {
 }
 ```
 
-# Get a specific question by ID x
+# Get a specific question by ID ✅
 
 ```graphql
 query GetQuestion($questionId: ID!) {
@@ -149,7 +149,7 @@ query GetQuestion($questionId: ID!) {
 }
 ```
 
-# Update a question (requires editor permission or higher)
+# Update a question (requires editor permission or higher) ✅
 
 ```graphql
 mutation UpdateQuestion($questionId: ID!) {
@@ -173,7 +173,7 @@ mutation UpdateQuestion($questionId: ID!) {
 }
 ```
 
-# Delete a question (requires editor permission or higher)
+# Delete a question (requires editor permission or higher) ✅
 
 ```graphql
 mutation DeleteQuestion($questionId: ID!) {

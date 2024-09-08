@@ -134,21 +134,43 @@ const resolvers: Resolvers = {
     },
 
     updateQuestion: async (_, { id, input }, context) => {
-      await checkPermission(context, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
-      
-      const question = await Question.findByIdAndUpdate(id, input, { new: true });
+      const user = await checkAuth(context);
+      await checkPermission(user, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
+
+      const question = await Question.findById(id);
       if (!question) {
         throw new NotFoundError('Question not found');
       }
-      return question.populate('createdBy');
+
+      Object.assign(question, input);
+      await question.save();
+
+      const updatedQuestion = await Question.findById(id).populate('createdBy');
+      if (!updatedQuestion) {
+        throw new NotFoundError('Updated question not found');
+      }
+
+      return {
+        id: updatedQuestion._id.toString(),
+        questionText: updatedQuestion.questionText,
+        answers: updatedQuestion.answers,
+        correctAnswer: updatedQuestion.correctAnswer,
+        createdBy: {
+          id: updatedQuestion.createdBy._id.toString(),
+          username: updatedQuestion.createdBy.username,
+        },
+      };
     },
     deleteQuestion: async (_, { id }, context) => {
-      await checkPermission(context, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
-      
-      const result = await Question.findByIdAndDelete(id);
-      if (!result) {
+      const user = await checkAuth(context);
+      await checkPermission(user, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
+
+      const question = await Question.findById(id);
+      if (!question) {
         throw new NotFoundError('Question not found');
       }
+
+      await Question.findByIdAndDelete(id);
       return true;
     },
     changeUserRole: async (_, { userId, newRole }, context) => {
