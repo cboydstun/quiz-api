@@ -1,7 +1,7 @@
 // src/resolvers/index.ts
 
 import User from '../models/User';
-import Question from '../models/Questions';
+import Question from '../models/Question';
 import { checkAuth, generateToken } from '../utils/auth';
 import { checkPermission } from '../utils/permissions';
 import { AuthenticationError, ForbiddenError, UserInputError, NotFoundError } from '../utils/errors';
@@ -36,11 +36,21 @@ const resolvers: Resolvers = {
     },
     user: async (_, { id }, context) => {
       await checkPermission(context, ['SUPER_ADMIN', 'ADMIN']);
-      return User.findById(id);
+      const user = await User.findById(id);
+      if (!user) {
+        throw new NotFoundError('User not found');
+      }
+      return user;
     },
     questions: async () => Question.find().populate('createdBy'),
-    question: async (_, { id }) => Question.findById(id).populate('createdBy'),
-  },
+    question: async (_, { id }) => {
+      const question = await Question.findById(id).populate('createdBy');
+      if (!question) {
+        throw new NotFoundError('Question not found');
+      }
+      return question;
+    },
+    },
   Mutation: {
     register: async (_, { input: { username, email, password, role } }) => {
       const existingUser = await User.findOne({ $or: [{ email }, { username }] });
@@ -50,8 +60,6 @@ const resolvers: Resolvers = {
 
       const user = new User({ username, email, password, role: role || 'USER' });
       await user.save();
-
-      console.log('User after save:', user); // Add this line
 
       const token = generateToken(user);
       return { token, user };
@@ -74,12 +82,12 @@ const resolvers: Resolvers = {
       const user = await checkAuth(context);
       await checkPermission(context, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
 
-      const question = new Question({
+      const question = await Question.create({
         ...input,
         createdBy: user.id,
       });
-      await question.save();
-      return question.populate('createdBy');
+
+      return question;
     },
     updateQuestion: async (_, { id, input }, context) => {
       await checkPermission(context, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
@@ -101,6 +109,10 @@ const resolvers: Resolvers = {
     },
     changeUserRole: async (_, { userId, newRole }, context) => {
       await checkPermission(context, ['SUPER_ADMIN', 'ADMIN']);
+      
+      if (newRole === 'SUPER_ADMIN') {
+        throw new ForbiddenError('Cannot change role to SUPER_ADMIN');
+      }
       
       const user = await User.findByIdAndUpdate(userId, { role: newRole }, { new: true });
       if (!user) {
