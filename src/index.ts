@@ -12,7 +12,7 @@ dotenv.config();
 
 const startServer = async () => {
   const app = express();
-  
+
   // Enable CORS for all origins
   app.use(cors({
     origin: '*',
