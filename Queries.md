@@ -183,7 +183,7 @@ mutation DeleteQuestion($questionId: ID!) {
 
 # Error Handling and Edge Cases
 
-# Try to register with an existing email
+# Try to register with an existing email ✅
 
 ```graphql
 mutation RegisterExistingEmail {
@@ -204,7 +204,7 @@ mutation RegisterExistingEmail {
 }
 ```
 
-# Try to login with incorrect credentials
+# Try to login with incorrect credentials ✅
 
 ```graphql
 mutation IncorrectLogin {
@@ -219,7 +219,7 @@ mutation IncorrectLogin {
 }
 ```
 
-# Try to access admin-only query as a regular user
+# Try to access admin-only query as a regular user ✅
 
 ```graphql
 query UnauthorizedUsersAccess {
@@ -232,7 +232,7 @@ query UnauthorizedUsersAccess {
 }
 ```
 
-# Try to change role to SUPER_ADMIN (should be forbidden)
+# Try to change role to SUPER_ADMIN (should be forbidden) ✅
 
 ```graphql
 mutation ChangeTo#SUPER_ADMIN($userId: ID!) {
@@ -244,7 +244,7 @@ role
 }
 ```
 
-# Try to update a non-existent question
+# Try to update a non-existent question ✅
 
 ```graphql
 mutation UpdateNonExistentQuestion {

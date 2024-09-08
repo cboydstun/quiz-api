@@ -1,5 +1,5 @@
 // src/resolvers/index.ts
-
+import mongoose from 'mongoose';
 import User from '../models/User';
 import Question from '../models/Question';
 import { checkAuth, generateToken } from '../utils/auth';
@@ -53,12 +53,12 @@ const resolvers: Resolvers = {
     user: async (_, { id }, context) => {
       const decodedUser = await checkAuth(context);
       await checkPermission(decodedUser, ['SUPER_ADMIN', 'ADMIN']);
-      
+
       const user = await User.findById(id);
       if (!user) {
         throw new NotFoundError('User not found');
       }
-      
+
       return {
         id: user._id.toString(),
         username: user.username,
@@ -74,7 +74,7 @@ const resolvers: Resolvers = {
       }
       return question;
     },
-    },
+  },
   Mutation: {
     register: async (_, { input: { username, email, password, role } }) => {
       const existingUser = await User.findOne({ $or: [{ email }, { username }] });
@@ -137,50 +137,64 @@ const resolvers: Resolvers = {
       const user = await checkAuth(context);
       await checkPermission(user, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
 
-      const question = await Question.findById(id);
-      if (!question) {
-        throw new NotFoundError('Question not found');
+      try {
+        const question = await Question.findById(id);
+        if (!question) {
+          throw new NotFoundError('Question not found');
+        }
+
+        Object.assign(question, input);
+        await question.save();
+
+        const updatedQuestion = await Question.findById(id).populate('createdBy');
+        if (!updatedQuestion) {
+          throw new NotFoundError('Updated question not found');
+        }
+
+        return {
+          id: updatedQuestion._id.toString(),
+          questionText: updatedQuestion.questionText,
+          answers: updatedQuestion.answers,
+          correctAnswer: updatedQuestion.correctAnswer,
+          createdBy: {
+            id: updatedQuestion.createdBy._id.toString(),
+            username: updatedQuestion.createdBy.username,
+          },
+        };
+      } catch (error) {
+        if (error instanceof mongoose.Error.CastError) {
+          throw new NotFoundError('Question not found');
+        }
+        throw error;
       }
-
-      Object.assign(question, input);
-      await question.save();
-
-      const updatedQuestion = await Question.findById(id).populate('createdBy');
-      if (!updatedQuestion) {
-        throw new NotFoundError('Updated question not found');
-      }
-
-      return {
-        id: updatedQuestion._id.toString(),
-        questionText: updatedQuestion.questionText,
-        answers: updatedQuestion.answers,
-        correctAnswer: updatedQuestion.correctAnswer,
-        createdBy: {
-          id: updatedQuestion.createdBy._id.toString(),
-          username: updatedQuestion.createdBy.username,
-        },
-      };
     },
     deleteQuestion: async (_, { id }, context) => {
       const user = await checkAuth(context);
       await checkPermission(user, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
 
-      const question = await Question.findById(id);
-      if (!question) {
-        throw new NotFoundError('Question not found');
-      }
+      try {
+        const question = await Question.findById(id);
+        if (!question) {
+          throw new NotFoundError('Question not found');
+        }
 
-      await Question.findByIdAndDelete(id);
-      return true;
+        await Question.findByIdAndDelete(id);
+        return true;
+      } catch (error) {
+        if (error instanceof mongoose.Error.CastError) {
+          throw new NotFoundError('Question not found');
+        }
+        throw error;
+      }
     },
     changeUserRole: async (_, { userId, newRole }, context) => {
       const user = await checkAuth(context);
       await checkPermission(user, ['SUPER_ADMIN', 'ADMIN']);
-      
+
       if (newRole === 'SUPER_ADMIN') {
         throw new ForbiddenError('Cannot change role to SUPER_ADMIN');
       }
-      
+
       const updatedUser = await User.findByIdAndUpdate(userId, { role: newRole }, { new: true });
       if (!updatedUser) {
         throw new NotFoundError('User not found');

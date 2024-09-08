@@ -25,6 +25,12 @@ const typeDefs = gql`
     createdBy: User!
   }
 
+  input UpdateQuestionInput {
+    questionText: String
+    answers: [String!]
+    correctAnswer: String
+  }
+
   type AuthPayload {
     token: String!
     user: User!
@@ -43,7 +49,7 @@ const typeDefs = gql`
     correctAnswer: String!
   }
 
- type Query {
+  type Query {
     me: User!
     user(id: ID!): User!
     users: [User!]!
@@ -55,7 +61,7 @@ const typeDefs = gql`
     register(input: CreateUserInput!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
     createQuestion(input: CreateQuestionInput!): Question!
-    updateQuestion(id: ID!, input: CreateQuestionInput!): Question!
+    updateQuestion(id: ID!, input: UpdateQuestionInput!): Question!
     deleteQuestion(id: ID!): Boolean!
     changeUserRole(userId: ID!, newRole: Role!): User!
   }
