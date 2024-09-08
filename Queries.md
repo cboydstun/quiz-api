@@ -92,7 +92,7 @@ mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
 
 # Question Queries and Mutations
 
-# Create a new question (requires editor permission or higher)
+# Create a new question (requires editor permission or higher) x
 
 ```graphql
 mutation CreateQuestion {
@@ -115,7 +115,7 @@ mutation CreateQuestion {
 }
 ```
 
-# Get all questions
+# Get all questions x
 
 ```graphql
 query AllQuestions {
@@ -132,7 +132,7 @@ query AllQuestions {
 }
 ```
 
-# Get a specific question by ID
+# Get a specific question by ID x
 
 ```graphql
 query GetQuestion($questionId: ID!) {
