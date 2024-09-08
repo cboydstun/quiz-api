@@ -1,14 +1,13 @@
 // src/utils/permissions.ts
 
-import { ForbiddenError } from 'apollo-server-express';
-import { IUser } from '../models/User';
-import { checkAuth } from './auth';
+import { ForbiddenError } from './errors';
 
-type Role = 'SUPER_ADMIN' | 'ADMIN' | 'EDITOR' | 'USER';
+export const checkPermission = async (context: any, allowedRoles: string[]): Promise<void> => {
+  if (!context.user) {
+    throw new ForbiddenError('Not authenticated');
+  }
 
-export const checkPermission = async (context: any, allowedRoles: Role[]): Promise<void> => {
-  const user = await checkAuth(context);
-  if (!allowedRoles.includes(user.role as Role)) {
+  if (!allowedRoles.includes(context.user.role)) {
     throw new ForbiddenError('You do not have permission to perform this action');
   }
 };
