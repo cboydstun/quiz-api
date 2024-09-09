@@ -8,8 +8,23 @@ import * as dotenv from 'dotenv';
 import typeDefs from './schema';
 import resolvers from './resolvers';
 import { logger, expressLogger } from './utils/logger';
+import depthLimit from 'graphql-depth-limit';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import { createComplexityRule, simpleEstimator } from 'graphql-query-complexity';
+import { GraphQLError } from 'graphql';
 
 dotenv.config();
+
+const app = express();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+app.use(limiter);
+app.use(helmet());
 
 const startServer = async () => {
   const app = express();
@@ -26,10 +41,30 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    introspection: process.env.NODE_ENV !== 'production',
+    validationRules: [
+      depthLimit(5),
+      createComplexityRule({
+        maximumComplexity: 1000,
+        estimators: [
+          simpleEstimator({ defaultComplexity: 1 })
+        ],
+        onComplete: (complexity: number) => {
+          logger.debug('Query complexity:', { complexity });
+        },
+        createError: (max: number, actual: number): GraphQLError => {
+          return new GraphQLError(`Query is too complex: ${actual} > ${max}`, {
+            extensions: { code: 'QUERY_COMPLEXITY_EXCEEDED' }
+          } as any);
+        },
+      })
+    ],
     context: ({ req }) => ({ req }),
     formatError: (error) => {
       logger.error('GraphQL Error', { error: error.message, path: error.path });
-      return error;
+      return new GraphQLError('An error occurred while processing your request.', {
+        extensions: { code: 'INTERNAL_SERVER_ERROR' }
+      } as any);
     },
   });
 

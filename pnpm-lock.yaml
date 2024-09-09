@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@graphql-tools/utils':
-        specifier: ^10.0.0
+        specifier: ^10.5.4
         version: 10.5.4(graphql@15.9.0)
       bcryptjs:
         specifier: ^2.4.3
@@ -18,19 +18,31 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.0.3
+        specifier: ^16.4.5
         version: 16.4.5
       express:
-        specifier: ^4.17.1
+        specifier: ^4.19.2
         version: 4.19.2
+      express-rate-limit:
+        specifier: ^7.4.0
+        version: 7.4.0(express@4.19.2)
       express-winston:
         specifier: ^4.2.0
         version: 4.2.0(winston@3.14.2)
+      graphql-depth-limit:
+        specifier: ^1.1.0
+        version: 1.1.0(graphql@15.9.0)
+      graphql-query-complexity:
+        specifier: ^1.0.0
+        version: 1.0.0(graphql@15.9.0)
+      helmet:
+        specifier: ^7.1.0
+        version: 7.1.0
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
       mongoose:
-        specifier: ^7.1.0
+        specifier: ^7.8.1
         version: 7.8.1
       prom-client:
         specifier: ^15.1.3
@@ -46,10 +58,13 @@ importers:
         specifier: ^2.8.17
         version: 2.8.17
       '@types/express':
-        specifier: ^4.17.13
+        specifier: ^4.17.21
         version: 4.17.21
+      '@types/graphql-depth-limit':
+        specifier: ^1.1.6
+        version: 1.1.6
       '@types/jest':
-        specifier: ^29.5.0
+        specifier: ^29.5.12
         version: 29.5.12
       '@types/jsonwebtoken':
         specifier: ^9.0.6
@@ -59,18 +74,18 @@ importers:
         version: 18.15.11
       apollo-server-express:
         specifier: ^3.13.0
-        version: 3.13.0(express@4.19.2)(graphql@15.9.0)
+        version: 3.13.0(encoding@0.1.13)(express@4.19.2)(graphql@15.9.0)
       graphql:
         specifier: ^15.9.0
         version: 15.9.0
       jest:
-        specifier: ^29.5.0
+        specifier: ^29.7.0
         version: 29.7.0(@types/node@18.15.11)(ts-node@10.9.2(@types/node@18.15.11)(typescript@4.9.5))
       mongodb-memory-server:
         specifier: ^10.0.0
         version: 10.0.0(socks@2.8.3)
       ts-jest:
-        specifier: ^29.1.0
+        specifier: ^29.2.5
         version: 29.2.5(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@18.15.11)(ts-node@10.9.2(@types/node@18.15.11)(typescript@4.9.5)))(typescript@4.9.5)
       ts-node-dev:
         specifier: ^2.0.0
@@ -574,6 +589,9 @@ packages:
   '@types/graceful-fs@4.1.9':
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
 
+  '@types/graphql-depth-limit@1.1.6':
+    resolution: {integrity: sha512-WU4bjoKOzJ8CQE32Pbyq+YshTMcLJf2aJuvVtSLv1BQPwDUGa38m2Vr8GGxf0GZ0luCQcfxlhZeHKu6nmTBvrw==}
+
   '@types/http-errors@2.0.4':
     resolution: {integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==}
 
@@ -740,6 +758,10 @@ packages:
 
   array-flatten@1.1.1:
     resolution: {integrity: sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==}
+
+  arrify@1.0.1:
+    resolution: {integrity: sha512-3CYzex9M9FGQjCGMGyi6/31c8GJbgb0qGyrx5HWxPd0aCwh4cB2YjMb2Xf9UuoogrMrlO9cTqnB5rI5GHZTcUA==}
+    engines: {node: '>=0.10.0'}
 
   async-mutex@0.5.0:
     resolution: {integrity: sha512-1A94B18jkJ3DYq284ohPxoXbfTA5HsQ7/Mf4DEhcyLx3Bz27Rh59iScbB6EPiP+B+joue6YCxcMXSbFC1tZKwA==}
@@ -1058,6 +1080,9 @@ packages:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
     engines: {node: '>= 0.8'}
 
+  encoding@0.1.13:
+    resolution: {integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==}
+
   error-ex@1.3.2:
     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
 
@@ -1104,6 +1129,12 @@ packages:
   expect@29.7.0:
     resolution: {integrity: sha512-2Zks0hf1VLFYI1kbh0I5jP3KHHyCHpkfyHBzsSXRFgl/Bg9mWYfMW8oD+PdMPlEwy5HNsR9JutYy6pMeOh61nw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+
+  express-rate-limit@7.4.0:
+    resolution: {integrity: sha512-v1204w3cXu5gCDmAvgvzI6qjzZzoMWKnyVDk3ACgfswTQLYiGen+r8w0VnXnGMmzEN/g8fwIQ4JrFFd4ZP6ssg==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      express: 4 || 5 || ^5.0.0-beta.1
 
   express-winston@4.2.0:
     resolution: {integrity: sha512-EMD74g63nVHi7pFleQw7KHCxiA1pjF5uCwbCfzGqmFxs9KvlDPIVS3cMGpULm6MshExMT9TjC3SqmRGB9kb7yw==}
@@ -1215,11 +1246,26 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
+  graphql-depth-limit@1.1.0:
+    resolution: {integrity: sha512-+3B2BaG8qQ8E18kzk9yiSdAa75i/hnnOwgSeAxVJctGQPvmeiLtqKOYF6HETCyRjiF7Xfsyal0HbLlxCQkgkrw==}
+    engines: {node: '>=6.0.0'}
+    peerDependencies:
+      graphql: '*'
+
+  graphql-query-complexity@1.0.0:
+    resolution: {integrity: sha512-Tj7mRIuKWjGomPaRW5E+ztY8bhYPf1v/7bkDPuzksrR3GqHeIS5jxzX8CfimlV3g9z0lT20RG9JgaUUjhRjtOA==}
+    peerDependencies:
+      graphql: ^14.6.0 || ^15.0.0 || ^16.0.0
+
   graphql-tag@2.12.6:
     resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
     engines: {node: '>=10'}
     peerDependencies:
       graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+
+  graphql@14.7.0:
+    resolution: {integrity: sha512-l0xWZpoPKpppFzMfvVyFmp9vLN7w/ZZJPefUicMCepfJeQ8sMcztloGYY9DfjVPo6tIUDzU5Hw3MUbIjj9AVVA==}
+    engines: {node: '>= 6.x'}
 
   graphql@15.9.0:
     resolution: {integrity: sha512-GCOQdvm7XxV1S4U4CGrsdlEN37245eC8P9zaYCMr6K1BG0IPGy5lUwmJsEOGyl1GD6HXjOtl2keCP9asRBwNvA==}
@@ -1248,6 +1294,10 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
+  helmet@7.1.0:
+    resolution: {integrity: sha512-g+HZqgfbpXdCkme/Cd/mZkV0aV3BZZZSugecH03kl38m/Kmdx8jKjBikpDj2cr+Iynv4KpYEviojNdTJActJAg==}
+    engines: {node: '>=16.0.0'}
+
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
 
@@ -1265,6 +1315,10 @@ packages:
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
+    engines: {node: '>=0.10.0'}
+
+  iconv-lite@0.6.3:
+    resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
 
   import-local@3.2.0:
@@ -1355,6 +1409,9 @@ packages:
   istanbul-reports@3.1.7:
     resolution: {integrity: sha512-BewmUXImeuRk2YY0PVbxgKAysvhRPUQE0h5QRM++nVWyubKGV0l8qQ5op8+B2DOmwSe63Jivj0BjkPQVf8fP5g==}
     engines: {node: '>=8'}
+
+  iterall@1.3.0:
+    resolution: {integrity: sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==}
 
   jake@10.9.2:
     resolution: {integrity: sha512-2P4SQ0HrLQ+fw6llpLnOaGAvN2Zu6778SJMrCUwns4fOoG9ayrTiZk3VV8sCPkVZF8ab0zksVpS8FDY5pRCNBA==}
@@ -1544,6 +1601,9 @@ packages:
   locate-path@5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
     engines: {node: '>=8'}
+
+  lodash.get@4.4.2:
+    resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
 
   lodash.includes@4.3.0:
     resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==}
@@ -3025,6 +3085,10 @@ snapshots:
     dependencies:
       '@types/node': 18.15.11
 
+  '@types/graphql-depth-limit@1.1.6':
+    dependencies:
+      graphql: 14.7.0
+
   '@types/http-errors@2.0.4': {}
 
   '@types/istanbul-lib-coverage@2.0.6': {}
@@ -3132,10 +3196,10 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  apollo-datasource@3.3.2:
+  apollo-datasource@3.3.2(encoding@0.1.13):
     dependencies:
       '@apollo/utils.keyvaluecache': 1.0.2
-      apollo-server-env: 4.2.1
+      apollo-server-env: 4.2.1(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
 
@@ -3143,7 +3207,7 @@ snapshots:
     dependencies:
       '@apollo/protobufjs': 1.2.6
 
-  apollo-server-core@3.13.0(graphql@15.9.0):
+  apollo-server-core@3.13.0(encoding@0.1.13)(graphql@15.9.0):
     dependencies:
       '@apollo/utils.keyvaluecache': 1.0.2
       '@apollo/utils.logger': 1.0.1
@@ -3153,12 +3217,12 @@ snapshots:
       '@graphql-tools/mock': 8.7.20(graphql@15.9.0)
       '@graphql-tools/schema': 8.5.1(graphql@15.9.0)
       '@josephg/resolvable': 1.0.1
-      apollo-datasource: 3.3.2
+      apollo-datasource: 3.3.2(encoding@0.1.13)
       apollo-reporting-protobuf: 3.4.0
-      apollo-server-env: 4.2.1
+      apollo-server-env: 4.2.1(encoding@0.1.13)
       apollo-server-errors: 3.3.1(graphql@15.9.0)
-      apollo-server-plugin-base: 3.7.2(graphql@15.9.0)
-      apollo-server-types: 3.8.0(graphql@15.9.0)
+      apollo-server-plugin-base: 3.7.2(encoding@0.1.13)(graphql@15.9.0)
+      apollo-server-types: 3.8.0(encoding@0.1.13)(graphql@15.9.0)
       async-retry: 1.3.3
       fast-json-stable-stringify: 2.1.0
       graphql: 15.9.0
@@ -3172,9 +3236,9 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  apollo-server-env@4.2.1:
+  apollo-server-env@4.2.1(encoding@0.1.13):
     dependencies:
-      node-fetch: 2.7.0
+      node-fetch: 2.7.0(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
 
@@ -3182,7 +3246,7 @@ snapshots:
     dependencies:
       graphql: 15.9.0
 
-  apollo-server-express@3.13.0(express@4.19.2)(graphql@15.9.0):
+  apollo-server-express@3.13.0(encoding@0.1.13)(express@4.19.2)(graphql@15.9.0):
     dependencies:
       '@types/accepts': 1.3.7
       '@types/body-parser': 1.19.2
@@ -3190,8 +3254,8 @@ snapshots:
       '@types/express': 4.17.14
       '@types/express-serve-static-core': 4.17.31
       accepts: 1.3.8
-      apollo-server-core: 3.13.0(graphql@15.9.0)
-      apollo-server-types: 3.8.0(graphql@15.9.0)
+      apollo-server-core: 3.13.0(encoding@0.1.13)(graphql@15.9.0)
+      apollo-server-types: 3.8.0(encoding@0.1.13)(graphql@15.9.0)
       body-parser: 1.20.2
       cors: 2.8.5
       express: 4.19.2
@@ -3201,19 +3265,19 @@ snapshots:
       - encoding
       - supports-color
 
-  apollo-server-plugin-base@3.7.2(graphql@15.9.0):
+  apollo-server-plugin-base@3.7.2(encoding@0.1.13)(graphql@15.9.0):
     dependencies:
-      apollo-server-types: 3.8.0(graphql@15.9.0)
+      apollo-server-types: 3.8.0(encoding@0.1.13)(graphql@15.9.0)
       graphql: 15.9.0
     transitivePeerDependencies:
       - encoding
 
-  apollo-server-types@3.8.0(graphql@15.9.0):
+  apollo-server-types@3.8.0(encoding@0.1.13)(graphql@15.9.0):
     dependencies:
       '@apollo/utils.keyvaluecache': 1.0.2
       '@apollo/utils.logger': 1.0.1
       apollo-reporting-protobuf: 3.4.0
-      apollo-server-env: 4.2.1
+      apollo-server-env: 4.2.1(encoding@0.1.13)
       graphql: 15.9.0
     transitivePeerDependencies:
       - encoding
@@ -3225,6 +3289,8 @@ snapshots:
       sprintf-js: 1.0.3
 
   array-flatten@1.1.1: {}
+
+  arrify@1.0.1: {}
 
   async-mutex@0.5.0:
     dependencies:
@@ -3551,6 +3617,11 @@ snapshots:
 
   encodeurl@1.0.2: {}
 
+  encoding@0.1.13:
+    dependencies:
+      iconv-lite: 0.6.3
+    optional: true
+
   error-ex@1.3.2:
     dependencies:
       is-arrayish: 0.2.1
@@ -3594,6 +3665,10 @@ snapshots:
       jest-matcher-utils: 29.7.0
       jest-message-util: 29.7.0
       jest-util: 29.7.0
+
+  express-rate-limit@7.4.0(express@4.19.2):
+    dependencies:
+      express: 4.19.2
 
   express-winston@4.2.0(winston@3.14.2):
     dependencies:
@@ -3732,10 +3807,24 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
+  graphql-depth-limit@1.1.0(graphql@15.9.0):
+    dependencies:
+      arrify: 1.0.1
+      graphql: 15.9.0
+
+  graphql-query-complexity@1.0.0(graphql@15.9.0):
+    dependencies:
+      graphql: 15.9.0
+      lodash.get: 4.4.2
+
   graphql-tag@2.12.6(graphql@15.9.0):
     dependencies:
       graphql: 15.9.0
       tslib: 2.7.0
+
+  graphql@14.7.0:
+    dependencies:
+      iterall: 1.3.0
 
   graphql@15.9.0: {}
 
@@ -3754,6 +3843,8 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
+
+  helmet@7.1.0: {}
 
   html-escaper@2.0.2: {}
 
@@ -3777,6 +3868,11 @@ snapshots:
   iconv-lite@0.4.24:
     dependencies:
       safer-buffer: 2.1.2
+
+  iconv-lite@0.6.3:
+    dependencies:
+      safer-buffer: 2.1.2
+    optional: true
 
   import-local@3.2.0:
     dependencies:
@@ -3867,6 +3963,8 @@ snapshots:
     dependencies:
       html-escaper: 2.0.2
       istanbul-lib-report: 3.0.1
+
+  iterall@1.3.0: {}
 
   jake@10.9.2:
     dependencies:
@@ -4237,6 +4335,8 @@ snapshots:
     dependencies:
       p-locate: 4.1.0
 
+  lodash.get@4.4.2: {}
+
   lodash.includes@4.3.0: {}
 
   lodash.isboolean@3.0.3: {}
@@ -4436,9 +4536,11 @@ snapshots:
 
   node-abort-controller@3.1.1: {}
 
-  node-fetch@2.7.0:
+  node-fetch@2.7.0(encoding@0.1.13):
     dependencies:
       whatwg-url: 5.0.0
+    optionalDependencies:
+      encoding: 0.1.13
 
   node-int64@0.4.0: {}
 
