@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 import User from "../models/User";
 import Question from "../models/Question";
+import UserResponse from "../models/UserResponse";
 import { checkAuth, generateToken } from "../utils/auth";
 import { checkPermission } from "../utils/permissions";
 import {
@@ -18,6 +19,7 @@ type Resolvers = {
     user: (parent: any, args: { id: string }, context: any) => Promise<any>;
     questions: () => Promise<any>;
     question: (parent: any, args: { id: string }) => Promise<any>;
+    userResponses: (parent: any, args: any, context: any) => Promise<any>;
   };
   Mutation: {
     register: (
@@ -62,6 +64,11 @@ type Resolvers = {
       args: { userId: string },
       context: any
     ) => Promise<boolean>;
+    submitAnswer: (
+      parent: any,
+      args: { questionId: string; selectedAnswer: string },
+      context: any
+    ) => Promise<any>;
   };
 };
 
@@ -114,6 +121,10 @@ const resolvers: Resolvers = {
         throw new NotFoundError("Question not found");
       }
       return question;
+    },
+    userResponses: async (_, __, context) => {
+      const user = await checkAuth(context);
+      return UserResponse.find({ userId: user._id }).populate("questionId");
     },
   },
   Mutation: {
@@ -238,6 +249,32 @@ const resolvers: Resolvers = {
         throw error;
       }
     },
+
+    submitAnswer: async (_, { questionId, selectedAnswer }, context) => {
+      const user = await checkAuth(context);
+
+      const question = await Question.findById(questionId);
+      if (!question) {
+        throw new NotFoundError("Question not found");
+      }
+
+      const isCorrect = question.correctAnswer === selectedAnswer;
+
+      const userResponse = new UserResponse({
+        userId: user._id,
+        questionId: question._id,
+        selectedAnswer,
+        isCorrect,
+      });
+
+      await userResponse.save();
+
+      return {
+        success: true,
+        isCorrect,
+      };
+    },
+
     changeUserRole: async (_, { userId, newRole }, context) => {
       const user = await checkAuth(context);
       await checkPermission(user, ["SUPER_ADMIN", "ADMIN"]);
@@ -259,24 +296,24 @@ const resolvers: Resolvers = {
     deleteUser: async (_, { userId }, context) => {
       // Check if the requesting user is authenticated
       const user = await checkAuth(context);
-      
+
       // Ensure only users with SUPER_ADMIN or ADMIN roles can delete users
       await checkPermission(user, ["SUPER_ADMIN", "ADMIN"]);
-  
+
       // Check if the user to be deleted exists
       const userToDelete = await User.findById(userId);
       if (!userToDelete) {
         throw new NotFoundError("User not found");
       }
-  
+
       // Ensure SUPER_ADMINs cannot be deleted by anyone
       if (userToDelete.role === "SUPER_ADMIN") {
         throw new ForbiddenError("Cannot delete a SUPER_ADMIN");
       }
-  
+
       // Delete the user
       await User.findByIdAndDelete(userId);
-      
+
       return true;
     },
   },

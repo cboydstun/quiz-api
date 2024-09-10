@@ -16,6 +16,7 @@ dotenv.config();
 
 const app = express();
 
+// Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -24,20 +25,22 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(helmet());
 
+// Custom CORS configuration
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? ["https://yourdomain.com"]
+    : ["http://localhost:3000"];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
+
+app.use(expressLogger);
+
 const startServer = async () => {
-  const app = express();
-
-  // Enable CORS for all origins
-  app.use(
-    cors({
-      origin: "*",
-      credentials: true,
-    })
-  );
-
-  // Use the express logger middleware
-  app.use(expressLogger);
-
   const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -45,11 +48,13 @@ const startServer = async () => {
     context: ({ req }) => ({ req }),
     formatError: (error) => {
       logger.error("GraphQL Error", { error: error.message, path: error.path });
+
+      if (process.env.NODE_ENV !== "production") {
+        return error;
+      }
+
       return new GraphQLError(
-        "An error occurred while processing your request.",
-        {
-          extensions: { code: "INTERNAL_SERVER_ERROR" },
-        } as any
+        "An error occurred while processing your request."
       );
     },
   });
@@ -62,6 +67,7 @@ const startServer = async () => {
     logger.info("Connected to MongoDB");
   } catch (error) {
     logger.error("Failed to connect to MongoDB", { error });
+    process.exit(1); // Exit process on MongoDB connection failure
   }
 
   const PORT = process.env.PORT || 4000;
@@ -72,6 +78,7 @@ const startServer = async () => {
   });
 };
 
-startServer().catch((error) =>
-  logger.error("Failed to start the server", { error })
-);
+startServer().catch((error) => {
+  logger.error("Failed to start the server", { error });
+  process.exit(1); // Exit process on critical server startup error
+});

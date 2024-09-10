@@ -58,6 +58,18 @@ const typeDefs = gql`
     users: [User!]!
     questions: [Question!]!
     question(id: ID!): Question!
+    userResponses: [UserResponse!]!
+  }
+
+  type UserResponse {
+    questionId: Question!
+    selectedAnswer: String!
+    isCorrect: Boolean!
+  }
+
+  type AnswerResponse {
+    success: Boolean!
+    isCorrect: Boolean!
   }
 
   type Mutation {
@@ -68,6 +80,7 @@ const typeDefs = gql`
     deleteQuestion(id: ID!): Boolean!
     changeUserRole(userId: ID!, newRole: Role!): User!
     deleteUser(userId: ID!): Boolean!
+    submitAnswer(questionId: ID!, selectedAnswer: String!): AnswerResponse!
   }
 `;
 
