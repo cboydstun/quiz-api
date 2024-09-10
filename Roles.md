@@ -3,51 +3,60 @@
 ## Roles and Responsibilities
 
 ### 1. Super Admin
+
 The Super Admin holds the highest level of access within the API and is responsible for managing Admin users. They have full control over user and role management.
 
 **Permissions:**
+
 - **Add / Remove Admins**
 - **Add / Remove Editors**
 - **Add / Remove Users**
 - **Add / Remove / Edit Questions and Answers**
 
 ### 2. Admin
+
 Admins can manage Editors and Users. They have similar permissions as the Super Admin, except for managing Admins.
 
 **Permissions:**
+
 - **Add / Remove Editors**
 - **Add / Remove Users**
 - **Add / Remove / Edit Questions and Answers**
 
 ### 3. Editor
+
 Editors have the ability to manage content related to questions and answers. They can manage standard Users but cannot manage Admins or other Editors.
 
 **Permissions:**
+
 - **Add / Remove Users**
 - **Add / Remove / Edit Questions and Answers**
 
 ### 4. User
+
 Users can register to go through quiz questions. They do not have any administrative permissions.
 
 **Permissions:**
+
 - **Register / Login**
 - **Attempt Multiple Choice Questions**
-  
+
 ## Entity Breakdown
 
 ### 1. Users
+
 - **Fields:**
   - ID
   - Username
   - Email
   - Password (hashed with bcrypt)
   - Role (Super Admin, Admin, Editor, User)
-  
 - **Authentication:**
   - JWT for authentication (jsonwebtoken)
   - Passwords hashed with bcryptjs
-  
+
 ### 2. Questions
+
 - **Fields:**
   - ID
   - Question Text
@@ -56,10 +65,11 @@ Users can register to go through quiz questions. They do not have any administra
   - Created By (Editor or Admin)
 
 ### 3. Roles
+
 - **Fields:**
   - ID
   - Role Name (Super Admin, Admin, Editor, User)
-  
+
 ## Role-based Authorization
 
 - Each role will be associated with a set of permissions to control which actions they can perform.
@@ -85,6 +95,7 @@ Users can register to go through quiz questions. They do not have any administra
 ## Authentication and Authorization Flow
 
 1. **Authentication**:
+
    - When a user logs in, a JWT token is created that includes the user's ID and role.
 
 2. **Authorization**:

@@ -32,68 +32,79 @@ pnpm install
 3. Set up environment variables (see the Environment Variables section).
 
 4. Start the server:
+
 ```bash
 pnpm run dev
 ```
 
 ## Technologies
+
 - Apollo Server
 - GraphQL
 - MongoDB / Mongoose
 - bcryptjs (for password hashing)
 - jsonwebtoken (for authentication)
-- TypeScript 
+- TypeScript
 
 ## Roles & Permissions
 
 The API implements Role-Based Access Control (RBAC) for managing users, questions, and other entities.
 
 ### 1. Super Admin
+
 The Super Admin holds the highest level of access within the API and is responsible for managing Admin users. They have full control over user and role management.
 
 **Permissions:**
+
 - Add / Remove Admins
 - Add / Remove Editors
 - Add / Remove Users
 - Add / Remove / Edit Questions and Answers
 
 ### 2. Admin
+
 Admins can manage Editors and Users. They have similar permissions as the Super Admin, except for managing Admins.
 
 **Permissions:**
+
 - Add / Remove Editors
 - Add / Remove Users
 - Add / Remove / Edit Questions and Answers
 
 ### 3. Editor
+
 Editors have the ability to manage content related to questions and answers. They can manage standard Users but cannot manage Admins or other Editors.
 
 **Permissions:**
+
 - Add / Remove Users
 - Add / Remove / Edit Questions and Answers
 
 ### 4. User
+
 Users can register to go through quiz questions. They do not have any administrative permissions.
 
 **Permissions:**
+
 - Register / Login
 - Attempt Multiple Choice Questions
 
 ## Entity Breakdown
 
 ### 1. Users
+
 - **Fields:**
   - ID
   - Username
   - Email
   - Password (hashed with bcrypt)
   - Role (Super Admin, Admin, Editor, User)
-  
 - **Authentication:**
   - JWT for authentication (jsonwebtoken)
   - Passwords hashed with bcryptjs
-  
+
 ### 2. Questions
+
 - **Fields:**
   - ID
   - Question Text
@@ -102,6 +113,7 @@ Users can register to go through quiz questions. They do not have any administra
   - Created By (Editor or Admin)
 
 ### 3. Roles
+
 - **Fields:**
   - ID
   - Role Name (Super Admin, Admin, Editor, User)
@@ -128,7 +140,6 @@ Users can register to go through quiz questions. They do not have any administra
 - **AddAdmin (Super Admin Only)**
 - **AddEditor (Super Admin / Admin)**
 
-
 ## Environment Variables
 
 Create a .env file in the root directory and add the following environment variables:
@@ -151,11 +162,13 @@ After setting up the environment variables and running `npm run dev`, you can vi
 
 ```graphql
 mutation {
-  createUser(input: {
-    username: "newuser",
-    email: "newuser@example.com",
-    password: "password123"
-  }) {
+  createUser(
+    input: {
+      username: "newuser"
+      email: "newuser@example.com"
+      password: "password123"
+    }
+  ) {
     id
     username
     email
@@ -165,6 +178,7 @@ mutation {
 ```
 
 - **Login User**
+
 ```graphql
 mutation {
   login(email: "newuser@example.com", password: "password123") {
@@ -174,13 +188,16 @@ mutation {
 ```
 
 - **Create Question (Editor/Admin Only):**
+
 ```graphql
 mutation {
-  createQuestion(input: {
-    questionText: "What is the capital of France?",
-    answers: ["Paris", "London", "Berlin", "Rome"],
-    correctAnswer: "Paris"
-  }) {
+  createQuestion(
+    input: {
+      questionText: "What is the capital of France?"
+      answers: ["Paris", "London", "Berlin", "Rome"]
+      correctAnswer: "Paris"
+    }
+  ) {
     id
     questionText
     answers
@@ -205,6 +222,3 @@ Please make sure to update tests as appropriate.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
-

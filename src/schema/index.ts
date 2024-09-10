@@ -17,21 +17,21 @@ const typeDefs = gql`
     role: String!
   }
 
-type Question {
-  id: ID!
-  prompt: String!
-  questionText: String!
-  answers: [String!]!
-  correctAnswer: String!
-  createdBy: User!
-}
+  type Question {
+    id: ID!
+    prompt: String!
+    questionText: String!
+    answers: [String!]!
+    correctAnswer: String!
+    createdBy: User!
+  }
 
-input UpdateQuestionInput {
-  prompt: String
-  questionText: String
-  answers: [String!]
-  correctAnswer: String
-}
+  input UpdateQuestionInput {
+    prompt: String
+    questionText: String
+    answers: [String!]
+    correctAnswer: String
+  }
 
   type AuthPayload {
     token: String!
@@ -45,26 +45,26 @@ input UpdateQuestionInput {
     role: Role
   }
 
-input CreateQuestionInput {
-  prompt: String!
-  questionText: String!
-  answers: [String!]!
-  correctAnswer: String!
-}
+  input CreateQuestionInput {
+    prompt: String!
+    questionText: String!
+    answers: [String!]!
+    correctAnswer: String!
+  }
 
   type Query {
     me: User!
-  user(id: ID!): User!
+    user(id: ID!): User!
     users: [User!]!
     questions: [Question!]!
-  question(id: ID!): Question!
+    question(id: ID!): Question!
   }
 
   type Mutation {
     register(input: CreateUserInput!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
-  createQuestion(input: CreateQuestionInput!): Question!
-  updateQuestion(id: ID!, input: UpdateQuestionInput!): Question!
+    createQuestion(input: CreateQuestionInput!): Question!
+    updateQuestion(id: ID!, input: UpdateQuestionInput!): Question!
     deleteQuestion(id: ID!): Boolean!
     changeUserRole(userId: ID!, newRole: Role!): User!
   }
