@@ -54,10 +54,10 @@ input CreateQuestionInput {
 
   type Query {
     me: User!
-    user(id: ID!): User!
+  user(id: ID!): User!
     users: [User!]!
     questions: [Question!]!
-    question(id: ID!): Question!
+  question(id: ID!): Question!
   }
 
   type Mutation {

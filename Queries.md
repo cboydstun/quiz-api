@@ -1,6 +1,6 @@
 # User Queries and Mutations
 
-# Register a new user
+# Register a new user ✅
 
 ```gql
 mutation RegisterUser {
@@ -22,7 +22,7 @@ mutation RegisterUser {
 }
 ```
 
-# Login
+# Login ✅
 
 ```gql
 mutation Login {
@@ -38,7 +38,7 @@ mutation Login {
 }
 ```
 
-# Get current user (requires authentication)
+# Get current user (requires authentication) ✅
 
 ```gql
 query Me {
@@ -51,7 +51,7 @@ query Me {
 }
 ```
 
-# Get all users (requires admin permission)
+# Get all users (requires admin permission) ✅
 
 ```gql
 query AllUsers {
@@ -64,7 +64,7 @@ query AllUsers {
 }
 ```
 
-# Get a specific user by ID (requires admin permission)
+# Get a specific user by ID (requires admin permission) ✅
 
 ```gql
 query GetUser($userId: ID!) {
@@ -77,7 +77,7 @@ query GetUser($userId: ID!) {
 }
 ```
 
-# Change user role (requires admin permission)
+# Change user role (requires admin permission) ✅
 
 ```gql
 mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
@@ -92,7 +92,7 @@ mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
 
 # Question Queries and Mutations
 
-# Create a new question (requires editor permission or higher)
+# Create a new question (requires editor permission or higher) ✅
 
 ```gql
 mutation CreateQuestion {
@@ -117,7 +117,7 @@ mutation CreateQuestion {
 }
 ```
 
-# Get all questions
+# Get all questions ✅
 
 ```gql
 query AllQuestions {
@@ -135,7 +135,7 @@ query AllQuestions {
 }
 ```
 
-# Get a specific question by ID
+# Get a specific question by ID ✅
 
 ```gql
 query GetQuestion($questionId: ID!) {
@@ -153,7 +153,7 @@ query GetQuestion($questionId: ID!) {
 }
 ```
 
-# Update a question (requires editor permission or higher)
+# Update a question (requires editor permission or higher) ✅
 
 ```gql
 mutation UpdateQuestion($questionId: ID!) {
@@ -179,7 +179,7 @@ mutation UpdateQuestion($questionId: ID!) {
 }
 ```
 
-# Delete a question (requires editor permission or higher)
+# Delete a question (requires editor permission or higher) ✅
 
 ```gql
 mutation DeleteQuestion($questionId: ID!) {
@@ -189,7 +189,7 @@ mutation DeleteQuestion($questionId: ID!) {
 
 # Error Handling and Edge Cases
 
-# Try to register with an existing email
+# Try to register with an existing email ✅
 
 ```gql
 mutation RegisterExistingEmail {
@@ -210,7 +210,7 @@ mutation RegisterExistingEmail {
 }
 ```
 
-# Try to login with incorrect credentials
+# Try to login with incorrect credentials ✅
 
 ```gql
 mutation IncorrectLogin {
@@ -225,7 +225,7 @@ mutation IncorrectLogin {
 }
 ```
 
-# Try to access admin-only query as a regular user
+# Try to access admin-only query as a regular user ✅
 
 ```gql
 query UnauthorizedUsersAccess {
@@ -238,7 +238,7 @@ query UnauthorizedUsersAccess {
 }
 ```
 
-# Try to change role to SUPER_ADMIN (should be forbidden)
+# Try to change role to SUPER_ADMIN (should be forbidden) ✅
 
 ```gql
 mutation ChangeToSUPER_ADMIN($userId: ID!) {
@@ -250,7 +250,7 @@ mutation ChangeToSUPER_ADMIN($userId: ID!) {
 }
 ```
 
-# Try to update a non-existent question
+# Try to update a non-existent question ✅
 
 ```gql
 mutation UpdateNonExistentQuestion {
@@ -270,7 +270,7 @@ mutation UpdateNonExistentQuestion {
 }
 ```
 
-# Try to delete a non-existent question
+# Try to delete a non-existent question ✅
 
 ```gql
 mutation DeleteNonExistentQuestion {
