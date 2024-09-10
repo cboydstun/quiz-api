@@ -195,6 +195,32 @@ mutation DeleteQuestion($questionId: ID!) {
 }
 ```
 
+# Submit answers to questions ✅
+
+```
+mutation SubmitAnswer($questionId: ID!, $selectedAnswer: String!) {
+  submitAnswer(questionId: $questionId, selectedAnswer: $selectedAnswer) {
+    success
+    isCorrect
+  }
+}
+```
+
+# View User Response History ✅
+
+```gql
+query GetUserResponses {
+  userResponses {
+    questionId {
+      id
+      questionText
+    }
+    selectedAnswer
+    isCorrect
+  }
+}
+```
+
 # Error Handling and Edge Cases
 
 # Try to register with an existing email ✅
