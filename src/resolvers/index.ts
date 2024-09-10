@@ -57,6 +57,11 @@ type Resolvers = {
       args: { userId: string; newRole: string },
       context: any
     ) => Promise<any>;
+    deleteUser: (
+      parent: any,
+      args: { userId: string },
+      context: any
+    ) => Promise<boolean>;
   };
 };
 
@@ -250,6 +255,29 @@ const resolvers: Resolvers = {
         throw new NotFoundError("User not found");
       }
       return updatedUser;
+    },
+    deleteUser: async (_, { userId }, context) => {
+      // Check if the requesting user is authenticated
+      const user = await checkAuth(context);
+      
+      // Ensure only users with SUPER_ADMIN or ADMIN roles can delete users
+      await checkPermission(user, ["SUPER_ADMIN", "ADMIN"]);
+  
+      // Check if the user to be deleted exists
+      const userToDelete = await User.findById(userId);
+      if (!userToDelete) {
+        throw new NotFoundError("User not found");
+      }
+  
+      // Ensure SUPER_ADMINs cannot be deleted by anyone
+      if (userToDelete.role === "SUPER_ADMIN") {
+        throw new ForbiddenError("Cannot delete a SUPER_ADMIN");
+      }
+  
+      // Delete the user
+      await User.findByIdAndDelete(userId);
+      
+      return true;
     },
   },
 };

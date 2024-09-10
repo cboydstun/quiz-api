@@ -59,6 +59,7 @@ Users can register to go through quiz questions. They do not have any administra
 
 - **Fields:**
   - ID
+  - Prompt
   - Question Text
   - Multiple Choice Answers (Array)
   - Correct Answer

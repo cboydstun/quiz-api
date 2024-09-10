@@ -43,6 +43,12 @@ const CHANGE_USER_ROLE = `
   }
 `;
 
+const DELETE_USER = `
+  mutation DeleteUser($userId: ID!) {
+    deleteUser(userId: $userId)
+  }
+`;
+
 // Helper function to create a mock context
 const createMockContext = (user: any): ExpressContext => {
   const token = generateToken(user);
@@ -207,4 +213,79 @@ describe("User Operations Integration Tests", () => {
       );
     });
   });
+
+  describe("User Deletion", () => {
+    it("should allow an admin to delete a regular user", async () => {
+      const res = await server.executeOperation(
+        {
+          query: DELETE_USER,
+          variables: { userId: regularUser._id.toString() },
+        },
+        createMockContext(adminUser)
+      );
+  
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.deleteUser).toBe(true);
+  
+      // Verify the user was deleted
+      const deletedUser = await User.findById(regularUser._id);
+      expect(deletedUser).toBeNull();
+    });
+  
+    it("should not allow a regular user to delete another user", async () => {
+      const res = await server.executeOperation(
+        {
+          query: DELETE_USER,
+          variables: { userId: adminUser._id.toString() },
+        },
+        createMockContext(regularUser)
+      );
+  
+      expect(res.errors).toBeDefined();
+      expect(res.errors?.[0].message).toContain("not have permission");
+  
+      // Verify the admin user still exists
+      const admin = await User.findById(adminUser._id);
+      expect(admin).not.toBeNull();
+    });
+  
+    it("should throw a ForbiddenError when trying to delete a SUPER_ADMIN", async () => {
+      const superAdmin = await User.create({
+        username: "superadmin",
+        email: "superadmin@example.com",
+        password: "superadminpass",
+        role: "SUPER_ADMIN",
+      });
+  
+      const res = await server.executeOperation(
+        {
+          query: DELETE_USER,
+          variables: { userId: superAdmin._id.toString() },
+        },
+        createMockContext(adminUser) // Admin trying to delete SUPER_ADMIN
+      );
+  
+      expect(res.errors).toBeDefined();
+      expect(res.errors?.[0].message).toContain("Cannot delete a SUPER_ADMIN");
+  
+      // Verify the SUPER_ADMIN still exists
+      const fetchedSuperAdmin = await User.findById(superAdmin._id);
+      expect(fetchedSuperAdmin).not.toBeNull();
+    });
+  
+    it("should throw a NotFoundError when trying to delete a non-existent user", async () => {
+      const nonExistentUserId = new mongoose.Types.ObjectId();
+  
+      const res = await server.executeOperation(
+        {
+          query: DELETE_USER,
+          variables: { userId: nonExistentUserId.toString() },
+        },
+        createMockContext(adminUser)
+      );
+  
+      expect(res.errors).toBeDefined();
+      expect(res.errors?.[0].message).toContain("User not found");
+    });
+  });  
 });

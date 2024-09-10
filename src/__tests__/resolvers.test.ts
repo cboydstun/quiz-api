@@ -661,6 +661,111 @@ describe("Mutation resolvers", () => {
         )
       ).rejects.toThrow(NotFoundError);
     });
+
+    describe("deleteUser", () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+      });
+  
+      it("should delete a user when called by an admin or super admin", async () => {
+        const mockAdmin = { _id: "123", role: "ADMIN", email: "admin@example.com" };
+        const mockUser = { _id: "456", username: "testuser", role: "USER" };
+  
+        // Mock the necessary utility functions
+        (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockAdmin);
+        (permissionUtils.checkPermission as jest.Mock).mockReturnValue(true);
+        (User.findById as jest.Mock).mockResolvedValue(mockUser);
+        (User.findByIdAndDelete as jest.Mock).mockResolvedValue(mockUser);
+  
+        // Call the mutation resolver
+        const result = await resolvers.Mutation.deleteUser(
+          null,
+          { userId: "456" },
+          { req: {} } as any
+        );
+  
+        // Expectations
+        expect(result).toBe(true);
+        expect(authUtils.checkAuth).toHaveBeenCalledWith({ req: {} });
+        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdmin, ["SUPER_ADMIN", "ADMIN"]);
+        expect(User.findById).toHaveBeenCalledWith("456");
+        expect(User.findByIdAndDelete).toHaveBeenCalledWith("456");
+      });
+  
+      it("should throw NotFoundError if the user to be deleted does not exist", async () => {
+        const mockAdmin = { _id: "123", role: "ADMIN", email: "admin@example.com" };
+  
+        // Mock the necessary utility functions
+        (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockAdmin);
+        (permissionUtils.checkPermission as jest.Mock).mockReturnValue(true);
+        (User.findById as jest.Mock).mockResolvedValue(null); // User does not exist
+  
+        // Call the mutation resolver and assert that it throws an error
+        await expect(
+          resolvers.Mutation.deleteUser(null, { userId: "999" }, { req: {} } as any)
+        ).rejects.toThrow(NotFoundError);
+  
+        // Expectations
+        expect(authUtils.checkAuth).toHaveBeenCalledWith({ req: {} });
+        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdmin, ["SUPER_ADMIN", "ADMIN"]);
+        expect(User.findById).toHaveBeenCalledWith("999");
+      });
+  
+      it("should throw ForbiddenError if attempting to delete a SUPER_ADMIN", async () => {
+        const mockAdmin = { _id: "123", role: "ADMIN", email: "admin@example.com" };
+        const mockSuperAdmin = { _id: "456", role: "SUPER_ADMIN", username: "superadminuser" };
+  
+        // Mock the necessary utility functions
+        (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockAdmin);
+        (permissionUtils.checkPermission as jest.Mock).mockReturnValue(true);
+        (User.findById as jest.Mock).mockResolvedValue(mockSuperAdmin); // Trying to delete SUPER_ADMIN
+  
+        // Call the mutation resolver and assert that it throws a ForbiddenError
+        await expect(
+          resolvers.Mutation.deleteUser(null, { userId: "456" }, { req: {} } as any)
+        ).rejects.toThrow(ForbiddenError);
+  
+        // Expectations
+        expect(authUtils.checkAuth).toHaveBeenCalledWith({ req: {} });
+        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdmin, ["SUPER_ADMIN", "ADMIN"]);
+        expect(User.findById).toHaveBeenCalledWith("456");
+      });
+  
+      it("should throw AuthenticationError if the user is not authenticated", async () => {
+        // Mock the authentication utility to throw an error
+        (authUtils.checkAuth as jest.Mock).mockRejectedValue(new AuthenticationError("Not authenticated"));
+  
+        // Call the mutation resolver and assert that it throws an AuthenticationError
+        await expect(
+          resolvers.Mutation.deleteUser(null, { userId: "456" }, { req: {} } as any)
+        ).rejects.toThrow(AuthenticationError);
+  
+        // Expectations
+        expect(authUtils.checkAuth).toHaveBeenCalledWith({ req: {} });
+        expect(permissionUtils.checkPermission).not.toHaveBeenCalled();
+        expect(User.findById).not.toHaveBeenCalled();
+      });
+  
+      it("should throw ForbiddenError if the user does not have sufficient permissions", async () => {
+        const mockUser = { _id: "123", role: "USER", email: "user@example.com" };
+  
+        // Mock the necessary utility functions
+        (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
+        (permissionUtils.checkPermission as jest.Mock).mockImplementation(() => {
+          throw new ForbiddenError("Not authorized");
+        });
+  
+        // Call the mutation resolver and assert that it throws a ForbiddenError
+        await expect(
+          resolvers.Mutation.deleteUser(null, { userId: "456" }, { req: {} } as any)
+        ).rejects.toThrow(ForbiddenError);
+  
+        // Expectations
+        expect(authUtils.checkAuth).toHaveBeenCalledWith({ req: {} });
+        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockUser, ["SUPER_ADMIN", "ADMIN"]);
+        expect(User.findById).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe("changeUserRole", () => {

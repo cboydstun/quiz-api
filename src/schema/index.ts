@@ -67,6 +67,7 @@ const typeDefs = gql`
     updateQuestion(id: ID!, input: UpdateQuestionInput!): Question!
     deleteQuestion(id: ID!): Boolean!
     changeUserRole(userId: ID!, newRole: Role!): User!
+    deleteUser(userId: ID!): Boolean!
   }
 `;
 

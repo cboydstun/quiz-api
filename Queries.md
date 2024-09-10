@@ -90,6 +90,14 @@ mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
 }
 ```
 
+# Delete user (requires admin permission)
+
+```gql
+mutation DeleteUser($userId: ID!) {
+  deleteUser(userId: $userId)
+}
+```
+
 # Question Queries and Mutations
 
 # Create a new question (requires editor permission or higher) ✅
