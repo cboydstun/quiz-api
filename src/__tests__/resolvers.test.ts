@@ -327,67 +327,76 @@ describe("Mutation resolvers", () => {
     it('should create a new question', async () => {
       const mockUser = { _id: '123', role: 'EDITOR', email: 'editor@example.com', username: 'editor' };
       const input = {
+        prompt: "Consider the following question:",
         questionText: "New question",
         answers: ["A", "B", "C"],
         correctAnswer: "A",
       };
-
+  
       // Mock auth and permission checks
       (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
       (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(true);
-
-      // Mock Question methods
-      const mockSave = jest.fn().mockResolvedValue({});
-      const MockQuestionInstance = {
-        save: mockSave,
-      } as unknown as Document<unknown, any, IQuestion> & IQuestion;
-
-      (Question as unknown as jest.MockedFunction<() => typeof MockQuestionInstance>)
-        .mockImplementation(() => MockQuestionInstance);
-
-      (Question.findById as jest.Mock).mockReturnValue({
-        populate: jest.fn().mockResolvedValue({
+  
+      // Create a mock for the new Question instance
+      const mockQuestionInstance = {
+        _id: 'new_question_id',
+        ...input,
+        createdBy: mockUser._id,
+        save: jest.fn().mockResolvedValue({
           _id: 'new_question_id',
-          questionText: 'New question',
-          answers: ['A', 'B', 'C'],
-          correctAnswer: 'A',
-          createdBy: {
-            _id: 'mockedUserId',
-            username: 'mockedUser',
-          },
+          ...input,
+          createdBy: mockUser._id,
         }),
+      };
+  
+      // Mock the Question constructor
+      (Question as jest.MockedClass<typeof Question>).mockImplementation(() => mockQuestionInstance as any);
+  
+      // Mock the populate method to return the full user object
+      const mockPopulate = jest.fn().mockResolvedValue({
+        _id: 'new_question_id',
+        ...input,
+        createdBy: mockUser,
       });
-
+  
+      // Attach the populate mock to the save result
+      mockQuestionInstance.save.mockResolvedValue({
+        ...mockQuestionInstance,
+        populate: mockPopulate,
+      });
+  
       // Call the resolver
       const result = await resolvers.Mutation.createQuestion(null, { input }, { req: {} } as any);
-
+  
       // Validate that auth checks were called
       expect(authUtils.checkAuth).toHaveBeenCalled();
       expect(permissionUtils.checkPermission).toHaveBeenCalledWith(
         mockUser,
         ["SUPER_ADMIN", "ADMIN", "EDITOR"]
       );
-
+  
       // Validate that new Question was created with correct data
       expect(Question).toHaveBeenCalledWith({
         ...input,
         createdBy: mockUser._id,
       });
-
-      // Validate that save was called on the new Question instance
-      expect(mockSave).toHaveBeenCalled();
-
+  
+      // Validate that save and populate were called
+      expect(mockQuestionInstance.save).toHaveBeenCalled();
+      expect(mockPopulate).toHaveBeenCalledWith('createdBy');
+  
       // Validate the result
-      expect(result).toEqual(expect.objectContaining({
+      expect(result).toEqual({
         id: 'new_question_id',
+        prompt: "Consider the following question:",
         questionText: "New question",
         answers: ["A", "B", "C"],
         correctAnswer: "A",
         createdBy: {
-          id: 'mockedUserId',
-          username: 'mockedUser',
+          id: '123',
+          username: 'editor',
         },
-      }));
+      });
     });
     it("should throw ForbiddenError for unauthorized users", async () => {
       (authUtils.checkAuth as jest.Mock).mockResolvedValue({
@@ -415,6 +424,100 @@ describe("Mutation resolvers", () => {
   });
 
   describe("updateQuestion", () => {
+    it("should update an existing question", async () => {
+      const mockUser = { _id: '123', role: 'EDITOR' };
+      const mockQuestion = {
+        _id: '456',
+        questionText: 'Old question',
+        answers: ['A', 'B'],
+        correctAnswer: 'A',
+        save: jest.fn().mockResolvedValue({
+          _id: '456',
+          questionText: 'Updated question',
+          answers: ['X', 'Y'],
+          correctAnswer: 'X',
+          populate: jest.fn().mockResolvedValue({
+            _id: '456',
+            questionText: 'Updated question',
+            answers: ['X', 'Y'],
+            correctAnswer: 'X',
+            createdBy: { _id: '123', username: 'editor' }
+          })
+        })
+      };
+  
+      (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
+      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(true);
+      (Question.findById as jest.Mock).mockResolvedValue(mockQuestion);
+  
+      const result = await resolvers.Mutation.updateQuestion(
+        null,
+        {
+          id: '456',
+          input: {
+            questionText: 'Updated question',
+            answers: ['X', 'Y'],
+            correctAnswer: 'X'
+          }
+        },
+        { req: {} } as any
+      );
+  
+      expect(result).toEqual({
+        _id: '456',
+        questionText: 'Updated question',
+        answers: ['X', 'Y'],
+        correctAnswer: 'X',
+        createdBy: { _id: '123', username: 'editor' }
+      });
+    });
+  
+    it("should throw NotFoundError if question does not exist", async () => {
+      (authUtils.checkAuth as jest.Mock).mockResolvedValue({ _id: '123', role: 'EDITOR' });
+      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(true);
+      (Question.findById as jest.Mock).mockResolvedValue(null);
+  
+      await expect(
+        resolvers.Mutation.updateQuestion(
+          null,
+          {
+            id: '999',
+            input: {
+              questionText: 'Updated question',
+              answers: ['X', 'Y'],
+              correctAnswer: 'X'
+            }
+          },
+          { req: {} } as any
+        )
+      ).rejects.toThrow(NotFoundError);
+    });
+  
+    it('should throw NotFoundError for invalid ObjectId', async () => {
+      const mockUser = { _id: '123', username: 'testuser', role: 'EDITOR' };
+  
+      (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
+      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(undefined);
+      (Question.findById as jest.Mock).mockRejectedValue(new mongoose.Error.CastError('ObjectId', 'invalid-id', 'id'));
+  
+      await expect(
+        resolvers.Mutation.updateQuestion(
+          null,
+          {
+            id: 'invalid-id',
+            input: {
+              questionText: 'Updated question',
+              answers: ['X', 'Y'],
+              correctAnswer: 'X'
+            }
+          },
+          { req: {} } as any
+        )
+      ).rejects.toThrow(NotFoundError);
+    });
+  });
+
+  describe("deleteQuestion", () => {
     it('should delete an existing question', async () => {
       const mockUser = { _id: '123', username: 'testuser', role: 'ADMIN' };
       const mockQuestion = { _id: '456', questionText: 'Test question' };
@@ -492,68 +595,6 @@ describe("Mutation resolvers", () => {
               correctAnswer: 'X'
             }
           },
-          { req: {} } as any
-        )
-      ).rejects.toThrow(NotFoundError);
-    });
-  });
-
-  describe('deleteQuestion', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should delete an existing question', async () => {
-      const mockUser = { _id: '123', username: 'testuser', role: 'ADMIN' };
-      const mockQuestion = { _id: '456', questionText: 'Test question' };
-
-      (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
-      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(undefined);
-
-      // Use mockResolvedValueOnce for findById
-      (Question.findById as jest.Mock).mockResolvedValueOnce(mockQuestion);
-      (Question.findByIdAndDelete as jest.Mock).mockResolvedValueOnce(mockQuestion);
-
-      const result = await resolvers.Mutation.deleteQuestion(
-        null,
-        { id: '456' },
-        { req: {} } as any
-      );
-
-      expect(result).toBe(true);
-      expect(authUtils.checkAuth).toHaveBeenCalled();
-      expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockUser, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
-      expect(Question.findById).toHaveBeenCalledWith('456');
-      expect(Question.findByIdAndDelete).toHaveBeenCalledWith('456');
-    });
-
-    it('should throw NotFoundError if question does not exist', async () => {
-      const mockUser = { _id: '123', username: 'testuser', role: 'ADMIN' };
-
-      (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
-      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(undefined);
-      (Question.findById as jest.Mock).mockResolvedValueOnce(null);
-
-      await expect(
-        resolvers.Mutation.deleteQuestion(
-          null,
-          { id: '999' },
-          { req: {} } as any
-        )
-      ).rejects.toThrow(NotFoundError);
-    });
-
-    it('should throw NotFoundError for invalid ObjectId', async () => {
-      const mockUser = { _id: '123', username: 'testuser', role: 'ADMIN' };
-
-      (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
-      (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(undefined);
-      (Question.findById as jest.Mock).mockRejectedValue(new mongoose.Error.CastError('ObjectId', 'invalid-id', 'id'));
-
-      await expect(
-        resolvers.Mutation.deleteQuestion(
-          null,
-          { id: 'invalid-id' },
           { req: {} } as any
         )
       ).rejects.toThrow(NotFoundError);

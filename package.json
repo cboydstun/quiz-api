@@ -9,7 +9,8 @@
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
-    "security-check": "pnpm audit"
+    "security-check": "pnpm audit",
+    "migration": "ts-node-dev --respawn --transpile-only src/migrationScript.ts"
   },
   "keywords": [],
   "author": "",

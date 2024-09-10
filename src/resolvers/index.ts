@@ -107,60 +107,59 @@ const resolvers: Resolvers = {
       const user = await checkAuth(context);
       await checkPermission(user, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
 
-      const question = new Question({
-        ...input,
-        createdBy: user._id,
-      });
+      const { prompt, questionText, answers, correctAnswer } = input;
 
-      await question.save();
-
-      // Populate the createdBy field with user details
-      const populatedQuestion = await Question.findById(question._id).populate('createdBy');
-
-      if (!populatedQuestion) {
-        throw new Error('Failed to create question');
+      if (!answers.includes(correctAnswer)) {
+        throw new UserInputError('The correct answer must be one of the provided answers');
       }
 
+      const newQuestion = new Question({
+        prompt,
+        questionText,
+        answers,
+        correctAnswer,
+        createdBy: user._id
+      });
+
+      const savedQuestion = await newQuestion.save();
+      
+      const populatedQuestion = await savedQuestion.populate('createdBy');
+
       return {
-        id: populatedQuestion._id.toString(),
+        id: populatedQuestion._id,
+        prompt: populatedQuestion.prompt,
         questionText: populatedQuestion.questionText,
         answers: populatedQuestion.answers,
         correctAnswer: populatedQuestion.correctAnswer,
         createdBy: {
-          id: populatedQuestion.createdBy._id.toString(),
-          username: populatedQuestion.createdBy.username,
-        },
+          id: populatedQuestion.createdBy._id,
+          username: populatedQuestion.createdBy.username
+        }
       };
     },
 
     updateQuestion: async (_, { id, input }, context) => {
       const user = await checkAuth(context);
       await checkPermission(user, ['SUPER_ADMIN', 'ADMIN', 'EDITOR']);
-
+    
       try {
         const question = await Question.findById(id);
         if (!question) {
           throw new NotFoundError('Question not found');
         }
-
-        Object.assign(question, input);
-        await question.save();
-
-        const updatedQuestion = await Question.findById(id).populate('createdBy');
-        if (!updatedQuestion) {
-          throw new NotFoundError('Updated question not found');
+    
+        if (input.prompt) question.prompt = input.prompt;
+        if (input.questionText) question.questionText = input.questionText;
+        if (input.answers) question.answers = input.answers;
+        if (input.correctAnswer) {
+          if (!question.answers.includes(input.correctAnswer)) {
+            throw new UserInputError('The correct answer must be one of the provided answers');
+          }
+          question.correctAnswer = input.correctAnswer;
         }
-
-        return {
-          id: updatedQuestion._id.toString(),
-          questionText: updatedQuestion.questionText,
-          answers: updatedQuestion.answers,
-          correctAnswer: updatedQuestion.correctAnswer,
-          createdBy: {
-            id: updatedQuestion.createdBy._id.toString(),
-            username: updatedQuestion.createdBy.username,
-          },
-        };
+    
+        const updatedQuestion = await question.save();
+        return updatedQuestion.populate('createdBy');
       } catch (error) {
         if (error instanceof mongoose.Error.CastError) {
           throw new NotFoundError('Question not found');

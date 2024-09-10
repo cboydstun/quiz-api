@@ -15,6 +15,7 @@ const CREATE_QUESTION = `
   mutation CreateQuestion($input: CreateQuestionInput!) {
     createQuestion(input: $input) {
       id
+      prompt
       questionText
       answers
       correctAnswer
@@ -30,6 +31,7 @@ const GET_QUESTIONS = `
   query GetQuestions {
     questions {
       id
+      prompt
       questionText
       answers
       correctAnswer
@@ -45,6 +47,7 @@ const GET_QUESTION = `
   query GetQuestion($id: ID!) {
     question(id: $id) {
       id
+      prompt
       questionText
       answers
       correctAnswer
@@ -60,6 +63,7 @@ const UPDATE_QUESTION = `
   mutation UpdateQuestion($id: ID!, $input: UpdateQuestionInput!) {
     updateQuestion(id: $id, input: $input) {
       id
+      prompt
       questionText
       answers
       correctAnswer
@@ -150,6 +154,7 @@ describe('Question Operations Integration Tests', () => {
                 query: CREATE_QUESTION,
                 variables: {
                     input: {
+                        prompt: "Consider the following geographical question:",
                         questionText: "What is the capital of France?",
                         answers: ["London", "Berlin", "Paris", "Madrid"],
                         correctAnswer: "Paris"
@@ -158,6 +163,7 @@ describe('Question Operations Integration Tests', () => {
             }, createMockContext(adminUser));
 
             expect(res.errors).toBeUndefined();
+            expect(res.data?.createQuestion.prompt).toBe("Consider the following geographical question:");
             expect(res.data?.createQuestion.questionText).toBe("What is the capital of France?");
             expect(res.data?.createQuestion.createdBy.username).toBe("admin");
         });
@@ -167,6 +173,7 @@ describe('Question Operations Integration Tests', () => {
                 query: CREATE_QUESTION,
                 variables: {
                     input: {
+                        prompt: "Think about our solar system:",
                         questionText: "What is the largest planet in our solar system?",
                         answers: ["Mars", "Jupiter", "Saturn", "Neptune"],
                         correctAnswer: "Jupiter"
@@ -175,6 +182,7 @@ describe('Question Operations Integration Tests', () => {
             }, createMockContext(editorUser));
 
             expect(res.errors).toBeUndefined();
+            expect(res.data?.createQuestion.prompt).toBe("Think about our solar system:");
             expect(res.data?.createQuestion.questionText).toBe("What is the largest planet in our solar system?");
             expect(res.data?.createQuestion.createdBy.username).toBe("editor");
         });
@@ -184,6 +192,7 @@ describe('Question Operations Integration Tests', () => {
                 query: CREATE_QUESTION,
                 variables: {
                     input: {
+                        prompt: "Let's discuss literature:",
                         questionText: "Who wrote Romeo and Juliet?",
                         answers: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
                         correctAnswer: "William Shakespeare"
@@ -197,6 +206,7 @@ describe('Question Operations Integration Tests', () => {
 
         it('should allow an admin to update a question', async () => {
             const question = await Question.create({
+                prompt: "Do some basic math:",
                 questionText: "What is 2 + 2?",
                 answers: ["3", "4", "5", "6"],
                 correctAnswer: "4",
@@ -208,6 +218,7 @@ describe('Question Operations Integration Tests', () => {
                 variables: {
                     id: question._id.toString(),
                     input: {
+                        prompt: "Let's try a different math question:",
                         questionText: "What is 2 + 3?",
                         answers: ["3", "4", "5", "6"],
                         correctAnswer: "5"
@@ -216,12 +227,14 @@ describe('Question Operations Integration Tests', () => {
             }, createMockContext(adminUser));
 
             expect(res.errors).toBeUndefined();
+            expect(res.data?.updateQuestion.prompt).toBe("Let's try a different math question:");
             expect(res.data?.updateQuestion.questionText).toBe("What is 2 + 3?");
             expect(res.data?.updateQuestion.correctAnswer).toBe("5");
         });
 
         it('should allow an admin to delete a question', async () => {
             const question = await Question.create({
+                prompt: "Let's talk about world capitals:",
                 questionText: "What is the capital of Japan?",
                 answers: ["Seoul", "Beijing", "Tokyo", "Bangkok"],
                 correctAnswer: "Tokyo",
@@ -246,6 +259,7 @@ describe('Question Operations Integration Tests', () => {
     describe('Question Queries', () => {
         it('should fetch all questions', async () => {
             await Question.create({
+                prompt: "Consider this geography question:",
                 questionText: "What is the capital of France?",
                 answers: ["London", "Berlin", "Paris", "Madrid"],
                 correctAnswer: "Paris",
@@ -253,6 +267,7 @@ describe('Question Operations Integration Tests', () => {
             });
 
             await Question.create({
+                prompt: "Think about our solar system:",
                 questionText: "What is the largest planet in our solar system?",
                 answers: ["Mars", "Jupiter", "Saturn", "Neptune"],
                 correctAnswer: "Jupiter",
@@ -265,12 +280,15 @@ describe('Question Operations Integration Tests', () => {
 
             expect(res.errors).toBeUndefined();
             expect(res.data?.questions).toHaveLength(2);
+            expect(res.data?.questions[0].prompt).toBe("Consider this geography question:");
             expect(res.data?.questions[0].questionText).toBe("What is the capital of France?");
+            expect(res.data?.questions[1].prompt).toBe("Think about our solar system:");
             expect(res.data?.questions[1].questionText).toBe("What is the largest planet in our solar system?");
         });
 
         it('should fetch a specific question by ID', async () => {
             const question = await Question.create({
+                prompt: "Let's talk about literature:",
                 questionText: "Who wrote Romeo and Juliet?",
                 answers: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
                 correctAnswer: "William Shakespeare",
@@ -285,6 +303,7 @@ describe('Question Operations Integration Tests', () => {
             }, createMockContext(regularUser));
 
             expect(res.errors).toBeUndefined();
+            expect(res.data?.question.prompt).toBe("Let's talk about literature:");
             expect(res.data?.question.questionText).toBe("Who wrote Romeo and Juliet?");
             expect(res.data?.question.createdBy.username).toBe("editor");
         });

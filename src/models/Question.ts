@@ -4,6 +4,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 import { IUser } from './User';
 
 export interface IQuestion extends Document {
+  prompt: string;
   questionText: string;
   answers: string[];
   correctAnswer: string;
@@ -11,6 +12,7 @@ export interface IQuestion extends Document {
 }
 
 const QuestionSchema: Schema = new Schema({
+  prompt: { type: String, required: true },
   questionText: { type: String, required: true },
   answers: { type: [String], required: true },
   correctAnswer: { type: String, required: true },

@@ -1,8 +1,8 @@
 # User Queries and Mutations
 
-# Register a new user ✅
+# Register a new user
 
-```graphql
+```gql
 mutation RegisterUser {
   register(
     input: {
@@ -22,9 +22,9 @@ mutation RegisterUser {
 }
 ```
 
-# Login ✅
+# Login
 
-```graphql
+```gql
 mutation Login {
   login(email: "newuser@example.com", password: "password123") {
     token
@@ -38,9 +38,9 @@ mutation Login {
 }
 ```
 
-# Get current user (requires authentication) ✅
+# Get current user (requires authentication)
 
-```graphql
+```gql
 query Me {
   me {
     id
@@ -51,9 +51,9 @@ query Me {
 }
 ```
 
-# Get all users (requires admin permission) ✅
+# Get all users (requires admin permission)
 
-```graphql
+```gql
 query AllUsers {
   users {
     id
@@ -64,9 +64,9 @@ query AllUsers {
 }
 ```
 
-# Get a specific user by ID (requires admin permission) ✅
+# Get a specific user by ID (requires admin permission)
 
-```graphql
+```gql
 query GetUser($userId: ID!) {
   user(id: $userId) {
     id
@@ -77,9 +77,9 @@ query GetUser($userId: ID!) {
 }
 ```
 
-# Change user role (requires admin permission) ✅
+# Change user role (requires admin permission)
 
-```graphql
+```gql
 mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
   changeUserRole(userId: $userId, newRole: $newRole) {
     id
@@ -92,18 +92,20 @@ mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
 
 # Question Queries and Mutations
 
-# Create a new question (requires editor permission or higher) ✅
+# Create a new question (requires editor permission or higher)
 
-```graphql
+```gql
 mutation CreateQuestion {
   createQuestion(
     input: {
+      prompt: "Consider the following geographical question:"
       questionText: "What is the capital of France?"
       answers: ["London", "Berlin", "Paris", "Madrid"]
       correctAnswer: "Paris"
     }
   ) {
     id
+    prompt
     questionText
     answers
     correctAnswer
@@ -115,12 +117,13 @@ mutation CreateQuestion {
 }
 ```
 
-# Get all questions ✅
+# Get all questions
 
-```graphql
+```gql
 query AllQuestions {
   questions {
     id
+    prompt
     questionText
     answers
     correctAnswer
@@ -132,12 +135,13 @@ query AllQuestions {
 }
 ```
 
-# Get a specific question by ID ✅
+# Get a specific question by ID
 
-```graphql
+```gql
 query GetQuestion($questionId: ID!) {
   question(id: $questionId) {
     id
+    prompt
     questionText
     answers
     correctAnswer
@@ -149,19 +153,21 @@ query GetQuestion($questionId: ID!) {
 }
 ```
 
-# Update a question (requires editor permission or higher) ✅
+# Update a question (requires editor permission or higher)
 
-```graphql
+```gql
 mutation UpdateQuestion($questionId: ID!) {
   updateQuestion(
     id: $questionId
     input: {
+      prompt: "Let's revisit this geographical question:"
       questionText: "Updated: What is the capital of France?"
       answers: ["London", "Berlin", "Paris", "Rome"]
       correctAnswer: "Paris"
     }
   ) {
     id
+    prompt
     questionText
     answers
     correctAnswer
@@ -173,9 +179,9 @@ mutation UpdateQuestion($questionId: ID!) {
 }
 ```
 
-# Delete a question (requires editor permission or higher) ✅
+# Delete a question (requires editor permission or higher)
 
-```graphql
+```gql
 mutation DeleteQuestion($questionId: ID!) {
   deleteQuestion(id: $questionId)
 }
@@ -183,9 +189,9 @@ mutation DeleteQuestion($questionId: ID!) {
 
 # Error Handling and Edge Cases
 
-# Try to register with an existing email ✅
+# Try to register with an existing email
 
-```graphql
+```gql
 mutation RegisterExistingEmail {
   register(
     input: {
@@ -204,9 +210,9 @@ mutation RegisterExistingEmail {
 }
 ```
 
-# Try to login with incorrect credentials ✅
+# Try to login with incorrect credentials
 
-```graphql
+```gql
 mutation IncorrectLogin {
   login(email: "newuser@example.com", password: "wrongpassword") {
     token
@@ -219,9 +225,9 @@ mutation IncorrectLogin {
 }
 ```
 
-# Try to access admin-only query as a regular user ✅
+# Try to access admin-only query as a regular user
 
-```graphql
+```gql
 query UnauthorizedUsersAccess {
   users {
     id
@@ -232,39 +238,41 @@ query UnauthorizedUsersAccess {
 }
 ```
 
-# Try to change role to SUPER_ADMIN (should be forbidden) ✅
+# Try to change role to SUPER_ADMIN (should be forbidden)
 
-```graphql
-mutation ChangeTo#SUPER_ADMIN($userId: ID!) {
-changeUserRole(userId: $userId, newRole: SUPER_ADMIN) {
-id
-username
-role
-}
+```gql
+mutation ChangeToSUPER_ADMIN($userId: ID!) {
+  changeUserRole(userId: $userId, newRole: SUPER_ADMIN) {
+    id
+    username
+    role
+  }
 }
 ```
 
-# Try to update a non-existent question ✅
+# Try to update a non-existent question
 
-```graphql
+```gql
 mutation UpdateNonExistentQuestion {
   updateQuestion(
     id: "non-existent-id"
     input: {
+      prompt: "This is a non-existent question:"
       questionText: "This question doesn't exist"
       answers: ["A", "B", "C"]
       correctAnswer: "A"
     }
   ) {
     id
+    prompt
     questionText
   }
 }
 ```
 
-# Try to delete a non-existent question ✅
+# Try to delete a non-existent question
 
-```graphql
+```gql
 mutation DeleteNonExistentQuestion {
   deleteQuestion(id: "non-existent-id")
 }

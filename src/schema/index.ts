@@ -17,19 +17,21 @@ const typeDefs = gql`
     role: String!
   }
 
-  type Question {
-    id: ID!
-    questionText: String!
-    answers: [String!]!
-    correctAnswer: String!
-    createdBy: User!
-  }
+type Question {
+  id: ID!
+  prompt: String!
+  questionText: String!
+  answers: [String!]!
+  correctAnswer: String!
+  createdBy: User!
+}
 
-  input UpdateQuestionInput {
-    questionText: String
-    answers: [String!]
-    correctAnswer: String
-  }
+input UpdateQuestionInput {
+  prompt: String
+  questionText: String
+  answers: [String!]
+  correctAnswer: String
+}
 
   type AuthPayload {
     token: String!
@@ -43,11 +45,12 @@ const typeDefs = gql`
     role: Role
   }
 
-  input CreateQuestionInput {
-    questionText: String!
-    answers: [String!]!
-    correctAnswer: String!
-  }
+input CreateQuestionInput {
+  prompt: String!
+  questionText: String!
+  answers: [String!]!
+  correctAnswer: String!
+}
 
   type Query {
     me: User!
@@ -60,8 +63,8 @@ const typeDefs = gql`
   type Mutation {
     register(input: CreateUserInput!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
-    createQuestion(input: CreateQuestionInput!): Question!
-    updateQuestion(id: ID!, input: UpdateQuestionInput!): Question!
+  createQuestion(input: CreateQuestionInput!): Question!
+  updateQuestion(id: ID!, input: UpdateQuestionInput!): Question!
     deleteQuestion(id: ID!): Boolean!
     changeUserRole(userId: ID!, newRole: Role!): User!
   }
