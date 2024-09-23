@@ -59,6 +59,7 @@ const typeDefs = gql`
     questions: [Question!]!
     question(id: ID!): Question!
     userResponses: [UserResponse!]!
+    getGoogleAuthUrl: GoogleAuthUrl!
   }
 
   type UserResponse {
@@ -72,6 +73,10 @@ const typeDefs = gql`
     isCorrect: Boolean!
   }
 
+  type GoogleAuthUrl {
+    url: String!
+  }
+
   type Mutation {
     register(input: CreateUserInput!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
@@ -81,6 +86,7 @@ const typeDefs = gql`
     changeUserRole(userId: ID!, newRole: Role!): User!
     deleteUser(userId: ID!): Boolean!
     submitAnswer(questionId: ID!, selectedAnswer: String!): AnswerResponse!
+    authenticateWithGoogle(code: String!): AuthPayload!
   }
 `;
 

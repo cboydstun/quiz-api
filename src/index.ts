@@ -3,6 +3,8 @@ import { ApolloServer } from "apollo-server-express";
 import mongoose from "mongoose";
 import cors from "cors";
 import * as dotenv from "dotenv";
+import passport from './utils/passport';
+import session from 'express-session';
 import typeDefs from "./schema";
 import resolvers from "./resolvers";
 import { logger, expressLogger } from "./utils/logger";
@@ -22,9 +24,16 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(helmet());
 
-const startServer = async () => {
-  const app = express();
+app.use(session({
+  secret: process.env.SESSION_SECRET!,
+  resave: false,
+  saveUninitialized: false
+}));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+const startServer = async () => {
   // Enable CORS for all origins
   app.use(
     cors({
@@ -61,6 +70,17 @@ const startServer = async () => {
   } catch (error) {
     logger.error("Failed to connect to MongoDB", { error });
   }
+
+  // Add Google OAuth routes
+  app.get('/auth/google',
+    passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+  app.get('/auth/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    (req, res) => {
+      // Successful authentication, redirect home.
+      res.redirect('/');
+    });
 
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {

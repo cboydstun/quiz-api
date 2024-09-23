@@ -11,11 +11,15 @@ import * as authUtils from "../utils/auth";
 import * as permissionUtils from "../utils/permissions";
 import { Model, Document } from "mongoose";
 import mongoose from "mongoose";
+import { ApolloError } from "apollo-server-express";
+import { OAuth2Client } from "google-auth-library";
+import * as googleAuth from "../resolvers/index";  // Import the module containing createOAuth2Client
 
 jest.mock("../models/User");
 jest.mock("../utils/auth");
 jest.mock("../utils/permissions");
 jest.mock("../models/Question");
+jest.mock("google-auth-library");
 
 describe("Query resolvers", () => {
   describe("me", () => {
@@ -841,6 +845,53 @@ describe("Mutation resolvers", () => {
           { req: {} } as any
         )
       ).rejects.toThrow(ForbiddenError);
+    });
+  });
+
+  describe("getGoogleAuthUrl", () => {
+    let mockGenerateAuthUrl: jest.Mock;
+    let mockClient: any;
+
+    beforeEach(() => {
+      mockGenerateAuthUrl = jest.fn();
+      mockClient = { generateAuthUrl: mockGenerateAuthUrl };
+      
+      // Mock the createOAuth2Client function
+      jest.spyOn(googleAuth, 'createOAuth2Client').mockReturnValue(mockClient);
+      
+      // Reset the client in the resolver
+      (googleAuth as any).client = mockClient;
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it("should return a valid Google Auth URL", async () => {
+      const mockUrl = "https://accounts.google.com/o/oauth2/v2/auth?...";
+      mockGenerateAuthUrl.mockResolvedValue(mockUrl);
+
+      const result = await resolvers.Query.getGoogleAuthUrl();
+
+      expect(result).toEqual({ url: mockUrl });
+      expect(mockGenerateAuthUrl).toHaveBeenCalledWith({
+        access_type: 'offline',
+        scope: ['profile', 'email']
+      });
+    });
+
+    it("should throw ApolloError when generateAuthUrl fails", async () => {
+      mockGenerateAuthUrl.mockRejectedValue(new Error("Failed to generate URL"));
+
+      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow(ApolloError);
+      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow("Failed to generate Google Auth URL");
+    });
+
+    it("should throw ApolloError when generateAuthUrl returns null", async () => {
+      mockGenerateAuthUrl.mockResolvedValue(null);
+
+      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow(ApolloError);
+      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow("Failed to generate Google Auth URL");
     });
   });
 });

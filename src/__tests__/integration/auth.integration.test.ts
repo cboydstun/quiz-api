@@ -4,6 +4,8 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import typeDefs from "../../schema";
 import resolvers from "../../resolvers";
 import User from "../../models/User";
+import { OAuth2Client } from "google-auth-library";
+import * as googleAuth from "../../resolvers/index";
 
 let mongoServer: MongoMemoryServer;
 
@@ -34,6 +36,28 @@ const LOGIN_USER = `
     }
   }
 `;
+
+const GET_GOOGLE_AUTH_URL = `
+      query GetGoogleAuthUrl {
+        getGoogleAuthUrl {
+          url
+        }
+      }
+    `;
+
+const AUTHENTICATE_WITH_GOOGLE = `
+      mutation AuthenticateWithGoogle($code: String!) {
+        authenticateWithGoogle(code: $code) {
+          token
+          user {
+            id
+            username
+            email
+            role
+          }
+        }
+      }
+    `;
 
 describe("Authentication Integration Tests", () => {
   let server: ApolloServer;
@@ -167,6 +191,98 @@ describe("Authentication Integration Tests", () => {
 
       expect(res.errors).toBeTruthy();
       expect(res.errors?.[0].message).toBe("Invalid credentials");
+    });
+  });
+
+  describe("Google Single Sign On", () => {
+    let mockGenerateAuthUrl: jest.Mock;
+    let mockGetToken: jest.Mock;
+    let mockVerifyIdToken: jest.Mock;
+
+    beforeEach(() => {
+      mockGenerateAuthUrl = jest.fn();
+      mockGetToken = jest.fn();
+      mockVerifyIdToken = jest.fn();
+
+      const mockClient = {
+        generateAuthUrl: mockGenerateAuthUrl,
+        getToken: mockGetToken,
+        verifyIdToken: mockVerifyIdToken,
+      };
+
+      jest
+        .spyOn(googleAuth, "createOAuth2Client")
+        .mockReturnValue(mockClient as any);
+      (googleAuth as any).client = mockClient;
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it("should return a Google auth URL", async () => {
+      const mockUrl = "https://accounts.google.com/o/oauth2/v2/auth?...";
+      mockGenerateAuthUrl.mockReturnValue(mockUrl);
+
+      const res = await server.executeOperation({
+        query: GET_GOOGLE_AUTH_URL,
+      });
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.getGoogleAuthUrl.url).toBe(mockUrl);
+    });
+
+    it("should authenticate a user with a Google code", async () => {
+      const mockGooglePayload = {
+        sub: "123456789",
+        email: "user@example.com",
+        name: "Test User",
+      };
+
+      mockGetToken.mockResolvedValue({ tokens: { id_token: "mock_id_token" } });
+      mockVerifyIdToken.mockResolvedValue({
+        getPayload: () => mockGooglePayload,
+      });
+
+      const res = await server.executeOperation({
+        query: AUTHENTICATE_WITH_GOOGLE,
+        variables: { code: "mock_google_code" },
+      });
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.authenticateWithGoogle.user.email).toBe(
+        "user@example.com"
+      );
+      expect(res.data?.authenticateWithGoogle.token).toBeTruthy();
+    });
+
+    it("should create a new user if authenticating for the first time", async () => {
+      const mockGooglePayload = {
+        sub: "987654321",
+        email: "newuser@example.com",
+        name: "New User",
+      };
+
+      mockGetToken.mockResolvedValue({ tokens: { id_token: "mock_id_token" } });
+      mockVerifyIdToken.mockResolvedValue({
+        getPayload: () => mockGooglePayload,
+      });
+
+      const res = await server.executeOperation({
+        query: AUTHENTICATE_WITH_GOOGLE,
+        variables: { code: "mock_google_code" },
+      });
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.authenticateWithGoogle.user.email).toBe(
+        "newuser@example.com"
+      );
+      expect(res.data?.authenticateWithGoogle.token).toBeTruthy();
+
+      // Verify the user was created in the database
+      const createdUser = await User.findOne({ email: "newuser@example.com" });
+      expect(createdUser).not.toBeNull();
+      expect(createdUser?.username).toBe("New User");
     });
   });
 });

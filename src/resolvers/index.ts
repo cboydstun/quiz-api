@@ -11,7 +11,19 @@ import {
   UserInputError,
   NotFoundError,
 } from "../utils/errors";
+import { ApolloError } from "apollo-server-express";
 
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
+import { OAuth2Client } from "google-auth-library";
+// Export the client creation function for easier mocking
+export const createOAuth2Client = () =>
+  new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// Use the function to create the client
+export let client = createOAuth2Client();
 type Resolvers = {
   Query: {
     me: (parent: any, args: any, context: any) => Promise<any>;
@@ -20,6 +32,7 @@ type Resolvers = {
     questions: () => Promise<any>;
     question: (parent: any, args: { id: string }) => Promise<any>;
     userResponses: (parent: any, args: any, context: any) => Promise<any>;
+    getGoogleAuthUrl: () => Promise<any>;
   };
   Mutation: {
     register: (
@@ -67,6 +80,11 @@ type Resolvers = {
     submitAnswer: (
       parent: any,
       args: { questionId: string; selectedAnswer: string },
+      context: any
+    ) => Promise<any>;
+    authenticateWithGoogle: (
+      parent: any,
+      args: { code: string },
       context: any
     ) => Promise<any>;
   };
@@ -125,6 +143,23 @@ const resolvers: Resolvers = {
     userResponses: async (_, __, context) => {
       const user = await checkAuth(context);
       return UserResponse.find({ userId: user._id }).populate("questionId");
+    },
+    getGoogleAuthUrl: async () => {
+      try {
+        const url = await client.generateAuthUrl({
+          access_type: "offline",
+          scope: ["profile", "email"],
+        });
+        if (!url) {
+          throw new Error("Failed to generate Google Auth URL");
+        }
+        return { url };
+      } catch (error) {
+        throw new ApolloError(
+          "Failed to generate Google Auth URL",
+          "GOOGLE_AUTH_ERROR"
+        );
+      }
     },
   },
   Mutation: {
@@ -315,6 +350,36 @@ const resolvers: Resolvers = {
       await User.findByIdAndDelete(userId);
 
       return true;
+    },
+
+    authenticateWithGoogle: async (_, { code }) => {
+      try {
+        const { tokens } = await client.getToken(code);
+        const ticket = await client.verifyIdToken({
+          idToken: tokens.id_token!,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
+    
+        const payload = ticket.getPayload();
+        if (!payload) throw new AuthenticationError("Invalid Google token");
+    
+        let user = await User.findOne({ googleId: payload.sub });
+    
+        if (!user) {
+          user = new User({
+            googleId: payload.sub,
+            email: payload.email,
+            username: payload.name,
+            role: "USER"
+          });
+          await user.save();
+        }
+    
+        const token = generateToken(user);
+        return { token, user };
+      } catch (error) {
+        throw new AuthenticationError("Failed to authenticate with Google");
+      }
     },
   },
 };

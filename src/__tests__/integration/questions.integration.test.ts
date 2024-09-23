@@ -111,9 +111,18 @@ describe("Question Operations Integration Tests", () => {
 
     process.env.JWT_SECRET = "test-secret";
 
+    // Mock the getGoogleAuthUrl resolver
+    const mockResolvers = {
+      ...resolvers,
+      Query: {
+        ...resolvers.Query,
+        getGoogleAuthUrl: () => ({ url: "http://mock-google-auth-url.com" }),
+      },
+    };
+
     server = new ApolloServer<ExpressContext>({
       typeDefs,
-      resolvers,
+      resolvers: mockResolvers,
       context: ({ req, res }) => ({ req, res }),
     });
   });
