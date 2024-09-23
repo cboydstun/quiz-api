@@ -1,20 +1,20 @@
 // src/__tests__/auth.test.ts
 
-import { checkAuth, generateToken, DecodedUser } from "../utils/auth";
-import { AuthenticationError } from "../utils/errors";
+import { checkAuth, generateToken, DecodedUser } from "../../utils/auth";
+import { AuthenticationError } from "../../utils/errors";
 import jwt from "jsonwebtoken";
-import resolvers from "../resolvers";
-import { Model } from 'mongoose';
-import User, { IUser } from '../models/User'
+import resolvers from "../../resolvers";
+import { Model } from "mongoose";
+import User, { IUser } from "../../models/User";
 import { ApolloError } from "apollo-server-express";
 
 // Mock external modules
 jest.mock("jsonwebtoken");
-jest.mock('../models/User');
+jest.mock("../../models/User");
 
 const mockUser = {
-  _id: 'some-id',
-  email: 'test@example.com',
+  _id: "some-id",
+  email: "test@example.com",
   // Add other properties as needed
 } as IUser;
 
@@ -34,7 +34,7 @@ jest.mock("google-auth-library", () => {
 });
 
 // Create a manual mock for the User model
-jest.mock("../models/User", () => {
+jest.mock("../../models/User", () => {
   const mockUserInstance = {
     save: jest.fn(),
   };
@@ -47,7 +47,7 @@ jest.mock("../models/User", () => {
   };
 });
 
-import * as auth from "../utils/auth";
+import * as auth from "../../utils/auth";
 import { OAuth2Client } from "google-auth-library";
 import { mock } from "node:test";
 
@@ -56,9 +56,9 @@ const mockGetToken = OAuth2Client.prototype.getToken as jest.Mock;
 const mockVerifyIdToken = OAuth2Client.prototype.verifyIdToken as jest.Mock;
 
 // Mock environment variables
-process.env.GOOGLE_CLIENT_ID = 'mock-client-id';
-process.env.GOOGLE_CLIENT_SECRET = 'mock-client-secret';
-process.env.GOOGLE_REDIRECT_URI = 'http://localhost:3000/auth/google/callback';
+process.env.GOOGLE_CLIENT_ID = "mock-client-id";
+process.env.GOOGLE_CLIENT_SECRET = "mock-client-secret";
+process.env.GOOGLE_REDIRECT_URI = "http://localhost:3000/auth/google/callback";
 
 describe("Authentication and Authorization", () => {
   describe("checkAuth", () => {
@@ -164,14 +164,14 @@ describe("Authentication and Authorization", () => {
       it("should return a Google auth URL", async () => {
         const mockUrl = "https://accounts.google.com/o/oauth2/v2/auth?...";
         mockGenerateAuthUrl.mockReturnValue(mockUrl);
-      
+
         const result = await resolvers.Query.getGoogleAuthUrl();
-      
+
         expect(result).toEqual({ url: mockUrl });
         expect(mockGenerateAuthUrl).toHaveBeenCalledWith({
           access_type: "offline",
           scope: ["profile", "email"],
-          redirect_uri: "http://localhost:3000/auth/google/callback"
+          redirect_uri: "http://localhost:3000/auth/google/callback",
         });
       });
 
@@ -180,9 +180,9 @@ describe("Authentication and Authorization", () => {
           throw new Error("Failed to generate URL");
         });
 
-        await expect(
-          resolvers.Query.getGoogleAuthUrl()
-        ).rejects.toThrow(ApolloError);
+        await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow(
+          ApolloError
+        );
       });
     });
 
@@ -202,32 +202,29 @@ describe("Authentication and Authorization", () => {
           username: "Test User",
           role: "USER",
         };
-      
+
         mockGetToken.mockResolvedValue({ tokens: mockTokens });
         mockVerifyIdToken.mockResolvedValue({
           getPayload: () => mockPayload,
         });
-      
+
         const UserMock = User as jest.Mocked<Model<IUser>>;
         UserMock.findOne = jest.fn().mockResolvedValue(mockUser);
-      
+
         jest.spyOn(auth, "generateToken").mockReturnValue("mocked_jwt_token");
-      
+
         const result = await resolvers.Mutation.authenticateWithGoogle(
           null,
           { code: mockCode },
           {} as any
         );
-      
+
         expect(result).toEqual({
           token: "mocked_jwt_token",
           user: mockUser,
         });
         expect(User.findOne).toHaveBeenCalledWith({
-          $or: [
-            { googleId: mockPayload.sub },
-            { email: mockPayload.email }
-          ]
+          $or: [{ googleId: mockPayload.sub }, { email: mockPayload.email }],
         });
         expect(auth.generateToken).toHaveBeenCalledWith(mockUser);
       });
@@ -248,33 +245,32 @@ describe("Authentication and Authorization", () => {
           role: "USER",
           save: jest.fn().mockResolvedValue(true),
         };
-      
+
         mockGetToken.mockResolvedValue({ tokens: mockTokens });
         mockVerifyIdToken.mockResolvedValue({
           getPayload: () => mockPayload,
         });
-      
+
         const UserMock = User as jest.Mocked<Model<IUser>>;
         UserMock.findOne = jest.fn().mockResolvedValue(null);
-        (User as jest.MockedClass<typeof User>).mockImplementation(() => mockNewUserInstance as any);
-      
+        (User as jest.MockedClass<typeof User>).mockImplementation(
+          () => mockNewUserInstance as any
+        );
+
         jest.spyOn(auth, "generateToken").mockReturnValue("mocked_jwt_token");
-      
+
         const result = await resolvers.Mutation.authenticateWithGoogle(
           null,
           { code: mockCode },
           {} as any
         );
-      
+
         expect(result).toEqual({
           token: "mocked_jwt_token",
           user: mockNewUserInstance,
         });
         expect(User.findOne).toHaveBeenCalledWith({
-          $or: [
-            { googleId: mockPayload.sub },
-            { email: mockPayload.email }
-          ]
+          $or: [{ googleId: mockPayload.sub }, { email: mockPayload.email }],
         });
         expect(mockNewUserInstance.save).toHaveBeenCalled();
         expect(auth.generateToken).toHaveBeenCalledWith(mockNewUserInstance);
@@ -282,7 +278,7 @@ describe("Authentication and Authorization", () => {
 
       it("should throw AuthenticationError if Google token is invalid", async () => {
         mockGetToken.mockRejectedValue(new Error("Invalid token"));
-      
+
         await expect(
           resolvers.Mutation.authenticateWithGoogle(
             null,
