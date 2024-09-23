@@ -13,7 +13,7 @@ import { Model, Document } from "mongoose";
 import mongoose from "mongoose";
 import { ApolloError } from "apollo-server-express";
 import { OAuth2Client } from "google-auth-library";
-import * as googleAuth from "../resolvers/index";  // Import the module containing createOAuth2Client
+import * as googleAuth from "../resolvers/authResolvers";
 
 jest.mock("../models/User");
 jest.mock("../utils/auth");
@@ -22,9 +22,9 @@ jest.mock("../models/Question");
 jest.mock("google-auth-library");
 
 // Mock environment variables
-process.env.GOOGLE_CLIENT_ID = 'mock-client-id';
-process.env.GOOGLE_CLIENT_SECRET = 'mock-client-secret';
-process.env.GOOGLE_REDIRECT_URI = 'http://localhost:3000/login';
+process.env.GOOGLE_CLIENT_ID = "mock-client-id";
+process.env.GOOGLE_CLIENT_SECRET = "mock-client-secret";
+process.env.GOOGLE_REDIRECT_URI = "http://localhost:3000/login";
 
 describe("Query resolvers", () => {
   describe("me", () => {
@@ -675,103 +675,147 @@ describe("Mutation resolvers", () => {
       beforeEach(() => {
         jest.clearAllMocks();
       });
-  
+
       it("should delete a user when called by an admin or super admin", async () => {
-        const mockAdmin = { _id: "123", role: "ADMIN", email: "admin@example.com" };
+        const mockAdmin = {
+          _id: "123",
+          role: "ADMIN",
+          email: "admin@example.com",
+        };
         const mockUser = { _id: "456", username: "testuser", role: "USER" };
-  
+
         // Mock the necessary utility functions
         (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockAdmin);
         (permissionUtils.checkPermission as jest.Mock).mockReturnValue(true);
         (User.findById as jest.Mock).mockResolvedValue(mockUser);
         (User.findByIdAndDelete as jest.Mock).mockResolvedValue(mockUser);
-  
+
         // Call the mutation resolver
         const result = await resolvers.Mutation.deleteUser(
           null,
           { userId: "456" },
           { req: {} } as any
         );
-  
+
         // Expectations
         expect(result).toBe(true);
         expect(authUtils.checkAuth).toHaveBeenCalledWith({ req: {} });
-        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdmin, ["SUPER_ADMIN", "ADMIN"]);
+        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(
+          mockAdmin,
+          ["SUPER_ADMIN", "ADMIN"]
+        );
         expect(User.findById).toHaveBeenCalledWith("456");
         expect(User.findByIdAndDelete).toHaveBeenCalledWith("456");
       });
-  
+
       it("should throw NotFoundError if the user to be deleted does not exist", async () => {
-        const mockAdmin = { _id: "123", role: "ADMIN", email: "admin@example.com" };
-  
+        const mockAdmin = {
+          _id: "123",
+          role: "ADMIN",
+          email: "admin@example.com",
+        };
+
         // Mock the necessary utility functions
         (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockAdmin);
         (permissionUtils.checkPermission as jest.Mock).mockReturnValue(true);
         (User.findById as jest.Mock).mockResolvedValue(null); // User does not exist
-  
+
         // Call the mutation resolver and assert that it throws an error
         await expect(
-          resolvers.Mutation.deleteUser(null, { userId: "999" }, { req: {} } as any)
+          resolvers.Mutation.deleteUser(null, { userId: "999" }, {
+            req: {},
+          } as any)
         ).rejects.toThrow(NotFoundError);
-  
+
         // Expectations
         expect(authUtils.checkAuth).toHaveBeenCalledWith({ req: {} });
-        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdmin, ["SUPER_ADMIN", "ADMIN"]);
+        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(
+          mockAdmin,
+          ["SUPER_ADMIN", "ADMIN"]
+        );
         expect(User.findById).toHaveBeenCalledWith("999");
       });
-  
+
       it("should throw ForbiddenError if attempting to delete a SUPER_ADMIN", async () => {
-        const mockAdmin = { _id: "123", role: "ADMIN", email: "admin@example.com" };
-        const mockSuperAdmin = { _id: "456", role: "SUPER_ADMIN", username: "superadminuser" };
-  
+        const mockAdmin = {
+          _id: "123",
+          role: "ADMIN",
+          email: "admin@example.com",
+        };
+        const mockSuperAdmin = {
+          _id: "456",
+          role: "SUPER_ADMIN",
+          username: "superadminuser",
+        };
+
         // Mock the necessary utility functions
         (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockAdmin);
         (permissionUtils.checkPermission as jest.Mock).mockReturnValue(true);
         (User.findById as jest.Mock).mockResolvedValue(mockSuperAdmin); // Trying to delete SUPER_ADMIN
-  
+
         // Call the mutation resolver and assert that it throws a ForbiddenError
         await expect(
-          resolvers.Mutation.deleteUser(null, { userId: "456" }, { req: {} } as any)
+          resolvers.Mutation.deleteUser(null, { userId: "456" }, {
+            req: {},
+          } as any)
         ).rejects.toThrow(ForbiddenError);
-  
+
         // Expectations
         expect(authUtils.checkAuth).toHaveBeenCalledWith({ req: {} });
-        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdmin, ["SUPER_ADMIN", "ADMIN"]);
+        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(
+          mockAdmin,
+          ["SUPER_ADMIN", "ADMIN"]
+        );
         expect(User.findById).toHaveBeenCalledWith("456");
       });
-  
+
       it("should throw AuthenticationError if the user is not authenticated", async () => {
         // Mock the authentication utility to throw an error
-        (authUtils.checkAuth as jest.Mock).mockRejectedValue(new AuthenticationError("Not authenticated"));
-  
+        (authUtils.checkAuth as jest.Mock).mockRejectedValue(
+          new AuthenticationError("Not authenticated")
+        );
+
         // Call the mutation resolver and assert that it throws an AuthenticationError
         await expect(
-          resolvers.Mutation.deleteUser(null, { userId: "456" }, { req: {} } as any)
+          resolvers.Mutation.deleteUser(null, { userId: "456" }, {
+            req: {},
+          } as any)
         ).rejects.toThrow(AuthenticationError);
-  
+
         // Expectations
         expect(authUtils.checkAuth).toHaveBeenCalledWith({ req: {} });
         expect(permissionUtils.checkPermission).not.toHaveBeenCalled();
         expect(User.findById).not.toHaveBeenCalled();
       });
-  
+
       it("should throw ForbiddenError if the user does not have sufficient permissions", async () => {
-        const mockUser = { _id: "123", role: "USER", email: "user@example.com" };
-  
+        const mockUser = {
+          _id: "123",
+          role: "USER",
+          email: "user@example.com",
+        };
+
         // Mock the necessary utility functions
         (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
-        (permissionUtils.checkPermission as jest.Mock).mockImplementation(() => {
-          throw new ForbiddenError("Not authorized");
-        });
-  
+        (permissionUtils.checkPermission as jest.Mock).mockImplementation(
+          () => {
+            throw new ForbiddenError("Not authorized");
+          }
+        );
+
         // Call the mutation resolver and assert that it throws a ForbiddenError
         await expect(
-          resolvers.Mutation.deleteUser(null, { userId: "456" }, { req: {} } as any)
+          resolvers.Mutation.deleteUser(null, { userId: "456" }, {
+            req: {},
+          } as any)
         ).rejects.toThrow(ForbiddenError);
-  
+
         // Expectations
         expect(authUtils.checkAuth).toHaveBeenCalledWith({ req: {} });
-        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockUser, ["SUPER_ADMIN", "ADMIN"]);
+        expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockUser, [
+          "SUPER_ADMIN",
+          "ADMIN",
+        ]);
         expect(User.findById).not.toHaveBeenCalled();
       });
     });
@@ -860,10 +904,10 @@ describe("Mutation resolvers", () => {
     beforeEach(() => {
       mockGenerateAuthUrl = jest.fn();
       mockClient = { generateAuthUrl: mockGenerateAuthUrl };
-      
+
       // Mock the createOAuth2Client function
-      jest.spyOn(googleAuth, 'createOAuth2Client').mockReturnValue(mockClient);
-      
+      jest.spyOn(googleAuth, "createOAuth2Client").mockReturnValue(mockClient);
+
       // Reset the client in the resolver
       (googleAuth as any).client = mockClient;
     });
@@ -875,29 +919,41 @@ describe("Mutation resolvers", () => {
     it("should return a valid Google Auth URL", async () => {
       const mockUrl = "https://accounts.google.com/o/oauth2/v2/auth?...";
       mockGenerateAuthUrl.mockResolvedValue(mockUrl);
-    
+
       const result = await resolvers.Query.getGoogleAuthUrl();
-    
+
       expect(result).toEqual({ url: mockUrl });
-      expect(mockGenerateAuthUrl).toHaveBeenCalledWith(expect.objectContaining({
-        access_type: 'offline',
-        scope: ['profile', 'email'],
-        redirect_uri: expect.any(String)
-      }));
+      expect(mockGenerateAuthUrl).toHaveBeenCalledWith(
+        expect.objectContaining({
+          access_type: "offline",
+          scope: ["profile", "email"],
+          redirect_uri: expect.any(String),
+        })
+      );
     });
 
     it("should throw ApolloError when generateAuthUrl fails", async () => {
-      mockGenerateAuthUrl.mockRejectedValue(new Error("Failed to generate URL"));
+      mockGenerateAuthUrl.mockRejectedValue(
+        new Error("Failed to generate URL")
+      );
 
-      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow(ApolloError);
-      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow("Failed to generate Google Auth URL");
+      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow(
+        ApolloError
+      );
+      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow(
+        "Failed to generate Google Auth URL"
+      );
     });
 
     it("should throw ApolloError when generateAuthUrl returns null", async () => {
       mockGenerateAuthUrl.mockResolvedValue(null);
 
-      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow(ApolloError);
-      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow("Failed to generate Google Auth URL");
+      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow(
+        ApolloError
+      );
+      await expect(resolvers.Query.getGoogleAuthUrl()).rejects.toThrow(
+        "Failed to generate Google Auth URL"
+      );
     });
   });
 });

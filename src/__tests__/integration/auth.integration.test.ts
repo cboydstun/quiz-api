@@ -5,7 +5,7 @@ import typeDefs from "../../schema";
 import resolvers from "../../resolvers";
 import User from "../../models/User";
 import { OAuth2Client } from "google-auth-library";
-import * as googleAuth from "../../resolvers/index";
+import * as googleAuth from "../../resolvers/authResolvers";
 
 let mongoServer: MongoMemoryServer;
 
