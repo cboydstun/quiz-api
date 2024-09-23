@@ -1,3 +1,5 @@
+// src/resolvers/questionResolvers.ts
+
 import Question from "../models/Question";
 import UserResponse from "../models/UserResponse";
 import { checkAuth } from "../utils/auth";
@@ -26,7 +28,7 @@ const questionResolvers: QuestionResolvers = {
       const user = await checkAuth(context);
       await checkPermission(user, ["SUPER_ADMIN", "ADMIN", "EDITOR"]);
 
-      const { prompt, questionText, answers, correctAnswer } = input;
+      const { prompt, questionText, answers, correctAnswer, hint } = input;
 
       if (!answers.includes(correctAnswer)) {
         throw new UserInputError(
@@ -39,6 +41,7 @@ const questionResolvers: QuestionResolvers = {
         questionText,
         answers,
         correctAnswer,
+        hint,
         createdBy: user._id,
       });
 
@@ -51,6 +54,7 @@ const questionResolvers: QuestionResolvers = {
         questionText: populatedQuestion.questionText,
         answers: populatedQuestion.answers,
         correctAnswer: populatedQuestion.correctAnswer,
+        hint: populatedQuestion.hint,
         createdBy: {
           id: populatedQuestion.createdBy._id,
           username: populatedQuestion.createdBy.username,
@@ -78,6 +82,7 @@ const questionResolvers: QuestionResolvers = {
           }
           question.correctAnswer = input.correctAnswer;
         }
+        if (input.hint !== undefined) question.hint = input.hint;
 
         const updatedQuestion = await question.save();
         return updatedQuestion.populate("createdBy");

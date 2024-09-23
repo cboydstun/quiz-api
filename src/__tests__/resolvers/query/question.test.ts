@@ -17,6 +17,7 @@ describe("Query resolvers - question", () => {
       questionText: "Question 1",
       answers: ["A", "B"],
       correctAnswer: "A",
+      hint: "This is a hint",
     };
 
     (Question.findById as jest.Mock).mockReturnValue({

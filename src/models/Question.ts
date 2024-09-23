@@ -1,5 +1,3 @@
-// src/models/Question.ts
-
 import mongoose, { Schema, Document, Model } from "mongoose";
 import { IUser } from "./User";
 
@@ -8,6 +6,7 @@ export interface IQuestion extends Document {
   questionText: string;
   answers: string[];
   correctAnswer: string;
+  hint: string;
   createdBy: IUser["_id"];
 }
 
@@ -16,6 +15,7 @@ const QuestionSchema: Schema = new Schema({
   questionText: { type: String, required: true },
   answers: { type: [String], required: true },
   correctAnswer: { type: String, required: true },
+  hint: { type: String, required: false },
   createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 

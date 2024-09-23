@@ -17,12 +17,14 @@ describe("Query resolvers - questions", () => {
         questionText: "Question 1",
         answers: ["A", "B"],
         correctAnswer: "A",
+        hint: "Hint 1",
       },
       {
         id: "2",
         questionText: "Question 2",
         answers: ["X", "Y"],
         correctAnswer: "Y",
+        hint: "Hint 2",
       },
     ];
 

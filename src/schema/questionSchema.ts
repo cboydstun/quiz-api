@@ -1,5 +1,3 @@
-// src/schema/questionSchema.ts
-
 import { gql } from 'apollo-server-express';
 
 const questionSchema = gql`
@@ -9,6 +7,7 @@ const questionSchema = gql`
     questionText: String!
     answers: [String!]!
     correctAnswer: String!
+    hint: String
     createdBy: User!
   }
 
@@ -17,6 +16,7 @@ const questionSchema = gql`
     questionText: String!
     answers: [String!]!
     correctAnswer: String!
+    hint: String
   }
 
   input UpdateQuestionInput {
@@ -24,6 +24,7 @@ const questionSchema = gql`
     questionText: String
     answers: [String!]
     correctAnswer: String
+    hint: String
   }
 
   extend type Query {
