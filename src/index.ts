@@ -1,37 +1,28 @@
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
-import mongoose from "mongoose";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import passport from './utils/passport';
-import session from 'express-session';
 import typeDefs from "./schema";
 import resolvers from "./resolvers";
 import { logger, expressLogger } from "./utils/logger";
-import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import { GraphQLError } from "graphql";
+import { connectDB } from "./config/database";
+import { sessionConfig } from "./config/session";
+import { limiter } from "./config/rateLimiter";
+import { initializePassport } from './config/passport';
+import { corsOptions } from "./config/cors";
 
 dotenv.config();
 
 const app = express();
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-
 app.use(limiter);
+app.use(cors(corsOptions));
 app.use(helmet());
-
-app.use(session({
-  secret: process.env.SESSION_SECRET!,
-  resave: false,
-  saveUninitialized: false
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(sessionConfig);
+initializePassport(app);
 
 const startServer = async () => {
   // Enable CORS for all origins
@@ -64,12 +55,7 @@ const startServer = async () => {
   await server.start();
   server.applyMiddleware({ app, path: "/graphql", cors: false });
 
-  try {
-    await mongoose.connect(process.env.MONGO_URI!);
-    logger.info("Connected to MongoDB");
-  } catch (error) {
-    logger.error("Failed to connect to MongoDB", { error });
-  }
+  await connectDB();
 
   // Add Google OAuth routes
   app.get('/auth/google',
