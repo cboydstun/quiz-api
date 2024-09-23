@@ -19,19 +19,13 @@ dotenv.config();
 const app = express();
 
 app.use(limiter);
-app.use(cors(corsOptions));
 app.use(helmet());
 app.use(sessionConfig);
 initializePassport(app);
 
 const startServer = async () => {
   // Enable CORS for all origins
-  app.use(
-    cors({
-      origin: "*",
-      credentials: true,
-    })
-  );
+  app.use(cors(corsOptions));
 
   // Use the express logger middleware
   app.use(expressLogger);
