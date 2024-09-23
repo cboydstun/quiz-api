@@ -21,6 +21,11 @@ jest.mock("../utils/permissions");
 jest.mock("../models/Question");
 jest.mock("google-auth-library");
 
+// Mock environment variables
+process.env.GOOGLE_CLIENT_ID = 'mock-client-id';
+process.env.GOOGLE_CLIENT_SECRET = 'mock-client-secret';
+process.env.GOOGLE_REDIRECT_URI = 'http://localhost:3000/login';
+
 describe("Query resolvers", () => {
   describe("me", () => {
     it("should return the authenticated user", async () => {
@@ -870,14 +875,15 @@ describe("Mutation resolvers", () => {
     it("should return a valid Google Auth URL", async () => {
       const mockUrl = "https://accounts.google.com/o/oauth2/v2/auth?...";
       mockGenerateAuthUrl.mockResolvedValue(mockUrl);
-
+    
       const result = await resolvers.Query.getGoogleAuthUrl();
-
+    
       expect(result).toEqual({ url: mockUrl });
-      expect(mockGenerateAuthUrl).toHaveBeenCalledWith({
+      expect(mockGenerateAuthUrl).toHaveBeenCalledWith(expect.objectContaining({
         access_type: 'offline',
-        scope: ['profile', 'email']
-      });
+        scope: ['profile', 'email'],
+        redirect_uri: expect.any(String)
+      }));
     });
 
     it("should throw ApolloError when generateAuthUrl fails", async () => {

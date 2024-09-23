@@ -20,10 +20,17 @@ dotenv.config();
 import { OAuth2Client } from "google-auth-library";
 // Export the client creation function for easier mocking
 export const createOAuth2Client = () =>
-  new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
+  );
 
 // Use the function to create the client
 export let client = createOAuth2Client();
+
+
+
 type Resolvers = {
   Query: {
     me: (parent: any, args: any, context: any) => Promise<any>;
@@ -149,6 +156,7 @@ const resolvers: Resolvers = {
         const url = await client.generateAuthUrl({
           access_type: "offline",
           scope: ["profile", "email"],
+          redirect_uri: process.env.GOOGLE_REDIRECT_URI
         });
         if (!url) {
           throw new Error("Failed to generate Google Auth URL");
@@ -355,16 +363,20 @@ const resolvers: Resolvers = {
     authenticateWithGoogle: async (_, { code }) => {
       try {
         const { tokens } = await client.getToken(code);
+        
         const ticket = await client.verifyIdToken({
           idToken: tokens.id_token!,
           audience: process.env.GOOGLE_CLIENT_ID,
         });
     
         const payload = ticket.getPayload();
-        if (!payload) throw new AuthenticationError("Invalid Google token");
+        if (!payload) {
+          console.error("Invalid Google token: No payload");
+          throw new AuthenticationError("Invalid Google token");
+        }
     
-        let user = await User.findOne({ googleId: payload.sub });
-    
+        let user = await User.findOne({ $or: [{ googleId: payload.sub }, { email: payload.email }] });
+        
         if (!user) {
           user = new User({
             googleId: payload.sub,
@@ -373,12 +385,19 @@ const resolvers: Resolvers = {
             role: "USER"
           });
           await user.save();
+        } else {
+          // If the user exists but doesn't have a googleId, update it
+          if (!user.googleId) {
+            user.googleId = payload.sub;
+            await user.save();
+          }
         }
     
         const token = generateToken(user);
+    
         return { token, user };
       } catch (error) {
-        throw new AuthenticationError("Failed to authenticate with Google");
+        throw new AuthenticationError(`Failed to authenticate with Google: ${error }`);
       }
     },
   },

@@ -55,6 +55,11 @@ const mockGenerateAuthUrl = OAuth2Client.prototype.generateAuthUrl as jest.Mock;
 const mockGetToken = OAuth2Client.prototype.getToken as jest.Mock;
 const mockVerifyIdToken = OAuth2Client.prototype.verifyIdToken as jest.Mock;
 
+// Mock environment variables
+process.env.GOOGLE_CLIENT_ID = 'mock-client-id';
+process.env.GOOGLE_CLIENT_SECRET = 'mock-client-secret';
+process.env.GOOGLE_REDIRECT_URI = 'http://localhost:3000/auth/google/callback';
+
 describe("Authentication and Authorization", () => {
   describe("checkAuth", () => {
     beforeEach(() => {
@@ -159,13 +164,14 @@ describe("Authentication and Authorization", () => {
       it("should return a Google auth URL", async () => {
         const mockUrl = "https://accounts.google.com/o/oauth2/v2/auth?...";
         mockGenerateAuthUrl.mockReturnValue(mockUrl);
-
+      
         const result = await resolvers.Query.getGoogleAuthUrl();
-
+      
         expect(result).toEqual({ url: mockUrl });
         expect(mockGenerateAuthUrl).toHaveBeenCalledWith({
           access_type: "offline",
           scope: ["profile", "email"],
+          redirect_uri: "http://localhost:3000/auth/google/callback"
         });
       });
 
@@ -196,29 +202,32 @@ describe("Authentication and Authorization", () => {
           username: "Test User",
           role: "USER",
         };
-
+      
         mockGetToken.mockResolvedValue({ tokens: mockTokens });
         mockVerifyIdToken.mockResolvedValue({
           getPayload: () => mockPayload,
         });
-
+      
         const UserMock = User as jest.Mocked<Model<IUser>>;
         UserMock.findOne = jest.fn().mockResolvedValue(mockUser);
-
+      
         jest.spyOn(auth, "generateToken").mockReturnValue("mocked_jwt_token");
-
+      
         const result = await resolvers.Mutation.authenticateWithGoogle(
           null,
           { code: mockCode },
           {} as any
         );
-
+      
         expect(result).toEqual({
           token: "mocked_jwt_token",
           user: mockUser,
         });
         expect(User.findOne).toHaveBeenCalledWith({
-          googleId: mockPayload.sub,
+          $or: [
+            { googleId: mockPayload.sub },
+            { email: mockPayload.email }
+          ]
         });
         expect(auth.generateToken).toHaveBeenCalledWith(mockUser);
       });
@@ -246,9 +255,7 @@ describe("Authentication and Authorization", () => {
         });
       
         const UserMock = User as jest.Mocked<Model<IUser>>;
-        // First, mock findOne to return null (user doesn't exist)
         UserMock.findOne = jest.fn().mockResolvedValue(null);
-        // Then, mock the User constructor to return our mockNewUserInstance
         (User as jest.MockedClass<typeof User>).mockImplementation(() => mockNewUserInstance as any);
       
         jest.spyOn(auth, "generateToken").mockReturnValue("mocked_jwt_token");
@@ -264,7 +271,10 @@ describe("Authentication and Authorization", () => {
           user: mockNewUserInstance,
         });
         expect(User.findOne).toHaveBeenCalledWith({
-          googleId: mockPayload.sub,
+          $or: [
+            { googleId: mockPayload.sub },
+            { email: mockPayload.email }
+          ]
         });
         expect(mockNewUserInstance.save).toHaveBeenCalled();
         expect(auth.generateToken).toHaveBeenCalledWith(mockNewUserInstance);
