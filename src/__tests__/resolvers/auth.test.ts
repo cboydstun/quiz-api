@@ -75,6 +75,7 @@ describe("Authentication and Authorization", () => {
         _id: "123",
         email: "test@example.com",
         role: "USER",
+        score: 0,
       };
       (jwt.verify as jest.Mock).mockReturnValue(mockUser);
 
@@ -140,6 +141,7 @@ describe("Authentication and Authorization", () => {
         _id: "123",
         email: "test@example.com",
         role: "USER",
+        score: 0,
       };
       const mockToken = "mockjwttoken";
       (jwt.sign as jest.Mock).mockReturnValue(mockToken);

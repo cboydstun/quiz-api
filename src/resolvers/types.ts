@@ -77,3 +77,37 @@ export type AuthResolvers = {
     ) => Promise<any>;
   };
 };
+
+// Add this to the existing types
+export type LeaderboardResolvers = {
+  Query: {
+    getLeaderboard: (
+      parent: any,
+      args: { limit?: number },
+      context: any
+    ) => Promise<{
+      leaderboard: Array<{
+        position: number;
+        user: {
+          id: string;
+          username: string;
+          email: string;
+          role: string;
+          score: number;
+        };
+        score: number;
+      }>;
+      currentUserEntry: {
+        position: number;
+        user: {
+          id: string;
+          username: string;
+          email: string;
+          role: string;
+          score: number;
+        };
+        score: number;
+      } | null;
+    }>;
+  };
+};

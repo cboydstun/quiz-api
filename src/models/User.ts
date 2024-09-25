@@ -9,6 +9,7 @@ export interface IUser extends Document {
   password?: string;
   role: string;
   googleId?: string;
+  score: number;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -22,6 +23,7 @@ const UserSchema = new mongoose.Schema({
     default: "USER",
   },
   googleId: { type: String, unique: true, sparse: true },
+  score: { type: Number, default: 0 },
 });
 
 UserSchema.pre<IUser>("save", async function (next) {

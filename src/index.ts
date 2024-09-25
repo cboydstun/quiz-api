@@ -33,16 +33,29 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    introspection: process.env.NODE_ENV !== "production",
     context: ({ req }) => ({ req }),
     formatError: (error) => {
-      logger.error("GraphQL Error", { error: error.message, path: error.path });
-      return new GraphQLError(
-        "An error occurred while processing your request.",
-        {
-          extensions: { code: "INTERNAL_SERVER_ERROR" },
-        } as any
-      );
+      logger.error("GraphQL Error", {
+        message: error.message,
+        locations: error.locations,
+        path: error.path,
+        extensions: error.extensions
+      });
+
+      if (error.extensions?.exception?.stacktrace) {
+        console.error(error.extensions.exception.stacktrace.join('\n'));
+      }
+
+      if (process.env.NODE_ENV === 'production') {
+        return new GraphQLError('An error occurred while processing your request.');
+      } else {
+        return {
+          message: error.message,
+          locations: error.locations,
+          path: error.path,
+          extensions: error.extensions
+        };
+      }
     },
   });
 
@@ -55,7 +68,7 @@ const startServer = async () => {
   app.get('/auth/google',
     passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-  app.get('/auth/google/callback', 
+  app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     (req, res) => {
       // Successful authentication, redirect home.

@@ -1,6 +1,6 @@
 // src/schema/types.ts
 
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 const types = gql`
   enum Role {
@@ -32,6 +32,26 @@ const types = gql`
   type Mutation {
     _empty: String
   }
+
+type LeaderboardEntry {
+  position: Int!
+  user: User!
+  score: Int!
+}
+
+type LeaderboardResponse {
+  leaderboard: [LeaderboardEntry!]!
+  currentUserEntry: LeaderboardEntry
+}
+
+extend type Query {
+  getLeaderboard(limit: Int = 10): LeaderboardResponse!
+}
+
+# Ensure this is added to the User type in userSchema.ts if not already present
+extend type User {
+  score: Int!
+}
 `;
 
 export default types;

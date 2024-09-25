@@ -2,6 +2,7 @@
 
 import Question from "../models/Question";
 import UserResponse from "../models/UserResponse";
+import User from "../models/User";
 import { checkAuth } from "../utils/auth";
 import { checkPermission } from "../utils/permissions";
 import { UserInputError, NotFoundError } from "../utils/errors";
@@ -117,7 +118,7 @@ const questionResolvers: QuestionResolvers = {
 
       const question = await Question.findById(questionId);
       if (!question) {
-        throw new NotFoundError("Question not found");
+        throw new Error("Question not found");
       }
 
       const isCorrect = question.correctAnswer === selectedAnswer;
@@ -130,6 +131,11 @@ const questionResolvers: QuestionResolvers = {
       });
 
       await userResponse.save();
+
+      if (isCorrect) {
+        // Increment the user's score by 1 for each correct answer
+        await User.findByIdAndUpdate(user._id, { $inc: { score: 1 } });
+      }
 
       return {
         success: true,

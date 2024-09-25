@@ -8,6 +8,7 @@ export interface DecodedUser {
   _id: string;
   email: string;
   role: string;
+  score: number;
 }
 
 export const generateToken = (user: DecodedUser): string => {

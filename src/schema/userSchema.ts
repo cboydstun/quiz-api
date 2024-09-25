@@ -8,6 +8,7 @@ const userSchema = gql`
     username: String!
     email: String!
     role: String!
+    score: Int
   }
 
   input CreateUserInput {
