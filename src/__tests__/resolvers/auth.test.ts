@@ -171,7 +171,7 @@ describe("Authentication and Authorization", () => {
         expect(mockGenerateAuthUrl).toHaveBeenCalledWith({
           access_type: "offline",
           scope: ["profile", "email"],
-          redirect_uri: "http://localhost:3000/auth/google/callback",
+          redirect_uri: process.env.GOOGLE_REDIRECT_URI,
         });
       });
 

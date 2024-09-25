@@ -8,8 +8,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "security-check": "pnpm audit"
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "",
