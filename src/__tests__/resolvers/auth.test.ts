@@ -142,15 +142,22 @@ describe("Authentication and Authorization", () => {
         email: "test@example.com",
         role: "USER",
         score: 0,
+        username: undefined // or provide a username if it's always expected
       };
       const mockToken = "mockjwttoken";
       (jwt.sign as jest.Mock).mockReturnValue(mockToken);
-
+  
       const token = generateToken(mockUser);
-
+  
       expect(token).toBe(mockToken);
       expect(jwt.sign).toHaveBeenCalledWith(
-        { _id: mockUser._id, email: mockUser.email, role: mockUser.role },
+        {
+          _id: mockUser._id,
+          email: mockUser.email,
+          role: mockUser.role,
+          score: mockUser.score,
+          username: mockUser.username
+        },
         "testsecret",
         { expiresIn: "1d" }
       );

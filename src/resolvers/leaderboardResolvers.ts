@@ -4,7 +4,7 @@ import { checkAuth } from "../utils/auth";
 import User from "../models/User";
 import { LeaderboardResolvers } from "./types";
 import { logger } from "../utils/logger";
-import { ApolloError } from "apollo-server-express";
+import { ApolloError, AuthenticationError } from "apollo-server-express";
 
 const leaderboardResolvers: LeaderboardResolvers = {
   Query: {
@@ -13,60 +13,37 @@ const leaderboardResolvers: LeaderboardResolvers = {
         const currentUser = await checkAuth(context);
         if (!currentUser) {
           logger.warn("User not authenticated in getLeaderboard");
-          return {
-            leaderboard: [],
-            currentUserEntry: null,
-          };
+          throw new AuthenticationError("Not authenticated");
         }
 
-        const leaderboard = await User.find({ score: { $ne: null } })
+        const allUsers = await User.find({ score: { $ne: null } })
           .sort({ score: -1, username: 1 })
-          .limit(limit)
           .lean();
 
-        if (!leaderboard || leaderboard.length === 0) {
-          logger.warn("No users found for leaderboard");
-          return {
-            leaderboard: [],
-            currentUserEntry: null,
-          };
-        }
-
-        const leaderboardEntries = leaderboard.map((user, index) => ({
+        const leaderboardEntries = allUsers.map((user, index) => ({
           position: index + 1,
           user: {
             id: user._id.toString(),
-            username: user.username,
+            username: user.username || user.email.split('@')[0],
             email: user.email,
             role: user.role,
-            score: user.score ?? 0,  // Use nullish coalescing to default to 0
+            score: user.score ?? 0,
           },
-          score: user.score ?? 0,  // Use nullish coalescing to default to 0
+          score: user.score ?? 0,
         }));
 
-        let currentUserEntry = null;
-        if (currentUser.score != null) {  // Check if score is not null or undefined
-          const currentUserPosition = await User.countDocuments({
-            score: { $gt: currentUser.score, $ne: null }
-          }) + 1;
-          currentUserEntry = {
-            position: currentUserPosition,
-            user: {
-              id: currentUser._id.toString(),
-              username: currentUser.email,
-              email: currentUser.email,
-              role: currentUser.role,
-              score: currentUser.score,
-            },
-            score: currentUser.score,
-          };
-        }
+        const topLeaderboard = leaderboardEntries.slice(0, limit);
+
+        const currentUserEntry = leaderboardEntries.find(entry => entry.user.id === currentUser._id.toString());
 
         return {
-          leaderboard: leaderboardEntries,
-          currentUserEntry: currentUserEntry,
+          leaderboard: topLeaderboard,
+          currentUserEntry: currentUserEntry || null,
         };
       } catch (error) {
+        if (error instanceof AuthenticationError) {
+          throw error;
+        }
         logger.error("Error in getLeaderboard resolver", { error });
         throw new ApolloError("Failed to fetch leaderboard", "LEADERBOARD_ERROR", { originalError: error });
       }

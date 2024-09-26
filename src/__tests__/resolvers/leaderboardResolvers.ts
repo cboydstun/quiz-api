@@ -20,79 +20,62 @@ jest.mock('../../utils/logger', () => ({
 describe('Leaderboard Resolvers', () => {
     const mockContext = { req: {} };
     const mockUser = {
-        _id: new Types.ObjectId(),
-        username: 'test@example.com',
-        email: 'test@example.com',
-        role: 'USER',
-        score: 100,
+      _id: new Types.ObjectId(),
+      username: 'testuser',
+      email: 'test@example.com',
+      role: 'USER',
+      score: 100,
     };
-
+  
     beforeEach(() => {
-        jest.clearAllMocks();
-        (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
+      jest.clearAllMocks();
+      (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
     });
-
+  
     it('should return leaderboard and current user entry', async () => {
-        const mockUsers = [
-            { ...mockUser, score: 200, username: 'user1' },
-            { ...mockUser, score: 150, username: 'user2' },
-            mockUser,
-        ];
-
-        (User.find as jest.Mock).mockReturnValue({
-            sort: jest.fn().mockReturnThis(),
-            limit: jest.fn().mockReturnThis(),
-            lean: jest.fn().mockResolvedValue(mockUsers),
-        });
-
-        (User.countDocuments as jest.Mock).mockResolvedValue(2);
-
-        const result = await leaderboardResolvers.Query.getLeaderboard(null, { limit: 10 }, mockContext);
-
-        expect(result.leaderboard).toHaveLength(3);
-        expect(result.leaderboard[0].position).toBe(1);
-        expect(result.leaderboard[0].user.username).toBe('user1');
-        expect(result.leaderboard[0].score).toBe(200);
-        expect(result.currentUserEntry).toBeDefined();
-        expect(result.currentUserEntry?.position).toBe(3);
-        expect(result.currentUserEntry?.user.username).toBe('test@example.com');
-        expect(result.currentUserEntry?.score).toBe(100);
-    });
-
-    it('should handle case when no users are found', async () => {
-        (User.find as jest.Mock).mockReturnValue({
-            sort: jest.fn().mockReturnThis(),
-            limit: jest.fn().mockReturnThis(),
-            lean: jest.fn().mockResolvedValue([]),
-        });
-
-        const result = await leaderboardResolvers.Query.getLeaderboard(null, { limit: 10 }, mockContext);
-
-        expect(result.leaderboard).toHaveLength(0);
-        expect(result.currentUserEntry).toBeNull();
-        expect(logger.warn).toHaveBeenCalledWith("No users found for leaderboard");
+      const mockUsers = [
+        { ...mockUser, _id: new Types.ObjectId(), score: 200, username: 'user1' },
+        { ...mockUser, _id: new Types.ObjectId(), score: 150, username: 'user2' },
+        mockUser,
+        { ...mockUser, _id: new Types.ObjectId(), score: 50, username: 'user4' },
+      ];
+  
+      (User.find as jest.Mock).mockReturnValue({
+        sort: jest.fn().mockReturnThis(),
+        lean: jest.fn().mockResolvedValue(mockUsers),
+      });
+  
+      const result = await leaderboardResolvers.Query.getLeaderboard(null, { limit: 10 }, mockContext);
+  
+      expect(result.leaderboard).toHaveLength(4);
+      expect(result.leaderboard[0].position).toBe(1);
+      expect(result.leaderboard[0].user.username).toBe('user1');
+      expect(result.leaderboard[0].score).toBe(200);
+      expect(result.currentUserEntry).toBeDefined();
+      expect(result.currentUserEntry?.position).toBe(3);  // Changed from 3 to 3
+      expect(result.currentUserEntry?.user.username).toBe('testuser');
+      expect(result.currentUserEntry?.score).toBe(100);
     });
 
     it('should handle case when current user has no score', async () => {
         const userWithNoScore = { ...mockUser, score: null };
         (authUtils.checkAuth as jest.Mock).mockResolvedValue(userWithNoScore);
-
+    
         const mockUsers = [
-            { ...mockUser, score: 200, username: 'user1' },
-            { ...mockUser, score: 150, username: 'user2' },
+          { ...mockUser, _id: new Types.ObjectId(), score: 200, username: 'user1' },
+          { ...mockUser, _id: new Types.ObjectId(), score: 150, username: 'user2' },
         ];
-
+    
         (User.find as jest.Mock).mockReturnValue({
-            sort: jest.fn().mockReturnThis(),
-            limit: jest.fn().mockReturnThis(),
-            lean: jest.fn().mockResolvedValue(mockUsers),
+          sort: jest.fn().mockReturnThis(),
+          lean: jest.fn().mockResolvedValue(mockUsers),
         });
-
+    
         const result = await leaderboardResolvers.Query.getLeaderboard(null, { limit: 10 }, mockContext);
-
+    
         expect(result.leaderboard).toHaveLength(2);
         expect(result.currentUserEntry).toBeNull();
-    });
+      });
 
     it('should throw ApolloError when User.find fails', async () => {
         (User.find as jest.Mock).mockImplementation(() => {

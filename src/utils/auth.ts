@@ -8,12 +8,19 @@ export interface DecodedUser {
   _id: string;
   email: string;
   role: string;
-  score: number;
+  username?: string;
+  score?: number;
 }
 
 export const generateToken = (user: DecodedUser): string => {
   return jwt.sign(
-    { _id: user._id, email: user.email, role: user.role },
+    { 
+      _id: user._id,
+      email: user.email,
+      role: user.role,
+      username: user.username, // Include username if it exists
+      score: user.score // Include score if it exists
+    },
     process.env.JWT_SECRET!,
     { expiresIn: "1d" }
   );
