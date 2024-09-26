@@ -201,10 +201,10 @@ it("should handle an unauthenticated user", async () => {
       context as any
     );
   
-    expect(result.errors).toBeDefined();
-    expect(result.errors).toHaveLength(1);
-    expect(result.errors?.[0].message).toBe("Not authenticated");
-    expect(result.errors?.[0].extensions?.code).toBe("UNAUTHENTICATED");
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.getLeaderboard.leaderboard).toBeDefined();
+    expect(result.data?.getLeaderboard.leaderboard.length).toBeGreaterThan(0);
+    expect(result.data?.getLeaderboard.currentUserEntry).toBeNull();
   });
 
   it("should handle a user with no score", async () => {

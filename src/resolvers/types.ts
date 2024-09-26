@@ -80,7 +80,6 @@ export type AuthResolvers = {
   };
 };
 
-// Add this to the existing types
 export type LeaderboardResolvers = {
   Query: {
     getLeaderboard: (

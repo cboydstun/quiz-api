@@ -1,21 +1,23 @@
 // src/resolvers/leaderboardResolvers.ts
 
-import { checkAuth } from "../utils/auth";
+import { checkAuth, DecodedUser } from "../utils/auth";
 import User from "../models/User";
 import { LeaderboardResolvers } from "./types";
 import { logger } from "../utils/logger";
-import { ApolloError, AuthenticationError } from "apollo-server-express";
+import { ApolloError } from "apollo-server-express";
 
 const leaderboardResolvers: LeaderboardResolvers = {
   Query: {
     getLeaderboard: async (_, { limit = 10 }, context) => {
+      let currentUser: DecodedUser | null = null;
       try {
-        const currentUser = await checkAuth(context);
-        if (!currentUser) {
-          logger.warn("User not authenticated in getLeaderboard");
-          throw new AuthenticationError("Not authenticated");
-        }
+        currentUser = await checkAuth(context);
+      } catch (authError) {
+        logger.info("Unauthenticated user accessing leaderboard");
+        // We'll continue without a current user
+      }
 
+      try {
         const allUsers = await User.find({ score: { $ne: null } })
           .sort({ score: -1, username: 1 })
           .lean();
@@ -34,18 +36,18 @@ const leaderboardResolvers: LeaderboardResolvers = {
 
         const topLeaderboard = leaderboardEntries.slice(0, limit);
 
-        const currentUserEntry = leaderboardEntries.find(
-          (entry) => entry.user.id === currentUser._id.toString()
-        );
+        let currentUserEntry = null;
+        if (currentUser && currentUser._id) {
+          currentUserEntry = leaderboardEntries.find(
+            (entry) => entry.user.id === currentUser?._id.toString()
+          ) || null;
+        }
 
         return {
           leaderboard: topLeaderboard,
-          currentUserEntry: currentUserEntry || null,
+          currentUserEntry: currentUserEntry,
         };
       } catch (error) {
-        if (error instanceof AuthenticationError) {
-          throw error;
-        }
         logger.error("Error in getLeaderboard resolver", { error });
         throw new ApolloError(
           "Failed to fetch leaderboard",
