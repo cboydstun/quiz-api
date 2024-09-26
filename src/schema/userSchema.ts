@@ -1,6 +1,6 @@
 // src/schema/userSchema.ts
 
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 const userSchema = gql`
   type User {

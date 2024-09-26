@@ -1,3 +1,5 @@
+// src/resolvers/authResolvers.ts
+
 import User from "../models/User";
 import { generateToken } from "../utils/auth";
 import { AuthenticationError, UserInputError } from "../utils/errors";

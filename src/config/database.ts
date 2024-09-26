@@ -1,4 +1,5 @@
 // config/database.ts
+
 import mongoose from "mongoose";
 import { logger } from "../utils/logger";
 import * as dotenv from "dotenv";

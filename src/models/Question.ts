@@ -1,3 +1,5 @@
+// src/models/Question.ts
+
 import mongoose, { Schema, Document, Model } from "mongoose";
 import { IUser } from "./User";
 

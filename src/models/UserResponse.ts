@@ -1,4 +1,5 @@
 // src/models/UserResponse.ts
+
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IUserResponse extends Document {

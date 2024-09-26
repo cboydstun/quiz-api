@@ -1,3 +1,5 @@
+// src/resolvers/types.ts
+
 export type UserResolvers = {
   Query: {
     me: (parent: any, args: any, context: any) => Promise<any>;

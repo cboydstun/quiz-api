@@ -33,25 +33,24 @@ const types = gql`
     _empty: String
   }
 
-type LeaderboardEntry {
-  position: Int!
-  user: User!
-  score: Int!
-}
+  type LeaderboardEntry {
+    position: Int!
+    user: User!
+    score: Int!
+  }
 
-type LeaderboardResponse {
-  leaderboard: [LeaderboardEntry!]!
-  currentUserEntry: LeaderboardEntry
-}
+  type LeaderboardResponse {
+    leaderboard: [LeaderboardEntry!]!
+    currentUserEntry: LeaderboardEntry
+  }
 
-extend type Query {
-  getLeaderboard(limit: Int = 10): LeaderboardResponse!
-}
+  extend type Query {
+    getLeaderboard(limit: Int = 10): LeaderboardResponse!
+  }
 
-# Ensure this is added to the User type in userSchema.ts if not already present
-extend type User {
-  score: Int!
-}
+  extend type User {
+    score: Int!
+  }
 `;
 
 export default types;

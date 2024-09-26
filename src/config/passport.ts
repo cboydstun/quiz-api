@@ -1,4 +1,5 @@
 // config/passport.ts
+
 import passport from '../utils/passport';
 
 export const initializePassport = (app: any) => {

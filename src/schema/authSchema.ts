@@ -1,6 +1,6 @@
 // src/schema/authSchema.ts
 
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 const authSchema = gql`
   type AuthPayload {

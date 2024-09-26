@@ -24,7 +24,7 @@ const leaderboardResolvers: LeaderboardResolvers = {
           position: index + 1,
           user: {
             id: user._id.toString(),
-            username: user.username || user.email.split('@')[0],
+            username: user.username || user.email.split("@")[0],
             email: user.email,
             role: user.role,
             score: user.score ?? 0,
@@ -34,7 +34,9 @@ const leaderboardResolvers: LeaderboardResolvers = {
 
         const topLeaderboard = leaderboardEntries.slice(0, limit);
 
-        const currentUserEntry = leaderboardEntries.find(entry => entry.user.id === currentUser._id.toString());
+        const currentUserEntry = leaderboardEntries.find(
+          (entry) => entry.user.id === currentUser._id.toString()
+        );
 
         return {
           leaderboard: topLeaderboard,
@@ -45,7 +47,11 @@ const leaderboardResolvers: LeaderboardResolvers = {
           throw error;
         }
         logger.error("Error in getLeaderboard resolver", { error });
-        throw new ApolloError("Failed to fetch leaderboard", "LEADERBOARD_ERROR", { originalError: error });
+        throw new ApolloError(
+          "Failed to fetch leaderboard",
+          "LEADERBOARD_ERROR",
+          { originalError: error }
+        );
       }
     },
   },

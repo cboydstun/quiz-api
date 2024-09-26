@@ -1,8 +1,10 @@
+// src/index.ts
+
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import cors from "cors";
 import * as dotenv from "dotenv";
-import passport from './utils/passport';
+import passport from "./utils/passport";
 import typeDefs from "./schema";
 import resolvers from "./resolvers";
 import { logger, expressLogger } from "./utils/logger";
@@ -11,7 +13,7 @@ import { GraphQLError } from "graphql";
 import { connectDB } from "./config/database";
 import { sessionConfig } from "./config/session";
 import { limiter } from "./config/rateLimiter";
-import { initializePassport } from './config/passport';
+import { initializePassport } from "./config/passport";
 import { corsOptions } from "./config/cors";
 
 dotenv.config();
@@ -39,21 +41,23 @@ const startServer = async () => {
         message: error.message,
         locations: error.locations,
         path: error.path,
-        extensions: error.extensions
+        extensions: error.extensions,
       });
 
       if (error.extensions?.exception?.stacktrace) {
-        console.error(error.extensions.exception.stacktrace.join('\n'));
+        console.error(error.extensions.exception.stacktrace.join("\n"));
       }
 
-      if (process.env.NODE_ENV === 'production') {
-        return new GraphQLError('An error occurred while processing your request.');
+      if (process.env.NODE_ENV === "production") {
+        return new GraphQLError(
+          "An error occurred while processing your request."
+        );
       } else {
         return {
           message: error.message,
           locations: error.locations,
           path: error.path,
-          extensions: error.extensions
+          extensions: error.extensions,
         };
       }
     },
@@ -65,15 +69,19 @@ const startServer = async () => {
   await connectDB();
 
   // Add Google OAuth routes
-  app.get('/auth/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] }));
+  app.get(
+    "/auth/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+  );
 
-  app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login' }),
+  app.get(
+    "/auth/google/callback",
+    passport.authenticate("google", { failureRedirect: "/login" }),
     (req, res) => {
       // Successful authentication, redirect home.
-      res.redirect('/');
-    });
+      res.redirect("/");
+    }
+  );
 
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {

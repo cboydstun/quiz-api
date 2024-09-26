@@ -1,3 +1,5 @@
+// src/resolvers/userResolvers.ts
+
 import User from "../models/User";
 import { checkAuth, generateToken } from "../utils/auth";
 import { checkPermission } from "../utils/permissions";
