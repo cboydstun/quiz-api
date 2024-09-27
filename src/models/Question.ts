@@ -9,6 +9,7 @@ export interface IQuestion extends Document {
   answers: string[];
   correctAnswer: string;
   hint: string;
+  points: number;
   createdBy: IUser["_id"];
 }
 
@@ -18,6 +19,7 @@ const QuestionSchema: Schema = new Schema({
   answers: { type: [String], required: true },
   correctAnswer: { type: String, required: true },
   hint: { type: String, required: false },
+  points: { type: Number, required: true, default: 1 },
   createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 

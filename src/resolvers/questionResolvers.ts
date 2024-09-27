@@ -29,7 +29,7 @@ const questionResolvers: QuestionResolvers = {
       const user = await checkAuth(context);
       await checkPermission(user, ["SUPER_ADMIN", "ADMIN", "EDITOR"]);
 
-      const { prompt, questionText, answers, correctAnswer, hint } = input;
+      const { prompt, questionText, answers, correctAnswer, hint, points } = input;
 
       if (!answers.includes(correctAnswer)) {
         throw new UserInputError(
@@ -43,6 +43,7 @@ const questionResolvers: QuestionResolvers = {
         answers,
         correctAnswer,
         hint,
+        points: points || 1, // Default to 1 if not provided
         createdBy: user._id,
       });
 
@@ -56,6 +57,7 @@ const questionResolvers: QuestionResolvers = {
         answers: populatedQuestion.answers,
         correctAnswer: populatedQuestion.correctAnswer,
         hint: populatedQuestion.hint,
+        points: populatedQuestion.points,
         createdBy: {
           id: populatedQuestion.createdBy._id,
           username: populatedQuestion.createdBy.username,
@@ -84,6 +86,7 @@ const questionResolvers: QuestionResolvers = {
           question.correctAnswer = input.correctAnswer;
         }
         if (input.hint !== undefined) question.hint = input.hint;
+        if (input.points !== undefined) question.points = input.points;
 
         const updatedQuestion = await question.save();
         return updatedQuestion.populate("createdBy");
@@ -133,8 +136,8 @@ const questionResolvers: QuestionResolvers = {
       await userResponse.save();
 
       if (isCorrect) {
-        // Increment the user's score by 1 for each correct answer
-        await User.findByIdAndUpdate(user._id, { $inc: { score: 1 } });
+        // Increment the user's score by the question's points value for each correct answer
+        await User.findByIdAndUpdate(user._id, { $inc: { score: question.points } });
       }
 
       return {

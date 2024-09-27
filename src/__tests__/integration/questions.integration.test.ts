@@ -19,6 +19,7 @@ const CREATE_QUESTION = `
       questionText
       answers
       correctAnswer
+      points
       createdBy {
         id
         username
@@ -35,6 +36,7 @@ const GET_QUESTIONS = `
       questionText
       answers
       correctAnswer
+      points
       createdBy {
         id
         username
@@ -51,6 +53,7 @@ const GET_QUESTION = `
       questionText
       answers
       correctAnswer
+      points
       createdBy {
         id
         username
@@ -67,6 +70,7 @@ const UPDATE_QUESTION = `
       questionText
       answers
       correctAnswer
+      points
       createdBy {
         id
         username
@@ -170,6 +174,7 @@ describe("Question Operations Integration Tests", () => {
               questionText: "What is the capital of France?",
               answers: ["London", "Berlin", "Paris", "Madrid"],
               correctAnswer: "Paris",
+              points: 2,
             },
           },
         },
@@ -183,6 +188,7 @@ describe("Question Operations Integration Tests", () => {
       expect(res.data?.createQuestion.questionText).toBe(
         "What is the capital of France?"
       );
+      expect(res.data?.createQuestion.points).toBe(2);
       expect(res.data?.createQuestion.createdBy.username).toBe("admin");
     });
 
@@ -196,6 +202,7 @@ describe("Question Operations Integration Tests", () => {
               questionText: "What is the largest planet in our solar system?",
               answers: ["Mars", "Jupiter", "Saturn", "Neptune"],
               correctAnswer: "Jupiter",
+              points: 3,
             },
           },
         },
@@ -209,6 +216,7 @@ describe("Question Operations Integration Tests", () => {
       expect(res.data?.createQuestion.questionText).toBe(
         "What is the largest planet in our solar system?"
       );
+      expect(res.data?.createQuestion.points).toBe(3);
       expect(res.data?.createQuestion.createdBy.username).toBe("editor");
     });
 
@@ -227,6 +235,7 @@ describe("Question Operations Integration Tests", () => {
                 "Mark Twain",
               ],
               correctAnswer: "William Shakespeare",
+              points: 1,
             },
           },
         },
@@ -243,6 +252,7 @@ describe("Question Operations Integration Tests", () => {
         questionText: "What is 2 + 2?",
         answers: ["3", "4", "5", "6"],
         correctAnswer: "4",
+        points: 1,
         createdBy: adminUser._id,
       });
 
@@ -256,6 +266,7 @@ describe("Question Operations Integration Tests", () => {
               questionText: "What is 2 + 3?",
               answers: ["3", "4", "5", "6"],
               correctAnswer: "5",
+              points: 2,
             },
           },
         },
@@ -268,6 +279,7 @@ describe("Question Operations Integration Tests", () => {
       );
       expect(res.data?.updateQuestion.questionText).toBe("What is 2 + 3?");
       expect(res.data?.updateQuestion.correctAnswer).toBe("5");
+      expect(res.data?.updateQuestion.points).toBe(2);
     });
 
     it("should allow an admin to delete a question", async () => {
@@ -276,6 +288,7 @@ describe("Question Operations Integration Tests", () => {
         questionText: "What is the capital of Japan?",
         answers: ["Seoul", "Beijing", "Tokyo", "Bangkok"],
         correctAnswer: "Tokyo",
+        points: 2,
         createdBy: adminUser._id,
       });
 
@@ -304,6 +317,7 @@ describe("Question Operations Integration Tests", () => {
         questionText: "What is the capital of France?",
         answers: ["London", "Berlin", "Paris", "Madrid"],
         correctAnswer: "Paris",
+        points: 2,
         createdBy: adminUser._id,
       });
 
@@ -312,6 +326,7 @@ describe("Question Operations Integration Tests", () => {
         questionText: "What is the largest planet in our solar system?",
         answers: ["Mars", "Jupiter", "Saturn", "Neptune"],
         correctAnswer: "Jupiter",
+        points: 3,
         createdBy: editorUser._id,
       });
 
@@ -330,12 +345,14 @@ describe("Question Operations Integration Tests", () => {
       expect(res.data?.questions[0].questionText).toBe(
         "What is the capital of France?"
       );
+      expect(res.data?.questions[0].points).toBe(2);
       expect(res.data?.questions[1].prompt).toBe(
         "Think about our solar system:"
       );
       expect(res.data?.questions[1].questionText).toBe(
         "What is the largest planet in our solar system?"
       );
+      expect(res.data?.questions[1].points).toBe(3);
     });
 
     it("should fetch a specific question by ID", async () => {
@@ -349,6 +366,7 @@ describe("Question Operations Integration Tests", () => {
           "Mark Twain",
         ],
         correctAnswer: "William Shakespeare",
+        points: 2,
         createdBy: editorUser._id,
       });
 
@@ -367,6 +385,7 @@ describe("Question Operations Integration Tests", () => {
       expect(res.data?.question.questionText).toBe(
         "Who wrote Romeo and Juliet?"
       );
+      expect(res.data?.question.points).toBe(2);
       expect(res.data?.question.createdBy.username).toBe("editor");
     });
   });

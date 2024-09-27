@@ -30,6 +30,8 @@ describe("Mutation resolvers - createQuestion", () => {
       questionText: "New question",
       answers: ["A", "B", "C"],
       correctAnswer: "A",
+      hint: "This is a hint",
+      points: 2,
     };
 
     (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
@@ -47,8 +49,7 @@ describe("Mutation resolvers - createQuestion", () => {
     );
 
     const mockPopulate = jest.fn().mockResolvedValue({
-      _id: "new_question_id",
-      ...input,
+      ...mockQuestionInstance,
       createdBy: mockUser,
     });
 
@@ -82,11 +83,65 @@ describe("Mutation resolvers - createQuestion", () => {
       questionText: "New question",
       answers: ["A", "B", "C"],
       correctAnswer: "A",
+      hint: "This is a hint",
+      points: 2,
       createdBy: {
         id: "123",
         username: "editor",
       },
     });
+  });
+
+  it("should create a new question with default points when not provided", async () => {
+    const mockUser = {
+      _id: "123",
+      role: "EDITOR",
+      email: "editor@example.com",
+      username: "editor",
+    };
+    const input = {
+      prompt: "Consider the following question:",
+      questionText: "New question",
+      answers: ["A", "B", "C"],
+      correctAnswer: "A",
+    };
+
+    (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockUser);
+    (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(true);
+
+    const mockQuestionInstance = {
+      _id: "new_question_id",
+      ...input,
+      points: 1, // Default value
+      createdBy: mockUser._id,
+      save: jest.fn(),
+    };
+
+    (Question as jest.MockedClass<typeof Question>).mockImplementation(
+      () => mockQuestionInstance as any
+    );
+
+    const mockPopulate = jest.fn().mockResolvedValue({
+      ...mockQuestionInstance,
+      createdBy: mockUser,
+    });
+
+    mockQuestionInstance.save.mockResolvedValue({
+      ...mockQuestionInstance,
+      populate: mockPopulate,
+    });
+
+    const result = await resolvers.Mutation.createQuestion(null, { input }, {
+      req: {},
+    } as any);
+
+    expect(Question).toHaveBeenCalledWith({
+      ...input,
+      points: 1, // Default value
+      createdBy: mockUser._id,
+    });
+
+    expect(result.points).toBe(1);
   });
 
   it("should throw ForbiddenError for unauthorized users", async () => {

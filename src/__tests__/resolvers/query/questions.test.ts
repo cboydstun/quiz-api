@@ -18,6 +18,7 @@ describe("Query resolvers - questions", () => {
         answers: ["A", "B"],
         correctAnswer: "A",
         hint: "Hint 1",
+        points: 1, // Added points field
       },
       {
         id: "2",
@@ -25,6 +26,7 @@ describe("Query resolvers - questions", () => {
         answers: ["X", "Y"],
         correctAnswer: "Y",
         hint: "Hint 2",
+        points: 2, // Added points field
       },
     ];
 

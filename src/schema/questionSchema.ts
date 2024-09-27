@@ -8,6 +8,7 @@ const questionSchema = gql`
     answers: [String!]!
     correctAnswer: String!
     hint: String
+    points: Int!
     createdBy: User!
   }
 
@@ -17,6 +18,7 @@ const questionSchema = gql`
     answers: [String!]!
     correctAnswer: String!
     hint: String
+    points: Int
   }
 
   input UpdateQuestionInput {
@@ -25,6 +27,7 @@ const questionSchema = gql`
     answers: [String!]
     correctAnswer: String
     hint: String
+    points: Int
   }
 
   extend type Query {

@@ -18,6 +18,7 @@ describe("Query resolvers - question", () => {
       answers: ["A", "B"],
       correctAnswer: "A",
       hint: "This is a hint",
+      points: 2, // Added points field
     };
 
     (Question.findById as jest.Mock).mockReturnValue({
