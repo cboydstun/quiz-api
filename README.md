@@ -105,87 +105,136 @@ The API will be available at `http://localhost:4000/graphql` (or the port you sp
 
 Here are some example GraphQL queries and mutations:
 
-1. Create a new user:
+1. Create a new question:
 
    ```graphql
-   mutation {
-     register(
-       input: {
-         username: "testuser"
-         email: "test@example.com"
-         password: "password123"
-       }
-     ) {
-       id
-       username
-       email
-     }
-   }
-   ```
-
-2. Login:
-
-   ```graphql
-   mutation {
-     login(input: { email: "test@example.com", password: "password123" }) {
-       token
-       user {
-         id
-         username
-         email
-       }
-     }
-   }
-   ```
-
-3. Create a new question:
-
-   ```graphql
-   mutation {
-     createQuestion(
-       input: {
-         prompt: "What is the capital of France?"
-         questionText: "Choose the correct answer:"
-         answers: ["London", "Berlin", "Paris", "Madrid"]
-         correctAnswer: "Paris"
-         points: 2
-       }
-     ) {
+   mutation CreateQuestion($input: CreateQuestionInput!) {
+     createQuestion(input: $input) {
        id
        prompt
        questionText
        answers
        correctAnswer
        points
+       createdBy {
+         id
+         username
+       }
      }
    }
    ```
 
-4. Get all questions:
+   Variables:
+
+   ```json
+   {
+     "input": {
+       "prompt": "Consider the following geographical question:",
+       "questionText": "What is the capital of France?",
+       "answers": ["London", "Berlin", "Paris", "Madrid"],
+       "correctAnswer": "Paris",
+       "points": 2
+     }
+   }
+   ```
+
+2. Get all questions:
 
    ```graphql
-   query {
+   query GetQuestions {
      questions {
        id
        prompt
        questionText
        answers
+       correctAnswer
        points
+       createdBy {
+         id
+         username
+       }
      }
    }
    ```
 
-5. Get leaderboard:
+3. Get a specific question by ID:
+
    ```graphql
-   query {
-     leaderboard {
-       user {
+   query GetQuestion($id: ID!) {
+     question(id: $id) {
+       id
+       prompt
+       questionText
+       answers
+       correctAnswer
+       points
+       createdBy {
+         id
          username
        }
-       score
      }
    }
    ```
+
+   Variables:
+
+   ```json
+   {
+     "id": "question_id_here"
+   }
+   ```
+
+4. Update a question:
+
+   ```graphql
+   mutation UpdateQuestion($id: ID!, $input: UpdateQuestionInput!) {
+     updateQuestion(id: $id, input: $input) {
+       id
+       prompt
+       questionText
+       answers
+       correctAnswer
+       points
+       createdBy {
+         id
+         username
+       }
+     }
+   }
+   ```
+
+   Variables:
+
+   ```json
+   {
+     "id": "question_id_here",
+     "input": {
+       "prompt": "Let's try a different math question:",
+       "questionText": "What is 2 + 3?",
+       "answers": ["3", "4", "5", "6"],
+       "correctAnswer": "5",
+       "points": 2
+     }
+   }
+   ```
+
+5. Delete a question:
+
+   ```graphql
+   mutation DeleteQuestion($id: ID!) {
+     deleteQuestion(id: $id)
+   }
+   ```
+
+   Variables:
+
+   ```json
+   {
+     "id": "question_id_here"
+   }
+   ```
+
+Note: The actual authentication mutations (register, login) were not provided in the integration tests, so they are not included in this updated section. You may want to add them separately if they are implemented in your API.
 
 For a complete list of available queries and mutations, refer to the GraphQL schema in `src/schema/` directory.
 
