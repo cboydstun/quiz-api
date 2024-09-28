@@ -8,6 +8,8 @@ import { checkPermission } from "../utils/permissions";
 import { UserInputError, NotFoundError } from "../utils/errors";
 import { QuestionResolvers } from "./types";
 import mongoose from "mongoose";
+import { createQuestionSchema } from "../utils/validationSchemas";
+import { ValidationError } from "yup";
 
 const questionResolvers: QuestionResolvers = {
   Query: {
@@ -29,40 +31,37 @@ const questionResolvers: QuestionResolvers = {
       const user = await checkAuth(context);
       await checkPermission(user, ["SUPER_ADMIN", "ADMIN", "EDITOR"]);
 
-      const { prompt, questionText, answers, correctAnswer, hint, points } = input;
+      try {
+        // Validate input using the createQuestionSchema
+        const validatedInput = await createQuestionSchema.validate(input, { abortEarly: false });
 
-      if (!answers.includes(correctAnswer)) {
-        throw new UserInputError(
-          "The correct answer must be one of the provided answers"
-        );
+        const newQuestion = new Question({
+          ...validatedInput,
+          createdBy: user._id,
+        });
+
+        const savedQuestion = await newQuestion.save();
+        const populatedQuestion = await savedQuestion.populate("createdBy");
+
+        return {
+          id: populatedQuestion._id,
+          prompt: populatedQuestion.prompt,
+          questionText: populatedQuestion.questionText,
+          answers: populatedQuestion.answers,
+          correctAnswer: populatedQuestion.correctAnswer,
+          hint: populatedQuestion.hint,
+          points: populatedQuestion.points,
+          createdBy: {
+            id: populatedQuestion.createdBy._id,
+            username: populatedQuestion.createdBy.username,
+          },
+        };
+      } catch (error) {
+        if (error instanceof ValidationError) {
+          throw new UserInputError(`Invalid input: ${error.errors.join(", ")}`);
+        }
+        throw error;
       }
-
-      const newQuestion = new Question({
-        prompt,
-        questionText,
-        answers,
-        correctAnswer,
-        hint,
-        points: points || 1, // Default to 1 if not provided
-        createdBy: user._id,
-      });
-
-      const savedQuestion = await newQuestion.save();
-      const populatedQuestion = await savedQuestion.populate("createdBy");
-
-      return {
-        id: populatedQuestion._id,
-        prompt: populatedQuestion.prompt,
-        questionText: populatedQuestion.questionText,
-        answers: populatedQuestion.answers,
-        correctAnswer: populatedQuestion.correctAnswer,
-        hint: populatedQuestion.hint,
-        points: populatedQuestion.points,
-        createdBy: {
-          id: populatedQuestion.createdBy._id,
-          username: populatedQuestion.createdBy.username,
-        },
-      };
     },
     updateQuestion: async (_, { id, input }, context) => {
       const user = await checkAuth(context);

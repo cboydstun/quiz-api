@@ -7,6 +7,8 @@ import { ApolloError } from "apollo-server-express";
 import { AuthResolvers } from "./types";
 import { OAuth2Client } from "google-auth-library";
 import * as dotenv from "dotenv";
+import { registerUserSchema, loginUserSchema } from "../utils/validationSchemas";
+import { ValidationError } from "yup";
 
 dotenv.config();
 
@@ -43,39 +45,59 @@ const authResolvers: AuthResolvers = {
     },
   },
   Mutation: {
-    register: async (_, { input: { username, email, password, role } }) => {
-      const existingUser = await User.findOne({
-        $or: [{ email }, { username }],
-      });
-      if (existingUser) {
-        throw new UserInputError("Username or email already exists");
+    register: async (_, { input }) => {
+      try {
+        // Validate input using the registerUserSchema
+        const validatedInput = await registerUserSchema.validate(input, { abortEarly: false });
+
+        const existingUser = await User.findOne({
+          $or: [{ email: validatedInput.email }, { username: validatedInput.username }],
+        });
+        if (existingUser) {
+          throw new UserInputError("Username or email already exists");
+        }
+
+        const user = new User({
+          username: validatedInput.username,
+          email: validatedInput.email,
+          password: validatedInput.password,
+          role: validatedInput.role,
+        });
+        await user.save();
+
+        const token = generateToken(user);
+        return { token, user };
+      } catch (error) {
+        if (error instanceof ValidationError) {
+          throw new UserInputError(`Invalid input: ${error.errors.join(", ")}`);
+        }
+        throw error;
       }
-
-      const user = new User({
-        username,
-        email,
-        password,
-        role: role || "USER",
-      });
-      await user.save();
-
-      const token = generateToken(user);
-      return { token, user };
     },
 
     login: async (_, { email, password }) => {
-      const user = await User.findOne({ email });
-      if (!user) {
-        throw new AuthenticationError("Invalid credentials");
-      }
+      try {
+        // Validate input using the loginUserSchema
+        const validatedInput = await loginUserSchema.validate({ email, password }, { abortEarly: false });
 
-      const isValid = await user.comparePassword(password);
-      if (!isValid) {
-        throw new AuthenticationError("Invalid credentials");
-      }
+        const user = await User.findOne({ email: validatedInput.email });
+        if (!user) {
+          throw new AuthenticationError("Invalid credentials");
+        }
 
-      const token = generateToken(user);
-      return { token, user };
+        const isValid = await user.comparePassword(validatedInput.password);
+        if (!isValid) {
+          throw new AuthenticationError("Invalid credentials");
+        }
+
+        const token = generateToken(user);
+        return { token, user };
+      } catch (error) {
+        if (error instanceof ValidationError) {
+          throw new UserInputError(`Invalid input: ${error.errors.join(", ")}`);
+        }
+        throw error;
+      }
     },
     authenticateWithGoogle: async (_, { code }) => {
       try {

@@ -15,6 +15,7 @@ import { sessionConfig } from "./config/session";
 import { limiter } from "./config/rateLimiter";
 import { initializePassport } from "./config/passport";
 import { corsOptions } from "./config/cors";
+import { CustomError, handleCustomError, handleUnexpectedError } from "./utils/errors";
 
 dotenv.config();
 
@@ -26,10 +27,7 @@ app.use(sessionConfig);
 initializePassport(app);
 
 const startServer = async () => {
-  // Enable CORS for all origins
   app.use(cors(corsOptions));
-
-  // Use the express logger middleware
   app.use(expressLogger);
 
   const server = new ApolloServer({
@@ -37,6 +35,10 @@ const startServer = async () => {
     resolvers,
     context: ({ req }) => ({ req }),
     formatError: (error) => {
+      if (error.originalError instanceof CustomError) {
+        return handleCustomError(error.originalError);
+      }
+
       logger.error("GraphQL Error", {
         message: error.message,
         locations: error.locations,
@@ -49,9 +51,7 @@ const startServer = async () => {
       }
 
       if (process.env.NODE_ENV === "production") {
-        return new GraphQLError(
-          "An error occurred while processing your request."
-        );
+        return handleUnexpectedError();
       } else {
         return {
           message: error.message,
@@ -64,7 +64,7 @@ const startServer = async () => {
   });
 
   await server.start();
-  server.applyMiddleware({ app, path: "/graphql", cors: false });
+  server.applyMiddleware({ app, path: "/v1/graphql", cors: false });
 
   await connectDB();
 
@@ -78,7 +78,6 @@ const startServer = async () => {
     "/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/login" }),
     (req, res) => {
-      // Successful authentication, redirect home.
       res.redirect("/");
     }
   );

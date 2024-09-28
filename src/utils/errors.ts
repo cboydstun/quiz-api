@@ -1,6 +1,6 @@
 // src/utils/errors.ts
 
-class CustomError extends Error {
+export class CustomError extends Error {
   code: string;
   status: number;
 
@@ -36,19 +36,19 @@ export class NotFoundError extends CustomError {
   }
 }
 
-// Error handling middleware
-export const errorHandler = (error: any) => {
+// Error handling function
+export const handleCustomError = (error: CustomError) => {
   console.error("Error:", error);
 
-  if (error instanceof CustomError) {
-    return {
-      message: error.message,
-      code: error.code,
-      status: error.status,
-    };
-  }
+  return {
+    message: error.message,
+    code: error.code,
+    status: error.status,
+  };
+};
 
-  // For unexpected errors, don't expose internal details
+// For unexpected errors, don't expose internal details
+export const handleUnexpectedError = () => {
   return {
     message: "Internal server error",
     code: "INTERNAL_SERVER_ERROR",
