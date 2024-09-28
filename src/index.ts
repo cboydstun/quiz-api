@@ -7,12 +7,11 @@ import * as dotenv from "dotenv";
 import passport from "./utils/passport";
 import typeDefs from "./schema";
 import resolvers from "./resolvers";
-import { logger, expressLogger } from "./utils/logger";
+import { logger, expressLogger, errorLogger } from "./utils/logger";
 import helmet from "helmet";
-import { GraphQLError } from "graphql";
 import { connectDB } from "./config/database";
 import { sessionConfig } from "./config/session";
-import { limiter } from "./config/rateLimiter";
+import { applyRateLimiting } from "./config/rateLimiter";
 import { initializePassport } from "./config/passport";
 import { corsOptions } from "./config/cors";
 import { CustomError, handleCustomError, handleUnexpectedError } from "./utils/errors";
@@ -21,14 +20,17 @@ dotenv.config();
 
 const app = express();
 
-app.use(limiter);
+// Apply rate limiting
+applyRateLimiting(app);
+
 app.use(helmet());
 app.use(sessionConfig);
+app.use(expressLogger);
+app.use(errorLogger);
 initializePassport(app);
 
 const startServer = async () => {
   app.use(cors(corsOptions));
-  app.use(expressLogger);
 
   const server = new ApolloServer({
     typeDefs,

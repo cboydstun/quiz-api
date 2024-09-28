@@ -9,6 +9,7 @@ import { OAuth2Client } from "google-auth-library";
 import * as dotenv from "dotenv";
 import { registerUserSchema, loginUserSchema } from "../utils/validationSchemas";
 import { ValidationError } from "yup";
+import { logger } from "../utils/logger";
 
 dotenv.config();
 
@@ -66,11 +67,13 @@ const authResolvers: AuthResolvers = {
         await user.save();
 
         const token = generateToken(user);
+        logger.info(`User registered successfully: ${user.username}`);
         return { token, user };
       } catch (error) {
         if (error instanceof ValidationError) {
           throw new UserInputError(`Invalid input: ${error.errors.join(", ")}`);
         }
+        logger.error(`Registration error: ${(error as Error).message}`, { error });
         throw error;
       }
     },
@@ -91,11 +94,13 @@ const authResolvers: AuthResolvers = {
         }
 
         const token = generateToken(user);
+        logger.info(`User logged in successfully: ${user.username}`);
         return { token, user };
       } catch (error) {
         if (error instanceof ValidationError) {
           throw new UserInputError(`Invalid input: ${error.errors.join(", ")}`);
         }
+        logger.error(`Login error: ${(error as Error).message}`, { error });
         throw error;
       }
     },

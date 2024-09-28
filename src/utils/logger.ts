@@ -2,58 +2,50 @@
 
 import winston from "winston";
 import expressWinston from "express-winston";
-import fs from "fs";
 import path from "path";
+import fs from "fs";
 
-// Ensure the 'logs' directory exists
-const logDirectory = path.join(__dirname, "..", "logs");
-if (!fs.existsSync(logDirectory)) {
-  fs.mkdirSync(logDirectory);
+// Ensure the logs directory exists
+const logDir = path.join(__dirname, '..', '..', 'logs');
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
 }
 
-// Configure the Winston logger
-const logger = winston.createLogger({
+const logFormat = winston.format.combine(
+  winston.format.timestamp(),
+  winston.format.json()
+);
+
+export const logger = winston.createLogger({
   level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  defaultMeta: { service: "user-service" },
+  format: logFormat,
+  defaultMeta: { service: "quiz-api" },
   transports: [
-    new winston.transports.File({
-      filename: path.join(logDirectory, "error.log"),
-      level: "error",
-    }),
-    new winston.transports.File({
-      filename: path.join(logDirectory, "combined.log"),
-    }),
+    new winston.transports.File({ filename: path.join(logDir, "error.log"), level: "error" }),
+    new winston.transports.File({ filename: path.join(logDir, "combined.log") }),
   ],
 });
 
-// If we're not in production, log to the console as well
 if (process.env.NODE_ENV !== "production") {
-  logger.add(
-    new winston.transports.Console({
-      format: winston.format.simple(),
-    })
-  );
+  logger.add(new winston.transports.Console({
+    format: winston.format.simple(),
+  }));
 }
 
-// Create a middleware logger for Express
-const expressLogger = expressWinston.logger({
+export const expressLogger = expressWinston.logger({
   transports: [
-    new winston.transports.File({
-      filename: path.join(logDirectory, "http.log"),
-    }),
+    new winston.transports.File({ filename: path.join(logDir, "http.log") }),
   ],
-  format: winston.format.combine(
-    winston.format.colorize(),
-    winston.format.json()
-  ),
+  format: logFormat,
   meta: true,
   msg: "HTTP {{req.method}} {{req.url}}",
   expressFormat: true,
   colorize: false,
 });
 
-export { logger, expressLogger };
+export const errorLogger = expressWinston.errorLogger({
+  transports: [
+    new winston.transports.File({ filename: path.join(logDir, "error.log") }),
+  ],
+  format: logFormat,
+});
