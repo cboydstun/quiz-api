@@ -19,13 +19,16 @@
 
 ## Project Overview
 
-Quiz API is a GraphQL-based backend service for managing quizzes, questions, and user interactions. It provides functionality for user authentication, question management, and leaderboard tracking.
+Quiz API is a GraphQL-based backend service for managing quizzes, questions, and user interactions. It provides functionality for user authentication, question management, user statistics tracking, and leaderboard functionality.
 
 ## Features
 
 - User authentication (local and Google OAuth)
 - CRUD operations for quiz questions
 - User response tracking
+- Skill-based user progression
+- Daily, monthly, yearly, and lifetime point tracking
+- Consecutive login tracking
 - Leaderboard functionality
 - Role-based access control
 - Rate limiting
