@@ -18,6 +18,19 @@ const REGISTER_USER = `
         username
         email
         role
+        score
+        questionsAnswered
+        questionsCorrect
+        questionsIncorrect
+        skills
+        lifetimePoints
+        yearlyPoints
+        monthlyPoints
+        dailyPoints
+        consecutiveLoginDays
+        lastLoginDate
+        createdAt
+        updatedAt
       }
     }
   }
@@ -32,32 +45,58 @@ const LOGIN_USER = `
         username
         email
         role
+        score
+        questionsAnswered
+        questionsCorrect
+        questionsIncorrect
+        skills
+        lifetimePoints
+        yearlyPoints
+        monthlyPoints
+        dailyPoints
+        consecutiveLoginDays
+        lastLoginDate
+        createdAt
+        updatedAt
       }
     }
   }
 `;
 
 const GET_GOOGLE_AUTH_URL = `
-      query GetGoogleAuthUrl {
-        getGoogleAuthUrl {
-          url
-        }
-      }
-    `;
+  query GetGoogleAuthUrl {
+    getGoogleAuthUrl {
+      url
+    }
+  }
+`;
 
 const AUTHENTICATE_WITH_GOOGLE = `
-      mutation AuthenticateWithGoogle($code: String!) {
-        authenticateWithGoogle(code: $code) {
-          token
-          user {
-            id
-            username
-            email
-            role
-          }
-        }
+  mutation AuthenticateWithGoogle($code: String!) {
+    authenticateWithGoogle(code: $code) {
+      token
+      user {
+        id
+        username
+        email
+        role
+        score
+        questionsAnswered
+        questionsCorrect
+        questionsIncorrect
+        skills
+        lifetimePoints
+        yearlyPoints
+        monthlyPoints
+        dailyPoints
+        consecutiveLoginDays
+        lastLoginDate
+        createdAt
+        updatedAt
       }
-    `;
+    }
+  }
+`;
 
 describe("Authentication Integration Tests", () => {
   let server: ApolloServer;
@@ -108,6 +147,11 @@ describe("Authentication Integration Tests", () => {
       expect(res.data?.register.user.email).toBe("test@example.com");
       expect(res.data?.register.user.role).toBe("USER");
       expect(res.data?.register.token).toBeTruthy();
+      expect(res.data?.register.user.score).toBe(0);
+      expect(res.data?.register.user.questionsAnswered).toBe(0);
+      expect(res.data?.register.user.skills).toEqual([]);
+      expect(res.data?.register.user.lifetimePoints).toBe(0);
+      expect(res.data?.register.user.consecutiveLoginDays).toBe(0);
     });
 
     it("should not register a user with an existing email", async () => {
@@ -161,6 +205,11 @@ describe("Authentication Integration Tests", () => {
       expect(res.data?.login.user.email).toBe("test@example.com");
       expect(res.data?.login.user.role).toBe("USER");
       expect(res.data?.login.token).toBeTruthy();
+      expect(res.data?.login.user.score).toBe(0);
+      expect(res.data?.login.user.questionsAnswered).toBe(0);
+      expect(res.data?.login.user.skills).toEqual([]);
+      expect(res.data?.login.user.lifetimePoints).toBe(0);
+      expect(res.data?.login.user.consecutiveLoginDays).toBe(0);
     });
 
     it("should not login with incorrect password", async () => {
@@ -254,6 +303,11 @@ describe("Authentication Integration Tests", () => {
         "user@example.com"
       );
       expect(res.data?.authenticateWithGoogle.token).toBeTruthy();
+      expect(res.data?.authenticateWithGoogle.user.score).toBe(0);
+      expect(res.data?.authenticateWithGoogle.user.questionsAnswered).toBe(0);
+      expect(res.data?.authenticateWithGoogle.user.skills).toEqual([]);
+      expect(res.data?.authenticateWithGoogle.user.lifetimePoints).toBe(0);
+      expect(res.data?.authenticateWithGoogle.user.consecutiveLoginDays).toBe(0);
     });
 
     it("should create a new user if authenticating for the first time", async () => {
@@ -278,6 +332,11 @@ describe("Authentication Integration Tests", () => {
         "newuser@example.com"
       );
       expect(res.data?.authenticateWithGoogle.token).toBeTruthy();
+      expect(res.data?.authenticateWithGoogle.user.score).toBe(0);
+      expect(res.data?.authenticateWithGoogle.user.questionsAnswered).toBe(0);
+      expect(res.data?.authenticateWithGoogle.user.skills).toEqual([]);
+      expect(res.data?.authenticateWithGoogle.user.lifetimePoints).toBe(0);
+      expect(res.data?.authenticateWithGoogle.user.consecutiveLoginDays).toBe(0);
 
       // Verify the user was created in the database
       const createdUser = await User.findOne({ email: "newuser@example.com" });

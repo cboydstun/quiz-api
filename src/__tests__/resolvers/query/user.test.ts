@@ -25,6 +25,19 @@ describe("Query resolvers - user", () => {
       username: "user1",
       email: "user1@example.com",
       role: "USER",
+      score: 100,
+      questionsAnswered: 10,
+      questionsCorrect: 8,
+      questionsIncorrect: 2,
+      skills: ["Math", "Science"],
+      lifetimePoints: 1000,
+      yearlyPoints: 500,
+      monthlyPoints: 200,
+      dailyPoints: 50,
+      consecutiveLoginDays: 5,
+      lastLoginDate: new Date("2023-05-01"),
+      createdAt: new Date("2023-01-01"),
+      updatedAt: new Date("2023-05-01"),
     };
 
     const mockAdmin = {
@@ -48,6 +61,19 @@ describe("Query resolvers - user", () => {
       username: "user1",
       email: "user1@example.com",
       role: "USER",
+      score: 100,
+      questionsAnswered: 10,
+      questionsCorrect: 8,
+      questionsIncorrect: 2,
+      skills: ["Math", "Science"],
+      lifetimePoints: 1000,
+      yearlyPoints: 500,
+      monthlyPoints: 200,
+      dailyPoints: 50,
+      consecutiveLoginDays: 5,
+      lastLoginDate: mockUser.lastLoginDate,
+      createdAt: mockUser.createdAt,
+      updatedAt: mockUser.updatedAt,
     });
     expect(authUtils.checkAuth).toHaveBeenCalled();
     expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdmin, [

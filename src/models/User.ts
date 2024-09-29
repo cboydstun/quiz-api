@@ -10,6 +10,18 @@ export interface IUser extends Document {
   role: string;
   googleId?: string;
   score: number;
+  questionsAnswered: number;
+  questionsCorrect: number;
+  questionsIncorrect: number;
+  skills: string[];
+  lifetimePoints: number;
+  yearlyPoints: number;
+  monthlyPoints: number;
+  dailyPoints: number;
+  consecutiveLoginDays: number;
+  lastLoginDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -24,6 +36,18 @@ const UserSchema = new mongoose.Schema({
   },
   googleId: { type: String, unique: true, sparse: true },
   score: { type: Number, default: 0 },
+  questionsAnswered: { type: Number, default: 0 },
+  questionsCorrect: { type: Number, default: 0 },
+  questionsIncorrect: { type: Number, default: 0 },
+  skills: { type: [String], default: [] },
+  lifetimePoints: { type: Number, default: 0 },
+  yearlyPoints: { type: Number, default: 0 },
+  monthlyPoints: { type: Number, default: 0 },
+  dailyPoints: { type: Number, default: 0 },
+  consecutiveLoginDays: { type: Number, default: 0 },
+  lastLoginDate: { type: Date },
+}, {
+  timestamps: true // This will add createdAt and updatedAt fields
 });
 
 UserSchema.pre<IUser>("save", async function (next) {

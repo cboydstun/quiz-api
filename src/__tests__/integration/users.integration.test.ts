@@ -17,6 +17,19 @@ const GET_USERS = `
       username
       email
       role
+      score
+      questionsAnswered
+      questionsCorrect
+      questionsIncorrect
+      skills
+      lifetimePoints
+      yearlyPoints
+      monthlyPoints
+      dailyPoints
+      consecutiveLoginDays
+      lastLoginDate
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -28,6 +41,19 @@ const GET_USER = `
       username
       email
       role
+      score
+      questionsAnswered
+      questionsCorrect
+      questionsIncorrect
+      skills
+      lifetimePoints
+      yearlyPoints
+      monthlyPoints
+      dailyPoints
+      consecutiveLoginDays
+      lastLoginDate
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -46,6 +72,29 @@ const CHANGE_USER_ROLE = `
 const DELETE_USER = `
   mutation DeleteUser($userId: ID!) {
     deleteUser(userId: $userId)
+  }
+`;
+
+const UPDATE_USER_STATS = `
+  mutation UpdateUserStats($userId: ID!, $stats: UserStatsInput!) {
+    updateUserStats(userId: $userId, stats: $stats) {
+      id
+      username
+      email
+      role
+      score
+      questionsAnswered
+      questionsCorrect
+      questionsIncorrect
+      skills
+      lifetimePoints
+      yearlyPoints
+      monthlyPoints
+      dailyPoints
+      consecutiveLoginDays
+      lastLoginDate
+      updatedAt
+    }
   }
 `;
 
@@ -131,6 +180,8 @@ describe("User Operations Integration Tests", () => {
       expect(res.data?.users).toHaveLength(2);
       expect(res.data?.users[0].username).toBe("admin");
       expect(res.data?.users[1].username).toBe("user");
+      expect(res.data?.users[0]).toHaveProperty("questionsAnswered");
+      expect(res.data?.users[0]).toHaveProperty("lifetimePoints");
     });
 
     it("should fetch a specific user by ID", async () => {
@@ -146,6 +197,8 @@ describe("User Operations Integration Tests", () => {
       expect(res.data?.user.username).toBe("user");
       expect(res.data?.user.email).toBe("user@example.com");
       expect(res.data?.user.role).toBe("USER");
+      expect(res.data?.user).toHaveProperty("questionsAnswered");
+      expect(res.data?.user).toHaveProperty("lifetimePoints");
     });
 
     it("should not allow a regular user to fetch all users", async () => {
@@ -211,6 +264,58 @@ describe("User Operations Integration Tests", () => {
       expect(res.errors?.[0].message).toContain(
         "Cannot change role to SUPER_ADMIN"
       );
+    });
+
+    it("should allow an admin to update user stats", async () => {
+      const res = await server.executeOperation(
+        {
+          query: UPDATE_USER_STATS,
+          variables: {
+            userId: regularUser._id.toString(),
+            stats: {
+              questionsAnswered: 10,
+              questionsCorrect: 8,
+              questionsIncorrect: 2,
+              pointsEarned: 100,
+              newSkills: ["Math", "Science"],
+              consecutiveLoginDays: 5,
+            },
+          },
+        },
+        createMockContext(adminUser)
+      );
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.updateUserStats.questionsAnswered).toBe(10);
+      expect(res.data?.updateUserStats.questionsCorrect).toBe(8);
+      expect(res.data?.updateUserStats.questionsIncorrect).toBe(2);
+      expect(res.data?.updateUserStats.lifetimePoints).toBe(100);
+      expect(res.data?.updateUserStats.skills).toContain("Math");
+      expect(res.data?.updateUserStats.skills).toContain("Science");
+      expect(res.data?.updateUserStats.consecutiveLoginDays).toBe(5);
+    });
+
+    it("should not allow a regular user to update user stats", async () => {
+      const res = await server.executeOperation(
+        {
+          query: UPDATE_USER_STATS,
+          variables: {
+            userId: regularUser._id.toString(),
+            stats: {
+              questionsAnswered: 10,
+              questionsCorrect: 8,
+              questionsIncorrect: 2,
+              pointsEarned: 100,
+              newSkills: ["Math", "Science"],
+              consecutiveLoginDays: 5,
+            },
+          },
+        },
+        createMockContext(regularUser)
+      );
+
+      expect(res.errors).toBeDefined();
+      expect(res.errors?.[0].message).toContain("not have permission");
     });
   });
 

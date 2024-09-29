@@ -1,8 +1,35 @@
 // src/resolvers/types.ts
 
+export type UserStats = {
+  questionsAnswered?: number;
+  questionsCorrect?: number;
+  questionsIncorrect?: number;
+  pointsEarned?: number;
+  newSkills?: string[];
+  consecutiveLoginDays?: number;
+};
+
 export type UserResolvers = {
   Query: {
-    me: (parent: any, args: any, context: any) => Promise<any>;
+    me: (parent: any, args: any, context: any) => Promise<{
+      id: string;
+      username: string;
+      email: string;
+      role: string;
+      score: number;
+      questionsAnswered: number;
+      questionsCorrect: number;
+      questionsIncorrect: number;
+      skills: string[];
+      lifetimePoints: number;
+      yearlyPoints: number;
+      monthlyPoints: number;
+      dailyPoints: number;
+      consecutiveLoginDays: number;
+      lastLoginDate: string | null;
+      createdAt: string;
+      updatedAt: string;
+    }>;
     users: (parent: any, args: any, context: any) => Promise<any>;
     user: (parent: any, args: { id: string }, context: any) => Promise<any>;
   };
@@ -17,6 +44,11 @@ export type UserResolvers = {
       args: { userId: string },
       context: any
     ) => Promise<boolean>;
+    updateUserStats: (
+      parent: any,
+      args: { userId: string; stats: UserStats },
+      context: any
+    ) => Promise<any>;
   };
 };
 

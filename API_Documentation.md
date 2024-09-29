@@ -210,19 +210,210 @@ mutation UpdateUserStats($userId: ID!, $stats: UserStatsInput!) {
 
 ## Question Queries and Mutations
 
-[... rest of the Question Queries and Mutations remain unchanged ...]
+-Get all questions - Retrieves a list of all questions in the system.
+
+```graphql
+query GetQuestions {
+  questions {
+    id
+    prompt
+    questionText
+    answers
+    correctAnswer
+    hint
+    points
+    createdBy {
+      id
+      username
+    }
+  }
+}
+```
+
+-Get a specific question by ID
+
+```graphql
+query GetQuestion($id: ID!) {
+  question(id: $id) {
+    id
+    prompt
+    questionText
+    answers
+    correctAnswer
+    hint
+    points
+    createdBy {
+      id
+      username
+    }
+  }
+}
+```
+
+-Create a new question (requires editor or admin permission)
+
+```graphql
+mutation CreateQuestion($input: CreateQuestionInput!) {
+  createQuestion(input: $input) {
+    id
+    prompt
+    questionText
+    answers
+    correctAnswer
+    hint
+    points
+    createdBy {
+      id
+      username
+    }
+  }
+}
+```
+
+-Update an existing question (requires editor or admin permission)
+
+```graphql
+mutation UpdateQuestion($id: ID!, $input: UpdateQuestionInput!) {
+  updateQuestion(id: $id, input: $input) {
+    id
+    prompt
+    questionText
+    answers
+    correctAnswer
+    hint
+    points
+    createdBy {
+      id
+      username
+    }
+  }
+}
+```
+
+-Delete a question (requires editor or admin permission)
+
+```graphql
+mutation DeleteQuestion($id: ID!) {
+  deleteQuestion(id: $id)
+}
+```
+
+-Submits a user's answer to a specific question.
+
+```graphql
+mutation SubmitAnswer($questionId: ID!, $selectedAnswer: String!) {
+  submitAnswer(questionId: $questionId, selectedAnswer: $selectedAnswer) {
+    success
+    isCorrect
+  }
+}
+```
+
+-Get user responses (requires authentication) - Retrieves a list of the current user's responses to questions.
+
+```graphql
+query GetUserResponses {
+  userResponses {
+    questionId {
+      id
+      prompt
+    }
+    selectedAnswer
+    isCorrect
+  }
+}
+```
 
 ## Authentication Queries and Mutations
 
-[... rest of the Authentication Queries and Mutations remain unchanged ...]
+Get Google Auth URL
+
+- Retrieves the URL for Google OAuth authentication.
+
+```graphql
+query GetGoogleAuthUrl {
+  getGoogleAuthUrl {
+    url
+  }
+}
+```
+
+Authenticate with Google
+
+- Authenticates a user using a Google OAuth code.
+
+```graphql
+mutation AuthenticateWithGoogle($code: String!) {
+  authenticateWithGoogle(code: $code) {
+    token
+    user {
+      id
+      username
+      email
+      role
+    }
+  }
+}
+```
 
 ## Leaderboard Queries
 
-[... Leaderboard Queries remain unchanged ...]
+### Get Leaderboard
 
-## Error Handling and Edge Cases
+-Retrieves the leaderboard with an optional limit on the number of entries.
 
-[... Error Handling and Edge Cases remain unchanged ...]
+```graphql
+query GetLeaderboard($limit: Int) {
+  getLeaderboard(limit: $limit) {
+    leaderboard {
+      position
+      user {
+        id
+        username
+        email
+        role
+        score
+      }
+      score
+    }
+    currentUserEntry {
+      position
+      user {
+        id
+        username
+        email
+        role
+        score
+      }
+      score
+    }
+  }
+}
+```
+
+Error Handling and Edge Cases
+-### Try to register with an existing email +[... Error Handling and Edge Cases remain unchanged ...]
+
+-Attempts to register a new user with an email that already exists in the system.
+
+```graphql
+mutation RegisterExistingEmail {
+  register(
+    input: {
+      username: "existinguser"
+      email: "newuser@example.com"
+      password: "password123"
+    }
+  ) {
+    token
+    user {
+      id
+      username
+      email
+    }
+  }
+}
+```
 
 ## Input Types
 

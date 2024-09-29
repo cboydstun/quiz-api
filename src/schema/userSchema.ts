@@ -9,6 +9,18 @@ const userSchema = gql`
     email: String!
     role: String!
     score: Int
+    questionsAnswered: Int
+    questionsCorrect: Int
+    questionsIncorrect: Int
+    skills: [String]
+    lifetimePoints: Int
+    yearlyPoints: Int
+    monthlyPoints: Int
+    dailyPoints: Int
+    consecutiveLoginDays: Int
+    lastLoginDate: String
+    createdAt: String
+    updatedAt: String
   }
 
   input CreateUserInput {
@@ -16,6 +28,15 @@ const userSchema = gql`
     email: String!
     password: String!
     role: Role
+  }
+
+  input UserStatsInput {
+    questionsAnswered: Int
+    questionsCorrect: Int
+    questionsIncorrect: Int
+    pointsEarned: Int
+    newSkills: [String]
+    consecutiveLoginDays: Int
   }
 
   extend type Query {
@@ -28,6 +49,7 @@ const userSchema = gql`
     register(input: CreateUserInput!): AuthPayload!
     changeUserRole(userId: ID!, newRole: Role!): User!
     deleteUser(userId: ID!): Boolean!
+    updateUserStats(userId: ID!, stats: UserStatsInput!): User!
   }
 `;
 

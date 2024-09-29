@@ -13,13 +13,26 @@ describe("Query resolvers - me", () => {
     jest.clearAllMocks();
   });
 
-  it("should return the authenticated user", async () => {
+  it("should return the authenticated user with all new fields", async () => {
     const mockUser = {
       _id: "123",
       id: "123",
       username: "testuser",
       email: "test@example.com",
       role: "USER",
+      score: 100,
+      questionsAnswered: 10,
+      questionsCorrect: 8,
+      questionsIncorrect: 2,
+      skills: ["Math", "Science"],
+      lifetimePoints: 1000,
+      yearlyPoints: 500,
+      monthlyPoints: 200,
+      dailyPoints: 50,
+      consecutiveLoginDays: 5,
+      lastLoginDate: new Date("2023-05-01"),
+      createdAt: new Date("2023-01-01"),
+      updatedAt: new Date("2023-05-01"),
     };
 
     (authUtils.checkAuth as jest.Mock).mockResolvedValue({
@@ -37,6 +50,19 @@ describe("Query resolvers - me", () => {
       username: "testuser",
       email: "test@example.com",
       role: "USER",
+      score: 100,
+      questionsAnswered: 10,
+      questionsCorrect: 8,
+      questionsIncorrect: 2,
+      skills: ["Math", "Science"],
+      lifetimePoints: 1000,
+      yearlyPoints: 500,
+      monthlyPoints: 200,
+      dailyPoints: 50,
+      consecutiveLoginDays: 5,
+      lastLoginDate: mockUser.lastLoginDate.toISOString(),
+      createdAt: mockUser.createdAt.toISOString(),
+      updatedAt: mockUser.updatedAt.toISOString(),
     });
     expect(authUtils.checkAuth).toHaveBeenCalled();
     expect(User.findById).toHaveBeenCalledWith("123");

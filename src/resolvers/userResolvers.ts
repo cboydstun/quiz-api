@@ -8,7 +8,7 @@ import {
   ForbiddenError,
   NotFoundError,
 } from "../utils/errors";
-import { UserResolvers } from "./types";
+import { UserResolvers, UserStats } from "./types";
 
 const userResolvers: UserResolvers = {
   Query: {
@@ -23,6 +23,19 @@ const userResolvers: UserResolvers = {
         username: user.username,
         email: user.email,
         role: user.role,
+        score: user.score,
+        questionsAnswered: user.questionsAnswered,
+        questionsCorrect: user.questionsCorrect,
+        questionsIncorrect: user.questionsIncorrect,
+        skills: user.skills,
+        lifetimePoints: user.lifetimePoints,
+        yearlyPoints: user.yearlyPoints,
+        monthlyPoints: user.monthlyPoints,
+        dailyPoints: user.dailyPoints,
+        consecutiveLoginDays: user.consecutiveLoginDays,
+        lastLoginDate: user.lastLoginDate ? user.lastLoginDate.toISOString() : null,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
       };
     },
     users: async (_, __, context) => {
@@ -44,6 +57,19 @@ const userResolvers: UserResolvers = {
         username: user.username,
         email: user.email,
         role: user.role,
+        score: user.score,
+        questionsAnswered: user.questionsAnswered,
+        questionsCorrect: user.questionsCorrect,
+        questionsIncorrect: user.questionsIncorrect,
+        skills: user.skills,
+        lifetimePoints: user.lifetimePoints,
+        yearlyPoints: user.yearlyPoints,
+        monthlyPoints: user.monthlyPoints,
+        dailyPoints: user.dailyPoints,
+        consecutiveLoginDays: user.consecutiveLoginDays,
+        lastLoginDate: user.lastLoginDate,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       };
     },
   },
@@ -81,6 +107,47 @@ const userResolvers: UserResolvers = {
 
       await User.findByIdAndDelete(userId);
       return true;
+    },
+    updateUserStats: async (_, { userId, stats }: { userId: string, stats: UserStats }, context) => {
+      const user = await checkAuth(context);
+      await checkPermission(user, ["SUPER_ADMIN", "ADMIN"]);
+
+      // Validate and sanitize input
+      const sanitizedStats = {
+        questionsAnswered: Math.max(0, Number(stats.questionsAnswered) || 0),
+        questionsCorrect: Math.max(0, Number(stats.questionsCorrect) || 0),
+        questionsIncorrect: Math.max(0, Number(stats.questionsIncorrect) || 0),
+        pointsEarned: Math.max(0, Number(stats.pointsEarned) || 0),
+        newSkills: Array.isArray(stats.newSkills) ? stats.newSkills : [],
+        consecutiveLoginDays: Math.max(0, Number(stats.consecutiveLoginDays) || 0),
+      };
+
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          $inc: {
+            questionsAnswered: sanitizedStats.questionsAnswered,
+            questionsCorrect: sanitizedStats.questionsCorrect,
+            questionsIncorrect: sanitizedStats.questionsIncorrect,
+            lifetimePoints: sanitizedStats.pointsEarned,
+            yearlyPoints: sanitizedStats.pointsEarned,
+            monthlyPoints: sanitizedStats.pointsEarned,
+            dailyPoints: sanitizedStats.pointsEarned,
+          },
+          $addToSet: { skills: { $each: sanitizedStats.newSkills } },
+          $set: {
+            lastLoginDate: new Date(),
+            consecutiveLoginDays: sanitizedStats.consecutiveLoginDays,
+          },
+        },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        throw new NotFoundError("User not found");
+      }
+
+      return updatedUser;
     },
   },
 };
