@@ -23,6 +23,7 @@ export interface IUser extends Document {
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
+  createdQuestions: mongoose.Types.ObjectId[]; 
 }
 
 const UserSchema = new mongoose.Schema({
@@ -65,6 +66,6 @@ UserSchema.methods.comparePassword = async function (
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-const User: Model<IUser> = mongoose.model<IUser>("User", UserSchema);
+export const User: Model<IUser> = mongoose.model<IUser>("User", UserSchema);
 
 export default User;

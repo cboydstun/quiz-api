@@ -1,0 +1,145 @@
+[
+    {
+      "prompt": "§ 107.1 Applicability\n\nPart 107 applies to the registration, airman certification, and operation of civil small unmanned aircraft systems within the United States. However, it does not apply to air carrier operations, any aircraft subject to the provisions of Part 101, or operations conducted under a Section 333 exemption. This distinction is important for understanding which regulations govern different types of unmanned aircraft operations.",
+      "questionText": "Which of the following operations is NOT subject to Part 107 regulations?",
+      "answers": [
+        "A small UAS weighing 10 pounds used for aerial photography",
+        "A model aircraft flown for recreational purposes under Part 101",
+        "A small UAS used for real estate photography",
+        "A small UAS used for bridge inspection"
+      ],
+      "correctAnswer": "A model aircraft flown for recreational purposes under Part 101",
+      "hint": "Part 107 does not apply to aircraft subject to the provisions of Part 101.",
+      "points": 2
+    },
+    {
+      "prompt": "§ 107.3 Definitions\n\nPart 107 provides specific definitions for terms used in the regulation of small unmanned aircraft systems. A key definition is that of a 'small unmanned aircraft,' which is defined as an unmanned aircraft weighing less than 55 pounds on takeoff, including everything that is on board or otherwise attached to the aircraft. This weight limit is crucial for determining which aircraft fall under Part 107 regulations.",
+      "questionText": "According to Part 107, what is the maximum weight of a small unmanned aircraft?",
+      "answers": [
+        "Less than 55 pounds",
+        "Exactly 55 pounds",
+        "More than 55 pounds",
+        "50 pounds"
+      ],
+      "correctAnswer": "Less than 55 pounds",
+      "hint": "The definition specifies 'weighing less than 55 pounds on takeoff'.",
+      "points": 1
+    },
+    {
+      "prompt": "§ 107.12 Requirement for a remote pilot certificate with a small UAS rating\n\nTo operate a small UAS under Part 107, individuals must hold a remote pilot certificate with a small UAS rating. This applies to both the person manipulating the flight controls and the remote pilot in command. The only exception is if a person without a certificate is operating under the direct supervision of a certified remote pilot in command who can immediately take control of the aircraft. This requirement ensures that operators have the necessary knowledge and skills for safe operation.",
+      "questionText": "Who must have a Remote Pilot Certificate with a small UAS rating?",
+      "answers": [
+        "Only the person manipulating the flight controls",
+        "Only the remote pilot in command",
+        "Both the remote pilot in command and the person manipulating the flight controls",
+        "The visual observer"
+      ],
+      "correctAnswer": "Both the remote pilot in command and the person manipulating the flight controls",
+      "hint": "Section 107.12 outlines the requirements for both roles.",
+      "points": 2
+    },
+    {
+      "prompt": "§ 107.17 Medical condition\n\nPart 107 addresses the importance of an operator's medical fitness for safe UAS operations. It prohibits a person from manipulating the controls of a small UAS or acting as a remote pilot in command or visual observer if they know or have reason to know that they have a physical or mental condition that could interfere with the safe operation of the UAS. This regulation emphasizes personal responsibility and self-assessment of one's fitness to operate.",
+      "questionText": "A person knows they have a medical condition that would interfere with the safe operation of a small UAS. What action should they take?",
+      "answers": [
+        "They may operate as long as they feel fine at the time of flight",
+        "They may not act as a remote pilot in command or manipulate the controls",
+        "They may operate if they have a second person monitoring their condition",
+        "They may operate if they limit flights to below 200 feet AGL"
+      ],
+      "correctAnswer": "They may not act as a remote pilot in command or manipulate the controls",
+      "hint": "Section 107.17 prohibits operation with known physical or mental conditions that would interfere with safe operation.",
+      "points": 2
+    },
+    {
+      "prompt": "§ 107.29 Daylight operation\n\nPart 107 generally restricts small UAS operations to daylight hours. However, it does allow for operation during civil twilight if the small unmanned aircraft has anti-collision lighting visible for at least 3 statute miles. Civil twilight is defined as the period 30 minutes before official sunrise and 30 minutes after official sunset, except in Alaska where different rules apply. This provision balances the need for extended operations with safety considerations.",
+      "questionText": "Under what conditions can a small UAS be operated during civil twilight?",
+      "answers": [
+        "It cannot be operated during civil twilight",
+        "It can be operated without any additional equipment",
+        "It can be operated if it has anti-collision lighting visible for 3 statute miles",
+        "It can be operated only with a waiver from the FAA"
+      ],
+      "correctAnswer": "It can be operated if it has anti-collision lighting visible for 3 statute miles",
+      "hint": "Section 107.29(b) allows operation during civil twilight with appropriate lighting.",
+      "points": 2
+    },
+    {
+      "prompt": "§ 107.31 Visual line of sight aircraft operation\n\nPart 107 requires that the remote pilot in command, the visual observer (if one is used), and the person manipulating the flight controls of the small UAS must be able to see the unmanned aircraft throughout the entire flight. This must be accomplished with vision unaided by any device other than corrective lenses. The purpose is to ensure that the operator can maintain awareness of the aircraft's location, attitude, altitude, and direction of flight, observe the airspace for other aircraft or hazards, and determine that the unmanned aircraft does not endanger the life or property of another.",
+      "questionText": "What is required to maintain visual line of sight during small UAS operations?",
+      "answers": [
+        "The remote pilot must be able to see the UAS with binoculars",
+        "The remote pilot or visual observer must be able to see the UAS with unaided vision (except for corrective lenses)",
+        "The UAS must remain within 1 mile of the remote pilot",
+        "The UAS must have a camera providing a real-time video feed to the remote pilot"
+      ],
+      "correctAnswer": "The remote pilot or visual observer must be able to see the UAS with unaided vision (except for corrective lenses)",
+      "hint": "Section 107.31 requires unaided visual line of sight, except for corrective lenses.",
+      "points": 2
+    },
+    {
+      "prompt": "§ 107.39 Operation over human beings\n\nPart 107 places restrictions on operating small UAS over human beings. Generally, no person may operate a small unmanned aircraft over another person unless that person is directly participating in the operation of the small unmanned aircraft, or is located under a covered structure or inside a stationary vehicle that can provide reasonable protection from a falling small unmanned aircraft. This rule is designed to minimize risk to people on the ground who are not involved in the UAS operation.",
+      "questionText": "Under what circumstances can a small UAS be operated over a human being?",
+      "answers": [
+        "When the human being is directly participating in the operation of the small UAS",
+        "When the human being is under a covered structure",
+        "When the human being is inside a stationary vehicle",
+        "All of the above"
+      ],
+      "correctAnswer": "All of the above",
+      "hint": "Section 107.39 allows operation over humans in all these circumstances.",
+      "points": 2
+    },
+    {
+      "prompt": "§ 107.51 Operating limitations for small unmanned aircraft\n\nPart 107 establishes several operating limitations for small UAS. These include a maximum groundspeed of 87 knots (100 mph), a maximum altitude of 400 feet above ground level (or within 400 feet of a structure), minimum visibility of 3 statute miles, and minimum distance from clouds (500 feet below and 2,000 feet horizontally). These limitations are designed to ensure safe operation of small UAS in the National Airspace System while minimizing risk to other aircraft and people on the ground.",
+      "questionText": "What is the maximum altitude allowed for a small UAS operation under Part 107?",
+      "answers": [
+        "400 feet above ground level (AGL)",
+        "500 feet AGL",
+        "400 feet above a structure",
+        "400 feet AGL, or 400 feet above a structure within a 400-foot radius of the structure"
+      ],
+      "correctAnswer": "400 feet AGL, or 400 feet above a structure within a 400-foot radius of the structure",
+      "hint": "Section 107.51(b) allows operation up to 400 feet AGL, or higher within a 400-foot radius of a structure.",
+      "points": 3
+    },
+    {
+      "prompt": "§ 107.205 List of regulations subject to waiver\n\nPart 107 includes provisions for waivers, allowing operators to deviate from certain regulations if they can demonstrate that their operation can be conducted safely under the terms of a waiver. Section 107.205 lists the regulations that are subject to waiver, which include rules about operation from a moving vehicle, daylight operation, visual line of sight, visual observer, operation of multiple small UAS, yielding the right of way, operation over people, operation in certain airspace, and operating limitations. However, some regulations, such as those pertaining to the carriage of hazardous materials, are not subject to waiver.",
+      "questionText": "Which of the following operating rules is NOT subject to waiver under Part 107?",
+      "answers": [
+        "Visual line of sight aircraft operation",
+        "Daylight operation",
+        "Operating limitations for small unmanned aircraft",
+        "Carriage of hazardous material"
+      ],
+      "correctAnswer": "Carriage of hazardous material",
+      "hint": "Section 107.205 lists regulations subject to waiver, which does not include the carriage of hazardous materials.",
+      "points": 3
+    },
+    {
+      "prompt": "§ 107.19 Remote pilot in command\n\nPart 107 establishes the role and responsibilities of the remote pilot in command. The remote pilot in command is directly responsible for and is the final authority as to the operation of the small unmanned aircraft system. They must ensure that the small unmanned aircraft will pose no undue hazard to other people, other aircraft, or other property in the event of a loss of control of the aircraft for any reason. The remote pilot in command must also ensure that the small UAS operation complies with all applicable regulations.",
+      "questionText": "Who is directly responsible for, and the final authority as to the operation of the small unmanned aircraft system?",
+      "answers": [
+        "The visual observer",
+        "The person manipulating the flight controls",
+        "The remote pilot in command",
+        "The FAA"
+      ],
+      "correctAnswer": "The remote pilot in command",
+      "hint": "Section 107.19 states that the remote pilot in command is directly responsible and has final authority.",
+      "points": 1
+    },
+    {
+      "prompt": "§ 107.21 In-flight emergency\n\nPart 107 includes provisions for handling in-flight emergencies. In an in-flight emergency requiring immediate action, the remote pilot in command may deviate from any rule of Part 107 to the extent necessary to meet that emergency. This provision allows for flexibility in emergency situations to prioritize safety. However, upon request, the remote pilot in command who has deviated from a rule must send a written report of that deviation to the Administrator.",
+      "questionText": "In an in-flight emergency requiring immediate action, the remote pilot in command may:",
+      "answers": [
+        "Only land the aircraft immediately",
+        "Deviate from any rule of Part 107 to the extent necessary to meet the emergency",
+        "Only contact Air Traffic Control for assistance",
+        "Only abort the flight and return to the launch point"
+      ],
+      "correctAnswer": "Deviate from any rule of Part 107 to the extent necessary to meet the emergency",
+      "hint": "Section 107.21 allows deviation from rules to the extent necessary in an emergency.",
+      "points": 3
+    }
+  ]

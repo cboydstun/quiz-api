@@ -23,7 +23,7 @@ const QuestionSchema: Schema = new Schema({
   createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
-const Question: Model<IQuestion> = mongoose.model<IQuestion>(
+export const Question: Model<IQuestion> = mongoose.model<IQuestion>(
   "Question",
   QuestionSchema
 );
