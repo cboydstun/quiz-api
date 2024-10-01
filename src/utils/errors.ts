@@ -36,6 +36,12 @@ export class NotFoundError extends CustomError {
   }
 }
 
+export class ValidationError extends CustomError {
+  constructor(message: string) {
+    super(message, "VALIDATION_ERROR", 400);
+  }
+}
+
 // Error handling function
 export const handleCustomError = (error: CustomError) => {
   console.error("Error:", error);

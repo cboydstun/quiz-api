@@ -49,6 +49,22 @@ export type UserResolvers = {
       args: { userId: string; stats: UserStats },
       context: any
     ) => Promise<any>;
+    updateUsername: (
+      parent: any,
+      args: { username: string },
+      context: any
+    ) => Promise<{
+      id: string;
+      username: string;
+    }>;
+    updatePassword: (
+      parent: any,
+      args: { currentPassword: string; newPassword: string },
+      context: any
+    ) => Promise<{
+      success: boolean;
+      message: string;
+    }>;
   };
 };
 

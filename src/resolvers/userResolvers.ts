@@ -7,8 +7,10 @@ import {
   AuthenticationError,
   ForbiddenError,
   NotFoundError,
+  ValidationError,
 } from "../utils/errors";
 import { UserResolvers, UserStats } from "./types";
+import bcrypt from "bcryptjs";
 
 const userResolvers: UserResolvers = {
   Query: {
@@ -149,6 +151,63 @@ const userResolvers: UserResolvers = {
 
       return updatedUser;
     },
+    updateUsername: async (_, { username }: { username: string }, context) => {
+      const decodedUser = await checkAuth(context);
+
+      if (!username || username.trim().length < 3) {
+        throw new ValidationError("Username must be at least 3 characters long");
+      }
+
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+        throw new ValidationError("Username is already taken");
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        decodedUser._id,
+        { username },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        throw new NotFoundError("User not found");
+      }
+
+      return {
+        id: updatedUser._id.toString(),
+        username: updatedUser.username,
+      };
+    },
+    updatePassword: async (_, { currentPassword, newPassword }: { currentPassword: string, newPassword: string }, context) => {
+      console.log('updatePassword mutation called');
+
+      const decodedUser = await checkAuth(context);
+      console.log('Decoded user:', decodedUser);
+
+      const user = await User.findById(decodedUser._id);
+      if (!user) {
+        throw new AuthenticationError("User not found");
+      }
+
+      console.log('Found user:', user);
+
+      const isMatch = await user.comparePassword(currentPassword);
+      console.log('Password match:', isMatch);
+
+      if (!isMatch) {
+        throw new AuthenticationError("Current password is incorrect");
+      }
+
+      user.password = newPassword;
+      await user.save();
+
+      console.log('Password updated successfully');
+
+      return {
+        success: true,
+        message: "Password updated successfully",
+      };
+    }
   },
 };
 

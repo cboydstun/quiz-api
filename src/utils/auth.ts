@@ -41,8 +41,10 @@ export const checkAuth = (context: any): DecodedUser => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedUser;
+    console.log('Decoded token:', decoded);
     return decoded;
   } catch (error) {
+    console.error('Token verification error:', error);
     throw new AuthenticationError("Invalid/Expired token");
   }
 };

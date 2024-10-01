@@ -39,6 +39,16 @@ const userSchema = gql`
     consecutiveLoginDays: Int
   }
 
+  type UpdateUsernameResponse {
+    id: ID!
+    username: String!
+  }
+
+  type UpdatePasswordResponse {
+    success: Boolean!
+    message: String!
+  }
+
   extend type Query {
     me: User!
     user(id: ID!): User!
@@ -50,6 +60,8 @@ const userSchema = gql`
     changeUserRole(userId: ID!, newRole: Role!): User!
     deleteUser(userId: ID!): Boolean!
     updateUserStats(userId: ID!, stats: UserStatsInput!): User!
+    updateUsername(username: String!): UpdateUsernameResponse!
+    updatePassword(currentPassword: String!, newPassword: String!): UpdatePasswordResponse!
   }
 `;
 

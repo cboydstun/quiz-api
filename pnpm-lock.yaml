@@ -11,6 +11,9 @@ importers:
 
   .:
     dependencies:
+      '@graphql-tools/schema':
+        specifier: ^10.0.3
+        version: 10.0.6(graphql@15.9.0)
       '@graphql-tools/utils':
         specifier: ^10.5.4
         version: 10.5.4(graphql@15.9.0)
@@ -376,8 +379,20 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
+  '@graphql-tools/merge@9.0.7':
+    resolution: {integrity: sha512-lbTrIuXIbUSmSumHkPRY1QX0Z8JEtmRhnIrkH7vkfeEmf0kNn/nCWvJwqokm5U7L+a+DA1wlRM4slIlbfXjJBA==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+
   '@graphql-tools/mock@8.7.20':
     resolution: {integrity: sha512-ljcHSJWjC/ZyzpXd5cfNhPI7YljRVvabKHPzKjEs5ElxWu2cdlLGvyNYepApXDsM/OJG/2xuhGM+9GWu5gEAPQ==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+
+  '@graphql-tools/schema@10.0.6':
+    resolution: {integrity: sha512-EIJgPRGzpvDFEjVp+RF1zNNYIC36BYuIeZ514jFoJnI6IdxyVyIRDLx/ykgMdaa1pKQerpfdqDnsF4JnZoDHSQ==}
+    engines: {node: '>=16.0.0'}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
@@ -2848,6 +2863,12 @@ snapshots:
       graphql: 15.9.0
       tslib: 2.7.0
 
+  '@graphql-tools/merge@9.0.7(graphql@15.9.0)':
+    dependencies:
+      '@graphql-tools/utils': 10.5.4(graphql@15.9.0)
+      graphql: 15.9.0
+      tslib: 2.7.0
+
   '@graphql-tools/mock@8.7.20(graphql@15.9.0)':
     dependencies:
       '@graphql-tools/schema': 9.0.19(graphql@15.9.0)
@@ -2855,6 +2876,14 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       graphql: 15.9.0
       tslib: 2.7.0
+
+  '@graphql-tools/schema@10.0.6(graphql@15.9.0)':
+    dependencies:
+      '@graphql-tools/merge': 9.0.7(graphql@15.9.0)
+      '@graphql-tools/utils': 10.5.4(graphql@15.9.0)
+      graphql: 15.9.0
+      tslib: 2.7.0
+      value-or-promise: 1.0.12
 
   '@graphql-tools/schema@8.5.1(graphql@15.9.0)':
     dependencies:
