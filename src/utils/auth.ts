@@ -3,6 +3,9 @@
 import jwt from "jsonwebtoken";
 import { AuthenticationError } from "./errors";
 
+import * as dotenv from "dotenv";
+dotenv.config();
+
 export interface DecodedUser {
   _id: string;
   email: string;
