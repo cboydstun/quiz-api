@@ -3,7 +3,6 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy, Profile, VerifyCallback } from "passport-google-oauth20";
 import User, { IUser } from "../models/User";
-
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -38,7 +37,7 @@ passport.use(
 
         return done(null, user);
       } catch (error) {
-        return done(error instanceof Error ? error : new Error('An unknown error occurred'));
+        return done(error instanceof Error ? error : new Error("An unknown error occurred"));
       }
     }
   )
@@ -53,13 +52,15 @@ passport.deserializeUser(async (id: string, done: (err: Error | null, user?: Exp
     const user = await User.findById(id);
     done(null, user);
   } catch (error) {
-    done(error instanceof Error ? error : new Error('An unknown error occurred'));
+    done(error instanceof Error ? error : new Error("An unknown error occurred"));
   }
 });
 
-declare global {
-  namespace Express {
-    interface User extends IUser { }
+// Extending Express Request interface directly
+interface CustomUser extends IUser { }
+declare module 'express' {
+  interface Request {
+    user?: CustomUser;
   }
 }
 
