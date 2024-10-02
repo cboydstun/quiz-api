@@ -1,7 +1,8 @@
+// src/utils/passport.ts
+
 import passport from "passport";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Strategy as GoogleStrategy, Profile, VerifyCallback } from "passport-google-oauth20";
 import User, { IUser } from "../models/User";
-import { Profile } from "passport-google-oauth20";
 
 import * as dotenv from "dotenv";
 
@@ -22,7 +23,7 @@ passport.use(
       clientSecret: googleClientSecret,
       callbackURL: googleRedirectUri,
     },
-    async (accessToken: string, refreshToken: string, profile: Profile, done: (error: Error | null, user?: IUser) => void) => {
+    async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
       try {
         let user = await User.findOne({ googleId: profile.id });
 
@@ -43,11 +44,11 @@ passport.use(
   )
 );
 
-passport.serializeUser((user, done) => {
-  done(null, (user as IUser)._id);
+passport.serializeUser((user: Express.User, done: (err: Error | null, id?: string) => void) => {
+  done(null, (user as IUser)._id.toString());
 });
 
-passport.deserializeUser(async (id: string, done) => {
+passport.deserializeUser(async (id: string, done: (err: Error | null, user?: Express.User | null) => void) => {
   try {
     const user = await User.findById(id);
     done(null, user);
