@@ -93,13 +93,12 @@ describe("Leaderboard Integration Tests", () => {
     ]);
   });
 
-  it("should return the correct leaderboard", async () => {
+  it("should return the correct leaderboard with masked emails", async () => {
     const currentUser = users.find(user => user.email === "user3@example.com");
     if (!currentUser) {
       throw new Error("Test user not found");
     }
-  
-    // Mock checkAuth to return a DecodedUser object
+
     jest.spyOn(authUtils, 'checkAuth').mockImplementation(() => ({
       _id: currentUser._id.toString(),
       email: currentUser.email,
@@ -107,9 +106,9 @@ describe("Leaderboard Integration Tests", () => {
       score: currentUser.score,
       username: currentUser.username
     }));
-  
+
     const context = createMockContext(currentUser);
-  
+
     const result = await server.executeOperation(
       {
         query: GET_LEADERBOARD,
@@ -117,20 +116,20 @@ describe("Leaderboard Integration Tests", () => {
       },
       context
     );
-  
+
     expect(result.errors).toBeUndefined();
     expect(result.data?.getLeaderboard.leaderboard).toHaveLength(5);
     expect(result.data?.getLeaderboard.leaderboard[0].position).toBe(1);
-    expect(result.data?.getLeaderboard.leaderboard[0].user.email).toBe("user2@example.com");
+    expect(result.data?.getLeaderboard.leaderboard[0].user.email).toBe("u***2@example.com");
     expect(result.data?.getLeaderboard.leaderboard[0].user.username).toBe("user2");
     expect(result.data?.getLeaderboard.leaderboard[0].score).toBe(200);
-    expect(result.data?.getLeaderboard.currentUserEntry.position).toBe(2);  // Changed from 3 to 2
-    expect(result.data?.getLeaderboard.currentUserEntry.user.email).toBe("user3@example.com");
+    expect(result.data?.getLeaderboard.currentUserEntry.position).toBe(2);
+    expect(result.data?.getLeaderboard.currentUserEntry.user.email).toBe("u***3@example.com");
     expect(result.data?.getLeaderboard.currentUserEntry.user.username).toBe("user3");
     expect(result.data?.getLeaderboard.currentUserEntry.score).toBe(150);
   });
 
-  it("should limit the leaderboard results", async () => {
+  it("should limit the leaderboard results and mask emails", async () => {
     const currentUser = await User.findOne({ username: "user1" });
     if (!currentUser) {
       throw new Error("Test user not found");
@@ -147,52 +146,53 @@ describe("Leaderboard Integration Tests", () => {
 
     expect(result.errors).toBeUndefined();
     expect(result.data?.getLeaderboard.leaderboard).toHaveLength(3);
+    result.data?.getLeaderboard.leaderboard.forEach((entry: any) => {
+      expect(entry.user.email).toMatch(/^[a-z]\*+[a-z0-9]?@example\.com$/);
+    });
   });
 
-it("should handle a user not in the top ranks", async () => {
-  const currentUser = users.find(user => user.email === "user4@example.com");
-  if (!currentUser) {
-    throw new Error("Test user not found");
-  }
+  it("should handle a user not in the top ranks and mask emails", async () => {
+    const currentUser = users.find(user => user.email === "user4@example.com");
+    if (!currentUser) {
+      throw new Error("Test user not found");
+    }
 
-  // Mock checkAuth to return a DecodedUser object
-  jest.spyOn(authUtils, 'checkAuth').mockImplementation(() => ({
-    _id: currentUser._id.toString(),
-    email: currentUser.email,
-    role: currentUser.role,
-    score: currentUser.score,
-    username: currentUser.username
-  }));
+    jest.spyOn(authUtils, 'checkAuth').mockImplementation(() => ({
+      _id: currentUser._id.toString(),
+      email: currentUser.email,
+      role: currentUser.role,
+      score: currentUser.score,
+      username: currentUser.username
+    }));
 
-  const context = createMockContext(currentUser);
+    const context = createMockContext(currentUser);
 
-  const result = await server.executeOperation(
-    {
-      query: GET_LEADERBOARD,
-      variables: { limit: 3 },
-    },
-    context
-  );
+    const result = await server.executeOperation(
+      {
+        query: GET_LEADERBOARD,
+        variables: { limit: 3 },
+      },
+      context
+    );
 
-  expect(result.errors).toBeUndefined();
-  expect(result.data?.getLeaderboard.leaderboard).toHaveLength(3);
-  expect(result.data?.getLeaderboard.currentUserEntry).not.toBeNull();
-  expect(result.data?.getLeaderboard.currentUserEntry.position).toBe(5);
-  expect(result.data?.getLeaderboard.currentUserEntry.user.username).toBe("user4");
-  
-  // Check that the current user is not in the top 3
-  const topUsernames = result.data?.getLeaderboard.leaderboard.map((entry: { user: { username: string } }) => entry.user.username);
-  expect(topUsernames).not.toContain("user4");
-});
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.getLeaderboard.leaderboard).toHaveLength(3);
+    expect(result.data?.getLeaderboard.currentUserEntry).not.toBeNull();
+    expect(result.data?.getLeaderboard.currentUserEntry.position).toBe(5);
+    expect(result.data?.getLeaderboard.currentUserEntry.user.username).toBe("user4");
+    expect(result.data?.getLeaderboard.currentUserEntry.user.email).toBe("u***4@example.com");
 
-it("should handle an unauthenticated user", async () => {
-    // Mock checkAuth to throw an AuthenticationError
+    const topUsernames = result.data?.getLeaderboard.leaderboard.map((entry: { user: { username: string } }) => entry.user.username);
+    expect(topUsernames).not.toContain("user4");
+  });
+
+  it("should handle an unauthenticated user and mask emails", async () => {
     jest.spyOn(authUtils, 'checkAuth').mockImplementation(() => {
       throw new AuthenticationError("Not authenticated");
     });
-  
+
     const context = { req: { headers: {} }, res: {} };
-  
+
     const result = await server.executeOperation(
       {
         query: GET_LEADERBOARD,
@@ -200,14 +200,17 @@ it("should handle an unauthenticated user", async () => {
       },
       context as any
     );
-  
+
     expect(result.errors).toBeUndefined();
     expect(result.data?.getLeaderboard.leaderboard).toBeDefined();
     expect(result.data?.getLeaderboard.leaderboard.length).toBeGreaterThan(0);
     expect(result.data?.getLeaderboard.currentUserEntry).toBeNull();
+    result.data?.getLeaderboard.leaderboard.forEach((entry: any) => {
+      expect(entry.user.email).toMatch(/^[a-z]\*+[a-z0-9]?@example\.com$/);
+    });
   });
 
-  it("should handle a user with no score", async () => {
+  it("should handle a user with no score and mask emails", async () => {
     const noScoreUser = await User.create({
       email: "noscore@example.com",
       username: "noscore",
@@ -215,8 +218,7 @@ it("should handle an unauthenticated user", async () => {
       role: "USER",
       score: null,
     });
-  
-    // Mock checkAuth to return the no-score user
+
     jest.spyOn(authUtils, 'checkAuth').mockImplementation(() => ({
       _id: noScoreUser._id.toString(),
       email: noScoreUser.email,
@@ -224,9 +226,9 @@ it("should handle an unauthenticated user", async () => {
       score: noScoreUser.score,
       username: noScoreUser.username
     }));
-  
+
     const context = createMockContext(noScoreUser);
-  
+
     const result = await server.executeOperation(
       {
         query: GET_LEADERBOARD,
@@ -234,9 +236,39 @@ it("should handle an unauthenticated user", async () => {
       },
       context
     );
-  
+
     expect(result.errors).toBeUndefined();
     expect(result.data?.getLeaderboard.leaderboard).toHaveLength(5);
     expect(result.data?.getLeaderboard.currentUserEntry).toBeNull();
+    result.data?.getLeaderboard.leaderboard.forEach((entry: any) => {
+      expect(entry.user.email).toMatch(/^[a-z]\*+[a-z0-9]?@example\.com$/);
+    });
+  });
+
+  it("should correctly mask emails with different lengths", async () => {
+    await User.create([
+      { email: "a@example.com", username: "short", password: "password", role: "USER", score: 300 },
+      { email: "ab@example.com", username: "short2", password: "password", role: "USER", score: 280 },
+      { email: "verylongemail@example.com", username: "long", password: "password", role: "USER", score: 250 },
+    ]);
+
+    const currentUser = users[0];
+    const context = createMockContext(currentUser);
+
+    const result = await server.executeOperation(
+      {
+        query: GET_LEADERBOARD,
+        variables: { limit: 8 },
+      },
+      context
+    );
+
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.getLeaderboard.leaderboard).toHaveLength(8);
+
+    const emails = result.data?.getLeaderboard.leaderboard.map((entry: any) => entry.user.email);
+    expect(emails).toContain("a*@example.com");
+    expect(emails).toContain("a*@example.com");
+    expect(emails).toContain("v***l@example.com");
   });
 });

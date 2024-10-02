@@ -6,6 +6,19 @@ import { LeaderboardResolvers } from "./types";
 import { logger } from "../utils/logger";
 import { ApolloError } from "apollo-server-express";
 
+// Helper function to mask email
+const maskEmail = (email: string): string => {
+  const [username, domain] = email.split('@');
+  let maskedUsername;
+  if (username.length <= 2) {
+    maskedUsername = username.charAt(0) + '*'.repeat(username.length - 1);
+  } else {
+    // Limit the mask to three asterisks for longer usernames
+    maskedUsername = username.charAt(0) + '***' + username.charAt(username.length - 1);
+  }
+  return `${maskedUsername}@${domain}`;
+};
+
 const leaderboardResolvers: LeaderboardResolvers = {
   Query: {
     getLeaderboard: async (_, { limit = 10 }, context) => {
@@ -27,7 +40,7 @@ const leaderboardResolvers: LeaderboardResolvers = {
           user: {
             id: user._id.toString(),
             username: user.username || user.email.split("@")[0],
-            email: user.email,
+            email: maskEmail(user.email), // Mask the email
             role: user.role,
             score: user.score ?? 0,
           },
