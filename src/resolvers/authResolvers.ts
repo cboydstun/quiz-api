@@ -108,8 +108,12 @@ const authResolvers: AuthResolvers = {
       try {
         const { tokens } = await client.getToken(code);
 
+        if (!tokens.id_token) {
+          throw new AuthenticationError("No ID token returned from Google");
+        }
+
         const ticket = await client.verifyIdToken({
-          idToken: tokens.id_token!,
+          idToken: tokens.id_token,
           audience: process.env.GOOGLE_CLIENT_ID,
         });
 

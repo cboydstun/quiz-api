@@ -11,6 +11,14 @@ export interface DecodedUser {
   score?: number;
 }
 
+const getJwtSecret = (): string => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET is not defined in the environment variables");
+  }
+  return secret;
+};
+
 export const generateToken = (user: DecodedUser): string => {
   return jwt.sign(
     {
@@ -20,7 +28,7 @@ export const generateToken = (user: DecodedUser): string => {
       username: user.username, // Include username if it exists
       score: user.score, // Include score if it exists
     },
-    process.env.JWT_SECRET!,
+    getJwtSecret(),
     { expiresIn: "1d" }
   );
 };
@@ -39,7 +47,7 @@ export const checkAuth = (context: any): DecodedUser => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedUser;
+    const decoded = jwt.verify(token, getJwtSecret()) as DecodedUser;
     return decoded;
   } catch (error) {
     console.error('Token verification error:', error);

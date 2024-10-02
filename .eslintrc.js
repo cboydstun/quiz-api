@@ -12,6 +12,7 @@ module.exports = {
     rules: {
         // Disable the rule that warns about explicit 'any' types
         '@typescript-eslint/no-explicit-any': 'off',
+        "@typescript-eslint/no-empty-interface": ["error", { "allowSingleExtends": true }]
 
         // Optionally, you can set it to 'warn' instead of 'off' if you want to see warnings but not errors
         // '@typescript-eslint/no-explicit-any': 'warn',

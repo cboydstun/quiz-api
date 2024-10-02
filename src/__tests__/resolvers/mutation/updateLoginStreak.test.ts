@@ -2,7 +2,6 @@
 
 import resolvers from "../../../resolvers";
 import {
-  AuthenticationError,
   ForbiddenError,
   NotFoundError,
 } from "../../../utils/errors";
@@ -44,31 +43,31 @@ describe("Mutation resolvers - updateLoginStreak", () => {
     // Set the system time to a fixed date
     const mockDate = new Date("2023-05-16T00:00:00.000Z");
     jest.useFakeTimers().setSystemTime(mockDate);
-  
+
     (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockAdminUser);
     (permissionUtils.checkPermission as jest.Mock).mockReturnValue(undefined);
-  
+
     const mockUser = {
       ...mockUpdatedUser,
       consecutiveLoginDays: 7,
       lastLoginDate: new Date("2023-05-15T00:00:00.000Z"),
     };
-  
+
     (User.findById as jest.Mock).mockResolvedValue(mockUser);
-  
+
     (User.findByIdAndUpdate as jest.Mock).mockImplementation((id, update) => {
       return Promise.resolve({
         ...mockUser,
         ...update.$set,
       });
     });
-  
+
     const args = {
       userId: "user456",
     };
-  
+
     const result = await resolvers.Mutation.updateLoginStreak(null, args, { req: {} } as any);
-  
+
     expect(result.consecutiveLoginDays).toBe(8);
     expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
       "user456",
@@ -80,38 +79,38 @@ describe("Mutation resolvers - updateLoginStreak", () => {
       },
       { new: true }
     );
-  
+
     jest.useRealTimers();
   });
-  
+
   it("should reset login streak if more than one day has passed", async () => {
     const mockDate = new Date("2023-05-18T00:00:00.000Z");
     jest.useFakeTimers().setSystemTime(mockDate);
-  
+
     (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockAdminUser);
     (permissionUtils.checkPermission as jest.Mock).mockReturnValue(undefined);
-  
+
     const mockUser = {
       ...mockUpdatedUser,
       consecutiveLoginDays: 7,
       lastLoginDate: new Date("2023-05-15T00:00:00.000Z"), // Three days before
     };
-  
+
     (User.findById as jest.Mock).mockResolvedValue(mockUser);
-  
+
     (User.findByIdAndUpdate as jest.Mock).mockImplementation((id, update) => {
       return Promise.resolve({
         ...mockUser,
         ...update.$set,
       });
     });
-  
+
     const args = {
       userId: "user456",
     };
-  
+
     const result = await resolvers.Mutation.updateLoginStreak(null, args, { req: {} } as any);
-  
+
     expect(result.consecutiveLoginDays).toBe(1);
     expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
       "user456",
@@ -123,10 +122,10 @@ describe("Mutation resolvers - updateLoginStreak", () => {
       },
       { new: true }
     );
-  
+
     jest.useRealTimers();
   });
-  
+
 
   it("should not change login streak if user has already logged in today", async () => {
     const mockDate = new Date("2023-05-15T12:00:00.000Z");

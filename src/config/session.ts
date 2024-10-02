@@ -5,8 +5,14 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
+const sessionSecret = process.env.SESSION_SECRET;
+
+if (!sessionSecret) {
+  throw new Error('SESSION_SECRET is not defined in the environment variables');
+}
+
 export const sessionConfig = session({
-  secret: process.env.SESSION_SECRET!,
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
 });
