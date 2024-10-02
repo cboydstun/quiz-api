@@ -563,3 +563,4 @@ Errors are returned in the GraphQL response under the `errors` field, with appro
 - Editor operations (like creating or updating questions) require the user to have the EDITOR, ADMIN, or SUPER_ADMIN role.
 - The API implements rate limiting to prevent abuse. Excessive requests may be temporarily blocked.
 - Email addresses in the leaderboard query results are masked for privacy.
+- GitHub Actions CI/CD Pipeline enabled.
