@@ -28,6 +28,20 @@ jobs:
       with:
         version: 8
 
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+    - uses: actions/cache@v3
+      name: Setup pnpm cache
+      with:
+        path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.9.0
       with:
@@ -43,7 +57,7 @@ jobs:
       run: pnpm test
       env:
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        MONGO_URI: mongodb://localhost:27017/test_db
+        MONGO_URI: ${{ secrets.MONGO_URI }}
         GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
         GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         GOOGLE_REDIRECT_URI: http://localhost:3000/auth/google/callback
