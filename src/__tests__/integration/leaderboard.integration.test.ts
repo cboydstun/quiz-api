@@ -56,6 +56,15 @@ const createMockContext = (user: IUser): ExpressContext => {
   };
 };
 
+interface LeaderboardEntry {
+  user: {
+    username: string;
+    email: string;
+    score: number;
+  };
+  score: number;
+}
+
 describe("Leaderboard Integration Tests", () => {
   let server: ApolloServer<ExpressContext>;
   let users: IUser[];
@@ -146,7 +155,7 @@ describe("Leaderboard Integration Tests", () => {
 
     expect(result.errors).toBeUndefined();
     expect(result.data?.getLeaderboard.leaderboard).toHaveLength(3);
-    result.data?.getLeaderboard.leaderboard.forEach((entry: any) => {
+    result.data?.getLeaderboard.leaderboard.forEach((entry: LeaderboardEntry) => {
       expect(entry.user.email).toMatch(/^[a-z]\*+[a-z0-9]?@example\.com$/);
     });
   });
@@ -182,7 +191,7 @@ describe("Leaderboard Integration Tests", () => {
     expect(result.data?.getLeaderboard.currentUserEntry.user.username).toBe("user4");
     expect(result.data?.getLeaderboard.currentUserEntry.user.email).toBe("u***4@example.com");
 
-    const topUsernames = result.data?.getLeaderboard.leaderboard.map((entry: { user: { username: string } }) => entry.user.username);
+    const topUsernames = result.data?.getLeaderboard.leaderboard.map((entry: LeaderboardEntry) => entry.user.username);
     expect(topUsernames).not.toContain("user4");
   });
 
@@ -191,21 +200,21 @@ describe("Leaderboard Integration Tests", () => {
       throw new AuthenticationError("Not authenticated");
     });
 
-    const context = { req: { headers: {} }, res: {} };
+    const context = { req: { headers: {} }, res: {} } as ExpressContext;
 
     const result = await server.executeOperation(
       {
         query: GET_LEADERBOARD,
         variables: { limit: 5 },
       },
-      context as any
+      context
     );
 
     expect(result.errors).toBeUndefined();
     expect(result.data?.getLeaderboard.leaderboard).toBeDefined();
     expect(result.data?.getLeaderboard.leaderboard.length).toBeGreaterThan(0);
     expect(result.data?.getLeaderboard.currentUserEntry).toBeNull();
-    result.data?.getLeaderboard.leaderboard.forEach((entry: any) => {
+    result.data?.getLeaderboard.leaderboard.forEach((entry: LeaderboardEntry) => {
       expect(entry.user.email).toMatch(/^[a-z]\*+[a-z0-9]?@example\.com$/);
     });
   });
@@ -240,7 +249,7 @@ describe("Leaderboard Integration Tests", () => {
     expect(result.errors).toBeUndefined();
     expect(result.data?.getLeaderboard.leaderboard).toHaveLength(5);
     expect(result.data?.getLeaderboard.currentUserEntry).toBeNull();
-    result.data?.getLeaderboard.leaderboard.forEach((entry: any) => {
+    result.data?.getLeaderboard.leaderboard.forEach((entry: LeaderboardEntry) => {
       expect(entry.user.email).toMatch(/^[a-z]\*+[a-z0-9]?@example\.com$/);
     });
   });
@@ -266,7 +275,7 @@ describe("Leaderboard Integration Tests", () => {
     expect(result.errors).toBeUndefined();
     expect(result.data?.getLeaderboard.leaderboard).toHaveLength(8);
 
-    const emails = result.data?.getLeaderboard.leaderboard.map((entry: any) => entry.user.email);
+    const emails = result.data?.getLeaderboard.leaderboard.map((entry: LeaderboardEntry) => entry.user.email);
     expect(emails).toContain("a*@example.com");
     expect(emails).toContain("a*@example.com");
     expect(emails).toContain("v***l@example.com");
