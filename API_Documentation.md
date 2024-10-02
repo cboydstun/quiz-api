@@ -1,6 +1,6 @@
 # API Documentation
 
-This document provides examples of all queries and mutations available in the API.
+This document provides examples of all queries and mutations available in the Quiz API.
 
 ## User Queries and Mutations
 
@@ -9,14 +9,8 @@ This document provides examples of all queries and mutations available in the AP
 Registers a new user with the provided username, email, and password.
 
 ```graphql
-mutation RegisterUser {
-  register(
-    input: {
-      username: "newuser"
-      email: "newuser@example.com"
-      password: "password123"
-    }
-  ) {
+mutation RegisterUser($input: CreateUserInput!) {
+  register(input: $input) {
     token
     user {
       id
@@ -41,13 +35,26 @@ mutation RegisterUser {
 }
 ```
 
+Variables:
+
+```json
+{
+  "input": {
+    "username": "newuser",
+    "email": "newuser@example.com",
+    "password": "password123",
+    "role": "USER"
+  }
+}
+```
+
 ### Login
 
 Authenticates a user with their email and password.
 
 ```graphql
-mutation Login {
-  login(email: "newuser@example.com", password: "password123") {
+mutation LoginUser($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
     token
     user {
       id
@@ -69,6 +76,15 @@ mutation Login {
       updatedAt
     }
   }
+}
+```
+
+Variables:
+
+```json
+{
+  "email": "newuser@example.com",
+  "password": "password123"
 }
 ```
 
@@ -105,7 +121,7 @@ query Me {
 Retrieves a list of all users in the system.
 
 ```graphql
-query AllUsers {
+query GetUsers {
   users {
     id
     username
@@ -133,8 +149,8 @@ query AllUsers {
 Retrieves information about a specific user by their ID.
 
 ```graphql
-query GetUser($userId: ID!) {
-  user(id: $userId) {
+query GetUser($id: ID!) {
+  user(id: $id) {
     id
     username
     email
@@ -208,16 +224,42 @@ mutation UpdateUserStats($userId: ID!, $stats: UserStatsInput!) {
 }
 ```
 
-### Update login streak (requires authentication)
+### Update login streak (requires admin permission)
 
-Updates the login streak for the authenticated user.
+Updates the login streak for a specific user.
 
 ```graphql
-mutation UpdateLoginStreak {
-  updateLoginStreak {
+mutation UpdateLoginStreak($userId: ID!) {
+  updateLoginStreak(userId: $userId) {
     username
     consecutiveLoginDays
     lastLoginDate
+  }
+}
+```
+
+### Update username (requires authentication)
+
+Updates the username of the authenticated user.
+
+```graphql
+mutation UpdateUsername($username: String!) {
+  updateUsername(username: $username) {
+    id
+    username
+  }
+}
+```
+
+### Update password (requires authentication)
+
+Updates the password of the authenticated user.
+
+```graphql
+mutation UpdatePassword($currentPassword: String!, $newPassword: String!) {
+  updatePassword(currentPassword: $currentPassword, newPassword: $newPassword) {
+    success
+    message
   }
 }
 ```
@@ -424,42 +466,18 @@ query GetLeaderboard($limit: Int) {
 }
 ```
 
-## Error Handling and Edge Cases
-
-### Try to register with an existing email
-
-Attempts to register a new user with an email that already exists in the system.
-
-```graphql
-mutation RegisterExistingEmail {
-  register(
-    input: {
-      username: "existinguser"
-      email: "newuser@example.com"
-      password: "password123"
-    }
-  ) {
-    token
-    user {
-      id
-      username
-      email
-    }
-  }
-}
-```
-
 ## Input Types
 
-### RegisterInput
+### CreateUserInput
 
 Input type for registering a new user.
 
 ```graphql
-input RegisterInput {
+input CreateUserInput {
   username: String!
   email: String!
   password: String!
+  role: Role
 }
 ```
 
@@ -509,6 +527,7 @@ input UserStatsInput {
   yearlyPoints: Int
   monthlyPoints: Int
   dailyPoints: Int
+  lastLoginDate: String
 }
 ```
 
@@ -524,3 +543,23 @@ enum Role {
   SUPER_ADMIN
 }
 ```
+
+## Error Handling
+
+The API uses custom error types to handle various error scenarios. These include:
+
+- AuthenticationError: Thrown when authentication fails or is required.
+- ForbiddenError: Thrown when a user doesn't have permission to perform an action.
+- UserInputError: Thrown when user input is invalid.
+- NotFoundError: Thrown when a requested resource is not found.
+- ValidationError: Thrown when input validation fails.
+
+Errors are returned in the GraphQL response under the `errors` field, with appropriate error codes and messages.
+
+## Notes
+
+- All mutations and queries that require authentication should include the JWT token in the Authorization header as a Bearer token.
+- Admin-only operations require the user to have the ADMIN or SUPER_ADMIN role.
+- Editor operations (like creating or updating questions) require the user to have the EDITOR, ADMIN, or SUPER_ADMIN role.
+- The API implements rate limiting to prevent abuse. Excessive requests may be temporarily blocked.
+- Email addresses in the leaderboard query results are masked for privacy.
