@@ -9,4 +9,7 @@ module.exports = {
     "^.+\\.ts$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "js", "json", "node"],
+  // Add these lines
+  testTimeout: 30000, // 30 seconds
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 };
