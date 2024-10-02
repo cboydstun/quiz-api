@@ -208,9 +208,25 @@ mutation UpdateUserStats($userId: ID!, $stats: UserStatsInput!) {
 }
 ```
 
+### Update login streak (requires authentication)
+
+Updates the login streak for the authenticated user.
+
+```graphql
+mutation UpdateLoginStreak {
+  updateLoginStreak {
+    username
+    consecutiveLoginDays
+    lastLoginDate
+  }
+}
+```
+
 ## Question Queries and Mutations
 
--Get all questions - Retrieves a list of all questions in the system.
+### Get all questions
+
+Retrieves a list of all questions in the system.
 
 ```graphql
 query GetQuestions {
@@ -230,7 +246,7 @@ query GetQuestions {
 }
 ```
 
--Get a specific question by ID
+### Get a specific question by ID
 
 ```graphql
 query GetQuestion($id: ID!) {
@@ -250,7 +266,7 @@ query GetQuestion($id: ID!) {
 }
 ```
 
--Create a new question (requires editor or admin permission)
+### Create a new question (requires editor or admin permission)
 
 ```graphql
 mutation CreateQuestion($input: CreateQuestionInput!) {
@@ -270,7 +286,7 @@ mutation CreateQuestion($input: CreateQuestionInput!) {
 }
 ```
 
--Update an existing question (requires editor or admin permission)
+### Update an existing question (requires editor or admin permission)
 
 ```graphql
 mutation UpdateQuestion($id: ID!, $input: UpdateQuestionInput!) {
@@ -290,7 +306,7 @@ mutation UpdateQuestion($id: ID!, $input: UpdateQuestionInput!) {
 }
 ```
 
--Delete a question (requires editor or admin permission)
+### Delete a question (requires editor or admin permission)
 
 ```graphql
 mutation DeleteQuestion($id: ID!) {
@@ -298,7 +314,9 @@ mutation DeleteQuestion($id: ID!) {
 }
 ```
 
--Submits a user's answer to a specific question.
+### Submit an answer
+
+Submits a user's answer to a specific question.
 
 ```graphql
 mutation SubmitAnswer($questionId: ID!, $selectedAnswer: String!) {
@@ -309,7 +327,9 @@ mutation SubmitAnswer($questionId: ID!, $selectedAnswer: String!) {
 }
 ```
 
--Get user responses (requires authentication) - Retrieves a list of the current user's responses to questions.
+### Get user responses (requires authentication)
+
+Retrieves a list of the current user's responses to questions.
 
 ```graphql
 query GetUserResponses {
@@ -326,9 +346,9 @@ query GetUserResponses {
 
 ## Authentication Queries and Mutations
 
-Get Google Auth URL
+### Get Google Auth URL
 
-- Retrieves the URL for Google OAuth authentication.
+Retrieves the URL for Google OAuth authentication.
 
 ```graphql
 query GetGoogleAuthUrl {
@@ -338,9 +358,9 @@ query GetGoogleAuthUrl {
 }
 ```
 
-Authenticate with Google
+### Authenticate with Google
 
-- Authenticates a user using a Google OAuth code.
+Authenticates a user using a Google OAuth code.
 
 ```graphql
 mutation AuthenticateWithGoogle($code: String!) {
@@ -351,6 +371,19 @@ mutation AuthenticateWithGoogle($code: String!) {
       username
       email
       role
+      score
+      questionsAnswered
+      questionsCorrect
+      questionsIncorrect
+      skills
+      lifetimePoints
+      yearlyPoints
+      monthlyPoints
+      dailyPoints
+      consecutiveLoginDays
+      lastLoginDate
+      createdAt
+      updatedAt
     }
   }
 }
@@ -360,7 +393,7 @@ mutation AuthenticateWithGoogle($code: String!) {
 
 ### Get Leaderboard
 
--Retrieves the leaderboard with an optional limit on the number of entries.
+Retrieves the leaderboard with an optional limit on the number of entries.
 
 ```graphql
 query GetLeaderboard($limit: Int) {
@@ -391,10 +424,11 @@ query GetLeaderboard($limit: Int) {
 }
 ```
 
-Error Handling and Edge Cases
--### Try to register with an existing email +[... Error Handling and Edge Cases remain unchanged ...]
+## Error Handling and Edge Cases
 
--Attempts to register a new user with an email that already exists in the system.
+### Try to register with an existing email
+
+Attempts to register a new user with an email that already exists in the system.
 
 ```graphql
 mutation RegisterExistingEmail {
@@ -471,6 +505,10 @@ input UserStatsInput {
   pointsEarned: Int
   newSkills: [String!]
   consecutiveLoginDays: Int
+  lifetimePoints: Int
+  yearlyPoints: Int
+  monthlyPoints: Int
+  dailyPoints: Int
 }
 ```
 
