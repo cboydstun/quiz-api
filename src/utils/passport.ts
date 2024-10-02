@@ -1,5 +1,3 @@
-// src/utils/passport.ts
-
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User, { IUser } from "../models/User";
@@ -45,12 +43,11 @@ passport.use(
   )
 );
 
-passport.serializeUser((user: Express.User, done: (err: Error | null, id?: string) => void) => {
-  const userWithId = user as IUser & { id?: string };
-  done(null, userWithId.id);
+passport.serializeUser((user, done) => {
+  done(null, (user as IUser)._id);
 });
 
-passport.deserializeUser(async (id: string, done: (err: Error | null, user?: Express.User | null) => void) => {
+passport.deserializeUser(async (id: string, done) => {
   try {
     const user = await User.findById(id);
     done(null, user);
@@ -58,5 +55,11 @@ passport.deserializeUser(async (id: string, done: (err: Error | null, user?: Exp
     done(error instanceof Error ? error : new Error('An unknown error occurred'));
   }
 });
+
+declare global {
+  namespace Express {
+    interface User extends IUser { }
+  }
+}
 
 export default passport;
