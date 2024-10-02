@@ -8,6 +8,9 @@ import resolvers from '../../../resolvers';
 import { generateToken } from '../../../utils/auth';
 import { Request, Response } from 'express';
 
+import * as dotenv from "dotenv";
+dotenv.config();
+
 let mongoServer: MongoMemoryServer;
 let server: ApolloServer;
 let userId: string;
