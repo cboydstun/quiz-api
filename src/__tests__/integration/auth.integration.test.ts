@@ -1,10 +1,11 @@
+// src/__tests__/integration/auth.integration.test.ts
+
 import { ApolloServer } from "apollo-server-express";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import typeDefs from "../../schema";
 import resolvers from "../../resolvers";
 import User from "../../models/User";
-import { OAuth2Client } from "google-auth-library";
 import * as googleAuth from "../../resolvers/authResolvers";
 
 let mongoServer: MongoMemoryServer;
@@ -261,8 +262,8 @@ describe("Authentication Integration Tests", () => {
 
       jest
         .spyOn(googleAuth, "createOAuth2Client")
-        .mockReturnValue(mockClient as any);
-      (googleAuth as any).client = mockClient;
+        .mockReturnValue(mockClient as unknown as ReturnType<typeof googleAuth.createOAuth2Client>);
+      (googleAuth as { client: unknown }).client = mockClient;
     });
 
     afterEach(() => {
