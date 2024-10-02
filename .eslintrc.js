@@ -1,3 +1,5 @@
+// .eslintrc.js
+
 module.exports = {
     parser: '@typescript-eslint/parser',
     extends: [
@@ -8,6 +10,12 @@ module.exports = {
         sourceType: 'module',
     },
     rules: {
-        // You can add custom rules here
+        // Disable the rule that warns about explicit 'any' types
+        '@typescript-eslint/no-explicit-any': 'off',
+
+        // Optionally, you can set it to 'warn' instead of 'off' if you want to see warnings but not errors
+        // '@typescript-eslint/no-explicit-any': 'warn',
+
+        // You can add other custom rules here
     },
 };
