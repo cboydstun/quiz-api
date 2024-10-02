@@ -1,275 +1,1269 @@
 [
   {
-    "prompt": "§ 107.1 Applicability\n\nPart 107 applies to the registration, airman certification, and operation of civil small unmanned aircraft systems within the United States. However, it does not apply to air carrier operations, any aircraft subject to the provisions of Part 101, or operations conducted under a Section 333 exemption. This distinction is important for understanding which regulations govern different types of unmanned aircraft operations.",
-    "questionText": "Which of the following operations is NOT subject to Part 107 regulations?",
+    "prompt": "§ 107.1 Applicability\n\nPart 107 applies to the registration, airman certification, and operation of civil small unmanned aircraft systems within the United States. It's crucial to understand what falls under this regulation and what doesn't, as it determines which rules govern different types of unmanned aircraft operations.",
+    "questionText": "Which of the following is NOT covered by Part 107?",
     "answers": [
-      "A small UAS weighing 10 pounds used for aerial photography",
-      "A model aircraft flown for recreational purposes under Part 101",
-      "A small UAS used for real estate photography",
-      "A small UAS used for bridge inspection"
+      "Registration of a small UAS for commercial use",
+      "Certification of remote pilots",
+      "Operation of a model aircraft under Part 101",
+      "Flying a small UAS for bridge inspection"
     ],
-    "correctAnswer": "A model aircraft flown for recreational purposes under Part 101",
-    "hint": "Part 107 does not apply to aircraft subject to the provisions of Part 101.",
+    "correctAnswer": "Operation of a model aircraft under Part 101",
+    "hint": "Part 107 does not apply to model aircraft operated under Part 101.",
     "points": 2
   },
   {
-    "prompt": "§ 107.3 Definitions\n\nPart 107 provides specific definitions for terms used in the regulation of small unmanned aircraft systems. A key definition is that of a 'small unmanned aircraft,' which is defined as an unmanned aircraft weighing less than 55 pounds on takeoff, including everything that is on board or otherwise attached to the aircraft. This weight limit is crucial for determining which aircraft fall under Part 107 regulations.",
-    "questionText": "According to Part 107, what is the maximum weight of a small unmanned aircraft?",
+    "prompt": "§ 107.3 Definitions\n\nThis section provides important definitions for terms used throughout Part 107. Understanding these definitions is crucial for correctly interpreting and applying the regulations.",
+    "questionText": "How does Part 107 define a 'small unmanned aircraft'?",
     "answers": [
-      "Less than 55 pounds",
-      "Exactly 55 pounds",
-      "More than 55 pounds",
-      "50 pounds"
+      "An unmanned aircraft weighing less than 55 pounds on takeoff",
+      "Any unmanned aircraft used for recreational purposes",
+      "An unmanned aircraft weighing exactly 55 pounds",
+      "Any unmanned aircraft that can be controlled remotely"
     ],
-    "correctAnswer": "Less than 55 pounds",
-    "hint": "The definition specifies 'weighing less than 55 pounds on takeoff'.",
+    "correctAnswer": "An unmanned aircraft weighing less than 55 pounds on takeoff",
+    "hint": "The definition includes the specific weight limit of less than 55 pounds.",
     "points": 1
   },
   {
-    "prompt": "§ 107.12 Requirement for a remote pilot certificate with a small UAS rating\n\nTo operate a small UAS under Part 107, individuals must hold a remote pilot certificate with a small UAS rating. This applies to both the person manipulating the flight controls and the remote pilot in command. The only exception is if a person without a certificate is operating under the direct supervision of a certified remote pilot in command who can immediately take control of the aircraft. This requirement ensures that operators have the necessary knowledge and skills for safe operation.",
-    "questionText": "Who must have a Remote Pilot Certificate with a small UAS rating?",
+    "prompt": "§ 107.5 Falsification, reproduction or alteration\n\nThis section prohibits making false records or reports, as well as altering certificates or other documents related to Part 107. It's important for maintaining the integrity of UAS operations and documentation.",
+    "questionText": "What is a potential consequence of making a fraudulent or intentionally false record required by Part 107?",
     "answers": [
-      "Only the person manipulating the flight controls",
-      "Only the remote pilot in command",
-      "Both the remote pilot in command and the person manipulating the flight controls",
-      "The visual observer"
+      "A verbal warning",
+      "Denial of an application for a remote pilot certificate",
+      "A mandatory retraining course",
+      "A small fine not exceeding $100"
     ],
-    "correctAnswer": "Both the remote pilot in command and the person manipulating the flight controls",
-    "hint": "Section 107.12 outlines the requirements for both roles.",
+    "correctAnswer": "Denial of an application for a remote pilot certificate",
+    "hint": "Section 107.5(b) lists denial of an application as a potential consequence.",
     "points": 2
   },
   {
-    "prompt": "§ 107.17 Medical condition\n\nPart 107 addresses the importance of an operator's medical fitness for safe UAS operations. It prohibits a person from manipulating the controls of a small UAS or acting as a remote pilot in command or visual observer if they know or have reason to know that they have a physical or mental condition that could interfere with the safe operation of the UAS. This regulation emphasizes personal responsibility and self-assessment of one's fitness to operate.",
-    "questionText": "A person knows they have a medical condition that would interfere with the safe operation of a small UAS. What action should they take?",
+    "prompt": "§ 107.7 Inspection, testing, and demonstration of compliance\n\nThis section outlines the requirement for remote pilots to make themselves and their equipment available for inspection or testing by the FAA upon request. This helps ensure compliance with regulations.",
+    "questionText": "What must a remote pilot in command make available to the Administrator upon request?",
     "answers": [
-      "They may operate as long as they feel fine at the time of flight",
-      "They may not act as a remote pilot in command or manipulate the controls",
-      "They may operate if they have a second person monitoring their condition",
-      "They may operate if they limit flights to below 200 feet AGL"
+      "Their personal identification",
+      "Their remote pilot certificate with a small UAS rating",
+      "Their flight log book",
+      "Their UAS purchase receipt"
     ],
-    "correctAnswer": "They may not act as a remote pilot in command or manipulate the controls",
-    "hint": "Section 107.17 prohibits operation with known physical or mental conditions that would interfere with safe operation.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.29 Daylight operation\n\nPart 107 generally restricts small UAS operations to daylight hours. However, it does allow for operation during civil twilight if the small unmanned aircraft has anti-collision lighting visible for at least 3 statute miles. Civil twilight is defined as the period 30 minutes before official sunrise and 30 minutes after official sunset, except in Alaska where different rules apply. This provision balances the need for extended operations with safety considerations.",
-    "questionText": "Under what conditions can a small UAS be operated during civil twilight?",
-    "answers": [
-      "It cannot be operated during civil twilight",
-      "It can be operated without any additional equipment",
-      "It can be operated if it has anti-collision lighting visible for 3 statute miles",
-      "It can be operated only with a waiver from the FAA"
-    ],
-    "correctAnswer": "It can be operated if it has anti-collision lighting visible for 3 statute miles",
-    "hint": "Section 107.29(b) allows operation during civil twilight with appropriate lighting.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.31 Visual line of sight aircraft operation\n\nPart 107 requires that the remote pilot in command, the visual observer (if one is used), and the person manipulating the flight controls of the small UAS must be able to see the unmanned aircraft throughout the entire flight. This must be accomplished with vision unaided by any device other than corrective lenses. The purpose is to ensure that the operator can maintain awareness of the aircraft's location, attitude, altitude, and direction of flight, observe the airspace for other aircraft or hazards, and determine that the unmanned aircraft does not endanger the life or property of another.",
-    "questionText": "What is required to maintain visual line of sight during small UAS operations?",
-    "answers": [
-      "The remote pilot must be able to see the UAS with binoculars",
-      "The remote pilot or visual observer must be able to see the UAS with unaided vision (except for corrective lenses)",
-      "The UAS must remain within 1 mile of the remote pilot",
-      "The UAS must have a camera providing a real-time video feed to the remote pilot"
-    ],
-    "correctAnswer": "The remote pilot or visual observer must be able to see the UAS with unaided vision (except for corrective lenses)",
-    "hint": "Section 107.31 requires unaided visual line of sight, except for corrective lenses.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.39 Operation over human beings\n\nPart 107 places restrictions on operating small UAS over human beings. Generally, no person may operate a small unmanned aircraft over another person unless that person is directly participating in the operation of the small unmanned aircraft, or is located under a covered structure or inside a stationary vehicle that can provide reasonable protection from a falling small unmanned aircraft. This rule is designed to minimize risk to people on the ground who are not involved in the UAS operation.",
-    "questionText": "Under what circumstances can a small UAS be operated over a human being?",
-    "answers": [
-      "When the human being is directly participating in the operation of the small UAS",
-      "When the human being is under a covered structure",
-      "When the human being is inside a stationary vehicle",
-      "All of the above"
-    ],
-    "correctAnswer": "All of the above",
-    "hint": "Section 107.39 allows operation over humans in all these circumstances.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.51 Operating limitations for small unmanned aircraft\n\nPart 107 establishes several operating limitations for small UAS. These include a maximum groundspeed of 87 knots (100 mph), a maximum altitude of 400 feet above ground level (or within 400 feet of a structure), minimum visibility of 3 statute miles, and minimum distance from clouds (500 feet below and 2,000 feet horizontally). These limitations are designed to ensure safe operation of small UAS in the National Airspace System while minimizing risk to other aircraft and people on the ground.",
-    "questionText": "What is the maximum altitude allowed for a small UAS operation under Part 107?",
-    "answers": [
-      "400 feet above ground level (AGL)",
-      "500 feet AGL",
-      "400 feet above a structure",
-      "400 feet AGL, or 400 feet above a structure within a 400-foot radius of the structure"
-    ],
-    "correctAnswer": "400 feet AGL, or 400 feet above a structure within a 400-foot radius of the structure",
-    "hint": "Section 107.51(b) allows operation up to 400 feet AGL, or higher within a 400-foot radius of a structure.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver\n\nPart 107 includes provisions for waivers, allowing operators to deviate from certain regulations if they can demonstrate that their operation can be conducted safely under the terms of a waiver. Section 107.205 lists the regulations that are subject to waiver, which include rules about operation from a moving vehicle, daylight operation, visual line of sight, visual observer, operation of multiple small UAS, yielding the right of way, operation over people, operation in certain airspace, and operating limitations. However, some regulations, such as those pertaining to the carriage of hazardous materials, are not subject to waiver.",
-    "questionText": "Which of the following operating rules is NOT subject to waiver under Part 107?",
-    "answers": [
-      "Visual line of sight aircraft operation",
-      "Daylight operation",
-      "Operating limitations for small unmanned aircraft",
-      "Carriage of hazardous material"
-    ],
-    "correctAnswer": "Carriage of hazardous material",
-    "hint": "Section 107.205 lists regulations subject to waiver, which does not include the carriage of hazardous materials.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.19 Remote pilot in command\n\nPart 107 establishes the role and responsibilities of the remote pilot in command. The remote pilot in command is directly responsible for and is the final authority as to the operation of the small unmanned aircraft system. They must ensure that the small unmanned aircraft will pose no undue hazard to other people, other aircraft, or other property in the event of a loss of control of the aircraft for any reason. The remote pilot in command must also ensure that the small UAS operation complies with all applicable regulations.",
-    "questionText": "Who is directly responsible for, and the final authority as to the operation of the small unmanned aircraft system?",
-    "answers": [
-      "The visual observer",
-      "The person manipulating the flight controls",
-      "The remote pilot in command",
-      "The FAA"
-    ],
-    "correctAnswer": "The remote pilot in command",
-    "hint": "Section 107.19 states that the remote pilot in command is directly responsible and has final authority.",
+    "correctAnswer": "Their remote pilot certificate with a small UAS rating",
+    "hint": "Section 107.7(a) specifically mentions the remote pilot certificate.",
     "points": 1
   },
   {
-    "prompt": "§ 107.21 In-flight emergency\n\nPart 107 includes provisions for handling in-flight emergencies. In an in-flight emergency requiring immediate action, the remote pilot in command may deviate from any rule of Part 107 to the extent necessary to meet that emergency. This provision allows for flexibility in emergency situations to prioritize safety. However, upon request, the remote pilot in command who has deviated from a rule must send a written report of that deviation to the Administrator.",
-    "questionText": "In an in-flight emergency requiring immediate action, the remote pilot in command may:",
+    "prompt": "§ 107.9 Accident reporting\n\nThis section requires remote pilots to report certain types of accidents involving small UAS operations. Understanding when and how to report accidents is crucial for compliance and safety improvement.",
+    "questionText": "Within what timeframe must a remote pilot report an operation that results in serious injury to any person or any loss of consciousness?",
+    "answers": [
+      "Immediately",
+      "Within 24 hours",
+      "Within 10 calendar days",
+      "Within 30 days"
+    ],
+    "correctAnswer": "Within 10 calendar days",
+    "hint": "Section 107.9 specifies a 10 calendar day reporting window.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.12 Requirement for a remote pilot certificate with a small UAS rating\n\nThis section outlines who needs to have a remote pilot certificate to operate a small UAS under Part 107. It's a fundamental requirement for commercial UAS operations.",
+    "questionText": "Under what condition can a person without a remote pilot certificate operate a small UAS under Part 107?",
+    "answers": [
+      "If they are supervised by someone with a certificate",
+      "If they are under the direct supervision of a remote pilot in command",
+      "If they are operating in Class G airspace",
+      "If they are flying below 100 feet AGL"
+    ],
+    "correctAnswer": "If they are under the direct supervision of a remote pilot in command",
+    "hint": "Section 107.12(a)(2) allows operation under direct supervision of a certificated remote pilot in command.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.13 Registration\n\nThis section refers to the requirement for registering small unmanned aircraft. Registration is an important step in accountability and oversight of UAS operations.",
+    "questionText": "What section of the regulations does Part 107 refer to for registration requirements?",
+    "answers": ["§ 91.203(a)(2)", "§ 107.13(b)", "§ 47.2", "§ 48.100"],
+    "correctAnswer": "§ 91.203(a)(2)",
+    "hint": "Section 107.13 specifically refers to § 91.203(a)(2) for registration compliance.",
+    "points": 3
+  },
+  {
+    "prompt": "§ 107.15 Condition for safe operation\n\nThis section emphasizes the responsibility of the remote pilot to ensure that the small UAS is in a condition for safe operation before each flight. It's a crucial aspect of maintaining safety in UAS operations.",
+    "questionText": "When must a remote pilot in command check the small unmanned aircraft to determine if it's in a condition for safe operation?",
+    "answers": [
+      "Once a week",
+      "Before each flight",
+      "After each flight",
+      "Only when changing batteries"
+    ],
+    "correctAnswer": "Before each flight",
+    "hint": "Section 107.15(a) requires checking before each flight.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.17 Medical condition\n\nThis section prohibits individuals from operating a small UAS if they have a physical or mental condition that would interfere with safe operation. It emphasizes personal responsibility in assessing one's fitness to operate.",
+    "questionText": "What should a person do if they know they have a medical condition that would interfere with the safe operation of a small UAS?",
+    "answers": [
+      "Operate only in Class G airspace",
+      "Limit flights to below 200 feet AGL",
+      "Not act as a remote pilot in command or manipulate the controls",
+      "Operate only with a visual observer present"
+    ],
+    "correctAnswer": "Not act as a remote pilot in command or manipulate the controls",
+    "hint": "Section 107.17 prohibits operation with known interfering medical conditions.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.19 Remote pilot in command\n\nThis section establishes the responsibilities and authority of the remote pilot in command. Understanding this role is crucial for safe and compliant UAS operations.",
+    "questionText": "What is a key responsibility of the remote pilot in command?",
+    "answers": [
+      "Maintaining visual line of sight at all times",
+      "Ensuring the small UAS operation complies with all applicable regulations",
+      "Conducting preflight briefings for all observers",
+      "Reporting all flights to the FAA"
+    ],
+    "correctAnswer": "Ensuring the small UAS operation complies with all applicable regulations",
+    "hint": "Section 107.19(c) specifies compliance with all applicable regulations as a responsibility.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.21 In-flight emergency\n\nThis section provides guidance for remote pilots in dealing with in-flight emergencies. It allows for deviations from rules when necessary to respond to emergencies.",
+    "questionText": "In an in-flight emergency requiring immediate action, what may the remote pilot in command do?",
     "answers": [
       "Only land the aircraft immediately",
+      "Only contact Air Traffic Control",
       "Deviate from any rule of Part 107 to the extent necessary to meet the emergency",
-      "Only contact Air Traffic Control for assistance",
-      "Only abort the flight and return to the launch point"
+      "Only increase altitude to avoid obstacles"
     ],
     "correctAnswer": "Deviate from any rule of Part 107 to the extent necessary to meet the emergency",
-    "hint": "Section 107.21 allows deviation from rules to the extent necessary in an emergency.",
+    "hint": "Section 107.21 allows deviation from rules as necessary in emergencies.",
     "points": 3
   },
   {
-    "prompt": "§ 107.35 Operation of multiple small unmanned aircraft\n\nPart 107 prohibits a person from operating or acting as a remote pilot in command or visual observer in the operation of more than one unmanned aircraft at the same time. This rule is in place to ensure that operators can maintain full attention and control over each unmanned aircraft they are responsible for, thereby reducing the risk of accidents or incidents.",
-    "questionText": "Can a remote pilot operate more than one small unmanned aircraft at the same time?",
+    "prompt": "§ 107.23 Hazardous operation\n\nThis section prohibits careless or reckless operation of small UAS. It's a general safety provision aimed at preventing dangerous operations.",
+    "questionText": "What does Part 107 prohibit regarding the operation of a small UAS?",
     "answers": [
-      "Yes, as long as they are all within visual line of sight",
-      "Yes, but only if they have a visual observer for each aircraft",
-      "No, a person may not operate more than one unmanned aircraft at the same time",
-      "Yes, but only if they have obtained a waiver from the FAA"
+      "Operation in controlled airspace",
+      "Operation at night",
+      "Operation in a careless or reckless manner",
+      "Operation over people"
     ],
-    "correctAnswer": "No, a person may not operate more than one unmanned aircraft at the same time",
-    "hint": "Section 107.35 prohibits the operation of more than one unmanned aircraft at the same time.",
+    "correctAnswer": "Operation in a careless or reckless manner",
+    "hint": "Section 107.23(a) prohibits careless or reckless operation.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.25 Operation from a moving vehicle or aircraft\n\nThis section places restrictions on operating a small UAS from moving vehicles or aircraft. These restrictions are in place to minimize risks associated with operating from a moving platform.",
+    "questionText": "Under what condition is the operation of a small UAS from a moving land vehicle allowed?",
+    "answers": [
+      "When flying over any populated area",
+      "When the vehicle is moving less than 10 mph",
+      "When flying over a sparsely populated area and not carrying another person's property for compensation",
+      "When operating below 100 feet AGL"
+    ],
+    "correctAnswer": "When flying over a sparsely populated area and not carrying another person's property for compensation",
+    "hint": "Section 107.25(b) allows operation from a moving vehicle under these specific conditions.",
+    "points": 3
+  },
+  {
+    "prompt": "§ 107.27 Alcohol or drugs\n\nThis section prohibits operating a small UAS while under the influence of alcohol or drugs. It refers to existing regulations for manned aircraft regarding alcohol and drug use.",
+    "questionText": "What regulations does Part 107 reference regarding alcohol and drug use?",
+    "answers": [
+      "§§ 91.17 and 91.19",
+      "§§ 61.15 and 61.16",
+      "§§ 107.27 and 107.29",
+      "§§ 121.15 and 121.16"
+    ],
+    "correctAnswer": "§§ 91.17 and 91.19",
+    "hint": "Section 107.27 specifically references §§ 91.17 and 91.19.",
     "points": 2
   },
   {
-    "prompt": "§ 107.37 Operation near aircraft; right-of-way rules\n\nPart 107 requires that small unmanned aircraft must yield the right of way to all other aircraft, including airborne vehicles and launch and reentry vehicles. This means that the small unmanned aircraft must give way to the other aircraft and may not pass over, under, or ahead of it unless well clear. Additionally, no person may operate a small unmanned aircraft so close to another aircraft as to create a collision hazard.",
-    "questionText": "When a small unmanned aircraft and a manned aircraft are on converging courses, which aircraft has the right of way?",
+    "prompt": "§ 107.29 Daylight operation\n\nThis section outlines the requirements for operating a small UAS during daylight and civil twilight hours. It specifies lighting requirements for operations during civil twilight.",
+    "questionText": "What is required for small UAS operations during civil twilight?",
+    "answers": [
+      "A waiver from the FAA",
+      "Anti-collision lighting visible for 3 statute miles",
+      "Constant communication with ATC",
+      "A visual observer must be used"
+    ],
+    "correctAnswer": "Anti-collision lighting visible for 3 statute miles",
+    "hint": "Section 107.29(b) requires anti-collision lighting for civil twilight operations.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.31 Visual line of sight aircraft operation\n\nThis section requires that the remote pilot, person manipulating the controls, or visual observer maintain visual line of sight with the small UAS throughout the entire flight. This is a fundamental safety requirement for most UAS operations under Part 107.",
+    "questionText": "What does 'visual line of sight' mean in the context of small UAS operations?",
+    "answers": [
+      "The ability to see the UAS with binoculars",
+      "The ability to see the UAS with unaided vision (except for corrective lenses)",
+      "The ability to see the UAS on a video feed",
+      "The ability to see the UAS within a 1-mile radius"
+    ],
+    "correctAnswer": "The ability to see the UAS with unaided vision (except for corrective lenses)",
+    "hint": "Section 107.31(a) specifies unaided visual line of sight, except for corrective lenses.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.33 Visual observer\n\nThis section outlines the requirements and responsibilities when a visual observer is used in small UAS operations. Visual observers can play a crucial role in maintaining situational awareness during flights.",
+    "questionText": "What is a key requirement when using a visual observer in small UAS operations?",
+    "answers": [
+      "The visual observer must have a remote pilot certificate",
+      "The visual observer must be in a fixed position",
+      "The remote pilot and visual observer must maintain effective communication",
+      "The visual observer must be able to take control of the UAS if needed"
+    ],
+    "correctAnswer": "The remote pilot and visual observer must maintain effective communication",
+    "hint": "Section 107.33(a) requires effective communication between the remote pilot and visual observer.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.35 Operation of multiple small unmanned aircraft\n\nThis section prohibits the simultaneous operation of multiple small unmanned aircraft by one remote pilot. This rule is in place to ensure that each UAS receives adequate attention and control from its operator.",
+    "questionText": "Can a single remote pilot operate multiple small unmanned aircraft simultaneously?",
+    "answers": [
+      "Yes, if they are all within visual line of sight",
+      "Yes, but only two aircraft at a time",
+      "No, it is not allowed under any circumstances",
+      "Yes, if the pilot has a special certification"
+    ],
+    "correctAnswer": "No, it is not allowed under any circumstances",
+    "hint": "Section 107.35 prohibits the operation of more than one unmanned aircraft at a time.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.36 Carriage of hazardous material\n\nThis section prohibits small unmanned aircraft from carrying hazardous material. This rule is in place to prevent potential incidents involving dangerous goods during UAS operations.",
+    "questionText": "What does Part 107 say about carrying hazardous materials on a small UAS?",
+    "answers": [
+      "It is allowed with proper packaging",
+      "It is allowed with prior FAA approval",
+      "It is not allowed under any circumstances",
+      "It is allowed for quantities less than 1 pound"
+    ],
+    "correctAnswer": "It is not allowed under any circumstances",
+    "hint": "Section 107.36 explicitly prohibits carrying hazardous material.",
+    "points": 1
+  },
+
+  {
+    "prompt": "§ 107.37 Operation near aircraft; right-of-way rules (continued)\n\nThis section establishes right-of-way rules for small UAS operations. It requires small unmanned aircraft to yield the right of way to all other aircraft, including other UAS.",
+    "questionText": "When a manned aircraft and a small unmanned aircraft are on converging paths, which has the right of way?",
     "answers": [
       "The small unmanned aircraft",
       "The manned aircraft",
       "The aircraft at the lower altitude",
-      "The aircraft that arrived in the area first"
+      "Neither, both must alter course"
     ],
     "correctAnswer": "The manned aircraft",
-    "hint": "Section 107.37 requires small unmanned aircraft to yield the right of way to all aircraft.",
+    "hint": "Section 107.37(a) requires small unmanned aircraft to yield the right of way to all aircraft.",
     "points": 2
   },
   {
-    "prompt": "§ 107.41 Operation in certain airspace\n\nPart 107 places restrictions on operating small unmanned aircraft in certain types of airspace. Specifically, no person may operate a small unmanned aircraft in Class B, Class C, or Class D airspace or within the lateral boundaries of the surface area of Class E airspace designated for an airport unless that person has prior authorization from Air Traffic Control (ATC). This requirement ensures that UAS operations do not interfere with other air traffic in busy or sensitive airspace.",
-    "questionText": "What is required to operate a small UAS in Class B airspace?",
+    "prompt": "§ 107.39 Operation over human beings\n\nThis section restricts the operation of small unmanned aircraft over human beings who are not directly participating in the operation. It's designed to minimize risk to people on the ground.",
+    "questionText": "Under what condition is it permissible to operate a small UAS over a person not directly participating in the operation?",
+    "answers": [
+      "If the person is wearing protective gear",
+      "If the person is notified of the operation beforehand",
+      "If the person is under a covered structure",
+      "If the UAS is flying below 50 feet AGL"
+    ],
+    "correctAnswer": "If the person is under a covered structure",
+    "hint": "Section 107.39(b) allows operation over a person under a covered structure.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.41 Operation in certain airspace\n\nThis section outlines the requirements for operating in controlled airspace. It's crucial for ensuring that small UAS operations do not interfere with other air traffic.",
+    "questionText": "What is required to operate a small UAS in Class C airspace?",
     "answers": [
       "Nothing, operation is allowed without restriction",
       "Prior authorization from Air Traffic Control (ATC)",
       "A transponder on the small UAS",
-      "A manned aircraft escort"
+      "Filing a flight plan"
     ],
     "correctAnswer": "Prior authorization from Air Traffic Control (ATC)",
-    "hint": "Section 107.41 requires prior ATC authorization for operation in Class B airspace.",
+    "hint": "Section 107.41 requires prior ATC authorization for operation in Class C airspace.",
     "points": 2
   },
   {
-    "prompt": "§ 107.49 Preflight familiarization, inspection, and actions for aircraft operation\n\nPart 107 requires that before flight, the remote pilot in command must assess the operating environment. This assessment must include evaluating risks to persons and property in the immediate vicinity both on the surface and in the air. The assessment should cover local weather conditions, local airspace and any flight restrictions, the location of persons and property on the surface, and other ground hazards.",
-    "questionText": "What must a remote pilot in command do prior to flight?",
+    "prompt": "§ 107.43 Operation in the vicinity of airports\n\nThis section prohibits interference with operations and traffic patterns at airports, heliports, and seaplane bases. It's important for maintaining safety in these critical areas.",
+    "questionText": "What does Part 107 say about operating a small UAS in a way that interferes with operations and traffic patterns at airports?",
     "answers": [
-      "File a flight plan with the FAA",
-      "Obtain a weather briefing",
-      "Assess the operating environment and risks",
-      "Conduct a test flight"
+      "It's allowed if the UAS is below 100 feet AGL",
+      "It's allowed with prior notification to the airport",
+      "It's prohibited",
+      "It's allowed outside of business hours"
     ],
-    "correctAnswer": "Assess the operating environment and risks",
-    "hint": "Section 107.49 requires assessment of the operating environment and risks prior to flight.",
+    "correctAnswer": "It's prohibited",
+    "hint": "Section 107.43 prohibits interfering with operations and traffic patterns at airports.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.45 Operation in prohibited or restricted areas\n\nThis section addresses operations in special use airspace. It's crucial for remote pilots to understand and respect these designated areas.",
+    "questionText": "What is required to operate a small UAS in a restricted area?",
+    "answers": [
+      "Nothing, operation is always allowed",
+      "Permission from the using or controlling agency",
+      "A special identification transponder",
+      "Filing a NOTAM (Notice to Airmen)"
+    ],
+    "correctAnswer": "Permission from the using or controlling agency",
+    "hint": "Section 107.45 requires permission from the using or controlling agency for operation in restricted areas.",
     "points": 2
   },
   {
-    "prompt": "§ 107.65 Aeronautical knowledge recency\n\nPart 107 requires that a person may not operate a small unmanned aircraft system unless they have completed an aeronautical knowledge test within the previous 24 calendar months. This can be either an initial aeronautical knowledge test or a recurrent aeronautical knowledge test. For certificated pilots with a current flight review, completion of a recurrent training course is an alternative to the knowledge test. This requirement ensures that remote pilots maintain current knowledge of UAS operations and regulations.",
-    "questionText": "How often must a remote pilot pass an aeronautical knowledge test to maintain their certificate?",
+    "prompt": "§ 107.47 Flight restrictions in the proximity of certain areas designated by notice to airmen\n\nThis section requires compliance with NOTAMs (Notices to Airmen) and other flight restrictions. It's important for staying informed about temporary changes to airspace rules.",
+    "questionText": "What must a remote pilot in command do regarding NOTAMs?",
     "answers": [
+      "Ignore them as they don't apply to small UAS",
+      "Read them only if operating above 400 feet AGL",
+      "Comply with them as specified in §§ 91.137 through 91.145 and 99.7",
+      "File a new NOTAM for their UAS operation"
+    ],
+    "correctAnswer": "Comply with them as specified in §§ 91.137 through 91.145 and 99.7",
+    "hint": "Section 107.47 requires compliance with the provisions of §§ 91.137 through 91.145 and 99.7.",
+    "points": 3
+  },
+  {
+    "prompt": "§ 107.49 Preflight familiarization, inspection, and actions for aircraft operation\n\nThis section outlines the responsibilities of the remote pilot before beginning a small UAS operation. It's crucial for ensuring safe and compliant flights.",
+    "questionText": "What is NOT required as part of the preflight assessment?",
+    "answers": [
+      "Assessing local weather conditions",
+      "Ensuring sufficient power for the intended operation",
+      "Obtaining a formal weather briefing from Flight Service",
+      "Assessing the operating environment for risks to persons and property"
+    ],
+    "correctAnswer": "Obtaining a formal weather briefing from Flight Service",
+    "hint": "Section 107.49 requires assessing weather conditions but doesn't specify a formal briefing from Flight Service.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.51 Operating limitations for small unmanned aircraft\n\nThis section sets specific limits on small UAS operations, including maximum groundspeed, altitude, and visibility requirements. These limitations are designed to maintain safety in the national airspace.",
+    "questionText": "What is the maximum groundspeed allowed for a small UAS under Part 107?",
+    "answers": [
+      "87 knots (100 mph)",
+      "100 knots (115 mph)",
+      "120 knots (138 mph)",
+      "There is no maximum groundspeed"
+    ],
+    "correctAnswer": "87 knots (100 mph)",
+    "hint": "Section 107.51(a) sets the maximum groundspeed at 87 knots (100 mph).",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.53 Applicability\n\nThis section introduces the remote pilot certification requirements. It's the beginning of Subpart C, which covers the details of becoming a certified remote pilot.",
+    "questionText": "What does Subpart C of Part 107 primarily cover?",
+    "answers": [
+      "Operating rules for small UAS",
+      "Registration requirements for small UAS",
+      "Remote pilot certification",
+      "Airspace restrictions"
+    ],
+    "correctAnswer": "Remote pilot certification",
+    "hint": "Section 107.53 begins Subpart C, which prescribes the requirements for issuing a remote pilot certificate.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.57 Offenses involving alcohol or drugs\n\nThis section outlines the consequences of alcohol and drug-related offenses on remote pilot certification. It emphasizes the importance of maintaining a drug and alcohol-free status for UAS operators.",
+    "questionText": "What is a potential consequence of a conviction for violating a federal or state statute relating to alcohol?",
+    "answers": [
+      "A fine not exceeding $1000",
+      "Mandatory counseling",
+      "Denial of an application for a remote pilot certificate for up to 1 year",
+      "Permanent revocation of all airman certificates"
+    ],
+    "correctAnswer": "Denial of an application for a remote pilot certificate for up to 1 year",
+    "hint": "Section 107.57(a)(1) allows for denial of an application for up to 1 year after conviction.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.59 Refusal to submit to an alcohol test or to furnish test results\n\nThis section addresses the consequences of refusing to submit to a drug or alcohol test. It's part of ensuring that remote pilots are fit for duty.",
+    "questionText": "What can happen if a person refuses to submit to a test to indicate the percentage of alcohol in their blood when requested by a law enforcement officer?",
+    "answers": [
+      "Nothing, they have the right to refuse",
+      "A small fine",
+      "Suspension or revocation of their remote pilot certificate",
+      "Mandatory ground training"
+    ],
+    "correctAnswer": "Suspension or revocation of their remote pilot certificate",
+    "hint": "Section 107.59(b) allows for suspension or revocation of a remote pilot certificate for refusal to submit to a test.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.61 Eligibility\n\nThis section outlines the basic requirements for obtaining a remote pilot certificate with a small UAS rating. It covers age, language, and knowledge requirements.",
+    "questionText": "What is the minimum age to be eligible for a remote pilot certificate with a small UAS rating?",
+    "answers": ["16 years", "17 years", "18 years", "21 years"],
+    "correctAnswer": "16 years",
+    "hint": "Section 107.61(a) states that an applicant must be at least 16 years of age.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.63 Issuance of a remote pilot certificate with a small UAS rating\n\nThis section describes the process of applying for and receiving a remote pilot certificate. It outlines the necessary documentation and procedures.",
+    "questionText": "What evidence must an applicant provide when applying for a remote pilot certificate?",
+    "answers": [
+      "Proof of U.S. citizenship",
+      "A college degree",
+      "Evidence of passing an initial aeronautical knowledge test",
+      "A medical certificate"
+    ],
+    "correctAnswer": "Evidence of passing an initial aeronautical knowledge test",
+    "hint": "Section 107.63(a)(1) requires evidence of passing an initial aeronautical knowledge test.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.64 Temporary certificate\n\nThis section explains the issuance and validity of temporary remote pilot certificates. It's important for understanding the transition between passing the knowledge test and receiving the permanent certificate.",
+    "questionText": "How long is a temporary remote pilot certificate valid?",
+    "answers": ["30 days", "60 days", "90 days", "Up to 120 calendar days"],
+    "correctAnswer": "Up to 120 calendar days",
+    "hint": "Section 107.64(a) states that a temporary certificate is issued for up to 120 calendar days.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.65 Aeronautical knowledge recency\n\nThis section outlines the requirements for maintaining current aeronautical knowledge. It ensures that remote pilots stay up-to-date with regulations and best practices.",
+    "questionText": "How often must a remote pilot demonstrate aeronautical knowledge recency?",
+    "answers": [
+      "Every 6 months",
       "Every 12 months",
-      "Every 24 months",
-      "Every 36 months",
-      "Only once, when initially obtaining the certificate"
+      "Every 24 calendar months",
+      "Every 36 months"
     ],
-    "correctAnswer": "Every 24 months",
-    "hint": "Section 107.65 requires completion of a recurrent knowledge test within the previous 24 calendar months.",
+    "correctAnswer": "Every 24 calendar months",
+    "hint": "Section 107.65 requires demonstration of aeronautical knowledge recency within the preceding 24 calendar months.",
     "points": 2
   },
   {
-    "prompt": "§ 107.25 Operation from a moving vehicle or aircraft\n\nPart 107 prohibits the operation of a small unmanned aircraft system from a moving aircraft. It also prohibits operation of a small UAS from a moving land or water-borne vehicle unless the small unmanned aircraft is flown over a sparsely populated area and is not transporting another person's property for compensation or hire. This rule is designed to minimize the complexity of the operation and reduce risks associated with operating from a moving platform.",
-    "questionText": "Under what conditions can a small UAS be operated from a moving land vehicle?",
+    "prompt": "§ 107.67 Knowledge tests: General procedures and passing grades\n\nThis section describes the procedures for taking the aeronautical knowledge test and the required passing grade. It's crucial information for those preparing to become certified remote pilots.",
+    "questionText": "What type of identification is required when applying for a knowledge test?",
     "answers": [
-      "Only when in a rural area",
-      "Only when the vehicle is moving less than 5 mph",
-      "When over a sparsely populated area and not transporting another person's property for compensation",
-      "Operation from a moving land vehicle is never allowed"
+      "Any government-issued ID",
+      "Only a driver's license",
+      "ID with photograph, signature, date of birth, and current address",
+      "A passport"
     ],
-    "correctAnswer": "When over a sparsely populated area and not transporting another person's property for compensation",
-    "hint": "Section 107.25 allows operation from a moving vehicle under these specific conditions.",
+    "correctAnswer": "ID with photograph, signature, date of birth, and current address",
+    "hint": "Section 107.67(b) requires identification that contains the applicant's photograph, signature, date of birth, and permanent mailing address.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.69 Knowledge tests: Cheating or other unauthorized conduct\n\nThis section outlines prohibited conduct during knowledge tests and the consequences of such actions. It's important for maintaining the integrity of the certification process.",
+    "questionText": "What is the penalty for cheating on a knowledge test?",
+    "answers": [
+      "Retaking the test",
+      "A fine",
+      "Prohibition from applying for any certificate, rating, or authorization for 1 year",
+      "A warning letter"
+    ],
+    "correctAnswer": "Prohibition from applying for any certificate, rating, or authorization for 1 year",
+    "hint": "Section 107.69(b) states that an applicant who cheats is prohibited from applying for any certificate, rating, or authorization for 1 year.",
     "points": 3
   },
   {
-    "prompt": "§ 107.36 Carriage of hazardous material\n\nPart 107 explicitly prohibits a small unmanned aircraft from carrying hazardous material. The term 'hazardous material' is defined in 49 CFR 171.8 and includes a wide range of substances that pose risk to health, safety, and property when transported. This prohibition is in place to prevent the potential for serious incidents or accidents involving dangerous goods.",
-    "questionText": "Can a small UAS carry hazardous materials under Part 107?",
-    "answers": [
-      "Yes, if the hazardous material is properly packaged",
-      "Yes, but only with prior approval from the FAA",
-      "No, a small UAS may not carry hazardous material",
-      "Yes, if the flight is over sparsely populated areas"
-    ],
-    "correctAnswer": "No, a small UAS may not carry hazardous material",
-    "hint": "Section 107.36 prohibits small unmanned aircraft from carrying hazardous material.",
-    "points": 2
+    "prompt": "§ 107.71 Retesting after failure\n\nThis section specifies the waiting period required before retaking a failed knowledge test. It's designed to ensure adequate time for additional study and preparation.",
+    "questionText": "How long must an applicant wait before retaking a failed knowledge test?",
+    "answers": ["24 hours", "7 days", "14 calendar days", "30 days"],
+    "correctAnswer": "14 calendar days",
+    "hint": "Section 107.71 requires a 14 calendar day waiting period before retaking a failed test.",
+    "points": 1
   },
   {
-    "prompt": "§ 107.23 Hazardous operation\n\nPart 107 prohibits a person from operating a small UAS in a careless or reckless manner so as to endanger the life or property of another. It also prohibits allowing an object to be dropped from a small unmanned aircraft in a manner that creates an undue hazard to persons or property. This rule emphasizes the responsibility of the remote pilot to ensure safe operation at all times.",
-    "questionText": "Which of the following is prohibited under Part 107?",
+    "prompt": "§ 107.73 Initial and recurrent knowledge tests\n\nThis section outlines the topics covered in both initial and recurrent aeronautical knowledge tests. Understanding these areas is crucial for passing the tests and operating safely.",
+    "questionText": "Which of the following is NOT a required knowledge area for the initial aeronautical knowledge test?",
     "answers": [
-      "Operating a small UAS over a populated area",
-      "Operating a small UAS at night",
-      "Operating a small UAS in a careless or reckless manner",
-      "Operating a small UAS in Class G airspace"
-    ],
-    "correctAnswer": "Operating a small UAS in a careless or reckless manner",
-    "hint": "Section 107.23 prohibits operating a small UAS in a careless or reckless manner.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.27 Alcohol or drugs\n\nPart 107 prohibits a person from manipulating the flight controls of a small unmanned aircraft system or acting as a remote pilot in command or visual observer while under the influence of alcohol or drugs. This rule refers to the regulations in 14 CFR § 91.17 and § 91.19, which provide specific prohibitions related to alcohol and drug use for manned aircraft operations. This requirement is crucial for ensuring safe UAS operations.",
-    "questionText": "What is the rule regarding alcohol consumption before operating a small UAS?",
-    "answers": [
-      "No alcohol consumption within 8 hours before operating",
-      "No alcohol consumption within 12 hours before operating",
-      "No specific time limit, but must not be under the influence",
-      "Alcohol consumption is completely prohibited for UAS operators"
-    ],
-    "correctAnswer": "No specific time limit, but must not be under the influence",
-    "hint": "Section 107.27 refers to § 91.17, which prohibits operation while under the influence of alcohol.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.73 Initial and recurrent knowledge tests\n\nPart 107 outlines the areas of knowledge that must be covered in both initial and recurrent aeronautical knowledge tests for remote pilots. The initial test covers a wide range of topics including regulations, airspace classification, weather, loading and performance, and emergency procedures. The recurrent test covers a subset of these topics, focusing on key areas where knowledge needs to be refreshed or updated.",
-    "questionText": "Which of the following is NOT a required knowledge area for the initial remote pilot aeronautical knowledge test?",
-    "answers": [
-      "Regulations applicable to small UAS operations",
-      "Airspace classification and operating requirements",
-      "Advanced meteorology and weather forecasting",
+      "Airspace classification",
+      "Aviation weather sources",
+      "Advanced aerodynamics and aircraft design",
       "Emergency procedures"
     ],
-    "correctAnswer": "Advanced meteorology and weather forecasting",
-    "hint": "Section 107.73 lists the required knowledge areas, which include basic weather knowledge but not advanced meteorology.",
+    "correctAnswer": "Advanced aerodynamics and aircraft design",
+    "hint": "Section 107.73(a) lists the required knowledge areas, which do not include advanced aerodynamics and aircraft design.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.74 Initial and recurrent training courses\n\nThis section describes the content of initial and recurrent training courses for remote pilots. These courses are an alternative to knowledge tests for certain pilots.",
+    "questionText": "Which of the following is a topic covered in both initial and recurrent training courses?",
+    "answers": [
+      "Airport operations",
+      "Crew resource management",
+      "Radio communication procedures",
+      "Determining the performance of small unmanned aircraft"
+    ],
+    "correctAnswer": "Crew resource management",
+    "hint": "Section 107.74 lists crew resource management as a topic in both initial and recurrent training courses.",
+    "points": 2
+  },
+
+  {
+    "prompt": "§ 107.77 Change of name or address (continued)\n\nThis section outlines the procedures for updating personal information on a remote pilot certificate. Keeping this information current is important for regulatory compliance.",
+    "questionText": "How long does a certificate holder have to notify the FAA of a change in permanent mailing address?",
+    "answers": ["7 days", "14 days", "30 days", "60 days"],
+    "correctAnswer": "30 days",
+    "hint": "Section 107.77(c) requires notification within 30 days of a change in permanent mailing address.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.79 Voluntary surrender of certificate\n\nThis section describes the process for voluntarily surrendering a remote pilot certificate. It's important for pilots who no longer wish to maintain their certification.",
+    "questionText": "What statement must be included when voluntarily surrendering a remote pilot certificate?",
+    "answers": [
+      "A promise to never fly UAS again",
+      "An explanation for surrendering the certificate",
+      "A statement that the surrender is voluntary and made with full knowledge that the certificate will not be reissued without retesting",
+      "A request for a refund of certification fees"
+    ],
+    "correctAnswer": "A statement that the surrender is voluntary and made with full knowledge that the certificate will not be reissued without retesting",
+    "hint": "Section 107.79(b) requires a statement acknowledging the voluntary nature of the surrender and the need for retesting to reissue the certificate.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.200 Waiver policy and requirements\n\nThis section introduces the concept of waivers, which allow operators to deviate from certain regulations if they can demonstrate that their operation can be conducted safely under the terms of a waiver.",
+    "questionText": "What must an applicant demonstrate to obtain a waiver under Part 107?",
+    "answers": [
+      "That they have extensive manned aircraft experience",
+      "That they can conduct the operation safely under the terms of the waiver",
+      "That they have a perfect safety record with no incidents",
+      "That they have completed advanced UAS training courses"
+    ],
+    "correctAnswer": "That they can conduct the operation safely under the terms of the waiver",
+    "hint": "Section 107.200(a) states that the Administrator may issue a certificate of waiver if the applicant demonstrates that the operation can be safely conducted under the terms of that certificate.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver\n\nThis section provides a list of specific regulations that may be waived by the FAA. Understanding which rules can be waived is crucial for operators who need to conduct operations outside the standard Part 107 regulations.",
+    "questionText": "Which of the following regulations is NOT subject to waiver under Part 107?",
+    "answers": [
+      "Operation from a moving vehicle or aircraft",
+      "Daylight operation",
+      "Visual line of sight aircraft operation",
+      "Maintenance and preflight inspection procedures"
+    ],
+    "correctAnswer": "Maintenance and preflight inspection procedures",
+    "hint": "Section 107.205 does not list maintenance and preflight inspection procedures as subject to waiver.",
     "points": 3
+  },
+  {
+    "prompt": "Subpart D—Waivers\n\nThis subpart covers the entire waiver process, including policies, requirements, and the list of regulations subject to waiver. It's important for operators who need to conduct operations outside the standard Part 107 regulations.",
+    "questionText": "What is the purpose of the waiver process in Part 107?",
+    "answers": [
+      "To allow operators to ignore safety regulations",
+      "To permit operations that would otherwise be prohibited if they can be conducted safely",
+      "To bypass the need for a remote pilot certificate",
+      "To allow operations in restricted airspace without permission"
+    ],
+    "correctAnswer": "To permit operations that would otherwise be prohibited if they can be conducted safely",
+    "hint": "The waiver process allows for deviations from certain regulations if the applicant can demonstrate that the operation can be conducted safely under the terms of the waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "General Knowledge of UAS\n\nWhile not a specific section of Part 107, general knowledge of UAS systems and operations is crucial for safe and effective drone piloting.",
+    "questionText": "What does the term 'payload' refer to in the context of UAS operations?",
+    "answers": [
+      "The total weight of the UAS",
+      "The maximum flight time of the UAS",
+      "The equipment or cargo carried by the UAS for a specific purpose",
+      "The number of propellers on the UAS"
+    ],
+    "correctAnswer": "The equipment or cargo carried by the UAS for a specific purpose",
+    "hint": "In UAS operations, 'payload' typically refers to the equipment or cargo that the drone carries to perform its intended function.",
+    "points": 1
+  },
+  {
+    "prompt": "UAS Registration\n\nWhile covered briefly in § 107.13, understanding UAS registration requirements is crucial for compliance with FAA regulations.",
+    "questionText": "Under what condition must a small UAS be registered with the FAA?",
+    "answers": [
+      "Only if it's used for commercial purposes",
+      "If it weighs more than 0.55 lbs (250 grams) and less than 55 lbs (25 kg)",
+      "Only if it's flown in controlled airspace",
+      "Only if it's capable of flying above 400 feet AGL"
+    ],
+    "correctAnswer": "If it weighs more than 0.55 lbs (250 grams) and less than 55 lbs (25 kg)",
+    "hint": "FAA regulations require registration for UAS weighing more than 0.55 lbs (250 grams) and less than 55 lbs (25 kg), regardless of use.",
+    "points": 2
+  },
+  {
+    "prompt": "Airspace Classification\n\nWhile touched upon in various sections of Part 107, a comprehensive understanding of airspace classification is essential for safe UAS operations.",
+    "questionText": "In which class of airspace is ATC authorization not required for small UAS operations under Part 107?",
+    "answers": ["Class B", "Class C", "Class D", "Class G"],
+    "correctAnswer": "Class G",
+    "hint": "Class G is uncontrolled airspace and does not require ATC authorization for small UAS operations under Part 107.",
+    "points": 2
+  },
+  {
+    "prompt": "Weather and Micrometeorology\n\nUnderstanding weather conditions and their effects on UAS operations is crucial for safe flying, as mentioned in § 107.49 and other sections.",
+    "questionText": "What weather phenomenon can pose a significant risk to small UAS operations due to unpredictable wind shifts?",
+    "answers": ["High cirrus clouds", "Light rain", "Thermals", "Fog"],
+    "correctAnswer": "Thermals",
+    "hint": "Thermals, or rising columns of warm air, can create unpredictable wind shifts that may affect small UAS operations.",
+    "points": 3
+  },
+  {
+    "prompt": "UAS Loading and Performance\n\nUnderstanding how loading affects UAS performance is crucial for safe operations, as hinted at in § 107.49.",
+    "questionText": "How does increasing the weight of a UAS generally affect its performance?",
+    "answers": [
+      "It increases flight time",
+      "It decreases the required battery capacity",
+      "It reduces maneuverability and endurance",
+      "It improves stability in high winds"
+    ],
+    "correctAnswer": "It reduces maneuverability and endurance",
+    "hint": "Increasing the weight of a UAS typically reduces its maneuverability and flight endurance due to increased power requirements.",
+    "points": 2
+  },
+  {
+    "prompt": "Emergency Procedures\n\nWhile mentioned in § 107.21 and other sections, a comprehensive understanding of emergency procedures is essential for all remote pilots.",
+    "questionText": "What should be the first step if a small UAS experiences a flyaway (loss of control)?",
+    "answers": [
+      "Immediately call the local authorities",
+      "Try to reestablish control using the control station",
+      "Activate the return-to-home feature if available",
+      "Notify nearby aircraft of the situation"
+    ],
+    "correctAnswer": "Try to reestablish control using the control station",
+    "hint": "The first step in a flyaway situation should be to attempt to regain control of the UAS using the control station.",
+    "points": 2
+  },
+  {
+    "prompt": "Crew Resource Management\n\nWhile not a specific section in Part 107, crew resource management is mentioned in § 107.73 and is crucial for safe UAS operations involving multiple team members.",
+    "questionText": "What is a key principle of Crew Resource Management (CRM) in UAS operations?",
+    "answers": [
+      "Relying solely on the remote pilot for all decisions",
+      "Avoiding communication during the flight to maintain focus",
+      "Effective communication and coordination among all team members",
+      "Assigning blame when mistakes occur"
+    ],
+    "correctAnswer": "Effective communication and coordination among all team members",
+    "hint": "CRM emphasizes effective communication and coordination among all team members to ensure safe operations.",
+    "points": 2
+  },
+  {
+    "prompt": "Maintenance and Inspection\n\nWhile briefly mentioned in § 107.15, understanding proper maintenance and inspection procedures is crucial for ensuring the airworthiness of a small UAS.",
+    "questionText": "What should be included in a pre-flight inspection of a small UAS?",
+    "answers": [
+      "Only a visual check of the propellers",
+      "A full disassembly and reassembly of the UAS",
+      "A comprehensive check of all systems, including structure, propulsion, and control links",
+      "Only a battery charge level check"
+    ],
+    "correctAnswer": "A comprehensive check of all systems, including structure, propulsion, and control links",
+    "hint": "A thorough pre-flight inspection should include checking all systems to ensure the UAS is in a condition for safe operation.",
+    "points": 2
+  },
+  {
+    "prompt": "Privacy Considerations\n\nWhile not explicitly covered in Part 107, understanding privacy considerations is an important aspect of responsible UAS operations.",
+    "questionText": "What is a best practice for addressing privacy concerns in UAS operations?",
+    "answers": [
+      "Ignoring all privacy issues as they're not part of FAA regulations",
+      "Only flying over public property",
+      "Informing affected parties about the nature and purpose of UAS operations when possible",
+      "Always flying at the maximum allowed altitude to avoid privacy issues"
+    ],
+    "correctAnswer": "Informing affected parties about the nature and purpose of UAS operations when possible",
+    "hint": "While not an FAA requirement, informing affected parties about UAS operations is a best practice for addressing privacy concerns.",
+    "points": 2
+  },
+  {
+    "prompt": "Night Operations\n\nWhile Part 107 has been updated to allow night operations under certain conditions, understanding these requirements is crucial for safe nighttime flights.",
+    "questionText": "What is required for night operations under the updated Part 107 rules?",
+    "answers": [
+      "A waiver from the FAA",
+      "Anti-collision lighting visible for 3 statute miles",
+      "A manned aircraft escort",
+      "Operations only in Class G airspace"
+    ],
+    "correctAnswer": "Anti-collision lighting visible for 3 statute miles",
+    "hint": "The updated Part 107 rules allow night operations with appropriate anti-collision lighting visible for 3 statute miles.",
+    "points": 2
+  },
+  {
+    "prompt": "Remote ID\n\nWhile not originally part of Part 107, understanding Remote ID requirements is becoming increasingly important for UAS operators.",
+    "questionText": "What is the primary purpose of the FAA's Remote ID rule for UAS?",
+    "answers": [
+      "To track all UAS for tax purposes",
+      "To provide identification and location information about UAS in flight",
+      "To prevent UAS from flying in restricted airspace",
+      "To improve Wi-Fi connectivity for UAS"
+    ],
+    "correctAnswer": "To provide identification and location information about UAS in flight",
+    "hint": "The primary purpose of Remote ID is to provide identification and location information about UAS in flight for safety and security reasons.",
+    "points": 3
+  },
+  {
+    "prompt": "§ 107.200 Waiver policy and requirements\n\nThis section outlines the FAA's policy on issuing waivers for certain Part 107 regulations. It explains that the Administrator may issue a certificate of waiver authorizing a deviation from any regulation specified in §107.205 if the Administrator finds that the proposed operation can be safely conducted under the terms of that certificate of waiver.",
+    "questionText": "What must an applicant demonstrate to obtain a waiver under Part 107?",
+    "answers": [
+      "That they have completed 100 hours of flight time with a small UAS",
+      "That the proposed operation can be conducted safely under the terms of the waiver",
+      "That they have a perfect safety record with no incidents",
+      "That they have a college degree in aviation"
+    ],
+    "correctAnswer": "That the proposed operation can be conducted safely under the terms of the waiver",
+    "hint": "Section 107.200(a) states that the Administrator may issue a waiver if the applicant demonstrates that the operation can be safely conducted under the terms of that waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.200 Waiver policy and requirements (continued)\n\nThis section also specifies that a certificate of waiver may be issued to allow a deviation from specific regulations listed in §107.205.",
+    "questionText": "Who has the authority to issue a certificate of waiver under Part 107?",
+    "answers": [
+      "Any FAA employee",
+      "The local police department",
+      "The Administrator of the FAA",
+      "The applicant's flight instructor"
+    ],
+    "correctAnswer": "The Administrator of the FAA",
+    "hint": "Section 107.200(a) states that the Administrator may issue a certificate of waiver authorizing a deviation from any regulation specified in §107.205.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.200 Waiver policy and requirements (continued)\n\nThis section also outlines the requirements for waiver applications and the FAA's discretion in prescribing additional limitations.",
+    "questionText": "What must a request for a certificate of waiver contain?",
+    "answers": [
+      "Only the specific regulation to be waived",
+      "A complete description of the proposed operation and justification that it can be conducted safely",
+      "The applicant's entire flight history",
+      "A non-refundable fee of $1000"
+    ],
+    "correctAnswer": "A complete description of the proposed operation and justification that it can be conducted safely",
+    "hint": "Section 107.200(b) requires that a request for a certificate of waiver must contain a complete description of the proposed operation and justification that establishes that the operation can safely be conducted under the terms of a certificate of waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver\n\nThis section provides a comprehensive list of the specific regulations that may be waived by the Administrator. Understanding which regulations can be waived is crucial for operators who need to conduct operations outside the standard Part 107 rules.",
+    "questionText": "Which of the following regulations is subject to waiver under Part 107?",
+    "answers": [
+      "Remote pilot certification requirements",
+      "Registration requirements",
+      "Operation from a moving vehicle or aircraft",
+      "Prohibition on careless or reckless operation"
+    ],
+    "correctAnswer": "Operation from a moving vehicle or aircraft",
+    "hint": "Section 107.205(a) lists operation from a moving vehicle or aircraft (§107.25) as subject to waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section lists several other regulations that may be waived, including those related to daylight operation, visual line of sight, and operation over people.",
+    "questionText": "Which of the following operational rules is NOT subject to waiver under Part 107?",
+    "answers": [
+      "Daylight operation",
+      "Visual line of sight aircraft operation",
+      "Operation over people",
+      "Carriage of hazardous materials"
+    ],
+    "correctAnswer": "Carriage of hazardous materials",
+    "hint": "The carriage of hazardous materials is not listed in §107.205 as a regulation subject to waiver.",
+    "points": 3
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section also includes regulations related to operating limitations for small unmanned aircraft as subject to waiver.",
+    "questionText": "Which operating limitation is subject to waiver under Part 107?",
+    "answers": [
+      "The requirement to register the UAS",
+      "The prohibition on careless or reckless operation",
+      "The maximum groundspeed of 87 knots",
+      "The requirement to maintain a current remote pilot certificate"
+    ],
+    "correctAnswer": "The maximum groundspeed of 87 knots",
+    "hint": "Section 107.205(i) lists the operating limitations in §107.51, which includes the maximum groundspeed, as subject to waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "Waiver Process Overview\n\nWhile not a specific section in Part 107, understanding the overall waiver process is crucial for operators who need to conduct operations outside the standard rules.",
+    "questionText": "What is the primary purpose of the waiver process in Part 107?",
+    "answers": [
+      "To allow operators to bypass safety regulations",
+      "To permit operations that would otherwise be prohibited, if they can be conducted safely",
+      "To generate additional revenue for the FAA",
+      "To simplify the regulation of UAS operations"
+    ],
+    "correctAnswer": "To permit operations that would otherwise be prohibited, if they can be conducted safely",
+    "hint": "The waiver process is designed to allow flexibility in UAS operations while maintaining safety.",
+    "points": 2
+  },
+  {
+    "prompt": "Safety Risk Assessment\n\nWhile not explicitly mentioned in Part 107, conducting a safety risk assessment is an important part of the waiver application process and safe UAS operations in general.",
+    "questionText": "What is a key component of a safety risk assessment for a waiver application?",
+    "answers": [
+      "Calculating the cost of potential damages",
+      "Identifying potential hazards and mitigation strategies",
+      "Determining the market value of the UAS",
+      "Estimating the number of spectators for the operation"
+    ],
+    "correctAnswer": "Identifying potential hazards and mitigation strategies",
+    "hint": "A thorough safety risk assessment involves identifying potential hazards and developing strategies to mitigate those risks.",
+    "points": 2
+  },
+  {
+    "prompt": "Night Operations Waiver\n\nWhile Part 107 has been updated to allow night operations under certain conditions, understanding the previous waiver requirements for night operations is still relevant.",
+    "questionText": "Under the original Part 107 rules, what was required for night operations?",
+    "answers": [
+      "Nothing, night operations were always allowed",
+      "A waiver from the FAA",
+      "Special night vision equipment",
+      "A minimum of 10 hours of night flight experience"
+    ],
+    "correctAnswer": "A waiver from the FAA",
+    "hint": "Originally, §107.29 (daylight operation) was subject to waiver, requiring FAA approval for night operations.",
+    "points": 2
+  },
+  {
+    "prompt": "Visual Line of Sight Waiver\n\nOperations beyond visual line of sight (BVLOS) require a waiver under Part 107. Understanding the implications of BVLOS operations is important for advanced UAS operations.",
+    "questionText": "What is a key consideration when applying for a beyond visual line of sight (BVLOS) waiver?",
+    "answers": [
+      "The color of the UAS",
+      "The type of payload being carried",
+      "How to maintain awareness of other aircraft and obstacles",
+      "The number of batteries available"
+    ],
+    "correctAnswer": "How to maintain awareness of other aircraft and obstacles",
+    "hint": "For BVLOS operations, maintaining situational awareness and avoiding conflicts with other aircraft and obstacles is crucial.",
+    "points": 3
+  },
+  {
+    "prompt": "Operation Over People Waiver\n\nWhile Part 107 has been updated to allow some operations over people, understanding the waiver process for this type of operation is still relevant.",
+    "questionText": "What factor is most critical when applying for a waiver to operate over people?",
+    "answers": [
+      "The speed of the UAS",
+      "The color of the UAS",
+      "The potential risk of injury to people on the ground",
+      "The battery life of the UAS"
+    ],
+    "correctAnswer": "The potential risk of injury to people on the ground",
+    "hint": "When considering operations over people, the safety of those on the ground is paramount.",
+    "points": 2
+  },
+  {
+    "prompt": "Waiver Performance-Based Standards\n\nThe FAA has developed performance-based standards for waiver applications. Understanding these standards can help in preparing a successful waiver application.",
+    "questionText": "What is the purpose of the FAA's performance-based standards for waivers?",
+    "answers": [
+      "To make the waiver process more difficult",
+      "To provide a clear understanding of the FAA's safety expectations",
+      "To reduce the number of waiver applications",
+      "To increase FAA workload"
+    ],
+    "correctAnswer": "To provide a clear understanding of the FAA's safety expectations",
+    "hint": "Performance-based standards are designed to clarify what the FAA expects in terms of safety for various types of waiver requests.",
+    "points": 2
+  },
+  {
+    "prompt": "Waiver Application Process\n\nUnderstanding the waiver application process is crucial for operators who need to conduct operations outside the standard Part 107 rules.",
+    "questionText": "Through what system are Part 107 waiver applications typically submitted?",
+    "answers": [
+      "By mail to the local FSDO",
+      "The FAA's DroneZone portal",
+      "In person at an FAA office",
+      "Through a certified flight instructor"
+    ],
+    "correctAnswer": "The FAA's DroneZone portal",
+    "hint": "The FAA's DroneZone portal is the primary system for submitting Part 107 waiver applications.",
+    "points": 1
+  },
+  {
+    "prompt": "Waiver Renewal\n\nWaivers are typically issued with an expiration date. Understanding the renewal process is important for maintaining operational continuity.",
+    "questionText": "What is a best practice when it comes to renewing a waiver?",
+    "answers": [
+      "Wait until the day before it expires to apply for renewal",
+      "Assume it will be automatically renewed",
+      "Apply for renewal well in advance of the expiration date",
+      "Only renew if you've used the waiver frequently"
+    ],
+    "correctAnswer": "Apply for renewal well in advance of the expiration date",
+    "hint": "Applying for renewal well in advance allows time for processing and ensures continuity of operations.",
+    "points": 2
+  },
+  {
+    "prompt": "Waiver Responsibilities\n\nOperators who receive a waiver have specific responsibilities to ensure safe operations.",
+    "questionText": "What is a key responsibility of an operator who has been granted a waiver?",
+    "answers": [
+      "Keeping the waiver certificate secret",
+      "Ignoring the limitations specified in the waiver",
+      "Complying with all conditions and limitations specified in the waiver",
+      "Sharing the waiver with other operators to use"
+    ],
+    "correctAnswer": "Complying with all conditions and limitations specified in the waiver",
+    "hint": "Waiver holders must comply with all conditions and limitations specified in the waiver to maintain its validity and ensure safe operations.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.73 Initial and recurrent knowledge tests\n\nThis section outlines the areas of knowledge covered in both initial and recurrent aeronautical knowledge tests for remote pilots.",
+    "questionText": "Which of the following is NOT a required knowledge area for the initial aeronautical knowledge test?",
+    "answers": [
+      "Applicable regulations relating to small UAS rating privileges",
+      "Aviation weather sources and effects of weather on small UAS performance",
+      "Advanced aerodynamics and aircraft design",
+      "Crew resource management"
+    ],
+    "correctAnswer": "Advanced aerodynamics and aircraft design",
+    "hint": "Section 107.73(a) lists the required knowledge areas, which do not include advanced aerodynamics and aircraft design.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.73 Initial and recurrent knowledge tests (continued)\n\nThis section also specifies the areas of knowledge covered in the recurrent aeronautical knowledge test.",
+    "questionText": "Which of the following is a topic covered in the recurrent aeronautical knowledge test but NOT in the initial test?",
+    "answers": [
+      "Radio communication procedures",
+      "Physiological effects of drugs and alcohol",
+      "Small unmanned aircraft loading",
+      "None of the above"
+    ],
+    "correctAnswer": "None of the above",
+    "hint": "Section 107.73(b) shows that the recurrent test covers a subset of the initial test topics, with no new topics added.",
+    "points": 3
+  },
+  {
+    "prompt": "§ 107.74 Initial and recurrent training courses\n\nThis section describes the content of initial and recurrent training courses for remote pilots who hold other pilot certificates.",
+    "questionText": "What is a topic covered in the initial training course but NOT in the recurrent training course?",
+    "answers": [
+      "Applicable regulations relating to small UAS",
+      "Emergency procedures",
+      "Crew resource management",
+      "Determining the performance of small unmanned aircraft"
+    ],
+    "correctAnswer": "Determining the performance of small unmanned aircraft",
+    "hint": "Section 107.74 shows that determining UAS performance is covered in the initial course (a) but not in the recurrent course (b).",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.77 Change of name or address\n\nThis section outlines the procedures for updating personal information on a remote pilot certificate.",
+    "questionText": "What document is NOT required when applying for a name change on a remote pilot certificate?",
+    "answers": [
+      "Remote pilot certificate with small UAS rating",
+      "Marriage license (if applicable)",
+      "Court order (if applicable)",
+      "Birth certificate"
+    ],
+    "correctAnswer": "Birth certificate",
+    "hint": "Section 107.77(a) lists the required documents for a name change, which do not include a birth certificate.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.77 Change of name or address (continued)\n\nThis section also specifies the timeframe and methods for notifying the FAA of an address change.",
+    "questionText": "How long does a certificate holder have to notify the FAA of a change in permanent mailing address?",
+    "answers": [
+      "10 days",
+      "30 days",
+      "60 days",
+      "90 days"
+    ],
+    "correctAnswer": "30 days",
+    "hint": "Section 107.77(c) states that the holder must notify the FAA within 30 days of a change in permanent mailing address.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.79 Voluntary surrender of certificate\n\nThis section describes the process for voluntarily surrendering a remote pilot certificate.",
+    "questionText": "What statement must be included when voluntarily surrendering a remote pilot certificate?",
+    "answers": [
+      "A promise to never fly UAS again",
+      "An explanation for surrendering the certificate",
+      "A statement acknowledging that the certificate will not be reissued without completing the requirements again",
+      "A request for a refund of certification fees"
+    ],
+    "correctAnswer": "A statement acknowledging that the certificate will not be reissued without completing the requirements again",
+    "hint": "Section 107.79(b) requires a statement acknowledging that the certificate will not be reissued without completing the requirements again.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.200 Waiver policy and requirements\n\nThis section outlines the FAA's policy on issuing waivers for certain Part 107 regulations.",
+    "questionText": "What must an applicant demonstrate to obtain a waiver under Part 107?",
+    "answers": [
+      "That they have completed 100 hours of flight time with a small UAS",
+      "That the proposed operation can be conducted safely under the terms of the waiver",
+      "That they have a perfect safety record with no incidents",
+      "That they have a college degree in aviation"
+    ],
+    "correctAnswer": "That the proposed operation can be conducted safely under the terms of the waiver",
+    "hint": "Section 107.200(a) states that the Administrator may issue a waiver if the applicant demonstrates that the operation can be safely conducted under the terms of that waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.200 Waiver policy and requirements (continued)\n\nThis section also specifies the requirements for waiver applications.",
+    "questionText": "What must a request for a certificate of waiver contain?",
+    "answers": [
+      "Only the specific regulation to be waived",
+      "A complete description of the proposed operation and safety justification",
+      "The applicant's entire flight history",
+      "A non-refundable fee of $1000"
+    ],
+    "correctAnswer": "A complete description of the proposed operation and safety justification",
+    "hint": "Section 107.200(b) requires a complete description of the proposed operation and justification that establishes that the operation can safely be conducted.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver\n\nThis section provides a list of the specific regulations that may be waived by the Administrator.",
+    "questionText": "Which of the following regulations is NOT subject to waiver under Part 107?",
+    "answers": [
+      "Operation from a moving vehicle or aircraft",
+      "Daylight operation",
+      "Visual line of sight aircraft operation",
+      "Carriage of hazardous materials"
+    ],
+    "correctAnswer": "Carriage of hazardous materials",
+    "hint": "Section 107.205 does not list the carriage of hazardous materials (§ 107.36) as a regulation subject to waiver.",
+    "points": 3
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section lists several regulations that may be waived, including those related to operation over people and in certain airspace.",
+    "questionText": "Which of the following operational rules is subject to waiver under Part 107?",
+    "answers": [
+      "Registration requirements",
+      "Remote pilot certification requirements",
+      "Operation over people",
+      "Carriage of hazardous materials"
+    ],
+    "correctAnswer": "Operation over people",
+    "hint": "Section 107.205(g) lists operation over people (§ 107.39) as a regulation subject to waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section also includes operating limitations for small unmanned aircraft as subject to waiver.",
+    "questionText": "Which operating limitation is subject to waiver under Part 107?",
+    "answers": [
+      "The requirement to register the UAS",
+      "The prohibition on careless or reckless operation",
+      "The maximum groundspeed of 87 knots",
+      "The requirement to maintain a current remote pilot certificate"
+    ],
+    "correctAnswer": "The maximum groundspeed of 87 knots",
+    "hint": "Section 107.205(i) lists the operating limitations in § 107.51, which includes the maximum groundspeed, as subject to waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "Subpart D—Waivers (Overview)\n\nThis subpart covers the entire waiver process, including policies, requirements, and the list of regulations subject to waiver.",
+    "questionText": "What is the primary purpose of the waiver process in Part 107?",
+    "answers": [
+      "To allow operators to bypass safety regulations",
+      "To permit operations that would otherwise be prohibited, if they can be conducted safely",
+      "To generate additional revenue for the FAA",
+      "To simplify the regulation of UAS operations"
+    ],
+    "correctAnswer": "To permit operations that would otherwise be prohibited, if they can be conducted safely",
+    "hint": "The waiver process is designed to allow flexibility in UAS operations while maintaining safety, as outlined in Subpart D.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.200 Waiver policy and requirements (Additional considerations)\n\nThis section also gives the Administrator the authority to prescribe additional limitations for waivers.",
+    "questionText": "According to § 107.200, what can the Administrator do when issuing a certificate of waiver?",
+    "answers": [
+      "Ignore safety considerations",
+      "Prescribe additional limitations as necessary",
+      "Waive all Part 107 regulations",
+      "Extend the waiver indefinitely"
+    ],
+    "correctAnswer": "Prescribe additional limitations as necessary",
+    "hint": "Section 107.200(c) states that the Administrator may prescribe additional limitations that the Administrator considers necessary.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.200 Waiver policy and requirements (Compliance)\n\nThis section also outlines the compliance requirements for those who receive a waiver.",
+    "questionText": "What is required of a person who receives a certificate of waiver?",
+    "answers": [
+      "They must publish the waiver details online",
+      "They must notify local law enforcement of the waiver",
+      "They must comply with any conditions or limitations specified in the waiver",
+      "They must renew the waiver every 30 days"
+    ],
+    "correctAnswer": "They must comply with any conditions or limitations specified in the waiver",
+    "hint": "Section 107.200(d)(2) states that a person who receives a waiver must comply with any conditions or limitations specified in the certificate of waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver (Specific operations)\n\nThis section lists specific operations that may be eligible for a waiver, including operation from a moving vehicle or aircraft.",
+    "questionText": "Under what condition is a waiver for operation from a moving vehicle or aircraft NOT allowed?",
+    "answers": [
+      "When operating over water",
+      "When operating at night",
+      "When carrying property of another for compensation or hire",
+      "When operating in Class G airspace"
+    ],
+    "correctAnswer": "When carrying property of another for compensation or hire",
+    "hint": "Section 107.205(a) states that no waiver will be issued to allow the carriage of property of another by aircraft for compensation or hire.",
+    "points": 3
+  },
+  {
+    "prompt": "§ 107.65 Aeronautical knowledge recency\n\nThis section outlines the requirements for maintaining current aeronautical knowledge to operate a small UAS.",
+    "questionText": "How often must a remote pilot demonstrate aeronautical knowledge recency?",
+    "answers": [
+      "Every 6 months",
+      "Every 12 months",
+      "Every 24 calendar months",
+      "Every 36 months"
+    ],
+    "correctAnswer": "Every 24 calendar months",
+    "hint": "Section 107.65 requires demonstration of aeronautical knowledge recency within the preceding 24 calendar months.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.67 Knowledge tests: General procedures and passing grades\n\nThis section describes the requirements for taking the aeronautical knowledge test.",
+    "questionText": "What is NOT required as part of the proper identification for a knowledge test applicant?",
+    "answers": [
+      "Photograph",
+      "Signature",
+      "Date of birth",
+      "Social Security Number"
+    ],
+    "correctAnswer": "Social Security Number",
+    "hint": "Section 107.67(b) lists the required identification elements, which do not include a Social Security Number.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.69 Knowledge tests: Cheating or other unauthorized conduct\n\nThis section outlines prohibited behaviors during knowledge tests and their consequences.",
+    "questionText": "What is the penalty for an applicant who is found to have cheated on a knowledge test?",
+    "answers": [
+      "A fine of $1000",
+      "Prohibition from applying for any certificate, rating, or authorization for 1 year",
+      "Permanent revocation of all airman certificates",
+      "Mandatory retesting within 30 days"
+    ],
+    "correctAnswer": "Prohibition from applying for any certificate, rating, or authorization for 1 year",
+    "hint": "Section 107.69(b) states that an applicant who commits a prohibited act is prohibited from applying for any certificate, rating, or authorization for 1 year.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.71 Retesting after failure\n\nThis section specifies the waiting period required before retaking a failed knowledge test.",
+    "questionText": "How long must an applicant wait before retaking a failed knowledge test?",
+    "answers": [
+      "7 calendar days",
+      "14 calendar days",
+      "30 calendar days",
+      "60 calendar days"
+    ],
+    "correctAnswer": "14 calendar days",
+    "hint": "Section 107.71 states that an applicant who fails a knowledge test may not reapply for the test for 14 calendar days after failing the test.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.73 Initial and recurrent knowledge tests\n\nThis section outlines the areas of knowledge covered in both initial and recurrent aeronautical knowledge tests.",
+    "questionText": "Which of the following is NOT a required knowledge area for the recurrent aeronautical knowledge test?",
+    "answers": [
+      "Applicable regulations relating to small UAS",
+      "Emergency procedures",
+      "Crew resource management",
+      "Radio communication procedures"
+    ],
+    "correctAnswer": "Radio communication procedures",
+    "hint": "Section 107.73(b) lists the areas covered in the recurrent test, which does not include radio communication procedures.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.74 Initial and recurrent training courses\n\nThis section describes the content of initial and recurrent training courses for remote pilots who hold other pilot certificates.",
+    "questionText": "Which topic is covered in the initial training course but NOT in the recurrent training course?",
+    "answers": [
+      "Applicable regulations",
+      "Emergency procedures",
+      "Crew resource management",
+      "Small unmanned aircraft loading"
+    ],
+    "correctAnswer": "Small unmanned aircraft loading",
+    "hint": "Section 107.74 shows that small unmanned aircraft loading is covered in the initial course (a) but not in the recurrent course (b).",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.77 Change of name or address\n\nThis section outlines the procedures for updating personal information on a remote pilot certificate.",
+    "questionText": "How long does a certificate holder have to notify the FAA of a change in permanent mailing address?",
+    "answers": [
+      "10 days",
+      "30 days",
+      "60 days",
+      "90 days"
+    ],
+    "correctAnswer": "30 days",
+    "hint": "Section 107.77(c) states that the holder must notify the FAA within 30 days of a change in permanent mailing address.",
+    "points": 1
+  },
+  {
+    "prompt": "§ 107.79 Voluntary surrender of certificate\n\nThis section describes the process for voluntarily surrendering a remote pilot certificate.",
+    "questionText": "What statement must be included when voluntarily surrendering a remote pilot certificate?",
+    "answers": [
+      "A promise to never fly UAS again",
+      "An explanation for surrendering the certificate",
+      "A statement acknowledging that the certificate will not be reissued without completing the requirements again",
+      "A request for a refund of certification fees"
+    ],
+    "correctAnswer": "A statement acknowledging that the certificate will not be reissued without completing the requirements again",
+    "hint": "Section 107.79(b) requires a statement acknowledging that the certificate will not be reissued without completing the requirements specified in §§ 107.61 and 107.63 again.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.200 Waiver policy and requirements\n\nThis section outlines the FAA's policy on issuing waivers for certain Part 107 regulations.",
+    "questionText": "What must an applicant demonstrate to obtain a waiver under Part 107?",
+    "answers": [
+      "That they have completed 100 hours of flight time with a small UAS",
+      "That the proposed operation can be conducted safely under the terms of the waiver",
+      "That they have a perfect safety record with no incidents",
+      "That they have a college degree in aviation"
+    ],
+    "correctAnswer": "That the proposed operation can be conducted safely under the terms of the waiver",
+    "hint": "Section 107.200(a) states that the Administrator may issue a waiver if the applicant demonstrates that the operation can be safely conducted under the terms of that waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.200 Waiver policy and requirements (continued)\n\nThis section also specifies the requirements for waiver applications.",
+    "questionText": "What must a request for a certificate of waiver contain?",
+    "answers": [
+      "Only the specific regulation to be waived",
+      "A complete description of the proposed operation and safety justification",
+      "The applicant's entire flight history",
+      "A non-refundable fee of $1000"
+    ],
+    "correctAnswer": "A complete description of the proposed operation and safety justification",
+    "hint": "Section 107.200(b) requires a complete description of the proposed operation and justification that establishes that the operation can safely be conducted.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver\n\nThis section provides a list of the specific regulations that may be waived by the Administrator.",
+    "questionText": "Which of the following regulations is NOT subject to waiver under Part 107?",
+    "answers": [
+      "Operation from a moving vehicle or aircraft",
+      "Daylight operation",
+      "Visual line of sight aircraft operation",
+      "Carriage of hazardous materials"
+    ],
+    "correctAnswer": "Carriage of hazardous materials",
+    "hint": "Section 107.205 does not list the carriage of hazardous materials (§ 107.36) as a regulation subject to waiver.",
+    "points": 3
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section lists several regulations that may be waived, including those related to operation over people and in certain airspace.",
+    "questionText": "Which of the following operational rules is subject to waiver under Part 107?",
+    "answers": [
+      "Registration requirements",
+      "Remote pilot certification requirements",
+      "Operation over people",
+      "Carriage of hazardous materials"
+    ],
+    "correctAnswer": "Operation over people",
+    "hint": "Section 107.205(g) lists operation over people (§ 107.39) as a regulation subject to waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section also includes operating limitations for small unmanned aircraft as subject to waiver.",
+    "questionText": "Which operating limitation is subject to waiver under Part 107?",
+    "answers": [
+      "The requirement to register the UAS",
+      "The prohibition on careless or reckless operation",
+      "The maximum groundspeed of 87 knots",
+      "The requirement to maintain a current remote pilot certificate"
+    ],
+    "correctAnswer": "The maximum groundspeed of 87 knots",
+    "hint": "Section 107.205(i) lists the operating limitations in § 107.51, which includes the maximum groundspeed, as subject to waiver.",
+    "points": 2
+  },
+  {
+    "prompt": "§ 107.205 List of regulations subject to waiver (Specific operations)\n\nThis section lists specific operations that may be eligible for a waiver, including operation from a moving vehicle or aircraft.",
+    "questionText": "Under what condition is a waiver for operation from a moving vehicle or aircraft NOT allowed?",
+    "answers": [
+      "When operating over water",
+      "When operating at night",
+      "When carrying property of another for compensation or hire",
+      "When operating in Class G airspace"
+    ],
+    "correctAnswer": "When carrying property of another for compensation or hire",
+    "hint": "Section 107.205(a) states that no waiver will be issued to allow the carriage of property of another by aircraft for compensation or hire.",
+    "points": 3
+  },
+  {
+    "prompt": "Subpart D—Waivers (Overview)\n\nThis subpart covers the entire waiver process, including policies, requirements, and the list of regulations subject to waiver.",
+    "questionText": "What is the primary purpose of the waiver process in Part 107?",
+    "answers": [
+      "To allow operators to bypass safety regulations",
+      "To permit operations that would otherwise be prohibited, if they can be conducted safely",
+      "To generate additional revenue for the FAA",
+      "To simplify the regulation of UAS operations"
+    ],
+    "correctAnswer": "To permit operations that would otherwise be prohibited, if they can be conducted safely",
+    "hint": "The waiver process is designed to allow flexibility in UAS operations while maintaining safety, as outlined in Subpart D.",
+    "points": 2
   }
 ]

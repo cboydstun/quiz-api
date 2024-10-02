@@ -36,7 +36,12 @@ const userSchema = gql`
     questionsIncorrect: Int
     pointsEarned: Int
     newSkills: [String]
+    lifetimePoints: Int
+    yearlyPoints: Int
+    monthlyPoints: Int
+    dailyPoints: Int
     consecutiveLoginDays: Int
+    lastLoginDate: String
   }
 
   type UpdateUsernameResponse {
@@ -62,6 +67,7 @@ const userSchema = gql`
     updateUserStats(userId: ID!, stats: UserStatsInput!): User!
     updateUsername(username: String!): UpdateUsernameResponse!
     updatePassword(currentPassword: String!, newPassword: String!): UpdatePasswordResponse!
+    updateLoginStreak(userId: ID!): User!
   }
 `;
 

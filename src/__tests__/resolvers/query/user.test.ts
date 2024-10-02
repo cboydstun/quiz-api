@@ -71,9 +71,9 @@ describe("Query resolvers - user", () => {
       monthlyPoints: 200,
       dailyPoints: 50,
       consecutiveLoginDays: 5,
-      lastLoginDate: mockUser.lastLoginDate,
-      createdAt: mockUser.createdAt,
-      updatedAt: mockUser.updatedAt,
+      lastLoginDate: mockUser.lastLoginDate.toISOString(),
+      createdAt: mockUser.createdAt.toISOString(),
+      updatedAt: mockUser.updatedAt.toISOString(),
     });
     expect(authUtils.checkAuth).toHaveBeenCalled();
     expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdmin, [

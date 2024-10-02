@@ -66,6 +66,11 @@ describe("Mutation resolvers - updateUserStats", () => {
         pointsEarned: 50,
         newSkills: ["History"],
         consecutiveLoginDays: 7,
+        lifetimePoints: 1500,
+        yearlyPoints: 750,
+        monthlyPoints: 300,
+        dailyPoints: 75,
+        lastLoginDate: "2023-05-15T00:00:00.000Z",
       },
     };
 
@@ -81,16 +86,16 @@ describe("Mutation resolvers - updateUserStats", () => {
           questionsAnswered: 5,
           questionsCorrect: 4,
           questionsIncorrect: 1,
-          lifetimePoints: 50,
-          yearlyPoints: 50,
-          monthlyPoints: 50,
-          dailyPoints: 50,
         },
-        $addToSet: { skills: { $each: ["History"] } },
         $set: {
-          lastLoginDate: expect.any(Date),
+          lifetimePoints: 1500,
+          yearlyPoints: 750,
+          monthlyPoints: 300,
+          dailyPoints: 75,
+          lastLoginDate: new Date("2023-05-15T00:00:00.000Z"),
           consecutiveLoginDays: 7,
         },
+        $addToSet: { skills: { $each: ["History"] } },
       }),
       { new: true }
     );
@@ -111,6 +116,10 @@ describe("Mutation resolvers - updateUserStats", () => {
         pointsEarned: 50,
         newSkills: ["History"],
         consecutiveLoginDays: 7,
+        lifetimePoints: 1500,
+        yearlyPoints: 750,
+        monthlyPoints: 300,
+        dailyPoints: 75,
       },
     };
 
@@ -137,6 +146,10 @@ describe("Mutation resolvers - updateUserStats", () => {
         pointsEarned: 50,
         newSkills: ["History"],
         consecutiveLoginDays: 7,
+        lifetimePoints: 1500,
+        yearlyPoints: 750,
+        monthlyPoints: 300,
+        dailyPoints: 75,
       },
     };
 
@@ -163,6 +176,10 @@ describe("Mutation resolvers - updateUserStats", () => {
         pointsEarned: 50,
         newSkills: ["History"],
         consecutiveLoginDays: 7,
+        lifetimePoints: -100, // Invalid negative value
+        yearlyPoints: "invalid" as unknown as number, // Invalid string instead of number
+        monthlyPoints: 300,
+        dailyPoints: 75,
       } as UserStats, // Type assertion to UserStats
     };
 
@@ -176,16 +193,16 @@ describe("Mutation resolvers - updateUserStats", () => {
           questionsAnswered: 0, // Should default to 0 for invalid input
           questionsCorrect: 0, // Should default to 0 for invalid input
           questionsIncorrect: 1,
-          lifetimePoints: 50,
-          yearlyPoints: 50,
-          monthlyPoints: 50,
-          dailyPoints: 50,
         },
-        $addToSet: { skills: { $each: ["History"] } },
         $set: {
+          lifetimePoints: 0, // Should default to 0 for invalid input
+          yearlyPoints: 0, // Should default to 0 for invalid input
+          monthlyPoints: 300,
+          dailyPoints: 75,
           lastLoginDate: expect.any(Date),
           consecutiveLoginDays: 7,
         },
+        $addToSet: { skills: { $each: ["History"] } },
       }),
       { new: true }
     );

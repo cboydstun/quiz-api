@@ -6,7 +6,12 @@ export type UserStats = {
   questionsIncorrect?: number;
   pointsEarned?: number;
   newSkills?: string[];
+  lifetimePoints?: number;
+  yearlyPoints?: number;
+  monthlyPoints?: number;
+  dailyPoints?: number;
   consecutiveLoginDays?: number;
+  lastLoginDate?: string;
 };
 
 export type UserResolvers = {
@@ -65,6 +70,11 @@ export type UserResolvers = {
       success: boolean;
       message: string;
     }>;
+    updateLoginStreak: (
+      parent: any,
+      args: { userId: string },
+      context: any
+    ) => Promise<any>;
   };
 };
 

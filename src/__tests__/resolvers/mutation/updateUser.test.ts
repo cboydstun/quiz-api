@@ -36,14 +36,8 @@ beforeAll(async () => {
 
     await user.save();
 
-    console.log('Created user:', user);
-    console.log('Stored hashed password:', user.password);
-
     userId = user._id.toString();
     token = generateToken(user);
-
-    console.log('Test user created with ID:', userId);
-    console.log('Generated token:', token);
 });
 
 afterAll(async () => {
@@ -85,8 +79,6 @@ describe('User Mutations', () => {
             res: {} as Response,
         });
 
-        console.log('Update username response:', res);
-
         expect(res.data?.updateUsername.username).toBe(newUsername);
         expect(res.data?.updateUsername.id).toBe(userId);
 
@@ -117,8 +109,6 @@ describe('User Mutations', () => {
             res: {} as Response,
         });
 
-        console.log('Update existing username response:', res);
-
         expect(res.errors?.[0].message).toBe('Username is already taken');
     });
 
@@ -126,7 +116,6 @@ describe('User Mutations', () => {
         const user = await User.findById(userId);
         if (user) {
             const isMatch = await user.comparePassword(initialPassword);
-            console.log('Password match:', isMatch);
             expect(isMatch).toBe(true);
         } else {
             fail('User not found');
@@ -149,8 +138,6 @@ describe('User Mutations', () => {
             res: {} as Response,
         });
 
-        console.log('Update password response:', res);
-
         expect(res.data?.updatePassword.success).toBe(true);
         expect(res.data?.updatePassword.message).toBe('Password updated successfully');
 
@@ -158,7 +145,6 @@ describe('User Mutations', () => {
         const updatedUser = await User.findById(userId);
         if (updatedUser) {
             const isMatch = await updatedUser.comparePassword(newPassword);
-            console.log('New password match:', isMatch);
             expect(isMatch).toBe(true);
         } else {
             fail('User not found');
@@ -180,8 +166,6 @@ describe('User Mutations', () => {
             } as Request,
             res: {} as Response,
         });
-
-        console.log('Update password with incorrect current password response:', res);
 
         expect(res.errors?.[0].message).toBe('Current password is incorrect');
     });

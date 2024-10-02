@@ -98,6 +98,17 @@ const UPDATE_USER_STATS = `
   }
 `;
 
+const UPDATE_LOGIN_STREAK = `
+  mutation UpdateLoginStreak($userId: ID!) {
+    updateLoginStreak(userId: $userId) {
+      id
+      username
+      consecutiveLoginDays
+      lastLoginDate
+    }
+  }
+`;
+
 // Helper function to create a mock context
 const createMockContext = (user: any): ExpressContext => {
   const token = generateToken(user);
@@ -158,12 +169,16 @@ describe("User Operations Integration Tests", () => {
       role: "ADMIN",
     });
 
-    // Create a regular user
+    // Create a regular user with an initial lastLoginDate
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
     regularUser = await User.create({
       username: "user",
       email: "user@example.com",
       password: "userpass",
       role: "USER",
+      lastLoginDate: yesterday,
+      consecutiveLoginDays: 1,
     });
   });
 
@@ -182,6 +197,11 @@ describe("User Operations Integration Tests", () => {
       expect(res.data?.users[1].username).toBe("user");
       expect(res.data?.users[0]).toHaveProperty("questionsAnswered");
       expect(res.data?.users[0]).toHaveProperty("lifetimePoints");
+      expect(res.data?.users[0]).toHaveProperty("yearlyPoints");
+      expect(res.data?.users[0]).toHaveProperty("monthlyPoints");
+      expect(res.data?.users[0]).toHaveProperty("dailyPoints");
+      expect(res.data?.users[0]).toHaveProperty("consecutiveLoginDays");
+      expect(res.data?.users[0]).toHaveProperty("lastLoginDate");
     });
 
     it("should fetch a specific user by ID", async () => {
@@ -199,6 +219,11 @@ describe("User Operations Integration Tests", () => {
       expect(res.data?.user.role).toBe("USER");
       expect(res.data?.user).toHaveProperty("questionsAnswered");
       expect(res.data?.user).toHaveProperty("lifetimePoints");
+      expect(res.data?.user).toHaveProperty("yearlyPoints");
+      expect(res.data?.user).toHaveProperty("monthlyPoints");
+      expect(res.data?.user).toHaveProperty("dailyPoints");
+      expect(res.data?.user).toHaveProperty("consecutiveLoginDays");
+      expect(res.data?.user).toHaveProperty("lastLoginDate");
     });
 
     it("should not allow a regular user to fetch all users", async () => {
@@ -279,6 +304,10 @@ describe("User Operations Integration Tests", () => {
               pointsEarned: 100,
               newSkills: ["Math", "Science"],
               consecutiveLoginDays: 5,
+              lifetimePoints: 1000,
+              yearlyPoints: 500,
+              monthlyPoints: 200,
+              dailyPoints: 50,
             },
           },
         },
@@ -289,7 +318,10 @@ describe("User Operations Integration Tests", () => {
       expect(res.data?.updateUserStats.questionsAnswered).toBe(10);
       expect(res.data?.updateUserStats.questionsCorrect).toBe(8);
       expect(res.data?.updateUserStats.questionsIncorrect).toBe(2);
-      expect(res.data?.updateUserStats.lifetimePoints).toBe(100);
+      expect(res.data?.updateUserStats.lifetimePoints).toBe(1000);
+      expect(res.data?.updateUserStats.yearlyPoints).toBe(500);
+      expect(res.data?.updateUserStats.monthlyPoints).toBe(200);
+      expect(res.data?.updateUserStats.dailyPoints).toBe(50);
       expect(res.data?.updateUserStats.skills).toContain("Math");
       expect(res.data?.updateUserStats.skills).toContain("Science");
       expect(res.data?.updateUserStats.consecutiveLoginDays).toBe(5);
@@ -316,6 +348,45 @@ describe("User Operations Integration Tests", () => {
 
       expect(res.errors).toBeDefined();
       expect(res.errors?.[0].message).toContain("not have permission");
+    });
+
+    it("should allow an admin to update login streak", async () => {
+      // Set up the test to simulate a login on the next day
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      await User.findByIdAndUpdate(regularUser._id, { 
+        lastLoginDate: yesterday,
+        consecutiveLoginDays: 1
+      });
+    
+      const UPDATE_LOGIN_STREAK = `
+        mutation UpdateLoginStreak($userId: ID!) {
+          updateLoginStreak(userId: $userId) {
+            username
+            consecutiveLoginDays
+            lastLoginDate
+          }
+        }
+      `;
+    
+      const res = await server.executeOperation(
+        {
+          query: UPDATE_LOGIN_STREAK,
+          variables: { userId: regularUser._id.toString() },
+        },
+        {
+          req: {
+            headers: {
+              authorization: `Bearer ${generateToken(adminUser)}`,
+            },
+          },
+        } as any
+      );
+    
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.updateLoginStreak.username).toBe("user");
+      expect(res.data?.updateLoginStreak.consecutiveLoginDays).toBe(2);
+      expect(res.data?.updateLoginStreak.lastLoginDate).toBeDefined();
     });
   });
 

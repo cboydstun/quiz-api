@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { Question, IQuestion } from './models/Question';
-import { User, IUser } from './models/User'; // Import User model and interface
+import { User, IUser } from './models/User';
 import fs from 'fs/promises';
 import path from 'path';
 import bcrypt from 'bcryptjs';
@@ -20,31 +20,56 @@ async function seedDatabase(): Promise<void> {
     await mongoose.connect(connectDB);
     console.log('Connected to MongoDB');
 
-    // Delete existing questions and users
+    // Delete existing questions
     await Question.deleteMany({});
-    await User.deleteMany({});
-    console.log('Deleted existing questions and users');
+    console.log('Deleted existing questions');
+
+    // Delete existing users except for chrisboydstun@gmail.com
+    await User.deleteMany({ email: { $ne: 'chrisboydstun@gmail.com' } });
+    console.log('Deleted existing users except for chrisboydstun@gmail.com');
 
     // Read questions from JSON file
-    const questionsJson = await fs.readFile(path.join(__dirname, '.','seedQuestions.json'), 'utf-8');
+    const questionsJson = await fs.readFile(path.join(__dirname, '.', 'seedQuestions.json'), 'utf-8');
     const questionsData: Omit<IQuestion, '_id' | 'createdBy'>[] = JSON.parse(questionsJson);
 
     // Read users from JSON file
-    const usersJson = await fs.readFile(path.join(__dirname, '.','seedUsers.json'), 'utf-8');
+    const usersJson = await fs.readFile(path.join(__dirname, '.', 'seedUsers.json'), 'utf-8');
     const usersData: Omit<IUser, '_id'>[] = JSON.parse(usersJson);
 
-    // Insert new users
-    const createdUsers = await Promise.all(usersData.map(async (userData) => {
-      if (!userData.password) {
-        throw new Error('User password is undefined');
+    // Get or create chrisboydstun@gmail.com user
+    let chrisUser = await User.findOne({ email: 'chrisboydstun@gmail.com' });
+    if (!chrisUser) {
+      const chrisData = usersData.find(u => u.email === 'chrisboydstun@gmail.com');
+      if (chrisData) {
+        if (!chrisData.password) {
+          throw new Error('Chris user password is undefined');
+        }
+        const hashedPassword = await bcrypt.hash(chrisData.password, 10);
+        chrisUser = new User({
+          ...chrisData,
+          password: hashedPassword,
+        });
+        await chrisUser.save();
+        console.log('Created chrisboydstun@gmail.com user');
       }
-      const hashedPassword = await bcrypt.hash(userData.password, 10);
-      const user = new User({
-        ...userData,
-        password: hashedPassword,
-      });
-      return user.save();
-    }));
+    }
+
+    // Insert new users (excluding chrisboydstun@gmail.com if it already exists)
+    const createdUsers = await Promise.all(usersData
+      .filter(userData => userData.email !== 'chrisboydstun@gmail.com' || !chrisUser)
+      .map(async (userData) => {
+        if (!userData.password) {
+          throw new Error('User password is undefined');
+        }
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        const user = new User({
+          ...userData,
+          password: hashedPassword,
+        });
+        return user.save();
+      }));
+
+    if (chrisUser) createdUsers.push(chrisUser);
 
     console.log(`Seeded ${createdUsers.length} users`);
 

@@ -69,9 +69,9 @@ const userResolvers: UserResolvers = {
         monthlyPoints: user.monthlyPoints,
         dailyPoints: user.dailyPoints,
         consecutiveLoginDays: user.consecutiveLoginDays,
-        lastLoginDate: user.lastLoginDate,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
+        lastLoginDate: user.lastLoginDate ? user.lastLoginDate.toISOString() : null,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
       };
     },
   },
@@ -121,7 +121,12 @@ const userResolvers: UserResolvers = {
         questionsIncorrect: Math.max(0, Number(stats.questionsIncorrect) || 0),
         pointsEarned: Math.max(0, Number(stats.pointsEarned) || 0),
         newSkills: Array.isArray(stats.newSkills) ? stats.newSkills : [],
+        lifetimePoints: Math.max(0, Number(stats.lifetimePoints) || 0),
+        yearlyPoints: Math.max(0, Number(stats.yearlyPoints) || 0),
+        monthlyPoints: Math.max(0, Number(stats.monthlyPoints) || 0),
+        dailyPoints: Math.max(0, Number(stats.dailyPoints) || 0),
         consecutiveLoginDays: Math.max(0, Number(stats.consecutiveLoginDays) || 0),
+        lastLoginDate: stats.lastLoginDate ? new Date(stats.lastLoginDate) : new Date(),
       };
 
       const updatedUser = await User.findByIdAndUpdate(
@@ -131,16 +136,16 @@ const userResolvers: UserResolvers = {
             questionsAnswered: sanitizedStats.questionsAnswered,
             questionsCorrect: sanitizedStats.questionsCorrect,
             questionsIncorrect: sanitizedStats.questionsIncorrect,
-            lifetimePoints: sanitizedStats.pointsEarned,
-            yearlyPoints: sanitizedStats.pointsEarned,
-            monthlyPoints: sanitizedStats.pointsEarned,
-            dailyPoints: sanitizedStats.pointsEarned,
           },
-          $addToSet: { skills: { $each: sanitizedStats.newSkills } },
           $set: {
-            lastLoginDate: new Date(),
+            lifetimePoints: sanitizedStats.lifetimePoints,
+            yearlyPoints: sanitizedStats.yearlyPoints,
+            monthlyPoints: sanitizedStats.monthlyPoints,
+            dailyPoints: sanitizedStats.dailyPoints,
+            lastLoginDate: sanitizedStats.lastLoginDate,
             consecutiveLoginDays: sanitizedStats.consecutiveLoginDays,
           },
+          $addToSet: { skills: { $each: sanitizedStats.newSkills } },
         },
         { new: true }
       );
@@ -179,21 +184,14 @@ const userResolvers: UserResolvers = {
       };
     },
     updatePassword: async (_, { currentPassword, newPassword }: { currentPassword: string, newPassword: string }, context) => {
-      console.log('updatePassword mutation called');
-
       const decodedUser = await checkAuth(context);
-      console.log('Decoded user:', decodedUser);
 
       const user = await User.findById(decodedUser._id);
       if (!user) {
         throw new AuthenticationError("User not found");
       }
 
-      console.log('Found user:', user);
-
       const isMatch = await user.comparePassword(currentPassword);
-      console.log('Password match:', isMatch);
-
       if (!isMatch) {
         throw new AuthenticationError("Current password is incorrect");
       }
@@ -201,13 +199,55 @@ const userResolvers: UserResolvers = {
       user.password = newPassword;
       await user.save();
 
-      console.log('Password updated successfully');
-
       return {
         success: true,
         message: "Password updated successfully",
       };
-    }
+    },
+    updateLoginStreak: async (_, { userId }, context) => {
+      const user = await checkAuth(context);
+      await checkPermission(user, ["SUPER_ADMIN", "ADMIN"]);
+    
+      const userToUpdate = await User.findById(userId);
+      if (!userToUpdate) {
+        throw new NotFoundError("User not found");
+      }
+    
+      const now = new Date();
+      const lastLogin = userToUpdate.lastLoginDate || new Date(0);
+    
+      // Strip time components to compare dates only
+      const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const lastLoginDateOnly = new Date(lastLogin.getFullYear(), lastLogin.getMonth(), lastLogin.getDate());
+    
+      const timeDiff = nowDateOnly.getTime() - lastLoginDateOnly.getTime();
+      const daysDiff = timeDiff / (1000 * 3600 * 24);
+    
+      let newConsecutiveLoginDays = userToUpdate.consecutiveLoginDays || 0;
+    
+      if (daysDiff === 0) {
+        // User has already logged in today, no change
+      } else if (daysDiff === 1) {
+        // User logged in on consecutive days
+        newConsecutiveLoginDays += 1;
+      } else {
+        // User missed a day or more, reset streak
+        newConsecutiveLoginDays = 1;
+      }
+    
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          $set: {
+            lastLoginDate: now,
+            consecutiveLoginDays: newConsecutiveLoginDays,
+          },
+        },
+        { new: true }
+      );
+    
+      return updatedUser;
+    },    
   },
 };
 
