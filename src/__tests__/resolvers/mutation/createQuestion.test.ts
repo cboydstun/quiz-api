@@ -2,7 +2,6 @@
 
 import resolvers from "../../../resolvers";
 import {
-  AuthenticationError,
   ForbiddenError,
 } from "../../../utils/errors";
 import Question from "../../../models/Question";

@@ -22,7 +22,7 @@ export const createOAuth2Client = () =>
   );
 
 // Use the function to create the client
-export let client = createOAuth2Client();
+export const client = createOAuth2Client();
 
 const authResolvers: AuthResolvers = {
   Query: {

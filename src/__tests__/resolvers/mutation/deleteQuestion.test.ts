@@ -3,7 +3,6 @@
 import resolvers from "../../../resolvers";
 import {
   NotFoundError,
-  ForbiddenError,
 } from "../../../utils/errors";
 import Question from "../../../models/Question";
 import * as authUtils from "../../../utils/auth";

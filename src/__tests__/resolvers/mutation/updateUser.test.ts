@@ -1,7 +1,6 @@
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import bcrypt from 'bcryptjs';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import User from '../../../models/User';
 import typeDefs from '../../../schema';

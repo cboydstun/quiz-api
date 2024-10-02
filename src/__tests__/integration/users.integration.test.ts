@@ -98,17 +98,6 @@ const UPDATE_USER_STATS = `
   }
 `;
 
-const UPDATE_LOGIN_STREAK = `
-  mutation UpdateLoginStreak($userId: ID!) {
-    updateLoginStreak(userId: $userId) {
-      id
-      username
-      consecutiveLoginDays
-      lastLoginDate
-    }
-  }
-`;
-
 // Helper function to create a mock context
 const createMockContext = (user: any): ExpressContext => {
   const token = generateToken(user);
@@ -354,11 +343,11 @@ describe("User Operations Integration Tests", () => {
       // Set up the test to simulate a login on the next day
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      await User.findByIdAndUpdate(regularUser._id, { 
+      await User.findByIdAndUpdate(regularUser._id, {
         lastLoginDate: yesterday,
         consecutiveLoginDays: 1
       });
-    
+
       const UPDATE_LOGIN_STREAK = `
         mutation UpdateLoginStreak($userId: ID!) {
           updateLoginStreak(userId: $userId) {
@@ -368,7 +357,7 @@ describe("User Operations Integration Tests", () => {
           }
         }
       `;
-    
+
       const res = await server.executeOperation(
         {
           query: UPDATE_LOGIN_STREAK,
@@ -382,7 +371,7 @@ describe("User Operations Integration Tests", () => {
           },
         } as any
       );
-    
+
       expect(res.errors).toBeUndefined();
       expect(res.data?.updateLoginStreak.username).toBe("user");
       expect(res.data?.updateLoginStreak.consecutiveLoginDays).toBe(2);
@@ -399,15 +388,15 @@ describe("User Operations Integration Tests", () => {
         },
         createMockContext(adminUser)
       );
-  
+
       expect(res.errors).toBeUndefined();
       expect(res.data?.deleteUser).toBe(true);
-  
+
       // Verify the user was deleted
       const deletedUser = await User.findById(regularUser._id);
       expect(deletedUser).toBeNull();
     });
-  
+
     it("should not allow a regular user to delete another user", async () => {
       const res = await server.executeOperation(
         {
@@ -416,15 +405,15 @@ describe("User Operations Integration Tests", () => {
         },
         createMockContext(regularUser)
       );
-  
+
       expect(res.errors).toBeDefined();
       expect(res.errors?.[0].message).toContain("not have permission");
-  
+
       // Verify the admin user still exists
       const admin = await User.findById(adminUser._id);
       expect(admin).not.toBeNull();
     });
-  
+
     it("should throw a ForbiddenError when trying to delete a SUPER_ADMIN", async () => {
       const superAdmin = await User.create({
         username: "superadmin",
@@ -432,7 +421,7 @@ describe("User Operations Integration Tests", () => {
         password: "superadminpass",
         role: "SUPER_ADMIN",
       });
-  
+
       const res = await server.executeOperation(
         {
           query: DELETE_USER,
@@ -440,18 +429,18 @@ describe("User Operations Integration Tests", () => {
         },
         createMockContext(adminUser) // Admin trying to delete SUPER_ADMIN
       );
-  
+
       expect(res.errors).toBeDefined();
       expect(res.errors?.[0].message).toContain("Cannot delete a SUPER_ADMIN");
-  
+
       // Verify the SUPER_ADMIN still exists
       const fetchedSuperAdmin = await User.findById(superAdmin._id);
       expect(fetchedSuperAdmin).not.toBeNull();
     });
-  
+
     it("should throw a NotFoundError when trying to delete a non-existent user", async () => {
       const nonExistentUserId = new mongoose.Types.ObjectId();
-  
+
       const res = await server.executeOperation(
         {
           query: DELETE_USER,
@@ -459,9 +448,9 @@ describe("User Operations Integration Tests", () => {
         },
         createMockContext(adminUser)
       );
-  
+
       expect(res.errors).toBeDefined();
       expect(res.errors?.[0].message).toContain("User not found");
     });
-  });  
+  });
 });

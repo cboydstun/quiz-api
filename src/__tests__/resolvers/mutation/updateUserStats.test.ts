@@ -2,7 +2,6 @@
 
 import resolvers from "../../../resolvers";
 import {
-  AuthenticationError,
   ForbiddenError,
   NotFoundError,
 } from "../../../utils/errors";

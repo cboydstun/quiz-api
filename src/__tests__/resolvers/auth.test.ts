@@ -12,12 +12,6 @@ import { ApolloError } from "apollo-server-express";
 jest.mock("jsonwebtoken");
 jest.mock("../../models/User");
 
-const mockUser = {
-  _id: "some-id",
-  email: "test@example.com",
-  // Add other properties as needed
-} as IUser;
-
 // Mock OAuth2Client methods on the prototype
 jest.mock("google-auth-library", () => {
   const originalModule = jest.requireActual("google-auth-library");
@@ -49,7 +43,6 @@ jest.mock("../../models/User", () => {
 
 import * as auth from "../../utils/auth";
 import { OAuth2Client } from "google-auth-library";
-import { mock } from "node:test";
 
 const mockGenerateAuthUrl = OAuth2Client.prototype.generateAuthUrl as jest.Mock;
 const mockGetToken = OAuth2Client.prototype.getToken as jest.Mock;
@@ -146,9 +139,9 @@ describe("Authentication and Authorization", () => {
       };
       const mockToken = "mockjwttoken";
       (jwt.sign as jest.Mock).mockReturnValue(mockToken);
-  
+
       const token = generateToken(mockUser);
-  
+
       expect(token).toBe(mockToken);
       expect(jwt.sign).toHaveBeenCalledWith(
         {

@@ -2,7 +2,6 @@
 
 import jwt from "jsonwebtoken";
 import { AuthenticationError } from "./errors";
-import { IUser } from "../models/User";
 
 export interface DecodedUser {
   _id: string;
