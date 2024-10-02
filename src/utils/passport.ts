@@ -2,27 +2,36 @@
 
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import User from "../models/User";
+import User, { IUser } from "../models/User";
+import { Profile } from "passport-google-oauth20";
 
 import * as dotenv from "dotenv";
 
 dotenv.config();
 
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const googleRedirectUri = process.env.GOOGLE_REDIRECT_URI;
+
+if (!googleClientId || !googleClientSecret || !googleRedirectUri) {
+  throw new Error("Missing required Google OAuth environment variables");
+}
+
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: process.env.GOOGLE_REDIRECT_URI!,
+      clientID: googleClientId,
+      clientSecret: googleClientSecret,
+      callbackURL: googleRedirectUri,
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (accessToken: string, refreshToken: string, profile: Profile, done: (error: Error | null, user?: IUser) => void) => {
       try {
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
           user = await User.create({
             googleId: profile.id,
-            email: profile.emails![0].value,
+            email: profile.emails?.[0]?.value,
             username: profile.displayName,
             role: "USER",
           });
@@ -30,22 +39,23 @@ passport.use(
 
         return done(null, user);
       } catch (error) {
-        return done(error as Error);
+        return done(error instanceof Error ? error : new Error('An unknown error occurred'));
       }
     }
   )
 );
 
-passport.serializeUser((user: any, done) => {
-  done(null, user.id);
+passport.serializeUser((user: Express.User, done: (err: Error | null, id?: string) => void) => {
+  const userWithId = user as IUser & { id?: string };
+  done(null, userWithId.id);
 });
 
-passport.deserializeUser(async (id: string, done) => {
+passport.deserializeUser(async (id: string, done: (err: Error | null, user?: Express.User | null) => void) => {
   try {
     const user = await User.findById(id);
     done(null, user);
   } catch (error) {
-    done(error);
+    done(error instanceof Error ? error : new Error('An unknown error occurred'));
   }
 });
 

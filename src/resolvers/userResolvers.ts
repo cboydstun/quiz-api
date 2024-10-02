@@ -1,7 +1,7 @@
 // src/resolvers/userResolvers.ts
 
 import User from "../models/User";
-import { checkAuth, generateToken } from "../utils/auth";
+import { checkAuth } from "../utils/auth";
 import { checkPermission } from "../utils/permissions";
 import {
   AuthenticationError,
@@ -10,7 +10,6 @@ import {
   ValidationError,
 } from "../utils/errors";
 import { UserResolvers, UserStats } from "./types";
-import bcrypt from "bcryptjs";
 
 const userResolvers: UserResolvers = {
   Query: {
@@ -207,24 +206,24 @@ const userResolvers: UserResolvers = {
     updateLoginStreak: async (_, { userId }, context) => {
       const user = await checkAuth(context);
       await checkPermission(user, ["SUPER_ADMIN", "ADMIN"]);
-    
+
       const userToUpdate = await User.findById(userId);
       if (!userToUpdate) {
         throw new NotFoundError("User not found");
       }
-    
+
       const now = new Date();
       const lastLogin = userToUpdate.lastLoginDate || new Date(0);
-    
+
       // Strip time components to compare dates only
       const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const lastLoginDateOnly = new Date(lastLogin.getFullYear(), lastLogin.getMonth(), lastLogin.getDate());
-    
+
       const timeDiff = nowDateOnly.getTime() - lastLoginDateOnly.getTime();
       const daysDiff = timeDiff / (1000 * 3600 * 24);
-    
+
       let newConsecutiveLoginDays = userToUpdate.consecutiveLoginDays || 0;
-    
+
       if (daysDiff === 0) {
         // User has already logged in today, no change
       } else if (daysDiff === 1) {
@@ -234,7 +233,7 @@ const userResolvers: UserResolvers = {
         // User missed a day or more, reset streak
         newConsecutiveLoginDays = 1;
       }
-    
+
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         {
@@ -245,9 +244,9 @@ const userResolvers: UserResolvers = {
         },
         { new: true }
       );
-    
+
       return updatedUser;
-    },    
+    },
   },
 };
 

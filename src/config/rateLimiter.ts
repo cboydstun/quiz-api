@@ -1,6 +1,5 @@
-// config/rateLimiter.ts
-
 import rateLimit from "express-rate-limit";
+import { Application, Request, Response, NextFunction } from "express";
 
 export const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -19,9 +18,15 @@ export const registerLimiter = rateLimit({
   message: "Too many registration attempts, please try again later.",
 });
 
-export const applyRateLimiting = (app: any) => {
+interface GraphQLRequest extends Request {
+  body: {
+    query?: string;
+  };
+}
+
+export const applyRateLimiting = (app: Application): void => {
   app.use(generalLimiter);
-  app.use("/graphql", (req: any, res: any, next: any) => {
+  app.use("/graphql", (req: GraphQLRequest, res: Response, next: NextFunction) => {
     const query = req.body.query || "";
     if (query.includes("mutation") && query.includes("login")) {
       return loginLimiter(req, res, next);
