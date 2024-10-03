@@ -53,6 +53,9 @@ jobs:
     - name: Run linter
       run: pnpm run lint
 
+    - name: Clear MongoDB binary cache
+      run: rm -rf /home/runner/.cache/mongodb-binaries
+
     - name: Run tests
       run: pnpm test
       env:
