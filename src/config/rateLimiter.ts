@@ -1,5 +1,5 @@
 import rateLimit from "express-rate-limit";
-import { Application, Request, Response, NextFunction } from "express";
+import { Application, Request, RequestHandler } from "express";
 
 export const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -26,8 +26,10 @@ interface GraphQLRequest extends Request {
 
 export const applyRateLimiting = (app: Application): void => {
   app.use(generalLimiter);
-  app.use("/graphql", (req: GraphQLRequest, res: Response, next: NextFunction) => {
-    const query = req.body.query || "";
+
+  const graphqlRateLimiter: RequestHandler = (req, res, next) => {
+    const graphqlReq = req as GraphQLRequest;
+    const query = graphqlReq.body.query || "";
     if (query.includes("mutation") && query.includes("login")) {
       return loginLimiter(req, res, next);
     }
@@ -35,5 +37,7 @@ export const applyRateLimiting = (app: Application): void => {
       return registerLimiter(req, res, next);
     }
     next();
-  });
+  };
+
+  app.use("/graphql", graphqlRateLimiter);
 };
