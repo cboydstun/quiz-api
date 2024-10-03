@@ -11,6 +11,9 @@ import { Request, Response } from 'express';
 import * as dotenv from "dotenv";
 dotenv.config();
 
+// Set JWT_SECRET for testing
+process.env.JWT_SECRET = 'test-secret';
+
 let mongoServer: MongoMemoryServer;
 let server: ApolloServer;
 let userId: string;
