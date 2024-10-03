@@ -110,18 +110,14 @@ describe("Question Operations Integration Tests", () => {
 
   beforeAll(async () => {
     try {
-      console.log('Starting MongoMemoryServer...');
       mongoServer = await MongoMemoryServer.create({
         instance: {
           dbName: `testdb_${Date.now()}`,
         },
       });
-      console.log('MongoMemoryServer started');
 
       const mongoUri = mongoServer.getUri();
-      console.log('Connecting to MongoDB...');
       await mongoose.connect(mongoUri);
-      console.log('Connected to MongoDB');
 
       process.env.JWT_SECRET = "test-secret";
 
@@ -134,13 +130,11 @@ describe("Question Operations Integration Tests", () => {
         },
       };
 
-      console.log('Creating ApolloServer...');
       server = new ApolloServer<ExpressContext>({
         typeDefs,
         resolvers: mockResolvers,
         context: ({ req, res }) => ({ req, res }),
       });
-      console.log('ApolloServer created');
     } catch (error) {
       console.error('Error in test setup:', error);
       throw error;
@@ -149,13 +143,9 @@ describe("Question Operations Integration Tests", () => {
 
   afterAll(async () => {
     try {
-      console.log('Disconnecting from MongoDB...');
       await mongoose.disconnect();
-      console.log('Disconnected from MongoDB');
 
-      console.log('Stopping MongoMemoryServer...');
       await mongoServer.stop();
-      console.log('MongoMemoryServer stopped');
 
       delete process.env.JWT_SECRET;
     } catch (error) {
@@ -207,8 +197,6 @@ describe("Question Operations Integration Tests", () => {
           },
           createMockContext(adminUser)
         );
-
-        console.log('Server response:', JSON.stringify(res, null, 2));
 
         expect(res.errors).toBeUndefined();
         expect(res.data?.createQuestion.prompt).toBe(
