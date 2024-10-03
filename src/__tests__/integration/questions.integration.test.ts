@@ -109,32 +109,58 @@ describe("Question Operations Integration Tests", () => {
   let regularUser: any;
 
   beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    const mongoUri = mongoServer.getUri();
-    await mongoose.connect(mongoUri);
+    try {
+      console.log('Starting MongoMemoryServer...');
+      mongoServer = await MongoMemoryServer.create({
+        instance: {
+          dbName: `testdb_${Date.now()}`,
+        },
+      });
+      console.log('MongoMemoryServer started');
 
-    process.env.JWT_SECRET = "test-secret";
+      const mongoUri = mongoServer.getUri();
+      console.log('Connecting to MongoDB...');
+      await mongoose.connect(mongoUri);
+      console.log('Connected to MongoDB');
 
-    // Mock the getGoogleAuthUrl resolver
-    const mockResolvers = {
-      ...resolvers,
-      Query: {
-        ...resolvers.Query,
-        getGoogleAuthUrl: () => ({ url: "http://mock-google-auth-url.com" }),
-      },
-    };
+      process.env.JWT_SECRET = "test-secret";
 
-    server = new ApolloServer<ExpressContext>({
-      typeDefs,
-      resolvers: mockResolvers,
-      context: ({ req, res }) => ({ req, res }),
-    });
-  });
+      // Mock the getGoogleAuthUrl resolver
+      const mockResolvers = {
+        ...resolvers,
+        Query: {
+          ...resolvers.Query,
+          getGoogleAuthUrl: () => ({ url: "http://mock-google-auth-url.com" }),
+        },
+      };
+
+      console.log('Creating ApolloServer...');
+      server = new ApolloServer<ExpressContext>({
+        typeDefs,
+        resolvers: mockResolvers,
+        context: ({ req, res }) => ({ req, res }),
+      });
+      console.log('ApolloServer created');
+    } catch (error) {
+      console.error('Error in test setup:', error);
+      throw error;
+    }
+  }, 60000); // 60 seconds timeout for beforeAll
 
   afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoServer.stop();
-    delete process.env.JWT_SECRET;
+    try {
+      console.log('Disconnecting from MongoDB...');
+      await mongoose.disconnect();
+      console.log('Disconnected from MongoDB');
+
+      console.log('Stopping MongoMemoryServer...');
+      await mongoServer.stop();
+      console.log('MongoMemoryServer stopped');
+
+      delete process.env.JWT_SECRET;
+    } catch (error) {
+      console.error('Error in test teardown:', error);
+    }
   });
 
   beforeEach(async () => {
@@ -165,32 +191,39 @@ describe("Question Operations Integration Tests", () => {
 
   describe("Question Mutations", () => {
     it("should allow an admin to create a question", async () => {
-      const res = await server.executeOperation(
-        {
-          query: CREATE_QUESTION,
-          variables: {
-            input: {
-              prompt: "Consider the following geographical question:",
-              questionText: "What is the capital of France?",
-              answers: ["London", "Berlin", "Paris", "Madrid"],
-              correctAnswer: "Paris",
-              points: 2,
+      try {
+        const res = await server.executeOperation(
+          {
+            query: CREATE_QUESTION,
+            variables: {
+              input: {
+                prompt: "Consider the following geographical question:",
+                questionText: "What is the capital of France?",
+                answers: ["London", "Berlin", "Paris", "Madrid"],
+                correctAnswer: "Paris",
+                points: 2,
+              },
             },
           },
-        },
-        createMockContext(adminUser)
-      );
+          createMockContext(adminUser)
+        );
 
-      expect(res.errors).toBeUndefined();
-      expect(res.data?.createQuestion.prompt).toBe(
-        "Consider the following geographical question:"
-      );
-      expect(res.data?.createQuestion.questionText).toBe(
-        "What is the capital of France?"
-      );
-      expect(res.data?.createQuestion.points).toBe(2);
-      expect(res.data?.createQuestion.createdBy.username).toBe("admin");
-    });
+        console.log('Server response:', JSON.stringify(res, null, 2));
+
+        expect(res.errors).toBeUndefined();
+        expect(res.data?.createQuestion.prompt).toBe(
+          "Consider the following geographical question:"
+        );
+        expect(res.data?.createQuestion.questionText).toBe(
+          "What is the capital of France?"
+        );
+        expect(res.data?.createQuestion.points).toBe(2);
+        expect(res.data?.createQuestion.createdBy.username).toBe("admin");
+      } catch (error) {
+        console.error('Error in test:', error);
+        throw error;
+      }
+    }, 30000); // 30 seconds timeout for this specific test
 
     it("should allow an editor to create a question", async () => {
       const res = await server.executeOperation(
