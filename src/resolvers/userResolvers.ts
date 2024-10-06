@@ -46,7 +46,11 @@ const userResolvers: UserResolvers = {
     },
     user: async (_, { id }, context) => {
       const decodedUser = await checkAuth(context);
-      await checkPermission(decodedUser, ["SUPER_ADMIN", "ADMIN"]);
+
+      // Allow users to access their own data
+      if (decodedUser._id.toString() !== id) {
+        await checkPermission(decodedUser, ["SUPER_ADMIN", "ADMIN"]);
+      }
 
       const user = await User.findById(id);
       if (!user) {
@@ -204,8 +208,12 @@ const userResolvers: UserResolvers = {
       };
     },
     updateLoginStreak: async (_, { userId }, context) => {
-      const user = await checkAuth(context);
-      await checkPermission(user, ["SUPER_ADMIN", "ADMIN"]);
+      const authenticatedUser = await checkAuth(context);
+
+      // Allow users to update their own login streak or admins to update any user's streak
+      if (authenticatedUser._id.toString() !== userId) {
+        await checkPermission(authenticatedUser, ["SUPER_ADMIN", "ADMIN"]);
+      }
 
       const userToUpdate = await User.findById(userId);
       if (!userToUpdate) {

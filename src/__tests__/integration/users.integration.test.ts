@@ -58,6 +58,30 @@ const GET_USER = `
   }
 `;
 
+const GET_ME = `
+  query GetMe {
+    me {
+      id
+      username
+      email
+      role
+      score
+      questionsAnswered
+      questionsCorrect
+      questionsIncorrect
+      skills
+      lifetimePoints
+      yearlyPoints
+      monthlyPoints
+      dailyPoints
+      consecutiveLoginDays
+      lastLoginDate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 const CHANGE_USER_ROLE = `
   mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
     changeUserRole(userId: $userId, newRole: $newRole) {
@@ -225,6 +249,47 @@ describe("User Operations Integration Tests", () => {
 
       expect(res.errors).toBeDefined();
       expect(res.errors?.[0].message).toContain("not have permission");
+    });
+
+    it("should allow users to see the total number of questions they have answered using the user query", async () => {
+      // Update the regular user with a known number of answered questions
+      await User.findByIdAndUpdate(regularUser._id, { questionsAnswered: 10 });
+
+      const res = await server.executeOperation(
+        {
+          query: GET_USER,
+          variables: { id: regularUser._id.toString() },
+        },
+        createMockContext(regularUser)
+      );
+
+      if (res.errors) {
+        console.error("GraphQL Errors:", JSON.stringify(res.errors, null, 2));
+      }
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.user.username).toBe("user");
+      expect(res.data?.user.questionsAnswered).toBe(10);
+    });
+
+    it("should allow users to see their own information using the me query", async () => {
+      // Update the regular user with a known number of answered questions
+      await User.findByIdAndUpdate(regularUser._id, { questionsAnswered: 10 });
+
+      const res = await server.executeOperation(
+        {
+          query: GET_ME,
+        },
+        createMockContext(regularUser)
+      );
+
+      if (res.errors) {
+        console.error("GraphQL Errors:", JSON.stringify(res.errors, null, 2));
+      }
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.me.username).toBe("user");
+      expect(res.data?.me.questionsAnswered).toBe(10);
     });
   });
 
@@ -451,6 +516,103 @@ describe("User Operations Integration Tests", () => {
 
       expect(res.errors).toBeDefined();
       expect(res.errors?.[0].message).toContain("User not found");
+    });
+  });
+
+  describe("updateLoginStreak", () => {
+    const UPDATE_LOGIN_STREAK = `
+      mutation UpdateLoginStreak($userId: ID!) {
+        updateLoginStreak(userId: $userId) {
+          username
+          consecutiveLoginDays
+          lastLoginDate
+        }
+      }
+    `;
+
+    it("should increment login streak when logging in on consecutive days", async () => {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      await User.findByIdAndUpdate(regularUser._id, {
+        lastLoginDate: yesterday,
+        consecutiveLoginDays: 1
+      });
+
+      const res = await server.executeOperation(
+        {
+          query: UPDATE_LOGIN_STREAK,
+          variables: { userId: regularUser._id.toString() },
+        },
+        createMockContext(adminUser)
+      );
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.updateLoginStreak.username).toBe("user");
+      expect(res.data?.updateLoginStreak.consecutiveLoginDays).toBe(2);
+      expect(res.data?.updateLoginStreak.lastLoginDate).toBeDefined();
+    });
+
+    it("should not change login streak when logging in on the same day", async () => {
+      const today = new Date();
+      await User.findByIdAndUpdate(regularUser._id, {
+        lastLoginDate: today,
+        consecutiveLoginDays: 3
+      });
+
+      const res = await server.executeOperation(
+        {
+          query: UPDATE_LOGIN_STREAK,
+          variables: { userId: regularUser._id.toString() },
+        },
+        createMockContext(adminUser)
+      );
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.updateLoginStreak.username).toBe("user");
+      expect(res.data?.updateLoginStreak.consecutiveLoginDays).toBe(3);
+    });
+
+    it("should reset login streak when logging in after missing a day", async () => {
+      const twoDaysAgo = new Date();
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+      await User.findByIdAndUpdate(regularUser._id, {
+        lastLoginDate: twoDaysAgo,
+        consecutiveLoginDays: 5
+      });
+
+      const res = await server.executeOperation(
+        {
+          query: UPDATE_LOGIN_STREAK,
+          variables: { userId: regularUser._id.toString() },
+        },
+        createMockContext(adminUser)
+      );
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.updateLoginStreak.username).toBe("user");
+      expect(res.data?.updateLoginStreak.consecutiveLoginDays).toBe(1);
+    });
+
+    it("should allow a regular user to update their own login streak", async () => {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      await User.findByIdAndUpdate(regularUser._id, {
+        lastLoginDate: yesterday,
+        consecutiveLoginDays: 1
+      });
+
+      const res = await server.executeOperation(
+        {
+          query: UPDATE_LOGIN_STREAK,
+          variables: { userId: regularUser._id.toString() },
+        },
+        createMockContext(regularUser)
+      );
+
+      expect(res.errors).toBeUndefined();
+      expect(res.data?.updateLoginStreak.username).toBe("user");
+      expect(res.data?.updateLoginStreak.consecutiveLoginDays).toBe(2);
+      expect(res.data?.updateLoginStreak.lastLoginDate).toBeDefined();
     });
   });
 });
