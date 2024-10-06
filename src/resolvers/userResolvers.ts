@@ -46,7 +46,11 @@ const userResolvers: UserResolvers = {
     },
     user: async (_, { id }, context) => {
       const decodedUser = await checkAuth(context);
-      await checkPermission(decodedUser, ["SUPER_ADMIN", "ADMIN"]);
+
+      // Allow users to access their own data
+      if (decodedUser._id.toString() !== id) {
+        await checkPermission(decodedUser, ["SUPER_ADMIN", "ADMIN"]);
+      }
 
       const user = await User.findById(id);
       if (!user) {
