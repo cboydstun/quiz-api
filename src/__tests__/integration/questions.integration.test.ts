@@ -8,6 +8,7 @@ import resolvers from "../../resolvers";
 import User from "../../models/User";
 import Question from "../../models/Question";
 import { generateToken } from "../../utils/auth";
+import fs from 'fs';
 
 let mongoServer: MongoMemoryServer;
 
@@ -110,6 +111,11 @@ describe("Question Operations Integration Tests", () => {
 
   beforeAll(async () => {
     try {
+      const lockFilePath = '/home/runner/.cache/mongodb-binaries/7.0.11.lock';
+      if (fs.existsSync(lockFilePath)) {
+        fs.unlinkSync(lockFilePath);
+      }
+
       mongoServer = await MongoMemoryServer.create({
         instance: {
           dbName: `testdb_${Date.now()}`,
