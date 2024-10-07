@@ -2,6 +2,7 @@
 
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
+import { InMemoryLRUCache } from "apollo-server-caching";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import passport from "./utils/passport";
@@ -35,6 +36,10 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    debug: true, // Enables detailed logging of errors
+    persistedQueries: {
+      cache: new InMemoryLRUCache(), // Use a valid KeyValueCache implementation
+    },
     context: ({ req }) => ({ req }),
     formatError: (error) => {
       if (error.originalError instanceof CustomError) {

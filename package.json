@@ -41,6 +41,7 @@
     "@graphql-tools/utils": "^10.5.4",
     "@types/passport": "^1.0.16",
     "@types/passport-google-oauth20": "^2.0.16",
+    "apollo-server-caching": "^3.3.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
