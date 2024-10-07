@@ -90,7 +90,7 @@ Variables:
 
 ### Get current user (requires authentication)
 
-Retrieves the information of the currently authenticated user.
+Retrieves the information of the currently authenticated user, including the total number of questions answered.
 
 ```graphql
 query Me {
@@ -118,7 +118,7 @@ query Me {
 
 ### Get all users (requires admin permission)
 
-Retrieves a list of all users in the system.
+Retrieves a list of all users in the system, including their total number of questions answered.
 
 ```graphql
 query GetUsers {
@@ -146,7 +146,7 @@ query GetUsers {
 
 ### Get a specific user by ID (requires admin permission)
 
-Retrieves information about a specific user by their ID.
+Retrieves information about a specific user by their ID, including their total number of questions answered.
 
 ```graphql
 query GetUser($id: ID!) {
@@ -199,7 +199,7 @@ mutation DeleteUser($userId: ID!) {
 
 ### Update user stats (requires admin permission)
 
-Updates the statistics for a specific user.
+Updates the statistics for a specific user, including the total number of questions answered.
 
 ```graphql
 mutation UpdateUserStats($userId: ID!, $stats: UserStatsInput!) {
@@ -563,4 +563,5 @@ Errors are returned in the GraphQL response under the `errors` field, with appro
 - Editor operations (like creating or updating questions) require the user to have the EDITOR, ADMIN, or SUPER_ADMIN role.
 - The API implements rate limiting to prevent abuse. Excessive requests may be temporarily blocked.
 - Email addresses in the leaderboard query results are masked for privacy.
+- The `questionsAnswered` field in user queries and mutations represents the total number of questions a user has ever answered. This allows users to track their progress over time.
 - GitHub Actions CI/CD Pipeline enabled.

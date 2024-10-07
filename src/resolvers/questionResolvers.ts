@@ -134,10 +134,21 @@ const questionResolvers: QuestionResolvers = {
 
       await userResponse.save();
 
+      // Update user stats
+      const updateObject: any = {
+        $inc: {
+          questionsAnswered: 1,
+          score: isCorrect ? question.points : 0,
+        },
+      };
+
       if (isCorrect) {
-        // Increment the user's score by the question's points value for each correct answer
-        await User.findByIdAndUpdate(user._id, { $inc: { score: question.points } });
+        updateObject.$inc.questionsCorrect = 1;
+      } else {
+        updateObject.$inc.questionsIncorrect = 1;
       }
+
+      await User.findByIdAndUpdate(user._id, updateObject);
 
       return {
         success: true,

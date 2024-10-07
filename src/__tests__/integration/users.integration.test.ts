@@ -6,6 +6,7 @@ import { ExpressContext } from "apollo-server-express/dist/ApolloServer";
 import typeDefs from "../../schema";
 import resolvers from "../../resolvers";
 import User from "../../models/User";
+import Question from "../../models/Question";
 import { generateToken } from "../../utils/auth";
 
 let mongoServer: MongoMemoryServer;
@@ -122,6 +123,15 @@ const UPDATE_USER_STATS = `
   }
 `;
 
+const SUBMIT_ANSWER = `
+  mutation SubmitAnswer($questionId: ID!, $selectedAnswer: String!) {
+    submitAnswer(questionId: $questionId, selectedAnswer: $selectedAnswer) {
+      success
+      isCorrect
+    }
+  }
+`;
+
 // Helper function to create a mock context
 const createMockContext = (user: any): ExpressContext => {
   const token = generateToken(user);
@@ -173,6 +183,7 @@ describe("User Operations Integration Tests", () => {
 
   beforeEach(async () => {
     await User.deleteMany({});
+    await Question.deleteMany({});
 
     // Create an admin user
     adminUser = await User.create({
@@ -613,6 +624,94 @@ describe("User Operations Integration Tests", () => {
       expect(res.data?.updateLoginStreak.username).toBe("user");
       expect(res.data?.updateLoginStreak.consecutiveLoginDays).toBe(2);
       expect(res.data?.updateLoginStreak.lastLoginDate).toBeDefined();
+    });
+  });
+
+  describe("Question Answering", () => {
+    it("should increment questionsAnswered when a user submits a correct answer", async () => {
+      // Create a test question
+      const testQuestion = await Question.create({
+        prompt: "Test prompt",
+        questionText: "What is 2 + 2?",
+        answers: ["3", "4", "5", "6"],
+        correctAnswer: "4",
+        points: 10,
+        createdBy: adminUser._id,
+      });
+
+      // Submit an answer
+      const submitAnswerRes = await server.executeOperation(
+        {
+          query: SUBMIT_ANSWER,
+          variables: {
+            questionId: testQuestion._id.toString(),
+            selectedAnswer: "4",
+          },
+        },
+        createMockContext(regularUser)
+      );
+
+      expect(submitAnswerRes.errors).toBeUndefined();
+      expect(submitAnswerRes.data?.submitAnswer.success).toBe(true);
+      expect(submitAnswerRes.data?.submitAnswer.isCorrect).toBe(true);
+
+      // Check if questionsAnswered has been incremented
+      const userRes = await server.executeOperation(
+        {
+          query: GET_USER,
+          variables: { id: regularUser._id.toString() },
+        },
+        createMockContext(adminUser)
+      );
+
+      expect(userRes.errors).toBeUndefined();
+      expect(userRes.data?.user.questionsAnswered).toBe(1);
+      expect(userRes.data?.user.questionsCorrect).toBe(1);
+      expect(userRes.data?.user.questionsIncorrect).toBe(0);
+      expect(userRes.data?.user.score).toBe(10);
+    });
+
+    it("should increment questionsAnswered and questionsIncorrect for wrong answers", async () => {
+      // Create a test question
+      const testQuestion = await Question.create({
+        prompt: "Test prompt",
+        questionText: "What is 2 + 2?",
+        answers: ["3", "4", "5", "6"],
+        correctAnswer: "4",
+        points: 10,
+        createdBy: adminUser._id,
+      });
+
+      // Submit a wrong answer
+      const submitAnswerRes = await server.executeOperation(
+        {
+          query: SUBMIT_ANSWER,
+          variables: {
+            questionId: testQuestion._id.toString(),
+            selectedAnswer: "5",
+          },
+        },
+        createMockContext(regularUser)
+      );
+
+      expect(submitAnswerRes.errors).toBeUndefined();
+      expect(submitAnswerRes.data?.submitAnswer.success).toBe(true);
+      expect(submitAnswerRes.data?.submitAnswer.isCorrect).toBe(false);
+
+      // Check if questionsAnswered and questionsIncorrect have been incremented
+      const userRes = await server.executeOperation(
+        {
+          query: GET_USER,
+          variables: { id: regularUser._id.toString() },
+        },
+        createMockContext(adminUser)
+      );
+
+      expect(userRes.errors).toBeUndefined();
+      expect(userRes.data?.user.questionsAnswered).toBe(1);
+      expect(userRes.data?.user.questionsCorrect).toBe(0);
+      expect(userRes.data?.user.questionsIncorrect).toBe(1);
+      expect(userRes.data?.user.score).toBe(0);
     });
   });
 });

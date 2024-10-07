@@ -141,4 +141,54 @@ describe("Query resolvers - user", () => {
     ]);
     expect(User.findById).not.toHaveBeenCalled();
   });
+
+  it("should return the authenticated user's data including questionsAnswered for 'me' query", async () => {
+    const mockUser = {
+      _id: { toString: () => "1" },
+      username: "user1",
+      email: "user1@example.com",
+      role: "USER",
+      score: 100,
+      questionsAnswered: 15,
+      questionsCorrect: 12,
+      questionsIncorrect: 3,
+      skills: ["Math", "Science"],
+      lifetimePoints: 1500,
+      yearlyPoints: 750,
+      monthlyPoints: 300,
+      dailyPoints: 75,
+      consecutiveLoginDays: 7,
+      lastLoginDate: new Date("2023-05-15"),
+      createdAt: new Date("2023-01-01"),
+      updatedAt: new Date("2023-05-15"),
+    };
+
+    (authUtils.checkAuth as jest.Mock).mockResolvedValue({ _id: "1" });
+    (User.findById as jest.Mock).mockResolvedValue(mockUser);
+
+    const result = await resolvers.Query.me(null, {}, { req: {} } as any);
+
+    expect(result).toEqual({
+      id: "1",
+      username: "user1",
+      email: "user1@example.com",
+      role: "USER",
+      score: 100,
+      questionsAnswered: 15,
+      questionsCorrect: 12,
+      questionsIncorrect: 3,
+      skills: ["Math", "Science"],
+      lifetimePoints: 1500,
+      yearlyPoints: 750,
+      monthlyPoints: 300,
+      dailyPoints: 75,
+      consecutiveLoginDays: 7,
+      lastLoginDate: mockUser.lastLoginDate.toISOString(),
+      createdAt: mockUser.createdAt.toISOString(),
+      updatedAt: mockUser.updatedAt.toISOString(),
+    });
+
+    expect(authUtils.checkAuth).toHaveBeenCalled();
+    expect(User.findById).toHaveBeenCalledWith("1");
+  });
 });
