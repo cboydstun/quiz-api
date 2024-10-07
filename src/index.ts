@@ -38,25 +38,25 @@ const startServer = async () => {
     resolvers,
     debug: true, // Enables detailed logging of errors
     persistedQueries: {
-      cache: new InMemoryLRUCache(), // Use a valid KeyValueCache implementation
+      cache: new InMemoryLRUCache({ maxSize: 100 * Math.pow(2, 20) }), // 100 MB cache size
     },
     context: ({ req }) => ({ req }),
     formatError: (error) => {
       if (error.originalError instanceof CustomError) {
         return handleCustomError(error.originalError);
       }
-
+  
       logger.error("GraphQL Error", {
         message: error.message,
         locations: error.locations,
         path: error.path,
         extensions: error.extensions,
       });
-
+  
       if (error.extensions?.exception?.stacktrace) {
         console.error(error.extensions.exception.stacktrace.join("\n"));
       }
-
+  
       if (process.env.NODE_ENV === "production") {
         return handleUnexpectedError();
       } else {
@@ -69,7 +69,7 @@ const startServer = async () => {
       }
     },
   });
-
+  
   await server.start();
   server.applyMiddleware({ app, path: "/v1/graphql", cors: false });
 
