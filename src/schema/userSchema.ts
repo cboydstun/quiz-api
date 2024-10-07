@@ -6,12 +6,12 @@ const userSchema = gql`
   type User {
     id: ID!
     username: String!
-    email: String!
+    email: String
     role: String!
     score: Int
-    questionsAnswered: Int
-    questionsCorrect: Int
-    questionsIncorrect: Int
+    questionsAnswered: Int!
+    questionsCorrect: Int!
+    questionsIncorrect: Int!
     skills: [String]
     lifetimePoints: Int
     yearlyPoints: Int
@@ -66,7 +66,10 @@ const userSchema = gql`
     deleteUser(userId: ID!): Boolean!
     updateUserStats(userId: ID!, stats: UserStatsInput!): User!
     updateUsername(username: String!): UpdateUsernameResponse!
-    updatePassword(currentPassword: String!, newPassword: String!): UpdatePasswordResponse!
+    updatePassword(
+      currentPassword: String!
+      newPassword: String!
+    ): UpdatePasswordResponse!
     updateLoginStreak(userId: ID!): User!
   }
 `;

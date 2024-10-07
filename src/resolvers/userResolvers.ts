@@ -24,16 +24,16 @@ const userResolvers: UserResolvers = {
         username: user.username,
         email: user.email,
         role: user.role,
-        score: user.score,
-        questionsAnswered: user.questionsAnswered,
-        questionsCorrect: user.questionsCorrect,
-        questionsIncorrect: user.questionsIncorrect,
-        skills: user.skills,
-        lifetimePoints: user.lifetimePoints,
-        yearlyPoints: user.yearlyPoints,
-        monthlyPoints: user.monthlyPoints,
-        dailyPoints: user.dailyPoints,
-        consecutiveLoginDays: user.consecutiveLoginDays,
+        score: user.score || 0,
+        questionsAnswered: user.questionsAnswered || 0,
+        questionsCorrect: user.questionsCorrect || 0,
+        questionsIncorrect: user.questionsIncorrect || 0,
+        skills: user.skills || [],
+        lifetimePoints: user.lifetimePoints || 0,
+        yearlyPoints: user.yearlyPoints || 0,
+        monthlyPoints: user.monthlyPoints || 0,
+        dailyPoints: user.dailyPoints || 0,
+        consecutiveLoginDays: user.consecutiveLoginDays || 0,
         lastLoginDate: user.lastLoginDate ? user.lastLoginDate.toISOString() : null,
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
@@ -47,35 +47,41 @@ const userResolvers: UserResolvers = {
     user: async (_, { id }, context) => {
       const decodedUser = await checkAuth(context);
 
-      // Allow users to access their own data
-      if (decodedUser._id.toString() !== id) {
-        await checkPermission(decodedUser, ["SUPER_ADMIN", "ADMIN"]);
-      }
-
       const user = await User.findById(id);
       if (!user) {
         throw new NotFoundError("User not found");
       }
 
-      return {
+      const isAdmin = ["SUPER_ADMIN", "ADMIN"].includes(decodedUser.role);
+      const isSameUser = decodedUser._id.toString() === id;
+
+      const baseUserData = {
         id: user._id.toString(),
         username: user.username,
-        email: user.email,
         role: user.role,
-        score: user.score,
-        questionsAnswered: user.questionsAnswered,
-        questionsCorrect: user.questionsCorrect,
-        questionsIncorrect: user.questionsIncorrect,
-        skills: user.skills,
-        lifetimePoints: user.lifetimePoints,
-        yearlyPoints: user.yearlyPoints,
-        monthlyPoints: user.monthlyPoints,
-        dailyPoints: user.dailyPoints,
-        consecutiveLoginDays: user.consecutiveLoginDays,
-        lastLoginDate: user.lastLoginDate ? user.lastLoginDate.toISOString() : null,
-        createdAt: user.createdAt.toISOString(),
-        updatedAt: user.updatedAt.toISOString(),
+        questionsAnswered: user.questionsAnswered || 0,
+        questionsCorrect: user.questionsCorrect || 0,
+        questionsIncorrect: user.questionsIncorrect || 0,
+        score: isAdmin || isSameUser ? (user.score || 0) : 0,
       };
+
+      if (isAdmin || isSameUser) {
+        return {
+          ...baseUserData,
+          email: user.email,
+          skills: user.skills || [],
+          lifetimePoints: user.lifetimePoints || 0,
+          yearlyPoints: user.yearlyPoints || 0,
+          monthlyPoints: user.monthlyPoints || 0,
+          dailyPoints: user.dailyPoints || 0,
+          consecutiveLoginDays: user.consecutiveLoginDays || 0,
+          lastLoginDate: user.lastLoginDate ? user.lastLoginDate.toISOString() : null,
+          createdAt: user.createdAt.toISOString(),
+          updatedAt: user.updatedAt.toISOString(),
+        };
+      } else {
+        return baseUserData;
+      }
     },
   },
   Mutation: {
