@@ -15,6 +15,8 @@ import { sessionConfig } from "./config/session";
 import { applyRateLimiting } from "./config/rateLimiter";
 import { initializePassport } from "./config/passport";
 import { corsOptions } from "./config/cors";
+import { createComplexityLimitRule } from "graphql-validation-complexity";
+import { ValidationContext } from 'graphql'; 
 import { CustomError, handleCustomError, handleUnexpectedError } from "./utils/errors";
 
 dotenv.config();
@@ -36,6 +38,7 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    validationRules: [createComplexityLimitRule(1000) as unknown as (context: ValidationContext) => any],
     debug: true, // Enables detailed logging of errors
     persistedQueries: {
       cache: new InMemoryLRUCache({ maxSize: 100 * Math.pow(2, 20) }), // 100 MB cache size
@@ -69,7 +72,7 @@ const startServer = async () => {
       }
     },
   });
-  
+
   await server.start();
   server.applyMiddleware({ app, path: "/v1/graphql", cors: false });
 
