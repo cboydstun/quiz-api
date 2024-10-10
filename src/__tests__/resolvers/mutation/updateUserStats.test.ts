@@ -40,7 +40,11 @@ describe("Mutation resolvers - updateUserStats", () => {
     questionsAnswered: 15,
     questionsCorrect: 12,
     questionsIncorrect: 3,
-    skills: ["Math", "Science", "History"],
+    badges: [
+      { _id: "badge1", name: "Math Whiz", description: "Completed 10 math questions", earnedAt: new Date("2023-04-01") },
+      { _id: "badge2", name: "Science Pro", description: "Completed 10 science questions", earnedAt: new Date("2023-04-15") },
+      { _id: "badge3", name: "History Buff", description: "Completed 10 history questions", earnedAt: new Date("2023-05-15") }
+    ],
     lifetimePoints: 1500,
     yearlyPoints: 750,
     monthlyPoints: 300,
@@ -63,7 +67,7 @@ describe("Mutation resolvers - updateUserStats", () => {
         questionsCorrect: 4,
         questionsIncorrect: 1,
         pointsEarned: 50,
-        newSkills: ["History"],
+        newBadge: { name: "History Buff", description: "Completed 10 history questions" },
         consecutiveLoginDays: 7,
         lifetimePoints: 1500,
         yearlyPoints: 750,
@@ -94,7 +98,13 @@ describe("Mutation resolvers - updateUserStats", () => {
           lastLoginDate: new Date("2023-05-15T00:00:00.000Z"),
           consecutiveLoginDays: 7,
         },
-        $addToSet: { skills: { $each: ["History"] } },
+        $push: {
+          badges: {
+            name: "History Buff",
+            description: "Completed 10 history questions",
+            earnedAt: expect.any(Date),
+          },
+        },
       }),
       { new: true }
     );
@@ -113,7 +123,7 @@ describe("Mutation resolvers - updateUserStats", () => {
         questionsCorrect: 4,
         questionsIncorrect: 1,
         pointsEarned: 50,
-        newSkills: ["History"],
+        newBadge: { name: "History Buff", description: "Completed 10 history questions" },
         consecutiveLoginDays: 7,
         lifetimePoints: 1500,
         yearlyPoints: 750,
@@ -143,7 +153,7 @@ describe("Mutation resolvers - updateUserStats", () => {
         questionsCorrect: 4,
         questionsIncorrect: 1,
         pointsEarned: 50,
-        newSkills: ["History"],
+        newBadge: { name: "History Buff", description: "Completed 10 history questions" },
         consecutiveLoginDays: 7,
         lifetimePoints: 1500,
         yearlyPoints: 750,
@@ -173,7 +183,7 @@ describe("Mutation resolvers - updateUserStats", () => {
         questionsCorrect: "invalid" as unknown as number, // Invalid string instead of number
         questionsIncorrect: 1,
         pointsEarned: 50,
-        newSkills: ["History"],
+        newBadge: { name: "Invalid Badge", description: "This badge should not be added" },
         consecutiveLoginDays: 7,
         lifetimePoints: -100, // Invalid negative value
         yearlyPoints: "invalid" as unknown as number, // Invalid string instead of number
@@ -201,7 +211,13 @@ describe("Mutation resolvers - updateUserStats", () => {
           lastLoginDate: expect.any(Date),
           consecutiveLoginDays: 7,
         },
-        $addToSet: { skills: { $each: ["History"] } },
+        $push: {
+          badges: {
+            name: "Invalid Badge",
+            description: "This badge should not be added",
+            earnedAt: expect.any(Date),
+          },
+        },
       }),
       { new: true }
     );

@@ -24,7 +24,10 @@ describe("Query resolvers - me", () => {
       questionsAnswered: 10,
       questionsCorrect: 8,
       questionsIncorrect: 2,
-      skills: ["Math", "Science"],
+      badges: [
+        { _id: "badge1", name: "Math Whiz", description: "Completed 10 math questions", earnedAt: new Date("2023-04-01") },
+        { _id: "badge2", name: "Science Pro", description: "Completed 10 science questions", earnedAt: new Date("2023-04-15") }
+      ],
       lifetimePoints: 1000,
       yearlyPoints: 500,
       monthlyPoints: 200,
@@ -54,7 +57,10 @@ describe("Query resolvers - me", () => {
       questionsAnswered: 10,
       questionsCorrect: 8,
       questionsIncorrect: 2,
-      skills: ["Math", "Science"],
+      badges: [
+        { id: "badge1", name: "Math Whiz", description: "Completed 10 math questions", earnedAt: mockUser.badges[0].earnedAt.toISOString() },
+        { id: "badge2", name: "Science Pro", description: "Completed 10 science questions", earnedAt: mockUser.badges[1].earnedAt.toISOString() }
+      ],
       lifetimePoints: 1000,
       yearlyPoints: 500,
       monthlyPoints: 200,
