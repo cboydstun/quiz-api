@@ -1,6 +1,6 @@
 // src/resolvers/userResolvers.ts
 
-import User from "../models/User";
+import User, { IBadge } from "../models/User";
 import { checkAuth } from "../utils/auth";
 import { checkPermission } from "../utils/permissions";
 import {
@@ -28,7 +28,11 @@ const userResolvers: UserResolvers = {
         questionsAnswered: user.questionsAnswered || 0,
         questionsCorrect: user.questionsCorrect || 0,
         questionsIncorrect: user.questionsIncorrect || 0,
-        skills: user.skills || [],
+        badges: user.badges.map((badge: IBadge) => ({
+          ...badge.toObject(),
+          id: badge._id.toString(),
+          earnedAt: badge.earnedAt.toISOString()
+        })),
         lifetimePoints: user.lifetimePoints || 0,
         yearlyPoints: user.yearlyPoints || 0,
         monthlyPoints: user.monthlyPoints || 0,
@@ -42,7 +46,22 @@ const userResolvers: UserResolvers = {
     users: async (_, __, context) => {
       const user = await checkAuth(context);
       checkPermission(user, ["SUPER_ADMIN", "ADMIN"]);
-      return User.find();
+      const users = await User.find();
+      return users.map(user => {
+        const userObj = user.toObject ? user.toObject() : user;
+        return {
+          ...userObj,
+          id: user._id.toString(),
+          badges: user.badges.map((badge: IBadge) => ({
+            ...(badge.toObject ? badge.toObject() : badge),
+            id: badge._id.toString(),
+            earnedAt: badge.earnedAt.toISOString()
+          })),
+          lastLoginDate: user.lastLoginDate ? user.lastLoginDate.toISOString() : null,
+          createdAt: user.createdAt.toISOString(),
+          updatedAt: user.updatedAt.toISOString(),
+        };
+      });
     },
     user: async (_, { id }, context) => {
       const decodedUser = await checkAuth(context);
@@ -69,7 +88,11 @@ const userResolvers: UserResolvers = {
         return {
           ...baseUserData,
           email: user.email,
-          skills: user.skills || [],
+          badges: user.badges.map((badge: IBadge) => ({
+            ...(badge.toObject ? badge.toObject() : badge),
+            id: badge._id.toString(),
+            earnedAt: badge.earnedAt.toISOString()
+          })),
           lifetimePoints: user.lifetimePoints || 0,
           yearlyPoints: user.yearlyPoints || 0,
           monthlyPoints: user.monthlyPoints || 0,
@@ -129,7 +152,7 @@ const userResolvers: UserResolvers = {
         questionsCorrect: Math.max(0, Number(stats.questionsCorrect) || 0),
         questionsIncorrect: Math.max(0, Number(stats.questionsIncorrect) || 0),
         pointsEarned: Math.max(0, Number(stats.pointsEarned) || 0),
-        newSkills: Array.isArray(stats.newSkills) ? stats.newSkills : [],
+        newBadge: stats.newBadge,
         lifetimePoints: Math.max(0, Number(stats.lifetimePoints) || 0),
         yearlyPoints: Math.max(0, Number(stats.yearlyPoints) || 0),
         monthlyPoints: Math.max(0, Number(stats.monthlyPoints) || 0),
@@ -138,24 +161,34 @@ const userResolvers: UserResolvers = {
         lastLoginDate: stats.lastLoginDate ? new Date(stats.lastLoginDate) : new Date(),
       };
 
+      const updateOperation: any = {
+        $inc: {
+          questionsAnswered: sanitizedStats.questionsAnswered,
+          questionsCorrect: sanitizedStats.questionsCorrect,
+          questionsIncorrect: sanitizedStats.questionsIncorrect,
+        },
+        $set: {
+          lifetimePoints: sanitizedStats.lifetimePoints,
+          yearlyPoints: sanitizedStats.yearlyPoints,
+          monthlyPoints: sanitizedStats.monthlyPoints,
+          dailyPoints: sanitizedStats.dailyPoints,
+          lastLoginDate: sanitizedStats.lastLoginDate,
+          consecutiveLoginDays: sanitizedStats.consecutiveLoginDays,
+        },
+      };
+
+      if (sanitizedStats.newBadge) {
+        updateOperation.$push = {
+          badges: {
+            ...sanitizedStats.newBadge,
+            earnedAt: new Date(),
+          },
+        };
+      }
+
       const updatedUser = await User.findByIdAndUpdate(
         userId,
-        {
-          $inc: {
-            questionsAnswered: sanitizedStats.questionsAnswered,
-            questionsCorrect: sanitizedStats.questionsCorrect,
-            questionsIncorrect: sanitizedStats.questionsIncorrect,
-          },
-          $set: {
-            lifetimePoints: sanitizedStats.lifetimePoints,
-            yearlyPoints: sanitizedStats.yearlyPoints,
-            monthlyPoints: sanitizedStats.monthlyPoints,
-            dailyPoints: sanitizedStats.dailyPoints,
-            lastLoginDate: sanitizedStats.lastLoginDate,
-            consecutiveLoginDays: sanitizedStats.consecutiveLoginDays,
-          },
-          $addToSet: { skills: { $each: sanitizedStats.newSkills } },
-        },
+        updateOperation,
         { new: true }
       );
 
@@ -163,7 +196,18 @@ const userResolvers: UserResolvers = {
         throw new NotFoundError("User not found");
       }
 
-      return updatedUser;
+      return {
+        ...updatedUser.toObject(),
+        id: updatedUser._id.toString(),
+        badges: updatedUser.badges.map((badge: IBadge) => ({
+          ...badge.toObject(),
+          id: badge._id.toString(),
+          earnedAt: badge.earnedAt.toISOString()
+        })),
+        lastLoginDate: updatedUser.lastLoginDate ? updatedUser.lastLoginDate.toISOString() : null,
+        createdAt: updatedUser.createdAt.toISOString(),
+        updatedAt: updatedUser.updatedAt.toISOString(),
+      };
     },
     updateUsername: async (_, { username }: { username: string }, context) => {
       const decodedUser = await checkAuth(context);
@@ -259,7 +303,22 @@ const userResolvers: UserResolvers = {
         { new: true }
       );
 
-      return updatedUser;
+      if (!updatedUser) {
+        throw new NotFoundError("User not found");
+      }
+
+      return {
+        ...updatedUser.toObject(),
+        id: updatedUser._id.toString(),
+        badges: updatedUser.badges.map((badge: IBadge) => ({
+          ...badge.toObject(),
+          id: badge._id.toString(),
+          earnedAt: badge.earnedAt.toISOString()
+        })),
+        lastLoginDate: updatedUser.lastLoginDate ? updatedUser.lastLoginDate.toISOString() : null,
+        createdAt: updatedUser.createdAt.toISOString(),
+        updatedAt: updatedUser.updatedAt.toISOString(),
+      };
     },
   },
 };

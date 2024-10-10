@@ -22,7 +22,12 @@ const GET_USERS = `
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      skills
+      badges {
+        id
+        name
+        description
+        earnedAt
+      }
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -60,7 +65,12 @@ const GET_USER_FULL = `
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      skills
+      badges {
+        id
+        name
+        description
+        earnedAt
+      }
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -84,7 +94,12 @@ const GET_ME = `
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      skills
+      badges {
+        id
+        name
+        description
+        earnedAt
+      }
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -125,7 +140,12 @@ const UPDATE_USER_STATS = `
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      skills
+      badges {
+        id
+        name
+        description
+        earnedAt
+      }
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -208,7 +228,7 @@ describe("User Operations Integration Tests", () => {
       role: "ADMIN",
     });
 
-    // Create a regular user with an initial lastLoginDate
+    // Create a regular user with an initial lastLoginDate and a badge
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     regularUser = await User.create({
@@ -218,9 +238,10 @@ describe("User Operations Integration Tests", () => {
       role: "USER",
       lastLoginDate: yesterday,
       consecutiveLoginDays: 1,
+      badges: [{ name: "First Login", description: "Logged in for the first time", earnedAt: yesterday }],
     });
 
-    // Create another regular user with some stats
+    // Create another regular user with some stats and badges
     anotherRegularUser = await User.create({
       username: "anotheruser",
       email: "anotheruser@example.com",
@@ -234,6 +255,10 @@ describe("User Operations Integration Tests", () => {
       yearlyPoints: 500,
       monthlyPoints: 200,
       dailyPoints: 50,
+      badges: [
+        { name: "Quiz Master", description: "Answered 10 questions", earnedAt: new Date() },
+        { name: "Sharpshooter", description: "Got 8 questions correct", earnedAt: new Date() },
+      ],
     });
   });
 
@@ -258,6 +283,8 @@ describe("User Operations Integration Tests", () => {
       expect(res.data?.users[0]).toHaveProperty("dailyPoints");
       expect(res.data?.users[0]).toHaveProperty("consecutiveLoginDays");
       expect(res.data?.users[0]).toHaveProperty("lastLoginDate");
+      expect(res.data?.users[1].badges).toHaveLength(1);
+      expect(res.data?.users[2].badges).toHaveLength(2);
     });
 
     it("should fetch a specific user by ID with full details when queried by an admin", async () => {
@@ -280,6 +307,8 @@ describe("User Operations Integration Tests", () => {
       expect(res.data?.user).toHaveProperty("dailyPoints");
       expect(res.data?.user).toHaveProperty("consecutiveLoginDays");
       expect(res.data?.user).toHaveProperty("lastLoginDate");
+      expect(res.data?.user.badges).toHaveLength(1);
+      expect(res.data?.user.badges[0].name).toBe("First Login");
     });
 
     it("should not allow a regular user to fetch all users", async () => {
@@ -310,6 +339,7 @@ describe("User Operations Integration Tests", () => {
       expect(res.data?.user.username).toBe("user");
       expect(res.data?.user.questionsAnswered).toBe(10);
       expect(res.data?.user.email).toBe("user@example.com");  // Users can see their own email
+      expect(res.data?.user.badges).toHaveLength(1);
     });
 
     it("should allow users to see their own information using the me query", async () => {
@@ -326,6 +356,8 @@ describe("User Operations Integration Tests", () => {
       expect(res.errors).toBeUndefined();
       expect(res.data?.me.username).toBe("user");
       expect(res.data?.me.questionsAnswered).toBe(10);
+      expect(res.data?.me.badges).toHaveLength(1);
+      expect(res.data?.me.badges[0].name).toBe("First Login");
     });
 
     it("should allow a regular user to access specific fields of another user", async () => {
@@ -348,7 +380,7 @@ describe("User Operations Integration Tests", () => {
 
       // Check that sensitive information is not included in the response
       expect(res.data?.user.email).toBeUndefined();
-      expect(res.data?.user.skills).toBeUndefined();
+      expect(res.data?.user.badges).toBeUndefined();
       expect(res.data?.user.lifetimePoints).toBeUndefined();
       expect(res.data?.user.yearlyPoints).toBeUndefined();
       expect(res.data?.user.monthlyPoints).toBeUndefined();

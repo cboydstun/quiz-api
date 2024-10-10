@@ -3,6 +3,13 @@
 import { gql } from "apollo-server-express";
 
 const userSchema = gql`
+  type Badge {
+    id: ID!
+    name: String!
+    description: String!
+    earnedAt: String!
+  }
+
   type User {
     id: ID!
     username: String!
@@ -12,7 +19,7 @@ const userSchema = gql`
     questionsAnswered: Int!
     questionsCorrect: Int!
     questionsIncorrect: Int!
-    skills: [String]
+    badges: [Badge]
     lifetimePoints: Int
     yearlyPoints: Int
     monthlyPoints: Int
@@ -35,13 +42,18 @@ const userSchema = gql`
     questionsCorrect: Int
     questionsIncorrect: Int
     pointsEarned: Int
-    newSkills: [String]
+    newBadge: BadgeInput
     lifetimePoints: Int
     yearlyPoints: Int
     monthlyPoints: Int
     dailyPoints: Int
     consecutiveLoginDays: Int
     lastLoginDate: String
+  }
+
+  input BadgeInput {
+    name: String!
+    description: String!
   }
 
   type UpdateUsernameResponse {

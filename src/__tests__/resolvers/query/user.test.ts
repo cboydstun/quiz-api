@@ -28,7 +28,10 @@ describe("Query resolvers - user", () => {
       questionsAnswered: 10,
       questionsCorrect: 8,
       questionsIncorrect: 2,
-      skills: ["Math", "Science"],
+      badges: [
+        { _id: "101", name: "Math Whiz", description: "Excelled in Math", earnedAt: new Date("2023-04-01") },
+        { _id: "102", name: "Science Pro", description: "Mastered Science", earnedAt: new Date("2023-04-15") }
+      ],
       lifetimePoints: 1000,
       yearlyPoints: 500,
       monthlyPoints: 200,
@@ -59,7 +62,11 @@ describe("Query resolvers - user", () => {
       questionsAnswered: 10,
       questionsCorrect: 8,
       questionsIncorrect: 2,
-      skills: ["Math", "Science"],
+      badges: mockUser.badges.map((badge: any) => ({
+        ...(badge.toObject ? badge.toObject() : badge),
+        id: badge._id.toString(),
+        earnedAt: badge.earnedAt.toISOString()
+      })),
       lifetimePoints: 1000,
       yearlyPoints: 500,
       monthlyPoints: 200,
@@ -81,7 +88,10 @@ describe("Query resolvers - user", () => {
       questionsAnswered: 10,
       questionsCorrect: 8,
       questionsIncorrect: 2,
-      skills: ["Math", "Science"],
+      badges: [
+        { _id: "101", name: "Math Whiz", description: "Excelled in Math", earnedAt: new Date("2023-04-01") },
+        { _id: "102", name: "Science Pro", description: "Mastered Science", earnedAt: new Date("2023-04-15") }
+      ],
       lifetimePoints: 1000,
       yearlyPoints: 500,
       monthlyPoints: 200,
@@ -106,7 +116,11 @@ describe("Query resolvers - user", () => {
       questionsAnswered: 10,
       questionsCorrect: 8,
       questionsIncorrect: 2,
-      skills: ["Math", "Science"],
+      badges: mockUser.badges.map((badge: any) => ({
+        ...(badge.toObject ? badge.toObject() : badge),
+        id: badge._id.toString(),
+        earnedAt: badge.earnedAt.toISOString()
+      })),
       lifetimePoints: 1000,
       yearlyPoints: 500,
       monthlyPoints: 200,
@@ -178,7 +192,10 @@ describe("Query resolvers - user", () => {
       questionsAnswered: 15,
       questionsCorrect: 12,
       questionsIncorrect: 3,
-      skills: ["Math", "Science"],
+      badges: [
+        { _id: "101", name: "Math Whiz", description: "Excelled in Math", earnedAt: new Date("2023-04-01") },
+        { _id: "102", name: "Science Pro", description: "Mastered Science", earnedAt: new Date("2023-04-15") }
+      ],
       lifetimePoints: 1500,
       yearlyPoints: 750,
       monthlyPoints: 300,
@@ -203,7 +220,11 @@ describe("Query resolvers - user", () => {
       questionsAnswered: 15,
       questionsCorrect: 12,
       questionsIncorrect: 3,
-      skills: ["Math", "Science"],
+      badges: mockUser.badges.map((badge: any) => ({
+        ...(badge.toObject ? badge.toObject() : badge),
+        id: badge._id.toString(),
+        earnedAt: badge.earnedAt.toISOString()
+      })),
       lifetimePoints: 1500,
       yearlyPoints: 750,
       monthlyPoints: 300,

@@ -1,11 +1,21 @@
 // src/resolvers/types.ts
 
+export type Badge = {
+  id: string;
+  name: string;
+  description: string;
+  earnedAt: Date;
+};
+
 export type UserStats = {
   questionsAnswered?: number;
   questionsCorrect?: number;
   questionsIncorrect?: number;
   pointsEarned?: number;
-  newSkills?: string[];
+  newBadge?: {
+    name: string;
+    description: string;
+  };
   lifetimePoints?: number;
   yearlyPoints?: number;
   monthlyPoints?: number;
@@ -25,7 +35,7 @@ export type UserResolvers = {
       questionsAnswered: number;
       questionsCorrect: number;
       questionsIncorrect: number;
-      skills: string[];
+      badges: Badge[];
       lifetimePoints: number;
       yearlyPoints: number;
       monthlyPoints: number;

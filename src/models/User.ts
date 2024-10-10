@@ -3,6 +3,14 @@
 import mongoose, { Document, Model } from "mongoose";
 import bcrypt from "bcryptjs";
 
+export interface IBadge extends Document {
+  _id: mongoose.Types.ObjectId;
+  name: string;
+  description: string;
+  earnedAt: Date;
+  toObject(): any;
+}
+
 export interface IUser extends Document {
   username: string;
   email: string;
@@ -13,7 +21,7 @@ export interface IUser extends Document {
   questionsAnswered: number;
   questionsCorrect: number;
   questionsIncorrect: number;
-  skills: string[];
+  badges: IBadge[];
   lifetimePoints: number;
   yearlyPoints: number;
   monthlyPoints: number;
@@ -23,8 +31,22 @@ export interface IUser extends Document {
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
-  createdQuestions: mongoose.Types.ObjectId[]; 
+  createdQuestions: mongoose.Types.ObjectId[];
 }
+
+const BadgeSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  earnedAt: { type: Date, default: Date.now }
+});
+
+BadgeSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+BadgeSchema.set('toJSON', {
+  virtuals: true
+});
 
 const UserSchema = new mongoose.Schema({
   username: { type: String, unique: true, sparse: true },
@@ -40,7 +62,7 @@ const UserSchema = new mongoose.Schema({
   questionsAnswered: { type: Number, default: 0 },
   questionsCorrect: { type: Number, default: 0 },
   questionsIncorrect: { type: Number, default: 0 },
-  skills: { type: [String], default: [] },
+  badges: { type: [BadgeSchema], default: [] },
   lifetimePoints: { type: Number, default: 0 },
   yearlyPoints: { type: Number, default: 0 },
   monthlyPoints: { type: Number, default: 0 },
