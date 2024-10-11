@@ -53,6 +53,7 @@ describe("Mutation resolvers - updateUserStats", () => {
     lastLoginDate: new Date("2023-05-15"),
     createdAt: new Date("2023-01-01"),
     updatedAt: new Date("2023-05-15"),
+    toObject: jest.fn().mockReturnThis(),
   };
 
   it("should successfully update user stats as an admin", async () => {
@@ -79,7 +80,18 @@ describe("Mutation resolvers - updateUserStats", () => {
 
     const result = await resolvers.Mutation.updateUserStats(null, args, { req: {} } as any);
 
-    expect(result).toEqual(mockUpdatedUser);
+    expect(result).toEqual({
+      ...mockUpdatedUser,
+      id: mockUpdatedUser._id,
+      badges: mockUpdatedUser.badges.map((badge: any) => ({
+        ...badge,
+        id: badge._id,
+        earnedAt: badge.earnedAt.toISOString(),
+      })),
+      lastLoginDate: mockUpdatedUser.lastLoginDate.toISOString(),
+      createdAt: mockUpdatedUser.createdAt.toISOString(),
+      updatedAt: mockUpdatedUser.updatedAt.toISOString(),
+    });
     expect(authUtils.checkAuth).toHaveBeenCalled();
     expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdminUser, ["SUPER_ADMIN", "ADMIN"]);
     expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
@@ -194,7 +206,18 @@ describe("Mutation resolvers - updateUserStats", () => {
 
     const result = await resolvers.Mutation.updateUserStats(null, args, { req: {} } as any);
 
-    expect(result).toEqual(mockUpdatedUser);
+    expect(result).toEqual({
+      ...mockUpdatedUser,
+      id: mockUpdatedUser._id,
+      badges: mockUpdatedUser.badges.map((badge: any) => ({
+        ...badge,
+        id: badge._id,
+        earnedAt: badge.earnedAt.toISOString(),
+      })),
+      lastLoginDate: mockUpdatedUser.lastLoginDate.toISOString(),
+      createdAt: mockUpdatedUser.createdAt.toISOString(),
+      updatedAt: mockUpdatedUser.updatedAt.toISOString(),
+    });
     expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
       "user456",
       expect.objectContaining({

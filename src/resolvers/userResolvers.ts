@@ -196,6 +196,7 @@ const userResolvers: UserResolvers = {
         throw new NotFoundError("User not found");
       }
 
+      const userObj = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
       return {
         ...updatedUser.toObject(),
         id: updatedUser._id.toString(),
@@ -307,11 +308,12 @@ const userResolvers: UserResolvers = {
         throw new NotFoundError("User not found");
       }
 
+      const userObj = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
       return {
-        ...updatedUser.toObject(),
+        ...userObj,
         id: updatedUser._id.toString(),
         badges: updatedUser.badges.map((badge: IBadge) => ({
-          ...badge.toObject(),
+          ...(badge.toObject ? badge.toObject() : badge),
           id: badge._id.toString(),
           earnedAt: badge.earnedAt.toISOString()
         })),
