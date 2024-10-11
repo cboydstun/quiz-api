@@ -21,18 +21,31 @@ describe("Query resolvers - users", () => {
   it("should return all users for admin", async () => {
     const mockUsers = [
       {
-        id: "1",
+        _id: "1",
         username: "user1",
         email: "user1@example.com",
         role: "USER",
+        badges: [
+          { _id: "badge1", name: "Badge 1", description: "Description 1", earnedAt: new Date("2023-01-01") }
+        ],
+        lastLoginDate: new Date("2023-05-01"),
+        createdAt: new Date("2023-01-01"),
+        updatedAt: new Date("2023-05-01"),
+        toObject: jest.fn().mockReturnThis(),
       },
       {
-        id: "2",
+        _id: "2",
         username: "user2",
         email: "user2@example.com",
         role: "EDITOR",
+        badges: [],
+        lastLoginDate: new Date("2023-05-02"),
+        createdAt: new Date("2023-01-02"),
+        updatedAt: new Date("2023-05-02"),
+        toObject: jest.fn().mockReturnThis(),
       },
     ];
+
     const mockAdmin = {
       _id: "123",
       email: "admin@example.com",
@@ -45,7 +58,18 @@ describe("Query resolvers - users", () => {
 
     const result = await resolvers.Query.users(null, {}, { req: {} } as any);
 
-    expect(result).toEqual(mockUsers);
+    expect(result).toEqual(mockUsers.map(user => ({
+      ...user,
+      id: user._id,
+      badges: user.badges.map(badge => ({
+        ...badge,
+        id: badge._id,
+        earnedAt: badge.earnedAt.toISOString(),
+      })),
+      lastLoginDate: user.lastLoginDate.toISOString(),
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+    })));
     expect(authUtils.checkAuth).toHaveBeenCalled();
     expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdmin, [
       "SUPER_ADMIN",

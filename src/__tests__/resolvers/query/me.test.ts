@@ -16,7 +16,6 @@ describe("Query resolvers - me", () => {
   it("should return the authenticated user with all new fields", async () => {
     const mockUser = {
       _id: "123",
-      id: "123",
       username: "testuser",
       email: "test@example.com",
       role: "USER",
@@ -36,6 +35,7 @@ describe("Query resolvers - me", () => {
       lastLoginDate: new Date("2023-05-01"),
       createdAt: new Date("2023-01-01"),
       updatedAt: new Date("2023-05-01"),
+      toObject: function () { return this; }
     };
 
     (authUtils.checkAuth as jest.Mock).mockResolvedValue({

@@ -28,11 +28,15 @@ const userResolvers: UserResolvers = {
         questionsAnswered: user.questionsAnswered || 0,
         questionsCorrect: user.questionsCorrect || 0,
         questionsIncorrect: user.questionsIncorrect || 0,
-        badges: user.badges.map((badge: IBadge) => ({
-          ...badge.toObject(),
-          id: badge._id.toString(),
-          earnedAt: badge.earnedAt.toISOString()
-        })),
+        badges: user.badges.map((badge: IBadge) => {
+          const { _id, name, description, earnedAt } = badge.toObject ? badge.toObject() : badge;
+          return {
+            id: _id.toString(),
+            name,
+            description,
+            earnedAt: earnedAt.toISOString()
+          };
+        }),
         lifetimePoints: user.lifetimePoints || 0,
         yearlyPoints: user.yearlyPoints || 0,
         monthlyPoints: user.monthlyPoints || 0,
@@ -198,10 +202,10 @@ const userResolvers: UserResolvers = {
 
       const userObj = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
       return {
-        ...updatedUser.toObject(),
+        ...userObj,
         id: updatedUser._id.toString(),
         badges: updatedUser.badges.map((badge: IBadge) => ({
-          ...badge.toObject(),
+          ...(badge.toObject ? badge.toObject() : badge),
           id: badge._id.toString(),
           earnedAt: badge.earnedAt.toISOString()
         })),

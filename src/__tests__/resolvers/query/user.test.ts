@@ -193,8 +193,20 @@ describe("Query resolvers - user", () => {
       questionsCorrect: 12,
       questionsIncorrect: 3,
       badges: [
-        { _id: "101", name: "Math Whiz", description: "Excelled in Math", earnedAt: new Date("2023-04-01") },
-        { _id: "102", name: "Science Pro", description: "Mastered Science", earnedAt: new Date("2023-04-15") }
+        {
+          _id: { toString: () => "101" },
+          name: "Math Whiz",
+          description: "Excelled in Math",
+          earnedAt: new Date("2023-04-01"),
+          toObject: function () { return this; }
+        },
+        {
+          _id: { toString: () => "102" },
+          name: "Science Pro",
+          description: "Mastered Science",
+          earnedAt: new Date("2023-04-15"),
+          toObject: function () { return this; }
+        }
       ],
       lifetimePoints: 1500,
       yearlyPoints: 750,
@@ -220,19 +232,28 @@ describe("Query resolvers - user", () => {
       questionsAnswered: 15,
       questionsCorrect: 12,
       questionsIncorrect: 3,
-      badges: mockUser.badges.map((badge: any) => ({
-        ...(badge.toObject ? badge.toObject() : badge),
-        id: badge._id.toString(),
-        earnedAt: badge.earnedAt.toISOString()
-      })),
+      badges: [
+        {
+          id: "101",
+          name: "Math Whiz",
+          description: "Excelled in Math",
+          earnedAt: "2023-04-01T00:00:00.000Z"
+        },
+        {
+          id: "102",
+          name: "Science Pro",
+          description: "Mastered Science",
+          earnedAt: "2023-04-15T00:00:00.000Z"
+        }
+      ],
       lifetimePoints: 1500,
       yearlyPoints: 750,
       monthlyPoints: 300,
       dailyPoints: 75,
       consecutiveLoginDays: 7,
-      lastLoginDate: mockUser.lastLoginDate.toISOString(),
-      createdAt: mockUser.createdAt.toISOString(),
-      updatedAt: mockUser.updatedAt.toISOString(),
+      lastLoginDate: "2023-05-15T00:00:00.000Z",
+      createdAt: "2023-01-01T00:00:00.000Z",
+      updatedAt: "2023-05-15T00:00:00.000Z",
     });
 
     expect(authUtils.checkAuth).toHaveBeenCalled();

@@ -37,6 +37,15 @@ describe("Mutation resolvers - updateLoginStreak", () => {
     role: "USER",
     consecutiveLoginDays: 7,
     lastLoginDate: new Date("2023-05-15"),
+    badges: [
+      {
+        _id: "badge123",
+        name: "First Login",
+        earnedAt: new Date("2023-05-01"),
+      },
+    ],
+    createdAt: new Date("2023-01-01"),
+    updatedAt: new Date("2023-05-15"),
   };
 
   it("should successfully update login streak as an admin", async () => {
@@ -51,6 +60,7 @@ describe("Mutation resolvers - updateLoginStreak", () => {
       ...mockUpdatedUser,
       consecutiveLoginDays: 7,
       lastLoginDate: new Date("2023-05-15T00:00:00.000Z"),
+      toObject: jest.fn().mockReturnValue(mockUpdatedUser),
     };
 
     (User.findById as jest.Mock).mockResolvedValue(mockUser);
@@ -59,6 +69,10 @@ describe("Mutation resolvers - updateLoginStreak", () => {
       return Promise.resolve({
         ...mockUser,
         ...update.$set,
+        toObject: jest.fn().mockReturnValue({
+          ...mockUpdatedUser,
+          ...update.$set,
+        }),
       });
     });
 
@@ -69,6 +83,8 @@ describe("Mutation resolvers - updateLoginStreak", () => {
     const result = await resolvers.Mutation.updateLoginStreak(null, args, { req: {} } as any);
 
     expect(result.consecutiveLoginDays).toBe(8);
+    expect(result.badges).toHaveLength(1);
+    expect(result.badges[0].id).toBe("badge123");
     expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
       "user456",
       {

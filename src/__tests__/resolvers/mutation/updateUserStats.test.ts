@@ -57,6 +57,49 @@ describe("Mutation resolvers - updateUserStats", () => {
   };
 
   it("should successfully update user stats as an admin", async () => {
+    const mockUpdatedUser = {
+      _id: { toString: () => "user456" },
+      username: "testuser",
+      email: "testuser@example.com",
+      role: "USER",
+      score: 150,
+      questionsAnswered: 15,
+      questionsCorrect: 12,
+      questionsIncorrect: 3,
+      badges: [
+        {
+          _id: { toString: () => "badge1" },
+          name: "Math Whiz",
+          description: "Completed 10 math questions",
+          earnedAt: new Date("2023-04-01"),
+          toObject: function () { return this; }
+        },
+        {
+          _id: { toString: () => "badge2" },
+          name: "Science Pro",
+          description: "Completed 10 science questions",
+          earnedAt: new Date("2023-04-15"),
+          toObject: function () { return this; }
+        },
+        {
+          _id: { toString: () => "badge3" },
+          name: "History Buff",
+          description: "Completed 10 history questions",
+          earnedAt: new Date("2023-05-15"),
+          toObject: function () { return this; }
+        }
+      ],
+      lifetimePoints: 1500,
+      yearlyPoints: 750,
+      monthlyPoints: 300,
+      dailyPoints: 75,
+      consecutiveLoginDays: 7,
+      lastLoginDate: new Date("2023-05-15"),
+      createdAt: new Date("2023-01-01"),
+      updatedAt: new Date("2023-05-15"),
+      toObject: function () { return this; }
+    };
+
     (authUtils.checkAuth as jest.Mock).mockResolvedValue(mockAdminUser);
     (permissionUtils.checkPermission as jest.Mock).mockReturnValue(undefined);
     (User.findByIdAndUpdate as jest.Mock).mockResolvedValue(mockUpdatedUser);
@@ -82,16 +125,17 @@ describe("Mutation resolvers - updateUserStats", () => {
 
     expect(result).toEqual({
       ...mockUpdatedUser,
-      id: mockUpdatedUser._id,
+      id: mockUpdatedUser._id.toString(),
       badges: mockUpdatedUser.badges.map((badge: any) => ({
         ...badge,
-        id: badge._id,
+        id: badge._id.toString(),
         earnedAt: badge.earnedAt.toISOString(),
       })),
       lastLoginDate: mockUpdatedUser.lastLoginDate.toISOString(),
       createdAt: mockUpdatedUser.createdAt.toISOString(),
       updatedAt: mockUpdatedUser.updatedAt.toISOString(),
     });
+
     expect(authUtils.checkAuth).toHaveBeenCalled();
     expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockAdminUser, ["SUPER_ADMIN", "ADMIN"]);
     expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
