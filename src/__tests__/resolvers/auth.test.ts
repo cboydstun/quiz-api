@@ -111,6 +111,7 @@ describe("Authentication and Authorization", () => {
     });
 
     it("should throw AuthenticationError if token is invalid", () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
       (jwt.verify as jest.Mock).mockImplementation(() => {
         throw new Error("Invalid token");
       });
@@ -125,6 +126,9 @@ describe("Authentication and Authorization", () => {
 
       expect(() => checkAuth(context)).toThrow(AuthenticationError);
       expect(() => checkAuth(context)).toThrow("Invalid/Expired token");
+      expect(consoleSpy).toHaveBeenCalledWith('Token verification error:', expect.any(Error));
+      
+      consoleSpy.mockRestore();
     });
   });
 
