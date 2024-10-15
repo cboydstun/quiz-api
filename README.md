@@ -44,6 +44,7 @@ Quiz API is a GraphQL-based backend service for managing quizzes, questions, and
 - Jest (for testing)
 - Passport.js (for authentication)
 - Winston (for logging)
+- PM2 (for process management)
 
 ## Prerequisites
 
@@ -88,6 +89,8 @@ Before you begin, ensure you have met the following requirements:
 
 2. Adjust any other configuration in `src/config/` directory if needed.
 
+3. Review and update the `ecosystem.config.js` file for PM2 deployment settings if necessary.
+
 ## Running the Application
 
 1. For development:
@@ -96,7 +99,14 @@ Before you begin, ensure you have met the following requirements:
    npm run dev
    ```
 
-2. For production:
+2. For production using PM2:
+
+   ```
+   npm run build
+   pm2 start ecosystem.config.js
+   ```
+
+3. For production without PM2:
    ```
    npm run build
    npm start
@@ -108,7 +118,60 @@ The API will be available at `http://localhost:4000/graphql` (or the port you sp
 
 Here are some example GraphQL queries and mutations:
 
-1. Create a new question:
+1. Register a new user:
+
+   ```graphql
+   mutation RegisterUser($input: CreateUserInput!) {
+     register(input: $input) {
+       token
+       user {
+         id
+         username
+         email
+         role
+       }
+     }
+   }
+   ```
+
+   Variables:
+
+   ```json
+   {
+     "input": {
+       "username": "newuser",
+       "email": "newuser@example.com",
+       "password": "password123"
+     }
+   }
+   ```
+
+2. Login:
+
+   ```graphql
+   mutation LoginUser($email: String!, $password: String!) {
+     login(email: $email, password: $password) {
+       token
+       user {
+         id
+         username
+         email
+         role
+       }
+     }
+   }
+   ```
+
+   Variables:
+
+   ```json
+   {
+     "email": "newuser@example.com",
+     "password": "password123"
+   }
+   ```
+
+3. Create a new question:
 
    ```graphql
    mutation CreateQuestion($input: CreateQuestionInput!) {
@@ -141,7 +204,7 @@ Here are some example GraphQL queries and mutations:
    }
    ```
 
-2. Get all questions:
+4. Get all questions:
 
    ```graphql
    query GetQuestions {
@@ -160,7 +223,7 @@ Here are some example GraphQL queries and mutations:
    }
    ```
 
-3. Get a specific question by ID:
+5. Get a specific question by ID:
 
    ```graphql
    query GetQuestion($id: ID!) {
@@ -187,59 +250,9 @@ Here are some example GraphQL queries and mutations:
    }
    ```
 
-4. Update a question:
-
-   ```graphql
-   mutation UpdateQuestion($id: ID!, $input: UpdateQuestionInput!) {
-     updateQuestion(id: $id, input: $input) {
-       id
-       prompt
-       questionText
-       answers
-       correctAnswer
-       points
-       createdBy {
-         id
-         username
-       }
-     }
-   }
-   ```
-
-   Variables:
-
-   ```json
-   {
-     "id": "question_id_here",
-     "input": {
-       "prompt": "Let's try a different math question:",
-       "questionText": "What is 2 + 3?",
-       "answers": ["3", "4", "5", "6"],
-       "correctAnswer": "5",
-       "points": 2
-     }
-   }
-   ```
-
-5. Delete a question:
-
-   ```graphql
-   mutation DeleteQuestion($id: ID!) {
-     deleteQuestion(id: $id)
-   }
-   ```
-
-   Variables:
-
-   ```json
-   {
-     "id": "question_id_here"
-   }
-   ```
-
-Note: The actual authentication mutations (register, login) were not provided in the integration tests, so they are not included in this updated section. You may want to add them separately if they are implemented in your API.
-
 For a complete list of available queries and mutations, refer to the GraphQL schema in `src/schema/` directory.
+
+For detailed information about recent changes and updates to the API, please refer to the `CHANGELOG.md` file in the project root.
 
 ## Project Structure
 
@@ -252,10 +265,16 @@ quiz-api/
 │   ├── schema/         # GraphQL schema definitions
 │   ├── utils/          # Utility functions
 │   ├── __tests__/      # Test files
+│   ├── seedQuestions.json  # Seed data for questions
+│   ├── seedQuestions.ts    # Script to seed questions
+│   ├── seedUsers.json      # Seed data for users
+│   ├── seedUsers.ts        # Script to seed users
 │   └── index.ts        # Application entry point
 ├── .env                # Environment variables
+├── ecosystem.config.js # PM2 configuration
 ├── package.json        # Project dependencies and scripts
 ├── tsconfig.json       # TypeScript configuration
+├── CHANGELOG.md        # Documentation of all notable changes
 └── README.md           # Project documentation
 ```
 
@@ -267,29 +286,64 @@ Logging is implemented using Winston. Logs are configured in `src/utils/logger.t
 
 ## Security
 
-The Quiz API implements several security measures:
+The Quiz API implements several security measures to ensure the protection of user data and the integrity of the system:
 
-- JWT-based authentication
-- Password hashing using bcrypt
-- Role-based access control
-- Rate limiting to prevent abuse
-- CORS configuration
-- Helmet.js for setting various HTTP headers
+- **Authentication:**
 
-Refer to `SecurityChecklist.md` for more details on security implementations.
+  - JWT-based authentication for secure user sessions
+  - Password hashing using bcrypt to protect user credentials
+  - Support for Google OAuth for additional login options
+
+- **Authorization:**
+
+  - Role-based access control (RBAC) to manage user permissions
+  - Granular permission checks for all API operations
+
+- **Data Protection:**
+
+  - Input validation and sanitization to prevent injection attacks
+  - CORS configuration to control access from different origins
+
+- **API Security:**
+
+  - Rate limiting to prevent abuse and DDoS attacks
+  - GraphQL query complexity analysis to prevent resource-intensive queries
+
+- **Infrastructure Security:**
+
+  - Helmet.js for setting various HTTP headers to enhance security
+  - Secure configuration for production environments
+
+- **Monitoring and Logging:**
+  - Error logging for security events and suspicious activities
+  - Regular review of logs and security alerts
+
+For a comprehensive overview of our security practices and guidelines, please refer to the `SecurityChecklist.md` file in the project root. This checklist covers various aspects of API security, including:
+
+- Detailed authentication and authorization practices
+- Input validation and sanitization techniques
+- Rate limiting and DDoS protection strategies
+- Error handling and information disclosure policies
+- Data protection measures
+- GraphQL-specific security considerations
+- And more...
+
+We strongly recommend reviewing this checklist regularly and ensuring that all security measures are properly implemented and up-to-date.
+
+**Note:** Security is an ongoing process. We conduct regular security audits and updates to address new vulnerabilities and implement best practices. Contributors are encouraged to report any security issues or suggest improvements.
 
 ## Testing
 
 Run the test suite with:
 
 ```
-npm test
+pnpm test
 ```
 
 For watch mode:
 
 ```
-npm run test:watch
+pnpm run test:watch
 ```
 
 Tests are located in the `src/__tests__/` directory and include unit tests for resolvers and integration tests for the API.

@@ -1,6 +1,51 @@
 # API Documentation
 
-This document provides examples of all queries and mutations available in the Quiz API.
+This document provides detailed information about all queries and mutations available in the Quiz API. It serves as a comprehensive guide for developers working with or integrating the Quiz API into their applications.
+
+## GraphQL Endpoint
+
+The GraphQL API is available at: `http://localhost:4000/v1/graphql` (or the port specified in your .env file)
+
+## Running the Application
+
+1. For development:
+
+   ```
+   npm run dev
+   ```
+
+2. For production using PM2:
+
+   ```
+   npm run build
+   pm2 start ecosystem.config.js
+   ```
+
+3. For production without PM2:
+   ```
+   npm run build
+   npm start
+   ```
+
+## Project Structure
+
+```
+quiz-api/
+├── src/
+│   ├── config/         # Configuration files
+│   ├── models/         # Mongoose models
+│   ├── resolvers/      # GraphQL resolvers
+│   ├── schema/         # GraphQL schema definitions
+│   ├── utils/          # Utility functions
+│   ├── __tests__/      # Test files
+│   ├── seedQuestions.json  # Seed data for questions
+│   ├── seedQuestions.ts    # Script to seed questions
+│   ├── seedUsers.json      # Seed data for users
+│   ├── seedUsers.ts        # Script to seed users
+│   └── index.ts        # Application entry point
+├── ecosystem.config.js # PM2 configuration
+└── README.md           # Project documentation
+```
 
 ## User Queries and Mutations
 

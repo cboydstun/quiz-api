@@ -1,85 +1,194 @@
-# User Queries and Mutations
+# Queries and Mutations
 
-# Register a new user ✅
+This document provides examples of all queries and mutations available in the Quiz API, including some error handling and edge cases.
 
-```gql
-mutation RegisterUser {
-  register(
-    input: {
-      username: "newuser"
-      email: "newuser@example.com"
-      password: "password123"
-    }
-  ) {
+## User Queries and Mutations
+
+### Register a new user
+
+```graphql
+mutation RegisterUser($input: CreateUserInput!) {
+  register(input: $input) {
     token
     user {
       id
       username
       email
       role
+      score
+      questionsAnswered
+      questionsCorrect
+      questionsIncorrect
+      badges {
+        id
+        name
+        description
+        earnedAt
+      }
+      lifetimePoints
+      yearlyPoints
+      monthlyPoints
+      dailyPoints
+      consecutiveLoginDays
+      lastLoginDate
+      createdAt
+      updatedAt
     }
   }
 }
 ```
 
-# Login ✅
+Variables:
 
-```gql
-mutation Login {
-  login(email: "newuser@example.com", password: "password123") {
+```json
+{
+  "input": {
+    "username": "newuser",
+    "email": "newuser@example.com",
+    "password": "password123"
+  }
+}
+```
+
+### Login
+
+```graphql
+mutation LoginUser($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
     token
     user {
       id
       username
       email
       role
+      score
+      questionsAnswered
+      questionsCorrect
+      questionsIncorrect
+      badges {
+        id
+        name
+        description
+        earnedAt
+      }
+      lifetimePoints
+      yearlyPoints
+      monthlyPoints
+      dailyPoints
+      consecutiveLoginDays
+      lastLoginDate
+      createdAt
+      updatedAt
     }
   }
 }
 ```
 
-# Get current user (requires authentication) ✅
+Variables:
 
-```gql
+```json
+{
+  "email": "newuser@example.com",
+  "password": "password123"
+}
+```
+
+### Get current user (requires authentication)
+
+```graphql
 query Me {
   me {
     id
     username
     email
     role
+    score
+    questionsAnswered
+    questionsCorrect
+    questionsIncorrect
+    badges {
+      id
+      name
+      description
+      earnedAt
+    }
+    lifetimePoints
+    yearlyPoints
+    monthlyPoints
+    dailyPoints
+    consecutiveLoginDays
+    lastLoginDate
+    createdAt
+    updatedAt
   }
 }
 ```
 
-# Get all users (requires admin permission) ✅
+### Get all users (requires admin permission)
 
-```gql
-query AllUsers {
+```graphql
+query GetUsers {
   users {
     id
     username
     email
     role
+    score
+    questionsAnswered
+    questionsCorrect
+    questionsIncorrect
+    badges {
+      id
+      name
+      description
+      earnedAt
+    }
+    lifetimePoints
+    yearlyPoints
+    monthlyPoints
+    dailyPoints
+    consecutiveLoginDays
+    lastLoginDate
+    createdAt
+    updatedAt
   }
 }
 ```
 
-# Get a specific user by ID (requires admin permission) ✅
+### Get a specific user by ID (requires admin permission)
 
-```gql
-query GetUser($userId: ID!) {
-  user(id: $userId) {
+```graphql
+query GetUser($id: ID!) {
+  user(id: $id) {
     id
     username
     email
     role
+    score
+    questionsAnswered
+    questionsCorrect
+    questionsIncorrect
+    badges {
+      id
+      name
+      description
+      earnedAt
+    }
+    lifetimePoints
+    yearlyPoints
+    monthlyPoints
+    dailyPoints
+    consecutiveLoginDays
+    lastLoginDate
+    createdAt
+    updatedAt
   }
 }
 ```
 
-# Change user role (requires admin permission) ✅
+### Change user role (requires admin permission)
 
-```gql
+```graphql
 mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
   changeUserRole(userId: $userId, newRole: $newRole) {
     id
@@ -90,33 +199,91 @@ mutation ChangeUserRole($userId: ID!, $newRole: Role!) {
 }
 ```
 
-# Delete user (requires admin permission)
+### Delete user (requires admin permission)
 
-```gql
+```graphql
 mutation DeleteUser($userId: ID!) {
   deleteUser(userId: $userId)
 }
 ```
 
-# Question Queries and Mutations
+### Update user stats (requires admin permission)
 
-# Create a new question (requires editor permission or higher) ✅
-
-```gql
-mutation CreateQuestion {
-  createQuestion(
-    input: {
-      prompt: "Consider the following geographical question:"
-      questionText: "What is the capital of France?"
-      answers: ["London", "Berlin", "Paris", "Madrid"]
-      correctAnswer: "Paris"
+```graphql
+mutation UpdateUserStats($userId: ID!, $stats: UserStatsInput!) {
+  updateUserStats(userId: $userId, stats: $stats) {
+    id
+    username
+    email
+    role
+    score
+    questionsAnswered
+    questionsCorrect
+    questionsIncorrect
+    badges {
+      id
+      name
+      description
+      earnedAt
     }
-  ) {
+    lifetimePoints
+    yearlyPoints
+    monthlyPoints
+    dailyPoints
+    consecutiveLoginDays
+    lastLoginDate
+    updatedAt
+  }
+}
+```
+
+### Update login streak (requires admin permission)
+
+```graphql
+mutation UpdateLoginStreak($userId: ID!) {
+  updateLoginStreak(userId: $userId) {
+    username
+    consecutiveLoginDays
+    lastLoginDate
+  }
+}
+```
+
+### Update username (requires authentication)
+
+```graphql
+mutation UpdateUsername($username: String!) {
+  updateUsername(username: $username) {
+    id
+    username
+  }
+}
+```
+
+### Update password (requires authentication)
+
+```graphql
+mutation UpdatePassword($currentPassword: String!, $newPassword: String!) {
+  updatePassword(currentPassword: $currentPassword, newPassword: $newPassword) {
+    success
+    message
+  }
+}
+```
+
+## Question Queries and Mutations
+
+### Create a new question (requires editor permission or higher)
+
+```graphql
+mutation CreateQuestion($input: CreateQuestionInput!) {
+  createQuestion(input: $input) {
     id
     prompt
     questionText
     answers
     correctAnswer
+    points
     createdBy {
       id
       username
@@ -125,16 +292,31 @@ mutation CreateQuestion {
 }
 ```
 
-# Get all questions ✅
+Variables:
 
-```gql
-query AllQuestions {
+```json
+{
+  "input": {
+    "prompt": "Consider the following geographical question:",
+    "questionText": "What is the capital of France?",
+    "answers": ["London", "Berlin", "Paris", "Madrid"],
+    "correctAnswer": "Paris",
+    "points": 2
+  }
+}
+```
+
+### Get all questions
+
+```graphql
+query GetQuestions {
   questions {
     id
     prompt
     questionText
     answers
     correctAnswer
+    points
     createdBy {
       id
       username
@@ -143,16 +325,17 @@ query AllQuestions {
 }
 ```
 
-# Get a specific question by ID ✅
+### Get a specific question by ID
 
-```gql
-query GetQuestion($questionId: ID!) {
-  question(id: $questionId) {
+```graphql
+query GetQuestion($id: ID!) {
+  question(id: $id) {
     id
     prompt
     questionText
     answers
     correctAnswer
+    points
     createdBy {
       id
       username
@@ -161,24 +344,17 @@ query GetQuestion($questionId: ID!) {
 }
 ```
 
-# Update a question (requires editor permission or higher) ✅
+### Update a question (requires editor permission or higher)
 
-```gql
-mutation UpdateQuestion($questionId: ID!) {
-  updateQuestion(
-    id: $questionId
-    input: {
-      prompt: "Let's revisit this geographical question:"
-      questionText: "Updated: What is the capital of France?"
-      answers: ["London", "Berlin", "Paris", "Rome"]
-      correctAnswer: "Paris"
-    }
-  ) {
+```graphql
+mutation UpdateQuestion($id: ID!, $input: UpdateQuestionInput!) {
+  updateQuestion(id: $id, input: $input) {
     id
     prompt
     questionText
     answers
     correctAnswer
+    points
     createdBy {
       id
       username
@@ -187,17 +363,17 @@ mutation UpdateQuestion($questionId: ID!) {
 }
 ```
 
-# Delete a question (requires editor permission or higher) ✅
+### Delete a question (requires editor permission or higher)
 
-```gql
-mutation DeleteQuestion($questionId: ID!) {
-  deleteQuestion(id: $questionId)
+```graphql
+mutation DeleteQuestion($id: ID!) {
+  deleteQuestion(id: $id)
 }
 ```
 
-# Submit answers to questions ✅
+### Submit answer to a question
 
-```
+```graphql
 mutation SubmitAnswer($questionId: ID!, $selectedAnswer: String!) {
   submitAnswer(questionId: $questionId, selectedAnswer: $selectedAnswer) {
     success
@@ -206,9 +382,9 @@ mutation SubmitAnswer($questionId: ID!, $selectedAnswer: String!) {
 }
 ```
 
-# View User Response History ✅
+### View User Response History
 
-```gql
+```graphql
 query GetUserResponses {
   userResponses {
     questionId {
@@ -221,19 +397,13 @@ query GetUserResponses {
 }
 ```
 
-# Error Handling and Edge Cases
+## Error Handling and Edge Cases
 
-# Try to register with an existing email ✅
+### Try to register with an existing email
 
-```gql
-mutation RegisterExistingEmail {
-  register(
-    input: {
-      username: "existinguser"
-      email: "newuser@example.com"
-      password: "password123"
-    }
-  ) {
+```graphql
+mutation RegisterExistingEmail($input: CreateUserInput!) {
+  register(input: $input) {
     token
     user {
       id
@@ -244,11 +414,23 @@ mutation RegisterExistingEmail {
 }
 ```
 
-# Try to login with incorrect credentials ✅
+Variables:
 
-```gql
-mutation IncorrectLogin {
-  login(email: "newuser@example.com", password: "wrongpassword") {
+```json
+{
+  "input": {
+    "username": "existinguser",
+    "email": "newuser@example.com",
+    "password": "password123"
+  }
+}
+```
+
+### Try to login with incorrect credentials
+
+```graphql
+mutation IncorrectLogin($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
     token
     user {
       id
@@ -259,9 +441,18 @@ mutation IncorrectLogin {
 }
 ```
 
-# Try to access admin-only query as a regular user ✅
+Variables:
 
-```gql
+```json
+{
+  "email": "newuser@example.com",
+  "password": "wrongpassword"
+}
+```
+
+### Try to access admin-only query as a regular user
+
+```graphql
 query UnauthorizedUsersAccess {
   users {
     id
@@ -272,11 +463,11 @@ query UnauthorizedUsersAccess {
 }
 ```
 
-# Try to change role to SUPER_ADMIN (should be forbidden) ✅
+### Try to change role to SUPER_ADMIN (should be forbidden)
 
-```gql
-mutation ChangeToSUPER_ADMIN($userId: ID!) {
-  changeUserRole(userId: $userId, newRole: SUPER_ADMIN) {
+```graphql
+mutation ChangeToSUPER_ADMIN($userId: ID!, $newRole: Role!) {
+  changeUserRole(userId: $userId, newRole: $newRole) {
     id
     username
     role
@@ -284,19 +475,20 @@ mutation ChangeToSUPER_ADMIN($userId: ID!) {
 }
 ```
 
-# Try to update a non-existent question ✅
+Variables:
 
-```gql
-mutation UpdateNonExistentQuestion {
-  updateQuestion(
-    id: "non-existent-id"
-    input: {
-      prompt: "This is a non-existent question:"
-      questionText: "This question doesn't exist"
-      answers: ["A", "B", "C"]
-      correctAnswer: "A"
-    }
-  ) {
+```json
+{
+  "userId": "user_id_here",
+  "newRole": "SUPER_ADMIN"
+}
+```
+
+### Try to update a non-existent question
+
+```graphql
+mutation UpdateNonExistentQuestion($id: ID!, $input: UpdateQuestionInput!) {
+  updateQuestion(id: $id, input: $input) {
     id
     prompt
     questionText
@@ -304,10 +496,32 @@ mutation UpdateNonExistentQuestion {
 }
 ```
 
-# Try to delete a non-existent question ✅
+Variables:
 
-```gql
-mutation DeleteNonExistentQuestion {
-  deleteQuestion(id: "non-existent-id")
+```json
+{
+  "id": "non-existent-id",
+  "input": {
+    "prompt": "This is a non-existent question:",
+    "questionText": "This question doesn't exist",
+    "answers": ["A", "B", "C"],
+    "correctAnswer": "A"
+  }
+}
+```
+
+### Try to delete a non-existent question
+
+```graphql
+mutation DeleteNonExistentQuestion($id: ID!) {
+  deleteQuestion(id: $id)
+}
+```
+
+Variables:
+
+```json
+{
+  "id": "non-existent-id"
 }
 ```

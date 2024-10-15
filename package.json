@@ -10,6 +10,8 @@
     "test": "jest --config jest.config.ts",
     "test:watch": "jest --config jest.config.ts --watch",
     "seed-data": "ts-node ./src/seed.ts",
+    "seed-questions": "ts-node ./src/seed-questions.ts",
+    "seed-users": "ts-node ./src/seed-users.ts",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [],

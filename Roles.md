@@ -8,10 +8,9 @@ The Super Admin holds the highest level of access within the API and is responsi
 
 **Permissions:**
 
-- **Add / Remove Admins**
-- **Add / Remove Editors**
-- **Add / Remove Users**
-- **Add / Remove / Edit Questions and Answers**
+- All permissions of Admin, Editor, and User roles
+- Add / Remove / Edit Admins
+- Change user roles to any level, including SUPER_ADMIN
 
 ### 2. Admin
 
@@ -19,9 +18,12 @@ Admins can manage Editors and Users. They have similar permissions as the Super 
 
 **Permissions:**
 
-- **Add / Remove Editors**
-- **Add / Remove Users**
-- **Add / Remove / Edit Questions and Answers**
+- All permissions of Editor and User roles
+- Add / Remove / Edit Editors
+- Add / Remove / Edit Users
+- Change user roles (except to SUPER_ADMIN)
+- Update user statistics
+- Update login streaks
 
 ### 3. Editor
 
@@ -29,8 +31,9 @@ Editors have the ability to manage content related to questions and answers. The
 
 **Permissions:**
 
-- **Add / Remove Users**
-- **Add / Remove / Edit Questions and Answers**
+- All permissions of User role
+- Add / Remove / Edit Questions and Answers
+- View all users
 
 ### 4. User
 
@@ -38,8 +41,11 @@ Users can register to go through quiz questions. They do not have any administra
 
 **Permissions:**
 
-- **Register / Login**
-- **Attempt Multiple Choice Questions**
+- Register / Login
+- Update own username and password
+- View and attempt quiz questions
+- View own response history
+- View leaderboard
 
 ## Entity Breakdown
 
@@ -51,6 +57,19 @@ Users can register to go through quiz questions. They do not have any administra
   - Email
   - Password (hashed with bcrypt)
   - Role (Super Admin, Admin, Editor, User)
+  - Score
+  - QuestionsAnswered
+  - QuestionsCorrect
+  - QuestionsIncorrect
+  - Badges
+  - LifetimePoints
+  - YearlyPoints
+  - MonthlyPoints
+  - DailyPoints
+  - ConsecutiveLoginDays
+  - LastLoginDate
+  - CreatedAt
+  - UpdatedAt
 - **Authentication:**
   - JWT for authentication (jsonwebtoken)
   - Passwords hashed with bcryptjs
@@ -63,6 +82,7 @@ Users can register to go through quiz questions. They do not have any administra
   - Question Text
   - Multiple Choice Answers (Array)
   - Correct Answer
+  - Points
   - Created By (Editor or Admin)
 
 ### 3. Roles
@@ -71,27 +91,55 @@ Users can register to go through quiz questions. They do not have any administra
   - ID
   - Role Name (Super Admin, Admin, Editor, User)
 
+### 4. Badges
+
+- **Fields:**
+  - ID
+  - Name
+  - Description
+  - EarnedAt
+
+### 5. User Responses
+
+- **Fields:**
+  - User ID
+  - Question ID
+  - Selected Answer
+  - Is Correct
+
 ## Role-based Authorization
 
-- Each role will be associated with a set of permissions to control which actions they can perform.
-- Permissions will be checked before executing any mutations that involve user or content management.
-- JWT will contain role information for checking access.
+- Each role is associated with a set of permissions that control which actions they can perform.
+- Permissions are checked before executing any mutations that involve user or content management.
+- JWT contains role information for checking access.
 
 ## Access Control Logic
 
 - **Super Admin Access:** Can perform any action across all entities.
 - **Admin Access:** Can manage Editors and Users but cannot manage other Admins.
-- **Editor Access:** Can manage quiz content and Users.
-- **User Access:** Can register, log in, and attempt questions.
+- **Editor Access:** Can manage quiz content and view Users.
+- **User Access:** Can register, log in, attempt questions, and view their own data.
 
 ### Example GraphQL Queries / Mutations
 
-- **CreateUser (Super Admin / Admin / Editor)**
-- **CreateQuestion (Super Admin / Admin / Editor)**
-- **EditQuestion (Super Admin / Admin / Editor)**
-- **DeleteQuestion (Super Admin / Admin / Editor)**
-- **AddAdmin (Super Admin Only)**
-- **AddEditor (Super Admin / Admin)**
+- **Register (All roles)**
+- **Login (All roles)**
+- **GetCurrentUser (All roles)**
+- **GetAllUsers (Admin, Editor)**
+- **GetUserById (Admin)**
+- **ChangeUserRole (Admin)**
+- **DeleteUser (Admin)**
+- **UpdateUserStats (Admin)**
+- **UpdateLoginStreak (Admin)**
+- **UpdateUsername (All roles, own account only)**
+- **UpdatePassword (All roles, own account only)**
+- **CreateQuestion (Admin, Editor)**
+- **GetAllQuestions (All roles)**
+- **GetQuestionById (All roles)**
+- **UpdateQuestion (Admin, Editor)**
+- **DeleteQuestion (Admin, Editor)**
+- **SubmitAnswer (User)**
+- **GetUserResponses (User, own responses only)**
 
 ## Authentication and Authorization Flow
 
@@ -105,4 +153,4 @@ Users can register to go through quiz questions. They do not have any administra
 
 ---
 
-This structure will help maintain a clean and secure flow for managing users, roles, and content in your quiz application.
+This structure helps maintain a clean and secure flow for managing users, roles, and content in the quiz application. The role-based access control ensures that users can only perform actions appropriate to their assigned role, maintaining the integrity and security of the system.
