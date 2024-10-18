@@ -1,6 +1,8 @@
 // src/resolvers/userResolvers.ts
 
-import User, { IBadge } from "../models/User";
+import { IResolvers } from '@graphql-tools/utils';
+import User from "../models/User";
+import { IBadge } from '../models/Badge';
 import { checkAuth } from "../utils/auth";
 import { checkPermission } from "../utils/permissions";
 import {
@@ -11,11 +13,14 @@ import {
 } from "../utils/errors";
 import { UserResolvers, UserStats } from "./types";
 
-const userResolvers: UserResolvers = {
+const userResolvers: Pick<IResolvers, 'Query' | 'Mutation'> = {
   Query: {
     me: async (_, __, context) => {
       const decodedUser = await checkAuth(context);
-      const user = await User.findById(decodedUser._id);
+      const user = await User.findById(decodedUser._id).populate<{ badges: IBadge[] }>({
+        path: 'badges',
+        select: 'name description earnedAt'
+      });
       if (!user) {
         throw new AuthenticationError("User not found");
       }
@@ -28,15 +33,12 @@ const userResolvers: UserResolvers = {
         questionsAnswered: user.questionsAnswered || 0,
         questionsCorrect: user.questionsCorrect || 0,
         questionsIncorrect: user.questionsIncorrect || 0,
-        badges: user.badges.map((badge: IBadge) => {
-          const { _id, name, description, earnedAt } = badge.toObject ? badge.toObject() : badge;
-          return {
-            id: _id.toString(),
-            name,
-            description,
-            earnedAt: earnedAt.toISOString()
-          };
-        }),
+        badges: user.badges ? user.badges.map((badge: IBadge) => ({
+          id: badge._id.toString(),
+          name: badge.name,
+          description: badge.description,
+          earnedAt: badge.earnedAt.toISOString()
+        })) : [],
         lifetimePoints: user.lifetimePoints || 0,
         yearlyPoints: user.yearlyPoints || 0,
         monthlyPoints: user.monthlyPoints || 0,
@@ -50,15 +52,16 @@ const userResolvers: UserResolvers = {
     users: async (_, __, context) => {
       const user = await checkAuth(context);
       checkPermission(user, ["SUPER_ADMIN", "ADMIN"]);
-      const users = await User.find();
+      const users = await User.find().populate<{ badges: IBadge[] }>('badges');
       return users.map(user => {
         const userObj = user.toObject ? user.toObject() : user;
         return {
           ...userObj,
           id: user._id.toString(),
           badges: user.badges.map((badge: IBadge) => ({
-            ...(badge.toObject ? badge.toObject() : badge),
             id: badge._id.toString(),
+            name: badge.name,
+            description: badge.description,
             earnedAt: badge.earnedAt.toISOString()
           })),
           lastLoginDate: user.lastLoginDate ? user.lastLoginDate.toISOString() : null,
@@ -93,8 +96,10 @@ const userResolvers: UserResolvers = {
           ...baseUserData,
           email: user.email,
           badges: user.badges.map((badge: IBadge) => ({
-            ...(badge.toObject ? badge.toObject() : badge),
             id: badge._id.toString(),
+            name: badge.name,
+            description: badge.description,
+            imageUrl: badge.imageUrl,
             earnedAt: badge.earnedAt.toISOString()
           })),
           lifetimePoints: user.lifetimePoints || 0,
@@ -210,8 +215,8 @@ const userResolvers: UserResolvers = {
           earnedAt: badge.earnedAt.toISOString()
         })),
         lastLoginDate: updatedUser.lastLoginDate ? updatedUser.lastLoginDate.toISOString() : null,
-        createdAt: updatedUser.createdAt.toISOString(),
-        updatedAt: updatedUser.updatedAt.toISOString(),
+        createdAt: updatedUser.createdAt ? updatedUser.createdAt.toISOString() : null,
+        updatedAt: updatedUser.updatedAt ? updatedUser.updatedAt.toISOString() : null,
       };
     },
     updateUsername: async (_, { username }: { username: string }, context) => {

@@ -3,13 +3,6 @@
 import { gql } from "apollo-server-express";
 
 const userSchema = gql`
-  type Badge {
-    id: ID!
-    name: String!
-    description: String!
-    earnedAt: String!
-  }
-
   type User {
     id: ID!
     username: String!
@@ -25,9 +18,9 @@ const userSchema = gql`
     monthlyPoints: Int
     dailyPoints: Int
     consecutiveLoginDays: Int
-    lastLoginDate: String
-    createdAt: String
-    updatedAt: String
+    lastLoginDate: Date
+    createdAt: Date
+    updatedAt: Date
   }
 
   input CreateUserInput {
@@ -48,7 +41,7 @@ const userSchema = gql`
     monthlyPoints: Int
     dailyPoints: Int
     consecutiveLoginDays: Int
-    lastLoginDate: String
+    lastLoginDate: Date
   }
 
   input BadgeInput {

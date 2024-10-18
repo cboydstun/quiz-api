@@ -1,6 +1,7 @@
 // src/__tests__/resolvers/mutation/updateUserStats.test.ts
 
-import resolvers from "../../../resolvers";
+import { resolvers } from "../../../resolvers";
+import { UserResolvers, UserStats } from "../../../resolvers/types";
 import {
   ForbiddenError,
   NotFoundError,
@@ -8,7 +9,8 @@ import {
 import User from "../../../models/User";
 import * as authUtils from "../../../utils/auth";
 import * as permissionUtils from "../../../utils/permissions";
-import { UserStats } from "../../../resolvers/types";
+
+const typedMutationResolvers = resolvers.Mutation as UserResolvers['Mutation'];
 
 jest.mock("../../../models/User");
 jest.mock("../../../utils/auth");
@@ -121,7 +123,7 @@ describe("Mutation resolvers - updateUserStats", () => {
       },
     };
 
-    const result = await resolvers.Mutation.updateUserStats(null, args, { req: {} } as any);
+    const result = await typedMutationResolvers.updateUserStats(null, args, { req: {} } as any);
 
     expect(result).toEqual({
       ...mockUpdatedUser,
@@ -189,7 +191,7 @@ describe("Mutation resolvers - updateUserStats", () => {
     };
 
     await expect(
-      resolvers.Mutation.updateUserStats(null, args, { req: {} } as any)
+      typedMutationResolvers.updateUserStats(null, args, { req: {} } as any)
     ).rejects.toThrow(ForbiddenError);
 
     expect(authUtils.checkAuth).toHaveBeenCalled();
@@ -219,7 +221,7 @@ describe("Mutation resolvers - updateUserStats", () => {
     };
 
     await expect(
-      resolvers.Mutation.updateUserStats(null, args, { req: {} } as any)
+      typedMutationResolvers.updateUserStats(null, args, { req: {} } as any)
     ).rejects.toThrow(NotFoundError);
 
     expect(authUtils.checkAuth).toHaveBeenCalled();
@@ -248,7 +250,7 @@ describe("Mutation resolvers - updateUserStats", () => {
       } as UserStats, // Type assertion to UserStats
     };
 
-    const result = await resolvers.Mutation.updateUserStats(null, args, { req: {} } as any);
+    const result = await typedMutationResolvers.updateUserStats(null, args, { req: {} } as any);
 
     expect(result).toEqual({
       ...mockUpdatedUser,

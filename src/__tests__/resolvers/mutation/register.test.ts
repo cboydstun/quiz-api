@@ -1,9 +1,12 @@
 // src/__tests__/resolvers/mutation/register.test.ts
 
-import resolvers from "../../../resolvers";
+import { resolvers } from "../../../resolvers";
+import { AuthResolvers } from "../../../resolvers/types";
 import { UserInputError } from "../../../utils/errors";
 import User from "../../../models/User";
 import * as authUtils from "../../../utils/auth";
+
+const typedMutationResolvers = resolvers.Mutation as AuthResolvers['Mutation'];
 
 jest.mock("../../../models/User");
 jest.mock("../../../utils/auth");
@@ -26,7 +29,7 @@ describe("Mutation resolvers - register", () => {
     (User.findOne as jest.Mock).mockResolvedValue(null);
     (User as unknown as jest.Mock).mockImplementation(() => mockUser);
 
-    const result = await resolvers.Mutation.register(
+    const result = await typedMutationResolvers.register(
       null,
       {
         input: {
@@ -59,7 +62,7 @@ describe("Mutation resolvers - register", () => {
     });
 
     await expect(
-      resolvers.Mutation.register(
+      typedMutationResolvers.register(
         null,
         {
           input: {

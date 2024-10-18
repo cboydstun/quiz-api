@@ -4,7 +4,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import User from '../../../models/User';
 import typeDefs from '../../../schema';
-import resolvers from '../../../resolvers';
+import { resolvers } from '../../../resolvers';
 import { generateToken } from '../../../utils/auth';
 import { Request, Response } from 'express';
 

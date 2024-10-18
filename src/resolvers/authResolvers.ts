@@ -1,5 +1,6 @@
 // src/resolvers/authResolvers.ts
 
+import { IResolvers } from '@graphql-tools/utils';
 import User from "../models/User";
 import { generateToken } from "../utils/auth";
 import { AuthenticationError, UserInputError } from "../utils/errors";
@@ -24,7 +25,7 @@ export const createOAuth2Client = () =>
 // Use the function to create the client
 export const client = createOAuth2Client();
 
-const authResolvers: AuthResolvers = {
+const authResolvers: Pick<IResolvers, 'Query' | 'Mutation'> = {
   Query: {
     getGoogleAuthUrl: async () => {
       try {

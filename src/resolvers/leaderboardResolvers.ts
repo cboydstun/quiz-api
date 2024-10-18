@@ -1,5 +1,6 @@
 // src/resolvers/leaderboardResolvers.ts
 
+import { IResolvers } from '@graphql-tools/utils';
 import { checkAuth, DecodedUser } from "../utils/auth";
 import User from "../models/User";
 import { LeaderboardResolvers } from "./types";
@@ -19,7 +20,7 @@ const maskEmail = (email: string): string => {
   return `${maskedUsername}@${domain}`;
 };
 
-const leaderboardResolvers: LeaderboardResolvers = {
+const leaderboardResolvers: IResolvers = {
   Query: {
     getLeaderboard: async (_, { limit = 10 }, context) => {
       let currentUser: DecodedUser | null = null;

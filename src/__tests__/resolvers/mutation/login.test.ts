@@ -1,9 +1,12 @@
 // src/__tests__/resolvers/mutation/login.test.ts
 
-import resolvers from "../../../resolvers";
+import { resolvers } from "../../../resolvers";
+import { AuthResolvers } from "../../../resolvers/types";
 import { AuthenticationError } from "../../../utils/errors";
 import User from "../../../models/User";
 import * as authUtils from "../../../utils/auth";
+
+const typedMutationResolvers = resolvers.Mutation as AuthResolvers['Mutation'];
 
 jest.mock("../../../models/User");
 jest.mock("../../../utils/auth");
@@ -23,7 +26,7 @@ describe("Mutation resolvers - login", () => {
     (User.findOne as jest.Mock).mockResolvedValue(mockUser);
     (authUtils.generateToken as jest.Mock).mockReturnValue("dummy_token");
 
-    const result = await resolvers.Mutation.login(
+    const result = await typedMutationResolvers.login(
       null,
       { email: "test@example.com", password: "password123" },
       {} as any
@@ -45,7 +48,7 @@ describe("Mutation resolvers - login", () => {
     (User.findOne as jest.Mock).mockResolvedValue(mockUser);
 
     await expect(
-      resolvers.Mutation.login(
+      typedMutationResolvers.login(
         null,
         { email: "test@example.com", password: "wrongpassword" },
         {} as any

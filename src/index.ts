@@ -6,15 +6,16 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import passport from "./utils/passport";
 import typeDefs from "./schema";
-import resolvers from "./resolvers";
+import { resolvers } from "./resolvers";
 import { logger, expressLogger, errorLogger } from "./utils/logger";
 import helmet from "helmet";
-import { connectDB } from "./config/database";
+import { connectToDatabase } from "./config/database";
 import { sessionConfig } from "./config/session";
 import { applyRateLimiting } from "./config/rateLimiter";
 import { initializePassport } from "./config/passport";
 import { corsOptions } from "./config/cors";
 import { CustomError, handleCustomError, handleUnexpectedError } from "./utils/errors";
+import { ExpressContext } from 'apollo-server-express';
 
 dotenv.config();
 
@@ -32,10 +33,10 @@ initializePassport(app);
 const startServer = async () => {
   app.use(cors(corsOptions));
 
-  const server = new ApolloServer({
+  const server = new ApolloServer<ExpressContext>({
     typeDefs,
     resolvers,
-    context: ({ req }) => ({ req }),
+    context: ({ req, res }) => ({ req, res }),
     formatError: (error) => {
       if (error.originalError instanceof CustomError) {
         return handleCustomError(error.originalError);
@@ -68,7 +69,7 @@ const startServer = async () => {
   await server.start();
   server.applyMiddleware({ app, path: "/v1/graphql", cors: false });
 
-  await connectDB();
+  await connectToDatabase();
 
   // Add Google OAuth routes
   app.get(

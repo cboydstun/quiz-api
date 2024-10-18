@@ -1,13 +1,15 @@
+// src/resolvers/badgeResolvers.ts
+
 import { IResolvers } from '@graphql-tools/utils';
 import { AuthenticationError, UserInputError } from 'apollo-server-express';
-import Badge from '../models/Badge';
+import Badge, { IBadge } from '../models/Badge';
 import User from '../models/User';
 import { checkAuth } from '../utils/auth';
 
-const badgeResolvers: IResolvers = {
+const badgeResolvers: Pick<IResolvers, 'Query' | 'Mutation'> = {
     Query: {
-        badges: async (_, __, { req }) => {
-            checkAuth(req);
+        badges: async (_, __, context) => {
+            checkAuth(context);
             return await Badge.find();
         },
         badge: async (_, { id }, { req }) => {
@@ -20,16 +22,16 @@ const badgeResolvers: IResolvers = {
         },
     },
     Mutation: {
-        createBadge: async (_, { name, description, imageUrl }, { req }) => {
-            const user = checkAuth(req);
+        createBadge: async (_, { name, description, imageUrl }, context) => {
+            const user = checkAuth(context);
             if (user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') {
                 throw new AuthenticationError('Not authorized to create badges');
             }
             const newBadge = new Badge({ name, description, imageUrl });
             return await newBadge.save();
         },
-        issueBadgeToUser: async (_, { badgeId, userId }, { req }) => {
-            const adminUser = checkAuth(req);
+        issueBadgeToUser: async (_, { badgeId, userId }, context) => {
+            const adminUser = checkAuth(context);
             if (adminUser.role !== 'ADMIN' && adminUser.role !== 'SUPER_ADMIN') {
                 throw new AuthenticationError('Not authorized to issue badges');
             }
@@ -41,10 +43,18 @@ const badgeResolvers: IResolvers = {
             if (!user) {
                 throw new UserInputError('User not found');
             }
-            if (user.badges.includes(badgeId)) {
+            if (user.badges.some(b => b._id.toString() === badgeId)) {
                 throw new UserInputError('User already has this badge');
             }
-            user.badges.push(badgeId);
+            const newBadge: IBadge = {
+                _id: badge._id,
+                name: badge.name,
+                description: badge.description,
+                imageUrl: badge.imageUrl,
+                earnedAt: new Date(),
+                toObject: function () { return this; }
+            } as IBadge;
+            user.badges.push(newBadge);
             await user.save();
             return user;
         },

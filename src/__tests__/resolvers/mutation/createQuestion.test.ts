@@ -1,12 +1,15 @@
 // src/__tests__/resolvers/mutation/createQuestion.test.ts
 
-import resolvers from "../../../resolvers";
+import { IResolvers } from '@graphql-tools/utils';
+import { resolvers } from "../../../resolvers";
 import {
   ForbiddenError,
 } from "../../../utils/errors";
 import Question from "../../../models/Question";
 import * as authUtils from "../../../utils/auth";
 import * as permissionUtils from "../../../utils/permissions";
+
+const typedResolvers = resolvers as IResolvers;
 
 jest.mock("../../../models/Question");
 jest.mock("../../../utils/auth");
@@ -57,9 +60,10 @@ describe("Mutation resolvers - createQuestion", () => {
       populate: mockPopulate,
     });
 
-    const result = await resolvers.Mutation.createQuestion(null, { input }, {
+    const result = await (typedResolvers.Mutation as any).createQuestion(null, { input }, {
       req: {},
     } as any);
+
 
     expect(authUtils.checkAuth).toHaveBeenCalled();
     expect(permissionUtils.checkPermission).toHaveBeenCalledWith(mockUser, [
@@ -130,9 +134,10 @@ describe("Mutation resolvers - createQuestion", () => {
       populate: mockPopulate,
     });
 
-    const result = await resolvers.Mutation.createQuestion(null, { input }, {
+    const result = await (typedResolvers.Mutation as any).createQuestion(null, { input }, {
       req: {},
     } as any);
+
 
     expect(Question).toHaveBeenCalledWith({
       ...input,
@@ -153,7 +158,7 @@ describe("Mutation resolvers - createQuestion", () => {
     );
 
     await expect(
-      resolvers.Mutation.createQuestion(
+      (typedResolvers.Mutation as any).createQuestion(
         null,
         {
           input: {

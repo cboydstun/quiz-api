@@ -1,6 +1,7 @@
 // src/__tests__/resolvers/mutation/deleteUser.test.ts
 
-import resolvers from "../../../resolvers";
+import { resolvers } from "../../../resolvers";
+import { UserResolvers } from "../../../resolvers/types";
 import {
   AuthenticationError,
   ForbiddenError,
@@ -9,6 +10,9 @@ import {
 import User from "../../../models/User";
 import * as authUtils from "../../../utils/auth";
 import * as permissionUtils from "../../../utils/permissions";
+import typeDefs from "../../../schema";
+
+const typedMutationResolvers = resolvers.Mutation as UserResolvers["Mutation"];
 
 jest.mock("../../../models/User");
 jest.mock("../../../utils/auth");
@@ -32,7 +36,7 @@ describe("Mutation resolvers - deleteUser", () => {
     (User.findById as jest.Mock).mockResolvedValue(mockUser);
     (User.findByIdAndDelete as jest.Mock).mockResolvedValue(mockUser);
 
-    const result = await resolvers.Mutation.deleteUser(
+    const result = await typedMutationResolvers.deleteUser(
       null,
       { userId: "456" },
       { req: {} } as any
@@ -60,7 +64,7 @@ describe("Mutation resolvers - deleteUser", () => {
     (User.findById as jest.Mock).mockResolvedValue(null);
 
     await expect(
-      resolvers.Mutation.deleteUser(null, { userId: "999" }, {
+      typedMutationResolvers.deleteUser(null, { userId: "999" }, {
         req: {},
       } as any)
     ).rejects.toThrow(NotFoundError);
@@ -85,7 +89,7 @@ describe("Mutation resolvers - deleteUser", () => {
     (User.findById as jest.Mock).mockResolvedValue(mockSuperAdmin);
 
     await expect(
-      resolvers.Mutation.deleteUser(null, { userId: "456" }, {
+      typedMutationResolvers.deleteUser(null, { userId: "456" }, {
         req: {},
       } as any)
     ).rejects.toThrow(ForbiddenError);
@@ -97,7 +101,7 @@ describe("Mutation resolvers - deleteUser", () => {
     );
 
     await expect(
-      resolvers.Mutation.deleteUser(null, { userId: "456" }, {
+      typedMutationResolvers.deleteUser(null, { userId: "456" }, {
         req: {},
       } as any)
     ).rejects.toThrow(AuthenticationError);
@@ -116,7 +120,7 @@ describe("Mutation resolvers - deleteUser", () => {
     });
 
     await expect(
-      resolvers.Mutation.deleteUser(null, { userId: "456" }, {
+      typedMutationResolvers.deleteUser(null, { userId: "456" }, {
         req: {},
       } as any)
     ).rejects.toThrow(ForbiddenError);

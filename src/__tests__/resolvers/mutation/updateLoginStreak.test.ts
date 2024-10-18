@@ -1,6 +1,6 @@
 // src/__tests__/resolvers/mutation/updateLoginStreak.test.ts
 
-import resolvers from "../../../resolvers";
+import { resolvers } from "../../../resolvers";
 import {
   ForbiddenError,
   NotFoundError,
@@ -8,6 +8,9 @@ import {
 import User from "../../../models/User";
 import * as authUtils from "../../../utils/auth";
 import * as permissionUtils from "../../../utils/permissions";
+import { UserResolvers } from "../../../resolvers/types";
+
+const typedMutationResolvers = resolvers.Mutation as UserResolvers['Mutation'];
 
 jest.mock("../../../models/User");
 jest.mock("../../../utils/auth");
@@ -80,7 +83,7 @@ describe("Mutation resolvers - updateLoginStreak", () => {
       userId: "user456",
     };
 
-    const result = await resolvers.Mutation.updateLoginStreak(null, args, { req: {} } as any);
+    const result = await typedMutationResolvers.updateLoginStreak(null, args, { req: {} } as any);
 
     expect(result.consecutiveLoginDays).toBe(8);
     expect(result.badges).toHaveLength(1);
@@ -125,7 +128,7 @@ describe("Mutation resolvers - updateLoginStreak", () => {
       userId: "user456",
     };
 
-    const result = await resolvers.Mutation.updateLoginStreak(null, args, { req: {} } as any);
+    const result = await typedMutationResolvers.updateLoginStreak(null, args, { req: {} } as any);
 
     expect(result.consecutiveLoginDays).toBe(1);
     expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
@@ -164,7 +167,7 @@ describe("Mutation resolvers - updateLoginStreak", () => {
       userId: "user456",
     };
 
-    const result = await resolvers.Mutation.updateLoginStreak(null, args, { req: {} } as any);
+    const result = await typedMutationResolvers.updateLoginStreak(null, args, { req: {} } as any);
 
     expect(result.consecutiveLoginDays).toBe(7);
     expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
@@ -192,7 +195,7 @@ describe("Mutation resolvers - updateLoginStreak", () => {
     };
 
     await expect(
-      resolvers.Mutation.updateLoginStreak(null, args, { req: {} } as any)
+      typedMutationResolvers.updateLoginStreak(null, args, { req: {} } as any)
     ).rejects.toThrow(ForbiddenError);
 
     expect(authUtils.checkAuth).toHaveBeenCalled();
@@ -211,7 +214,7 @@ describe("Mutation resolvers - updateLoginStreak", () => {
     };
 
     await expect(
-      resolvers.Mutation.updateLoginStreak(null, args, { req: {} } as any)
+      typedMutationResolvers.updateLoginStreak(null, args, { req: {} } as any)
     ).rejects.toThrow(NotFoundError);
 
     expect(authUtils.checkAuth).toHaveBeenCalled();

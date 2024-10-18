@@ -1,12 +1,15 @@
 // src/__tests__/resolvers/mutation/deleteQuestion.test.ts
 
-import resolvers from "../../../resolvers";
+import { resolvers } from "../../../resolvers";
 import {
   NotFoundError,
 } from "../../../utils/errors";
 import Question from "../../../models/Question";
 import * as authUtils from "../../../utils/auth";
 import * as permissionUtils from "../../../utils/permissions";
+import { QuestionResolvers } from "../../../resolvers/types";
+
+const typedMutationResolvers = resolvers.Mutation as QuestionResolvers["Mutation"];
 
 jest.mock("../../../models/Question");
 jest.mock("../../../utils/auth");
@@ -28,7 +31,7 @@ describe("Mutation resolvers - deleteQuestion", () => {
     (Question.findById as jest.Mock).mockResolvedValue(mockQuestion);
     (Question.findByIdAndDelete as jest.Mock).mockResolvedValue(mockQuestion);
 
-    const result = await resolvers.Mutation.deleteQuestion(
+    const result = await typedMutationResolvers.deleteQuestion(
       null,
       { id: "456" },
       { req: {} } as any
@@ -55,7 +58,7 @@ describe("Mutation resolvers - deleteQuestion", () => {
     (Question.findById as jest.Mock).mockResolvedValue(null);
 
     await expect(
-      resolvers.Mutation.deleteQuestion(null, { id: "999" }, {
+      typedMutationResolvers.deleteQuestion(null, { id: "999" }, {
         req: {},
       } as any)
     ).rejects.toThrow(NotFoundError);

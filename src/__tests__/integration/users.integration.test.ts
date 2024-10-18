@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { ExpressContext } from "apollo-server-express/dist/ApolloServer";
 import typeDefs from "../../schema";
-import resolvers from "../../resolvers";
+import { resolvers } from "../../resolvers";
 import User from "../../models/User";
 import Question from "../../models/Question";
 import { generateToken } from "../../utils/auth";
@@ -26,6 +26,7 @@ const GET_USERS = `
         id
         name
         description
+        imageUrl
         earnedAt
       }
       lifetimePoints
@@ -69,6 +70,7 @@ const GET_USER_FULL = `
         id
         name
         description
+        imageUrl
         earnedAt
       }
       lifetimePoints
@@ -98,6 +100,7 @@ const GET_ME = `
         id
         name
         description
+        imageUrl
         earnedAt
       }
       lifetimePoints
@@ -238,7 +241,13 @@ describe("User Operations Integration Tests", () => {
       role: "USER",
       lastLoginDate: yesterday,
       consecutiveLoginDays: 1,
-      badges: [{ name: "First Login", description: "Logged in for the first time", earnedAt: yesterday }],
+      // Correct field names
+      badges: [{
+        name: "First Login",
+        description: "Logged in for the first time",
+        imageUrl: "https://www.example.com/picture123",
+        earnedAt: yesterday,
+      }],
     });
 
     // Create another regular user with some stats and badges
@@ -256,8 +265,8 @@ describe("User Operations Integration Tests", () => {
       monthlyPoints: 200,
       dailyPoints: 50,
       badges: [
-        { name: "Quiz Master", description: "Answered 10 questions", earnedAt: new Date() },
-        { name: "Sharpshooter", description: "Got 8 questions correct", earnedAt: new Date() },
+        { name: "Quiz Master", description: "Answered 10 questions", imageUrl: "https://www.example.com/picture1234", earnedAt: new Date() },
+        { name: "Sharpshooter", description: "Got 8 questions correct", imageUrl: "https://www.example.com/picture12345", earnedAt: new Date() },
       ],
     });
   });

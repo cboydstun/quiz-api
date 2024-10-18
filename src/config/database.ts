@@ -1,24 +1,22 @@
-// config/database.ts
+import mongoose from 'mongoose';
 
-import mongoose from "mongoose";
-import { logger } from "../utils/logger";
-import * as dotenv from "dotenv";
-
-dotenv.config();
-
-export const connectDB = async (): Promise<void> => {
-  const mongoUri = process.env.MONGO_URI;
-
-  if (!mongoUri) {
-    logger.error("MONGO_URI is not defined in the environment variables");
-    process.exit(1); // Exit the process with an error code
-  }
-
+export const connectToDatabase = async (): Promise<void> => {
   try {
-    await mongoose.connect(mongoUri);
-    logger.info("Connected to MongoDB");
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/quiz-api');
+    console.log('Connected to MongoDB');
   } catch (error) {
-    logger.error("Failed to connect to MongoDB", { error });
-    process.exit(1); // Exit the process with an error code
+    console.error('Error connecting to MongoDB:', error);
+    process.exit(1);
   }
 };
+
+export const closeDatabaseConnection = async (): Promise<void> => {
+  try {
+    await mongoose.connection.close();
+    console.log('Closed MongoDB connection');
+  } catch (error) {
+    console.error('Error closing MongoDB connection:', error);
+  }
+};
+
+export default mongoose;

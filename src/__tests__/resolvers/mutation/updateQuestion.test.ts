@@ -1,6 +1,7 @@
 // src/__tests__/resolvers/mutation/updateQuestion.test.ts
 
-import resolvers from "../../../resolvers";
+import { resolvers } from "../../../resolvers";
+import { QuestionResolvers } from "../../../resolvers/types";
 import {
   NotFoundError,
 } from "../../../utils/errors";
@@ -8,6 +9,8 @@ import Question from "../../../models/Question";
 import * as authUtils from "../../../utils/auth";
 import * as permissionUtils from "../../../utils/permissions";
 import mongoose from "mongoose";
+
+const typedMutationResolvers = resolvers.Mutation as QuestionResolvers['Mutation'];
 
 jest.mock("../../../models/Question");
 jest.mock("../../../utils/auth");
@@ -46,7 +49,7 @@ describe("Mutation resolvers - updateQuestion", () => {
       }),
     });
 
-    const result = await resolvers.Mutation.updateQuestion(
+    const result = await typedMutationResolvers.updateQuestion(
       null,
       {
         id: "456",
@@ -77,7 +80,7 @@ describe("Mutation resolvers - updateQuestion", () => {
     (Question.findById as jest.Mock).mockResolvedValue(null);
 
     await expect(
-      resolvers.Mutation.updateQuestion(
+      typedMutationResolvers.updateQuestion(
         null,
         {
           id: "999",
@@ -104,7 +107,7 @@ describe("Mutation resolvers - updateQuestion", () => {
     );
 
     await expect(
-      resolvers.Mutation.updateQuestion(
+      typedMutationResolvers.updateQuestion(
         null,
         {
           id: "invalid-id",

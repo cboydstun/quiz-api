@@ -1,5 +1,6 @@
 // src/resolvers/questionResolvers.ts
 
+import { IResolvers } from '@graphql-tools/utils';
 import Question from "../models/Question";
 import UserResponse from "../models/UserResponse";
 import User from "../models/User";
@@ -11,7 +12,7 @@ import mongoose from "mongoose";
 import { createQuestionSchema } from "../utils/validationSchemas";
 import { ValidationError } from "yup";
 
-const questionResolvers: QuestionResolvers = {
+const questionResolvers: Pick<IResolvers, 'Query' | 'Mutation'> = {
   Query: {
     questions: async () => Question.find().populate("createdBy"),
     question: async (_, { id }) => {

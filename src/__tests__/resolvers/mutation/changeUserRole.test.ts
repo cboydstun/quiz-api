@@ -1,6 +1,5 @@
-// src/__tests__/resolvers/mutation/changeUserRole.test.ts
-
-import resolvers from "../../../resolvers";
+import { resolvers } from "../../../resolvers";
+import { UserResolvers } from "../../../resolvers/types";
 import {
   NotFoundError,
   ForbiddenError,
@@ -8,6 +7,8 @@ import {
 import User from "../../../models/User";
 import * as authUtils from "../../../utils/auth";
 import * as permissionUtils from "../../../utils/permissions";
+
+const typedMutationResolvers = resolvers.Mutation as UserResolvers['Mutation'];
 
 jest.mock("../../../models/User");
 jest.mock("../../../utils/auth");
@@ -27,7 +28,7 @@ describe("Mutation resolvers - changeUserRole", () => {
     (permissionUtils.checkPermission as jest.Mock).mockResolvedValue(true);
     (User.findByIdAndUpdate as jest.Mock).mockResolvedValue(updatedUser);
 
-    const result = await resolvers.Mutation.changeUserRole(
+    const result = await typedMutationResolvers.changeUserRole(
       null,
       { userId: "456", newRole: "EDITOR" },
       { req: {} } as any
@@ -55,7 +56,7 @@ describe("Mutation resolvers - changeUserRole", () => {
     (User.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
 
     await expect(
-      resolvers.Mutation.changeUserRole(
+      typedMutationResolvers.changeUserRole(
         null,
         { userId: "999", newRole: "EDITOR" },
         { req: {} } as any
@@ -84,7 +85,7 @@ describe("Mutation resolvers - changeUserRole", () => {
     (User.findByIdAndUpdate as jest.Mock).mockResolvedValue(mockUser);
 
     await expect(
-      resolvers.Mutation.changeUserRole(
+      typedMutationResolvers.changeUserRole(
         null,
         { userId: "456", newRole: "SUPER_ADMIN" },
         { req: {} } as any

@@ -1,3 +1,5 @@
+// src/models/Badge.ts
+
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IBadge extends Document {
