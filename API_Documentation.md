@@ -133,6 +133,21 @@ mutation CreateQuestion($input: CreateQuestionInput!) {
 }
 ```
 
+Variables:
+
+```json
+{
+  "input": {
+    "prompt": "What is the capital of France?",
+    "questionText": "Choose the correct answer:",
+    "answers": ["London", "Berlin", "Paris", "Madrid"],
+    "correctAnswer": "Paris",
+    "hint": "It's known as the City of Light",
+    "points": 10
+  }
+}
+```
+
 ### Update a question (requires EDITOR, ADMIN, or SUPER_ADMIN role)
 
 Updates an existing question in the system.
@@ -155,6 +170,22 @@ mutation UpdateQuestion($id: ID!, $input: UpdateQuestionInput!) {
 }
 ```
 
+Variables:
+
+```json
+{
+  "id": "questionId",
+  "input": {
+    "prompt": "Updated prompt",
+    "questionText": "Updated question text",
+    "answers": ["New Answer 1", "New Answer 2", "New Answer 3", "New Answer 4"],
+    "correctAnswer": "New Answer 2",
+    "hint": "Updated hint",
+    "points": 15
+  }
+}
+```
+
 ### Delete a question (requires EDITOR, ADMIN, or SUPER_ADMIN role)
 
 Deletes a question from the system.
@@ -162,6 +193,14 @@ Deletes a question from the system.
 ```graphql
 mutation DeleteQuestion($id: ID!) {
   deleteQuestion(id: $id)
+}
+```
+
+Variables:
+
+```json
+{
+  "id": "questionId"
 }
 ```
 
@@ -175,6 +214,15 @@ mutation SubmitAnswer($questionId: ID!, $selectedAnswer: String!) {
     success
     isCorrect
   }
+}
+```
+
+Variables:
+
+```json
+{
+  "questionId": "questionId",
+  "selectedAnswer": "Selected answer text"
 }
 ```
 
@@ -606,18 +654,6 @@ mutation SubmitAnswer($questionId: ID!, $selectedAnswer: String!) {
 }
 ```
 
-## Question Queries and Mutations
-
-(No changes needed in this section)
-
-## Authentication Queries and Mutations
-
-(No changes needed in this section)
-
-## Leaderboard Queries
-
-(No changes needed in this section)
-
 ## Input Types
 
 ### CreateUserInput
@@ -635,11 +671,33 @@ input CreateUserInput {
 
 ### CreateQuestionInput
 
-(No changes needed)
+Input type for creating a new question.
+
+```graphql
+input CreateQuestionInput {
+  prompt: String!
+  questionText: String!
+  answers: [String!]!
+  correctAnswer: String!
+  hint: String
+  points: Int!
+}
+```
 
 ### UpdateQuestionInput
 
-(No changes needed)
+Input type for updating an existing question.
+
+```graphql
+input UpdateQuestionInput {
+  prompt: String
+  questionText: String
+  answers: [String!]
+  correctAnswer: String
+  hint: String
+  points: Int
+}
+```
 
 ### UserStatsInput
 
