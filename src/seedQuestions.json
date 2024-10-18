@@ -1,1269 +1,1212 @@
 [
   {
-    "prompt": "§ 107.1 Applicability\n\nPart 107 applies to the registration, airman certification, and operation of civil small unmanned aircraft systems within the United States. It's crucial to understand what falls under this regulation and what doesn't, as it determines which rules govern different types of unmanned aircraft operations.",
-    "questionText": "Which of the following is NOT covered by Part 107?",
+    "prompt": "Introduction, Page 1: The Federal Aviation Administration (FAA) has published the Remote Pilot – Small Unmanned Aircraft Systems (sUAS) Study Guide to assist in the preparation for the Remote Pilot Certificate with an sUAS rating. This study guide is comprehensive and covers various aspects of unmanned aircraft operations. It states: 'The Federal Aviation Administration (FAA) has published the Remote Pilot – Small Unmanned Aircraft Systems (sUAS) Study Guide to communicate the knowledge areas you need to study to prepare to take the Remote Pilot Certificate with an sUAS rating airman knowledge test.' The guide is designed to be a key resource for aspiring remote pilots, providing essential information on regulations, operating procedures, and safety considerations.",
+    "questionText": "What is the primary purpose of the Remote Pilot – Small Unmanned Aircraft Systems Study Guide?",
     "answers": [
-      "Registration of a small UAS for commercial use",
-      "Certification of remote pilots",
-      "Operation of a model aircraft under Part 101",
-      "Flying a small UAS for bridge inspection"
+      "To provide entertainment for aspiring pilots",
+      "To communicate the knowledge areas needed for the Remote Pilot Certificate with an sUAS rating",
+      "To replace formal flight training",
+      "To sell more drones to consumers"
     ],
-    "correctAnswer": "Operation of a model aircraft under Part 101",
-    "hint": "Part 107 does not apply to model aircraft operated under Part 101.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.3 Definitions\n\nThis section provides important definitions for terms used throughout Part 107. Understanding these definitions is crucial for correctly interpreting and applying the regulations.",
-    "questionText": "How does Part 107 define a 'small unmanned aircraft'?",
-    "answers": [
-      "An unmanned aircraft weighing less than 55 pounds on takeoff",
-      "Any unmanned aircraft used for recreational purposes",
-      "An unmanned aircraft weighing exactly 55 pounds",
-      "Any unmanned aircraft that can be controlled remotely"
-    ],
-    "correctAnswer": "An unmanned aircraft weighing less than 55 pounds on takeoff",
-    "hint": "The definition includes the specific weight limit of less than 55 pounds.",
+    "correctAnswer": "To communicate the knowledge areas needed for the Remote Pilot Certificate with an sUAS rating",
+    "hint": "The study guide is designed to prepare individuals for the Remote Pilot Certificate knowledge test.",
     "points": 1
   },
   {
-    "prompt": "§ 107.5 Falsification, reproduction or alteration\n\nThis section prohibits making false records or reports, as well as altering certificates or other documents related to Part 107. It's important for maintaining the integrity of UAS operations and documentation.",
-    "questionText": "What is a potential consequence of making a fraudulent or intentionally false record required by Part 107?",
+    "prompt": "Introduction, Page 1: The FAA encourages feedback on the Remote Pilot – Small Unmanned Aircraft Systems Study Guide to improve its content and usefulness. The guide provides specific instructions for submitting comments: 'This Remote Pilot – Small Unmanned Aircraft Systems Study Guide is available for download from faa.gov. Please send comments regarding this document to afs630comments@faa.gov.' This feedback mechanism is important as it allows the FAA to continually refine and update the study guide based on user input and changing industry needs. The FAA values the input of remote pilots and other stakeholders in the UAS community to ensure that the study guide remains a relevant and effective resource.",
+    "questionText": "How can individuals send comments regarding the Remote Pilot – Small Unmanned Aircraft Systems Study Guide?",
     "answers": [
-      "A verbal warning",
-      "Denial of an application for a remote pilot certificate",
-      "A mandatory retraining course",
-      "A small fine not exceeding $100"
+      "By mail to the FAA headquarters",
+      "Through social media",
+      "By email to afs630comments@faa.gov",
+      "By calling the FAA hotline"
     ],
-    "correctAnswer": "Denial of an application for a remote pilot certificate",
-    "hint": "Section 107.5(b) lists denial of an application as a potential consequence.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.7 Inspection, testing, and demonstration of compliance\n\nThis section outlines the requirement for remote pilots to make themselves and their equipment available for inspection or testing by the FAA upon request. This helps ensure compliance with regulations.",
-    "questionText": "What must a remote pilot in command make available to the Administrator upon request?",
-    "answers": [
-      "Their personal identification",
-      "Their remote pilot certificate with a small UAS rating",
-      "Their flight log book",
-      "Their UAS purchase receipt"
-    ],
-    "correctAnswer": "Their remote pilot certificate with a small UAS rating",
-    "hint": "Section 107.7(a) specifically mentions the remote pilot certificate.",
+    "correctAnswer": "By email to afs630comments@faa.gov",
+    "hint": "The introduction provides an email address for sending comments about the document.",
     "points": 1
   },
   {
-    "prompt": "§ 107.9 Accident reporting\n\nThis section requires remote pilots to report certain types of accidents involving small UAS operations. Understanding when and how to report accidents is crucial for compliance and safety improvement.",
-    "questionText": "Within what timeframe must a remote pilot report an operation that results in serious injury to any person or any loss of consciousness?",
+    "prompt": "Introduction, Page 1: The FAA provides multiple ways for individuals to contact them and obtain information. One of the primary methods is through a toll-free telephone number that is available 24 hours a day. The study guide states: 'To talk to the FAA toll-free 24 hours a day, call 1-866-TELL-FAA (1-866-835-5322).' This service allows pilots, operators, and the general public to reach the FAA at any time for inquiries, reporting safety concerns, or seeking clarification on regulations. The availability of a 24-hour service underscores the FAA's commitment to accessibility and their recognition of the need for constant communication in the aviation industry, where operations often occur outside of regular business hours.",
+    "questionText": "What is the toll-free number to contact the FAA?",
     "answers": [
-      "Immediately",
-      "Within 24 hours",
-      "Within 10 calendar days",
-      "Within 30 days"
+      "1-800-FAA-SAFE",
+      "1-866-TELL-FAA",
+      "1-877-FLY-DRONE",
+      "1-855-FAA-UAS"
     ],
-    "correctAnswer": "Within 10 calendar days",
-    "hint": "Section 107.9 specifies a 10 calendar day reporting window.",
+    "correctAnswer": "1-866-TELL-FAA",
+    "hint": "The introduction provides a specific toll-free number for contacting the FAA.",
     "points": 2
   },
   {
-    "prompt": "§ 107.12 Requirement for a remote pilot certificate with a small UAS rating\n\nThis section outlines who needs to have a remote pilot certificate to operate a small UAS under Part 107. It's a fundamental requirement for commercial UAS operations.",
-    "questionText": "Under what condition can a person without a remote pilot certificate operate a small UAS under Part 107?",
+    "prompt": "Introduction, Page 1: The FAA maintains a comprehensive website that serves as a central repository for aviation-related information, regulations, and resources. The study guide directs users to this official website: 'To visit the FAA's website, go to www.faa.gov.' This website is a crucial resource for pilots, operators, and anyone involved in aviation. It provides access to a wide range of information including regulations, advisory circulars, airman certification details, airport data, and much more. The website is regularly updated to reflect the latest changes in aviation policies and procedures, making it an essential tool for staying current with FAA requirements and guidelines. For remote pilots, the website offers specific sections dedicated to unmanned aircraft systems, including registration requirements, operational guidelines, and educational resources.",
+    "questionText": "What is the primary website for accessing FAA information?",
     "answers": [
-      "If they are supervised by someone with a certificate",
-      "If they are under the direct supervision of a remote pilot in command",
-      "If they are operating in Class G airspace",
-      "If they are flying below 100 feet AGL"
+      "www.faa.com",
+      "www.faadrones.gov",
+      "www.faa.gov",
+      "www.usfaa.org"
     ],
-    "correctAnswer": "If they are under the direct supervision of a remote pilot in command",
-    "hint": "Section 107.12(a)(2) allows operation under direct supervision of a certificated remote pilot in command.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.13 Registration\n\nThis section refers to the requirement for registering small unmanned aircraft. Registration is an important step in accountability and oversight of UAS operations.",
-    "questionText": "What section of the regulations does Part 107 refer to for registration requirements?",
-    "answers": ["§ 91.203(a)(2)", "§ 107.13(b)", "§ 47.2", "§ 48.100"],
-    "correctAnswer": "§ 91.203(a)(2)",
-    "hint": "Section 107.13 specifically refers to § 91.203(a)(2) for registration compliance.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.15 Condition for safe operation\n\nThis section emphasizes the responsibility of the remote pilot to ensure that the small UAS is in a condition for safe operation before each flight. It's a crucial aspect of maintaining safety in UAS operations.",
-    "questionText": "When must a remote pilot in command check the small unmanned aircraft to determine if it's in a condition for safe operation?",
-    "answers": [
-      "Once a week",
-      "Before each flight",
-      "After each flight",
-      "Only when changing batteries"
-    ],
-    "correctAnswer": "Before each flight",
-    "hint": "Section 107.15(a) requires checking before each flight.",
+    "correctAnswer": "www.faa.gov",
+    "hint": "The official FAA website is provided in the introduction for accessing information.",
     "points": 1
   },
   {
-    "prompt": "§ 107.17 Medical condition\n\nThis section prohibits individuals from operating a small UAS if they have a physical or mental condition that would interfere with safe operation. It emphasizes personal responsibility in assessing one's fitness to operate.",
-    "questionText": "What should a person do if they know they have a medical condition that would interfere with the safe operation of a small UAS?",
+    "prompt": "Introduction, Page 1: The FAA provides a variety of reference materials to support both student and advanced pilots. These resources are crucial for understanding regulations, procedures, and best practices in aviation. The study guide mentions: 'FAA Reference Material: The FAA provides a variety of important reference material for the student, as well as the advanced civil aviation pilot. In addition to the regulations provided online by the FAA, several other publications are available to the user. Almost all reference material is available online at www.faa.gov in downloadable format. Commercial aviation publishers also provide published and online reference material to further aid the aviation pilot.' Some of the key references include the Aeronautical Information Manual (AIM), Advisory Circulars (ACs), and the Pilot's Handbook of Aeronautical Knowledge. These materials cover a wide range of topics from basic flight information to advanced operational procedures and are regularly updated to reflect changes in aviation practices and regulations.",
+    "questionText": "Which of the following is NOT listed as FAA reference material in the introduction?",
     "answers": [
-      "Operate only in Class G airspace",
-      "Limit flights to below 200 feet AGL",
-      "Not act as a remote pilot in command or manipulate the controls",
-      "Operate only with a visual observer present"
+      "Aeronautical Information Manual (AIM)",
+      "Advisory Circulars (ACs)",
+      "Pilot's Handbook of Aeronautical Knowledge",
+      "Drone Pilot's Handbook"
     ],
-    "correctAnswer": "Not act as a remote pilot in command or manipulate the controls",
-    "hint": "Section 107.17 prohibits operation with known interfering medical conditions.",
+    "correctAnswer": "Drone Pilot's Handbook",
+    "hint": "The introduction lists several reference materials, but a 'Drone Pilot's Handbook' is not among them.",
     "points": 2
   },
   {
-    "prompt": "§ 107.19 Remote pilot in command\n\nThis section establishes the responsibilities and authority of the remote pilot in command. Understanding this role is crucial for safe and compliant UAS operations.",
-    "questionText": "What is a key responsibility of the remote pilot in command?",
-    "answers": [
-      "Maintaining visual line of sight at all times",
-      "Ensuring the small UAS operation complies with all applicable regulations",
-      "Conducting preflight briefings for all observers",
-      "Reporting all flights to the FAA"
-    ],
-    "correctAnswer": "Ensuring the small UAS operation complies with all applicable regulations",
-    "hint": "Section 107.19(c) specifies compliance with all applicable regulations as a responsibility.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.21 In-flight emergency\n\nThis section provides guidance for remote pilots in dealing with in-flight emergencies. It allows for deviations from rules when necessary to respond to emergencies.",
-    "questionText": "In an in-flight emergency requiring immediate action, what may the remote pilot in command do?",
-    "answers": [
-      "Only land the aircraft immediately",
-      "Only contact Air Traffic Control",
-      "Deviate from any rule of Part 107 to the extent necessary to meet the emergency",
-      "Only increase altitude to avoid obstacles"
-    ],
-    "correctAnswer": "Deviate from any rule of Part 107 to the extent necessary to meet the emergency",
-    "hint": "Section 107.21 allows deviation from rules as necessary in emergencies.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.23 Hazardous operation\n\nThis section prohibits careless or reckless operation of small UAS. It's a general safety provision aimed at preventing dangerous operations.",
-    "questionText": "What does Part 107 prohibit regarding the operation of a small UAS?",
-    "answers": [
-      "Operation in controlled airspace",
-      "Operation at night",
-      "Operation in a careless or reckless manner",
-      "Operation over people"
-    ],
-    "correctAnswer": "Operation in a careless or reckless manner",
-    "hint": "Section 107.23(a) prohibits careless or reckless operation.",
+    "prompt": "Chapter 1: Applicable Regulations, Page 3: Understanding and complying with the appropriate regulations is crucial for safe and legal operation of small unmanned aircraft systems. The study guide emphasizes the importance of familiarity with specific parts of the Code of Federal Regulations (CFR) and related advisory circulars. It states: 'Be familiar with 14 CFR part 107 and all parts referenced in part 107, as well as AC 107-2.' Part 107 is the primary regulation governing small UAS operations for commercial and recreational purposes. It covers various aspects of UAS operations including pilot certification, aircraft requirements, and operational limitations. The advisory circular AC 107-2 provides additional guidance and clarification on the interpretation and application of the rules outlined in Part 107. Thorough knowledge of these regulations is essential for remote pilots to ensure compliance and maintain safety in the national airspace system.",
+    "questionText": "What part of the Code of Federal Regulations (CFR) primarily governs small UAS operations?",
+    "answers": ["Part 61", "Part 91", "Part 107", "Part 135"],
+    "correctAnswer": "Part 107",
+    "hint": "Part 107 is specifically designed for small UAS operations.",
     "points": 1
   },
   {
-    "prompt": "§ 107.25 Operation from a moving vehicle or aircraft\n\nThis section places restrictions on operating a small UAS from moving vehicles or aircraft. These restrictions are in place to minimize risks associated with operating from a moving platform.",
-    "questionText": "Under what condition is the operation of a small UAS from a moving land vehicle allowed?",
-    "answers": [
-      "When flying over any populated area",
-      "When the vehicle is moving less than 10 mph",
-      "When flying over a sparsely populated area and not carrying another person's property for compensation",
-      "When operating below 100 feet AGL"
-    ],
-    "correctAnswer": "When flying over a sparsely populated area and not carrying another person's property for compensation",
-    "hint": "Section 107.25(b) allows operation from a moving vehicle under these specific conditions.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.27 Alcohol or drugs\n\nThis section prohibits operating a small UAS while under the influence of alcohol or drugs. It refers to existing regulations for manned aircraft regarding alcohol and drug use.",
-    "questionText": "What regulations does Part 107 reference regarding alcohol and drug use?",
-    "answers": [
-      "§§ 91.17 and 91.19",
-      "§§ 61.15 and 61.16",
-      "§§ 107.27 and 107.29",
-      "§§ 121.15 and 121.16"
-    ],
-    "correctAnswer": "§§ 91.17 and 91.19",
-    "hint": "Section 107.27 specifically references §§ 91.17 and 91.19.",
+    "prompt": "Chapter 1: Applicable Regulations, Page 3: In addition to the primary regulations found in 14 CFR Part 107, the FAA provides supplementary guidance through Advisory Circulars (ACs). These documents offer detailed explanations, best practices, and interpretations of the regulations. The study guide specifically mentions one important advisory circular: 'Be familiar with 14 CFR part 107 and all parts referenced in part 107, as well as AC 107-2.' Advisory Circular 107-2 is a comprehensive document that provides guidance on the implementation of Part 107. It covers topics such as remote pilot certification, registration requirements, operational limitations, and waivers. This AC is regularly updated to reflect changes in regulations and industry practices, making it an essential reference for remote pilots to stay current with FAA expectations and requirements. Understanding both the regulations in Part 107 and the guidance in AC 107-2 is crucial for ensuring safe and compliant UAS operations.",
+    "questionText": "What document is recommended to be familiar with in addition to 14 CFR part 107?",
+    "answers": ["AC 107-1", "AC 107-2", "AC 107-3", "AC 61-23"],
+    "correctAnswer": "AC 107-2",
+    "hint": "Advisory Circular 107-2 provides guidance for small UAS operations.",
     "points": 2
   },
   {
-    "prompt": "§ 107.29 Daylight operation\n\nThis section outlines the requirements for operating a small UAS during daylight and civil twilight hours. It specifies lighting requirements for operations during civil twilight.",
-    "questionText": "What is required for small UAS operations during civil twilight?",
-    "answers": [
-      "A waiver from the FAA",
-      "Anti-collision lighting visible for 3 statute miles",
-      "Constant communication with ATC",
-      "A visual observer must be used"
-    ],
-    "correctAnswer": "Anti-collision lighting visible for 3 statute miles",
-    "hint": "Section 107.29(b) requires anti-collision lighting for civil twilight operations.",
+    "prompt": "Chapter 2: Airspace Classification, Operating Requirements, and Flight Restrictions, Page 5: Understanding airspace classification is crucial for safe and legal UAS operations. The National Airspace System (NAS) is divided into different categories and types to facilitate air traffic control and ensure safety for all aircraft. The study guide provides an overview of this classification: 'The two categories of airspace are: regulatory and nonregulatory. Within these two categories, there are four types: controlled, uncontrolled, special use, and other airspace.' This classification system helps define the rules and requirements for operating in different parts of the airspace. Regulatory airspace is governed by specific regulations and often requires ATC clearance for entry, while nonregulatory airspace may have recommended procedures but fewer strict requirements. Understanding these categories is essential for remote pilots to determine where they can legally and safely operate their UAS.",
+    "questionText": "How many categories of airspace are there?",
+    "answers": ["One", "Two", "Three", "Four"],
+    "correctAnswer": "Two",
+    "hint": "The airspace is divided into regulatory and nonregulatory categories.",
     "points": 2
   },
   {
-    "prompt": "§ 107.31 Visual line of sight aircraft operation\n\nThis section requires that the remote pilot, person manipulating the controls, or visual observer maintain visual line of sight with the small UAS throughout the entire flight. This is a fundamental safety requirement for most UAS operations under Part 107.",
-    "questionText": "What does 'visual line of sight' mean in the context of small UAS operations?",
+    "prompt": "Chapter 2: Airspace Classification, Operating Requirements, and Flight Restrictions, Page 5: The National Airspace System (NAS) is structured to accommodate various types of aircraft operations and ensure safety. The study guide outlines the main types of airspace: 'The two categories of airspace are: regulatory and nonregulatory. Within these two categories, there are four types: controlled, uncontrolled, special use, and other airspace.' Controlled airspace is actively managed by air traffic control and includes Class A, B, C, D, and E airspace. Uncontrolled airspace, also known as Class G, has no ATC authority. Special use airspace includes areas with restrictions on aircraft operations, such as prohibited or restricted areas. Other airspace encompasses areas that don't fit into the previous categories, like military operations areas or temporary flight restrictions. Remote pilots must understand these airspace types to determine where they can operate, what restrictions apply, and what procedures they need to follow in different areas.",
+    "questionText": "What are the four types of airspace?",
     "answers": [
-      "The ability to see the UAS with binoculars",
-      "The ability to see the UAS with unaided vision (except for corrective lenses)",
-      "The ability to see the UAS on a video feed",
-      "The ability to see the UAS within a 1-mile radius"
+      "Controlled, uncontrolled, special use, and other airspace",
+      "High, medium, low, and ground level",
+      "Restricted, prohibited, warning, and alert areas",
+      "Commercial, private, military, and recreational"
     ],
-    "correctAnswer": "The ability to see the UAS with unaided vision (except for corrective lenses)",
-    "hint": "Section 107.31(a) specifies unaided visual line of sight, except for corrective lenses.",
+    "correctAnswer": "Controlled, uncontrolled, special use, and other airspace",
+    "hint": "The study guide outlines these four specific types of airspace.",
     "points": 2
   },
   {
-    "prompt": "§ 107.33 Visual observer\n\nThis section outlines the requirements and responsibilities when a visual observer is used in small UAS operations. Visual observers can play a crucial role in maintaining situational awareness during flights.",
-    "questionText": "What is a key requirement when using a visual observer in small UAS operations?",
-    "answers": [
-      "The visual observer must have a remote pilot certificate",
-      "The visual observer must be in a fixed position",
-      "The remote pilot and visual observer must maintain effective communication",
-      "The visual observer must be able to take control of the UAS if needed"
-    ],
-    "correctAnswer": "The remote pilot and visual observer must maintain effective communication",
-    "hint": "Section 107.33(a) requires effective communication between the remote pilot and visual observer.",
+    "prompt": "Chapter 2: Airspace Classification, Page 5: Class B airspace is one of the most restrictive and complex airspace classifications in the National Airspace System. It is designed to provide the highest level of safety around the nation's busiest airports. The study guide describes Class B airspace as follows: 'Class B airspace is generally airspace from the surface to 10,000 feet mean sea level (MSL) surrounding the nation's busiest airports in terms of airport operations or passenger enplanements. The configuration of each Class B airspace area is individually tailored, consists of a surface area and two or more layers (some Class B airspace areas resemble upside-down wedding cakes), and is designed to contain all published instrument procedures once an aircraft enters the airspace.' This airspace requires explicit ATC clearance for all aircraft operations, including UAS. The complex structure of Class B airspace, often compared to an inverted wedding cake, is designed to accommodate the high volume of air traffic around major airports while ensuring separation between aircraft at different stages of arrival and departure.",
+    "questionText": "Which class of airspace typically extends from the surface to 10,000 feet MSL surrounding the nation's busiest airports?",
+    "answers": ["Class A", "Class B", "Class C", "Class D"],
+    "correctAnswer": "Class B",
+    "hint": "Class B airspace is described as extending from the surface to 10,000 feet MSL around busy airports.",
     "points": 2
   },
   {
-    "prompt": "§ 107.35 Operation of multiple small unmanned aircraft\n\nThis section prohibits the simultaneous operation of multiple small unmanned aircraft by one remote pilot. This rule is in place to ensure that each UAS receives adequate attention and control from its operator.",
-    "questionText": "Can a single remote pilot operate multiple small unmanned aircraft simultaneously?",
+    "prompt": "Chapter 2: Airspace Classification, Page 6: Class D airspace is a critical component of the controlled airspace system, typically surrounding smaller airports with operational control towers. The study guide provides important information about operating in Class D airspace: 'Class D airspace is generally airspace from the surface to 2,500 feet above the airport elevation (charted in MSL) surrounding those airports that have an operational control tower. The configuration of each Class D airspace area is individually tailored and when instrument procedures are published, the airspace is normally designed to contain the procedures. Arrival extensions for instrument approach procedures (IAPs) may be Class D or Class E airspace. A remote pilot must receive ATC authorization before operating in Class D airspace.' This requirement for ATC authorization is crucial for UAS operators to understand. It means that before conducting any UAS operations within Class D airspace, the remote pilot must contact the controlling authority (usually the tower) and obtain explicit permission. This process helps ensure the safety of all aircraft operating in the vicinity of the airport by allowing ATC to maintain awareness and separation of UAS from other air traffic.",
+    "questionText": "In which class of airspace does a remote pilot need ATC authorization before operating?",
     "answers": [
-      "Yes, if they are all within visual line of sight",
-      "Yes, but only two aircraft at a time",
-      "No, it is not allowed under any circumstances",
-      "Yes, if the pilot has a special certification"
+      "Class G",
+      "Class E above 400 feet AGL",
+      "Class D",
+      "All of the above"
     ],
-    "correctAnswer": "No, it is not allowed under any circumstances",
-    "hint": "Section 107.35 prohibits the operation of more than one unmanned aircraft at a time.",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.36 Carriage of hazardous material\n\nThis section prohibits small unmanned aircraft from carrying hazardous material. This rule is in place to prevent potential incidents involving dangerous goods during UAS operations.",
-    "questionText": "What does Part 107 say about carrying hazardous materials on a small UAS?",
-    "answers": [
-      "It is allowed with proper packaging",
-      "It is allowed with prior FAA approval",
-      "It is not allowed under any circumstances",
-      "It is allowed for quantities less than 1 pound"
-    ],
-    "correctAnswer": "It is not allowed under any circumstances",
-    "hint": "Section 107.36 explicitly prohibits carrying hazardous material.",
-    "points": 1
-  },
-
-  {
-    "prompt": "§ 107.37 Operation near aircraft; right-of-way rules (continued)\n\nThis section establishes right-of-way rules for small UAS operations. It requires small unmanned aircraft to yield the right of way to all other aircraft, including other UAS.",
-    "questionText": "When a manned aircraft and a small unmanned aircraft are on converging paths, which has the right of way?",
-    "answers": [
-      "The small unmanned aircraft",
-      "The manned aircraft",
-      "The aircraft at the lower altitude",
-      "Neither, both must alter course"
-    ],
-    "correctAnswer": "The manned aircraft",
-    "hint": "Section 107.37(a) requires small unmanned aircraft to yield the right of way to all aircraft.",
+    "correctAnswer": "Class D",
+    "hint": "The study guide states that a remote pilot must receive ATC authorization before operating in Class D airspace.",
     "points": 2
   },
   {
-    "prompt": "§ 107.39 Operation over human beings\n\nThis section restricts the operation of small unmanned aircraft over human beings who are not directly participating in the operation. It's designed to minimize risk to people on the ground.",
-    "questionText": "Under what condition is it permissible to operate a small UAS over a person not directly participating in the operation?",
+    "prompt": "Chapter 2: Airspace Classification, Page 6: Uncontrolled airspace, also known as Class G airspace, is a unique category in the National Airspace System. Unlike controlled airspace, it does not require communication with or authorization from air traffic control for operations. The study guide defines Class G airspace as follows: 'Uncontrolled airspace or Class G airspace is the portion of the airspace that has not been designated as Class A, B, C, D, or E. It is therefore designated uncontrolled airspace. Class G airspace extends from the surface to the base of the overlying Class E airspace.' This type of airspace is typically found in rural or remote areas and at low altitudes. While there are fewer restrictions in Class G airspace, it's important to note that all applicable FAA regulations still apply, including those specific to UAS operations under Part 107. Pilots operating in Class G airspace must maintain vigilance as there may be a mix of aircraft types, including general aviation aircraft, helicopters, and other UAS, all operating without direct ATC oversight. Understanding the characteristics and limitations of Class G airspace is crucial for remote pilots to ensure safe operations in these areas.",
+    "questionText": "What is another name for Class G airspace?",
     "answers": [
-      "If the person is wearing protective gear",
-      "If the person is notified of the operation beforehand",
-      "If the person is under a covered structure",
-      "If the UAS is flying below 50 feet AGL"
+      "Controlled airspace",
+      "Special use airspace",
+      "Uncontrolled airspace",
+      "Restricted airspace"
     ],
-    "correctAnswer": "If the person is under a covered structure",
-    "hint": "Section 107.39(b) allows operation over a person under a covered structure.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.41 Operation in certain airspace\n\nThis section outlines the requirements for operating in controlled airspace. It's crucial for ensuring that small UAS operations do not interfere with other air traffic.",
-    "questionText": "What is required to operate a small UAS in Class C airspace?",
-    "answers": [
-      "Nothing, operation is allowed without restriction",
-      "Prior authorization from Air Traffic Control (ATC)",
-      "A transponder on the small UAS",
-      "Filing a flight plan"
-    ],
-    "correctAnswer": "Prior authorization from Air Traffic Control (ATC)",
-    "hint": "Section 107.41 requires prior ATC authorization for operation in Class C airspace.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.43 Operation in the vicinity of airports\n\nThis section prohibits interference with operations and traffic patterns at airports, heliports, and seaplane bases. It's important for maintaining safety in these critical areas.",
-    "questionText": "What does Part 107 say about operating a small UAS in a way that interferes with operations and traffic patterns at airports?",
-    "answers": [
-      "It's allowed if the UAS is below 100 feet AGL",
-      "It's allowed with prior notification to the airport",
-      "It's prohibited",
-      "It's allowed outside of business hours"
-    ],
-    "correctAnswer": "It's prohibited",
-    "hint": "Section 107.43 prohibits interfering with operations and traffic patterns at airports.",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.45 Operation in prohibited or restricted areas\n\nThis section addresses operations in special use airspace. It's crucial for remote pilots to understand and respect these designated areas.",
-    "questionText": "What is required to operate a small UAS in a restricted area?",
-    "answers": [
-      "Nothing, operation is always allowed",
-      "Permission from the using or controlling agency",
-      "A special identification transponder",
-      "Filing a NOTAM (Notice to Airmen)"
-    ],
-    "correctAnswer": "Permission from the using or controlling agency",
-    "hint": "Section 107.45 requires permission from the using or controlling agency for operation in restricted areas.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.47 Flight restrictions in the proximity of certain areas designated by notice to airmen\n\nThis section requires compliance with NOTAMs (Notices to Airmen) and other flight restrictions. It's important for staying informed about temporary changes to airspace rules.",
-    "questionText": "What must a remote pilot in command do regarding NOTAMs?",
-    "answers": [
-      "Ignore them as they don't apply to small UAS",
-      "Read them only if operating above 400 feet AGL",
-      "Comply with them as specified in §§ 91.137 through 91.145 and 99.7",
-      "File a new NOTAM for their UAS operation"
-    ],
-    "correctAnswer": "Comply with them as specified in §§ 91.137 through 91.145 and 99.7",
-    "hint": "Section 107.47 requires compliance with the provisions of §§ 91.137 through 91.145 and 99.7.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.49 Preflight familiarization, inspection, and actions for aircraft operation\n\nThis section outlines the responsibilities of the remote pilot before beginning a small UAS operation. It's crucial for ensuring safe and compliant flights.",
-    "questionText": "What is NOT required as part of the preflight assessment?",
-    "answers": [
-      "Assessing local weather conditions",
-      "Ensuring sufficient power for the intended operation",
-      "Obtaining a formal weather briefing from Flight Service",
-      "Assessing the operating environment for risks to persons and property"
-    ],
-    "correctAnswer": "Obtaining a formal weather briefing from Flight Service",
-    "hint": "Section 107.49 requires assessing weather conditions but doesn't specify a formal briefing from Flight Service.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.51 Operating limitations for small unmanned aircraft\n\nThis section sets specific limits on small UAS operations, including maximum groundspeed, altitude, and visibility requirements. These limitations are designed to maintain safety in the national airspace.",
-    "questionText": "What is the maximum groundspeed allowed for a small UAS under Part 107?",
-    "answers": [
-      "87 knots (100 mph)",
-      "100 knots (115 mph)",
-      "120 knots (138 mph)",
-      "There is no maximum groundspeed"
-    ],
-    "correctAnswer": "87 knots (100 mph)",
-    "hint": "Section 107.51(a) sets the maximum groundspeed at 87 knots (100 mph).",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.53 Applicability\n\nThis section introduces the remote pilot certification requirements. It's the beginning of Subpart C, which covers the details of becoming a certified remote pilot.",
-    "questionText": "What does Subpart C of Part 107 primarily cover?",
-    "answers": [
-      "Operating rules for small UAS",
-      "Registration requirements for small UAS",
-      "Remote pilot certification",
-      "Airspace restrictions"
-    ],
-    "correctAnswer": "Remote pilot certification",
-    "hint": "Section 107.53 begins Subpart C, which prescribes the requirements for issuing a remote pilot certificate.",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.57 Offenses involving alcohol or drugs\n\nThis section outlines the consequences of alcohol and drug-related offenses on remote pilot certification. It emphasizes the importance of maintaining a drug and alcohol-free status for UAS operators.",
-    "questionText": "What is a potential consequence of a conviction for violating a federal or state statute relating to alcohol?",
-    "answers": [
-      "A fine not exceeding $1000",
-      "Mandatory counseling",
-      "Denial of an application for a remote pilot certificate for up to 1 year",
-      "Permanent revocation of all airman certificates"
-    ],
-    "correctAnswer": "Denial of an application for a remote pilot certificate for up to 1 year",
-    "hint": "Section 107.57(a)(1) allows for denial of an application for up to 1 year after conviction.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.59 Refusal to submit to an alcohol test or to furnish test results\n\nThis section addresses the consequences of refusing to submit to a drug or alcohol test. It's part of ensuring that remote pilots are fit for duty.",
-    "questionText": "What can happen if a person refuses to submit to a test to indicate the percentage of alcohol in their blood when requested by a law enforcement officer?",
-    "answers": [
-      "Nothing, they have the right to refuse",
-      "A small fine",
-      "Suspension or revocation of their remote pilot certificate",
-      "Mandatory ground training"
-    ],
-    "correctAnswer": "Suspension or revocation of their remote pilot certificate",
-    "hint": "Section 107.59(b) allows for suspension or revocation of a remote pilot certificate for refusal to submit to a test.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.61 Eligibility\n\nThis section outlines the basic requirements for obtaining a remote pilot certificate with a small UAS rating. It covers age, language, and knowledge requirements.",
-    "questionText": "What is the minimum age to be eligible for a remote pilot certificate with a small UAS rating?",
-    "answers": ["16 years", "17 years", "18 years", "21 years"],
-    "correctAnswer": "16 years",
-    "hint": "Section 107.61(a) states that an applicant must be at least 16 years of age.",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.63 Issuance of a remote pilot certificate with a small UAS rating\n\nThis section describes the process of applying for and receiving a remote pilot certificate. It outlines the necessary documentation and procedures.",
-    "questionText": "What evidence must an applicant provide when applying for a remote pilot certificate?",
-    "answers": [
-      "Proof of U.S. citizenship",
-      "A college degree",
-      "Evidence of passing an initial aeronautical knowledge test",
-      "A medical certificate"
-    ],
-    "correctAnswer": "Evidence of passing an initial aeronautical knowledge test",
-    "hint": "Section 107.63(a)(1) requires evidence of passing an initial aeronautical knowledge test.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.64 Temporary certificate\n\nThis section explains the issuance and validity of temporary remote pilot certificates. It's important for understanding the transition between passing the knowledge test and receiving the permanent certificate.",
-    "questionText": "How long is a temporary remote pilot certificate valid?",
-    "answers": ["30 days", "60 days", "90 days", "Up to 120 calendar days"],
-    "correctAnswer": "Up to 120 calendar days",
-    "hint": "Section 107.64(a) states that a temporary certificate is issued for up to 120 calendar days.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.65 Aeronautical knowledge recency\n\nThis section outlines the requirements for maintaining current aeronautical knowledge. It ensures that remote pilots stay up-to-date with regulations and best practices.",
-    "questionText": "How often must a remote pilot demonstrate aeronautical knowledge recency?",
-    "answers": [
-      "Every 6 months",
-      "Every 12 months",
-      "Every 24 calendar months",
-      "Every 36 months"
-    ],
-    "correctAnswer": "Every 24 calendar months",
-    "hint": "Section 107.65 requires demonstration of aeronautical knowledge recency within the preceding 24 calendar months.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.67 Knowledge tests: General procedures and passing grades\n\nThis section describes the procedures for taking the aeronautical knowledge test and the required passing grade. It's crucial information for those preparing to become certified remote pilots.",
-    "questionText": "What type of identification is required when applying for a knowledge test?",
-    "answers": [
-      "Any government-issued ID",
-      "Only a driver's license",
-      "ID with photograph, signature, date of birth, and current address",
-      "A passport"
-    ],
-    "correctAnswer": "ID with photograph, signature, date of birth, and current address",
-    "hint": "Section 107.67(b) requires identification that contains the applicant's photograph, signature, date of birth, and permanent mailing address.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.69 Knowledge tests: Cheating or other unauthorized conduct\n\nThis section outlines prohibited conduct during knowledge tests and the consequences of such actions. It's important for maintaining the integrity of the certification process.",
-    "questionText": "What is the penalty for cheating on a knowledge test?",
-    "answers": [
-      "Retaking the test",
-      "A fine",
-      "Prohibition from applying for any certificate, rating, or authorization for 1 year",
-      "A warning letter"
-    ],
-    "correctAnswer": "Prohibition from applying for any certificate, rating, or authorization for 1 year",
-    "hint": "Section 107.69(b) states that an applicant who cheats is prohibited from applying for any certificate, rating, or authorization for 1 year.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.71 Retesting after failure\n\nThis section specifies the waiting period required before retaking a failed knowledge test. It's designed to ensure adequate time for additional study and preparation.",
-    "questionText": "How long must an applicant wait before retaking a failed knowledge test?",
-    "answers": ["24 hours", "7 days", "14 calendar days", "30 days"],
-    "correctAnswer": "14 calendar days",
-    "hint": "Section 107.71 requires a 14 calendar day waiting period before retaking a failed test.",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.73 Initial and recurrent knowledge tests\n\nThis section outlines the topics covered in both initial and recurrent aeronautical knowledge tests. Understanding these areas is crucial for passing the tests and operating safely.",
-    "questionText": "Which of the following is NOT a required knowledge area for the initial aeronautical knowledge test?",
-    "answers": [
-      "Airspace classification",
-      "Aviation weather sources",
-      "Advanced aerodynamics and aircraft design",
-      "Emergency procedures"
-    ],
-    "correctAnswer": "Advanced aerodynamics and aircraft design",
-    "hint": "Section 107.73(a) lists the required knowledge areas, which do not include advanced aerodynamics and aircraft design.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.74 Initial and recurrent training courses\n\nThis section describes the content of initial and recurrent training courses for remote pilots. These courses are an alternative to knowledge tests for certain pilots.",
-    "questionText": "Which of the following is a topic covered in both initial and recurrent training courses?",
-    "answers": [
-      "Airport operations",
-      "Crew resource management",
-      "Radio communication procedures",
-      "Determining the performance of small unmanned aircraft"
-    ],
-    "correctAnswer": "Crew resource management",
-    "hint": "Section 107.74 lists crew resource management as a topic in both initial and recurrent training courses.",
+    "correctAnswer": "Uncontrolled airspace",
+    "hint": "The study guide states that Class G airspace is also known as uncontrolled airspace.",
     "points": 2
   },
 
   {
-    "prompt": "§ 107.77 Change of name or address (continued)\n\nThis section outlines the procedures for updating personal information on a remote pilot certificate. Keeping this information current is important for regulatory compliance.",
-    "questionText": "How long does a certificate holder have to notify the FAA of a change in permanent mailing address?",
-    "answers": ["7 days", "14 days", "30 days", "60 days"],
-    "correctAnswer": "30 days",
-    "hint": "Section 107.77(c) requires notification within 30 days of a change in permanent mailing address.",
+    "prompt": "Chapter 2: Special Use Airspace, Page 6-7: The study guide introduces the concept of special use airspace: 'Special use airspace or special area of operation (SAO) is the designation for airspace in which certain activities must be confined, or where limitations may be imposed on aircraft operations that are not part of those activities. Certain special use airspace areas can create limitations on the mixed use of airspace. The special use airspace depicted on instrument charts includes the area name or number, effective altitude, time and weather conditions of operation, the controlling agency, and the chart panel location.' Understanding special use airspace is crucial for remote pilots to avoid restricted areas and ensure compliance with airspace regulations. The study guide then lists several types of special use airspace, including prohibited areas, restricted areas, warning areas, military operation areas (MOAs), alert areas, and controlled firing areas (CFAs).",
+    "questionText": "What is the primary purpose of designating special use airspace?",
+    "answers": [
+      "To provide additional landing areas for aircraft",
+      "To confine certain activities and impose limitations on aircraft operations",
+      "To designate areas for recreational flying only",
+      "To indicate areas with the best weather conditions for flying"
+    ],
+    "correctAnswer": "To confine certain activities and impose limitations on aircraft operations",
+    "hint": "The study guide states that special use airspace is designated for confining certain activities and imposing limitations on aircraft operations.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Special Use Airspace - Prohibited Areas, Page 7: The study guide describes prohibited areas as follows: 'Prohibited areas contain airspace of defined dimensions within which the flight of aircraft is prohibited. Such areas are established for security or other reasons associated with the national welfare. These areas are published in the Federal Register and are depicted on aeronautical charts. The area is charted as a *P* followed by a number (e.g., P-40). Examples of prohibited areas include Camp David and the National Mall in Washington, D.C., where the White House and the Congressional buildings are located.' Understanding prohibited areas is essential for remote pilots to avoid violating restricted airspace and potentially compromising national security.",
+    "questionText": "How are prohibited areas indicated on aeronautical charts?",
+    "answers": [
+      "With an 'R' followed by a number",
+      "With a 'P' followed by a number",
+      "With an 'A' followed by a number",
+      "With a 'W' followed by a number"
+    ],
+    "correctAnswer": "With a 'P' followed by a number",
+    "hint": "The study guide states that prohibited areas are charted as a 'P' followed by a number.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Special Use Airspace - Restricted Areas, Page 7: The study guide provides information about restricted areas: 'Restricted areas are areas where operations are hazardous to nonparticipating aircraft and contain airspace within which the flight of aircraft, while not wholly prohibited, is subject to restrictions. Activities within these areas must be confined because of their nature, or limitations may be imposed upon aircraft operations that are not a part of those activities, or both. Restricted areas denote the existence of unusual, often invisible, hazards to aircraft (e.g., artillery firing, aerial gunnery, or guided missiles). Penetration of restricted areas without authorization from the using or controlling agency may be extremely hazardous to the aircraft.' Understanding restricted areas is crucial for remote pilots to avoid dangerous situations and comply with airspace regulations.",
+    "questionText": "What potential hazards might be present in restricted areas?",
+    "answers": [
+      "Heavy commercial air traffic",
+      "Extreme weather conditions",
+      "Artillery firing or aerial gunnery",
+      "High-altitude bird migration"
+    ],
+    "correctAnswer": "Artillery firing or aerial gunnery",
+    "hint": "The study guide mentions artillery firing and aerial gunnery as examples of hazards in restricted areas.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Special Use Airspace - Restricted Areas, Page 8: The study guide explains how restricted areas are charted and how to obtain information about them: 'Restricted areas are charted with an *R* followed by a number (e.g., R-4401) and are depicted on the en route chart appropriate for use at the altitude or flight level (FL) being flown. Restricted area information can be obtained on the back of the chart.' This information is important for remote pilots to identify and avoid restricted areas during flight planning and operations.",
+    "questionText": "How are restricted areas indicated on aeronautical charts?",
+    "answers": [
+      "With a 'P' followed by a number",
+      "With an 'R' followed by a number",
+      "With a 'W' followed by a number",
+      "With an 'A' followed by a number"
+    ],
+    "correctAnswer": "With an 'R' followed by a number",
+    "hint": "The study guide states that restricted areas are charted with an 'R' followed by a number.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Special Use Airspace - Warning Areas, Page 8: The study guide describes warning areas: 'Warning areas are similar in nature to restricted areas; however, the United States government does not have sole jurisdiction over the airspace. A warning area is airspace of defined dimensions, extending from 3 NM outward from the coast of the United States, containing activity that may be hazardous to nonparticipating aircraft. The purpose of such areas is to warn nonparticipating pilots of the potential danger. A warning area may be located over domestic or international waters or both. The airspace is designated with a *W* followed by a number (e.g., W-237).' Understanding warning areas is important for remote pilots operating near coastal areas to ensure they avoid potentially hazardous activities.",
+    "questionText": "What is the primary purpose of warning areas?",
+    "answers": [
+      "To prohibit all aircraft operations",
+      "To warn pilots of potential danger",
+      "To designate areas for military training only",
+      "To indicate areas of severe weather"
+    ],
+    "correctAnswer": "To warn pilots of potential danger",
+    "hint": "The study guide states that the purpose of warning areas is to warn nonparticipating pilots of the potential danger.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Special Use Airspace - Military Operation Areas (MOAs), Page 8: The study guide explains Military Operation Areas (MOAs): 'MOAs consist of airspace with defined vertical and lateral limits established for the purpose of separating certain military training activities from IFR traffic. Whenever an MOA is being used, nonparticipating IFR traffic may be cleared through an MOA if IFR separation can be provided by ATC. Otherwise, ATC reroutes or restricts nonparticipating IFR traffic. MOAs are depicted on sectional, VFR terminal area, and en route low altitude charts and are not numbered (e.g., Camden Ridge MOA).' Understanding MOAs is important for remote pilots to avoid interfering with military training activities and to ensure safe operations in these areas.",
+    "questionText": "What is the primary purpose of Military Operation Areas (MOAs)?",
+    "answers": [
+      "To restrict all civilian aircraft operations",
+      "To separate certain military training activities from IFR traffic",
+      "To designate areas for commercial airline use only",
+      "To indicate areas of high-altitude weather phenomena"
+    ],
+    "correctAnswer": "To separate certain military training activities from IFR traffic",
+    "hint": "The study guide states that MOAs are established for the purpose of separating certain military training activities from IFR traffic.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 2: Special Use Airspace - Alert Areas, Page 9: The study guide describes alert areas: 'Alert areas are depicted on aeronautical charts with an *A* followed by a number (e.g., A-211) to inform nonparticipating pilots of areas that may contain a high volume of pilot training or an unusual type of aerial activity. Pilots should exercise caution in alert areas. All activity within an alert area shall be conducted in accordance with regulations, without waiver, and pilots of participating aircraft, as well as pilots transiting the area, shall be equally responsible for collision avoidance.' Understanding alert areas is crucial for remote pilots to maintain situational awareness and avoid potential conflicts with other aircraft engaged in training or unusual aerial activities.",
+    "questionText": "What is the purpose of alert areas?",
+    "answers": [
+      "To prohibit all flight operations",
+      "To inform pilots of areas with potential high-volume training or unusual aerial activity",
+      "To designate areas for emergency landings only",
+      "To indicate areas of severe turbulence"
+    ],
+    "correctAnswer": "To inform pilots of areas with potential high-volume training or unusual aerial activity",
+    "hint": "The study guide states that alert areas inform nonparticipating pilots of areas that may contain a high volume of pilot training or an unusual type of aerial activity.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Special Use Airspace - Controlled Firing Areas (CFAs), Page 9: The study guide explains Controlled Firing Areas (CFAs): 'CFAs contain activities that, if not conducted in a controlled environment, could be hazardous to nonparticipating aircraft. The difference between CFAs and other special use airspace is that activities must be suspended when a spotter aircraft, radar, or ground lookout position indicates an aircraft might be approaching the area. There is no need to chart CFAs since they do not cause a nonparticipating aircraft to change its flight path.' Understanding CFAs is important for remote pilots to be aware of potential hazardous activities, even though these areas are not charted.",
+    "questionText": "What distinguishes Controlled Firing Areas (CFAs) from other special use airspace?",
+    "answers": [
+      "CFAs are always active and never suspend operations",
+      "CFAs are only used for military operations",
+      "CFAs must suspend activities when an aircraft approaches the area",
+      "CFAs are always charted on aeronautical maps"
+    ],
+    "correctAnswer": "CFAs must suspend activities when an aircraft approaches the area",
+    "hint": "The study guide states that CFA activities must be suspended when an aircraft might be approaching the area.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 2: Other Airspace Areas, Page 9-10: The study guide introduces the concept of 'Other Airspace Areas': 'Other airspace areas is a general term referring to the majority of the remaining airspace. It includes: Local airport advisory (LAA), Military training route (MTR), Temporary flight restriction (TFR), Parachute jump aircraft operations, Published VFR routes, Terminal radar service area (TRSA), National security area (NSA), Air Defense Identification Zones (ADIZ) land and water based and need for Defense VFR (DVFR) flight plan to operate VFR in this airspace, Flight Restricted Zones (FRZ) in vicinity of Capitol and White House, Wildlife Areas/Wilderness Areas/National Parks and request to operate above 2,000 AGL, National Oceanic and Atmospheric Administration (NOAA) Marine Areas off the coast with requirement to operate above 2,000 AGL, Tethered Balloons for observation and weather recordings that extend on cables up to 60,000.' Understanding these various types of other airspace areas is crucial for remote pilots to navigate safely and legally in the National Airspace System.",
+    "questionText": "Which of the following is NOT listed as an 'Other Airspace Area' in the study guide?",
+    "answers": [
+      "Local airport advisory (LAA)",
+      "Temporary flight restriction (TFR)",
+      "Military operation area (MOA)",
+      "National security area (NSA)"
+    ],
+    "correctAnswer": "Military operation area (MOA)",
+    "hint": "Military operation areas (MOAs) are listed under Special Use Airspace, not Other Airspace Areas.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 2: Other Airspace Areas - Local Airport Advisory (LAA), Page 10: The study guide describes Local Airport Advisory (LAA) service: 'An advisory service provided by Flight Service facilities, which are located on the landing airport, using a discrete ground-to-air frequency or the tower frequency when the tower is closed. LAA services include local airport advisories, automated weather reporting with voice broadcasting, and a continuous Automated Surface Observing System (ASOS)/Automated Weather Observing Station (AWOS) data display, other continuous direct reading instruments, or manual observations available to the specialist.' Understanding LAA services is important for remote pilots operating near airports without control towers or when tower services are not available.",
+    "questionText": "What services are included in Local Airport Advisory (LAA)?",
+    "answers": [
+      "Air traffic control and ground control",
+      "Runway maintenance and repair",
+      "Local airport advisories and automated weather reporting",
+      "Fuel services and aircraft maintenance"
+    ],
+    "correctAnswer": "Local airport advisories and automated weather reporting",
+    "hint": "The study guide states that LAA services include local airport advisories and automated weather reporting.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Other Airspace Areas - Military Training Routes (MTRs), Page 10: The study guide explains Military Training Routes (MTRs): 'MTRs are routes used by military aircraft to maintain proficiency in tactical flying. These routes are usually established below 10,000 feet MSL for operations at speeds in excess of 250 knots. Some route segments may be defined at higher altitudes for purposes of route continuity. Routes are identified as IFR (IR), and VFR (VR), followed by a number. MTRs with no segment above 1,500 feet AGL are identified by four number characters (e.g., IR1206, VR1207). MTRs that include one or more segments above 1,500 feet AGL are identified by three number characters (e.g., IR206, VR207).' Understanding MTRs is crucial for remote pilots to avoid conflicts with high-speed, low-altitude military aircraft operations.",
+    "questionText": "How are Military Training Routes (MTRs) with segments above 1,500 feet AGL identified?",
+    "answers": [
+      "By four number characters",
+      "By three number characters",
+      "By two letter characters",
+      "By a combination of letters and numbers"
+    ],
+    "correctAnswer": "By three number characters",
+    "hint": "The study guide states that MTRs that include one or more segments above 1,500 feet AGL are identified by three number characters.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Other Airspace Areas - Temporary Flight Restrictions (TFR), Page 10-11: The study guide describes Temporary Flight Restrictions (TFRs): 'A flight data center (FDC) Notice to Airmen (NOTAM) is issued to designate a TFR. The NOTAM begins with the phrase *FLIGHT RESTRICTIONS* followed by the location of the temporary restriction, effective time period, area defined in statute miles, and altitudes affected. The NOTAM also contains the FAA coordination facility and telephone number, the reason for the restriction, and any other information deemed appropriate. The pilot should check the NOTAMs as part of flight planning.' The guide then lists several purposes for establishing a TFR, including protecting persons and property in the air or on the surface from an existing or imminent hazard, providing a safe environment for disaster relief aircraft, and protecting the President, Vice President, or other public figures.",
+    "questionText": "What type of notice is issued to designate a Temporary Flight Restriction (TFR)?",
+    "answers": [
+      "A local weather report",
+      "A flight data center (FDC) Notice to Airmen (NOTAM)",
+      "A terminal area forecast (TAF)",
+      "A pilot weather report (PIREP)"
+    ],
+    "correctAnswer": "A flight data center (FDC) Notice to Airmen (NOTAM)",
+    "hint": "The study guide states that a flight data center (FDC) Notice to Airmen (NOTAM) is issued to designate a TFR.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Other Airspace Areas - Temporary Flight Restrictions (TFR), Page 11: The study guide emphasizes the importance of checking for TFRs before flight: 'Since the events of September 11, 2001, the use of TFRs has become much more common. There have been a number of incidents of aircraft incursions into TFRs that have resulted in pilots undergoing security investigations and certificate suspensions. It is a pilot's responsibility to be aware of TFRs in their proposed area of flight. One way to check is to visit the FAA website, www.tfr.faa.gov, and verify that there is not a TFR in the area.' This information underscores the critical nature of TFR awareness for all pilots, including remote pilots.",
+    "questionText": "What is a recommended way for pilots to check for Temporary Flight Restrictions (TFRs)?",
+    "answers": [
+      "Call the nearest airport tower",
+      "Check the weather forecast",
+      "Visit the FAA website at www.tfr.faa.gov",
+      "Look for signs posted at the launch site"
+    ],
+    "correctAnswer": "Visit the FAA website at www.tfr.faa.gov",
+    "hint": "The study guide recommends visiting the FAA website at www.tfr.faa.gov to check for TFRs.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Other Airspace Areas - Parachute Jump Aircraft Operations, Page 11: The study guide briefly mentions parachute jump aircraft operations: 'Parachute jump aircraft operations are published in the Chart Supplement U.S. (formerly Airport/Facility Directory). Sites that are used frequently are depicted on sectional charts.' This information is important for remote pilots to be aware of areas where parachute jumping activities may be taking place.",
+    "questionText": "Where can information about parachute jump aircraft operations be found?",
+    "answers": [
+      "Only in NOTAMs",
+      "In the Pilot's Operating Handbook",
+      "In the Chart Supplement U.S. and on sectional charts for frequently used sites",
+      "Only through direct communication with the nearest air traffic control tower"
+    ],
+    "correctAnswer": "In the Chart Supplement U.S. and on sectional charts for frequently used sites",
+    "hint": "The study guide states that parachute jump aircraft operations are published in the Chart Supplement U.S. and frequently used sites are depicted on sectional charts.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Other Airspace Areas - Published VFR Routes, Page 11: The study guide briefly describes Published VFR Routes: 'Published VFR routes are for transitioning around, under, or through some complex airspace. Terms such as VFR flyway, VFR corridor, Class B airspace VFR transition route, and terminal area VFR route have been applied to such routes. These routes are generally found on VFR terminal area planning charts.' Understanding these routes is important for remote pilots operating in or near complex airspace to ensure they stay clear of areas designated for manned aircraft VFR transitions.",
+    "questionText": "What is the primary purpose of Published VFR Routes?",
+    "answers": [
+      "To provide shortcuts for commercial air traffic",
+      "To designate areas for UAS operations only",
+      "For transitioning around, under, or through complex airspace",
+      "To indicate areas of severe weather"
+    ],
+    "correctAnswer": "For transitioning around, under, or through complex airspace",
+    "hint": "The study guide states that Published VFR routes are for transitioning around, under, or through some complex airspace.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Other Airspace Areas - Terminal Radar Service Areas (TRSAs), Page 11: Terminal Radar Service Areas (TRSAs) are airspace designations where participating pilots can receive additional radar services. The purpose of this service is to provide separation between all IFR operations and participating VFR aircraft. The primary airport(s) within the TRSA become(s) Class D airspace. The remaining portion of the TRSA overlies other controlled airspace, which is normally Class E airspace beginning at 700 or 1,200 feet and established to transition to/from the en route/terminal environment. TRSAs are depicted on VFR sectional charts and terminal area charts with a solid black line and altitudes for each segment. The Class D portion is charted with a blue segmented line. Participation in TRSA services is voluntary; however, pilots operating under VFR are encouraged to contact the radar approach control and take advantage of TRSA service.",
+    "questionText": "What is the primary purpose of Terminal Radar Service Areas (TRSAs)?",
+    "answers": [
+      "To restrict all VFR traffic",
+      "To provide separation between IFR operations and participating VFR aircraft",
+      "To designate areas for UAS operations only",
+      "To indicate areas of severe weather"
+    ],
+    "correctAnswer": "To provide separation between IFR operations and participating VFR aircraft",
+    "hint": "TRSAs provide separation between IFR operations and participating VFR aircraft.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Other Airspace Areas - National Security Areas (NSAs), Page 11-12: National Security Areas (NSAs) consist of airspace of defined vertical and lateral dimensions established at locations where there is a requirement for increased security and safety of ground facilities. Flight in NSAs may be temporarily prohibited by regulation under the provisions of Title 14 of the Code of Federal Regulations (14 CFR) part 99, and prohibitions are disseminated via NOTAM. Pilots are requested to voluntarily avoid flying through these depicted areas.",
+    "questionText": "How are pilots notified of flight prohibitions in National Security Areas (NSAs)?",
+    "answers": [
+      "Through permanent markings on sectional charts",
+      "Via Notice to Airmen (NOTAM)",
+      "By direct communication from air traffic control",
+      "Through visual warning signals on the ground"
+    ],
+    "correctAnswer": "Via Notice to Airmen (NOTAM)",
+    "hint": "Prohibitions for NSAs are disseminated via NOTAM.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 2: Air Traffic Control and the National Airspace System, Page 12: The primary purpose of the Air Traffic Control (ATC) system is to prevent a collision between aircraft operating in the system and to organize and expedite the flow of traffic. In addition to its primary function, the ATC system has the capability to provide (with certain limitations) additional services. The ability to provide additional services is limited by many factors, such as the volume of traffic, frequency congestion, quality of radar, controller workload, higher priority duties, and the pure physical inability to scan and detect those situations that fall in this category.",
+    "questionText": "What is the primary purpose of the Air Traffic Control (ATC) system?",
+    "answers": [
+      "To provide weather information to pilots",
+      "To prevent collisions between aircraft and organize traffic flow",
+      "To regulate the speed of aircraft in flight",
+      "To manage airport ground operations"
+    ],
+    "correctAnswer": "To prevent collisions between aircraft and organize traffic flow",
+    "hint": "ATC's primary purpose is to prevent collisions and organize traffic flow.",
     "points": 1
   },
   {
-    "prompt": "§ 107.79 Voluntary surrender of certificate\n\nThis section describes the process for voluntarily surrendering a remote pilot certificate. It's important for pilots who no longer wish to maintain their certification.",
-    "questionText": "What statement must be included when voluntarily surrendering a remote pilot certificate?",
+    "prompt": "Chapter 2: Operating Rules and Pilot/Equipment Requirements, Page 12: The safety of flight is a top priority of all pilots and the responsibilities associated with operating an aircraft should always be taken seriously. The air traffic system maintains a high degree of safety and efficiency with strict regulatory oversight of the FAA. Pilots fly in accordance with regulations that have served the United States well, as evidenced by the fact that the country has the safest aviation system in the world. All aircraft operating in today's National Airspace System (NAS) has complied with the CFR governing its certification and maintenance; all pilots operating today have completed rigorous pilot certification training and testing.",
+    "questionText": "What contributes to the high degree of safety and efficiency in the U.S. air traffic system?",
     "answers": [
-      "A promise to never fly UAS again",
-      "An explanation for surrendering the certificate",
-      "A statement that the surrender is voluntary and made with full knowledge that the certificate will not be reissued without retesting",
-      "A request for a refund of certification fees"
+      "Lack of regulations for pilots",
+      "Minimal training requirements for air traffic controllers",
+      "Strict regulatory oversight by the FAA",
+      "Absence of pilot certification processes"
     ],
-    "correctAnswer": "A statement that the surrender is voluntary and made with full knowledge that the certificate will not be reissued without retesting",
-    "hint": "Section 107.79(b) requires a statement acknowledging the voluntary nature of the surrender and the need for retesting to reissue the certificate.",
+    "correctAnswer": "Strict regulatory oversight by the FAA",
+    "hint": "The air traffic system maintains safety and efficiency through strict FAA regulatory oversight.",
     "points": 2
   },
   {
-    "prompt": "§ 107.200 Waiver policy and requirements\n\nThis section introduces the concept of waivers, which allow operators to deviate from certain regulations if they can demonstrate that their operation can be conducted safely under the terms of a waiver.",
-    "questionText": "What must an applicant demonstrate to obtain a waiver under Part 107?",
+    "prompt": "Chapter 2: Operating Rules and Pilot/Equipment Requirements, Page 12: Of equal importance to pilot certification and aircraft maintenance is the proper execution of preflight planning, aeronautical decision-making (ADM) and risk management. ADM involves a systematic approach to risk assessment and stress management in aviation, illustrates how personal attitudes can influence decision-making, and how those attitudes can be modified to enhance safety. More detailed information regarding ADM and risk mitigation can be found in Chapter 10, 'Aeronautical Decision-Making and Judgment,' of this study guide.",
+    "questionText": "What does ADM (Aeronautical Decision-Making) involve?",
     "answers": [
-      "That they have extensive manned aircraft experience",
-      "That they can conduct the operation safely under the terms of the waiver",
-      "That they have a perfect safety record with no incidents",
-      "That they have completed advanced UAS training courses"
+      "Automatic aircraft control systems",
+      "A systematic approach to risk assessment and stress management",
+      "Advanced display monitors for aircraft",
+      "Accelerated descent methods"
     ],
-    "correctAnswer": "That they can conduct the operation safely under the terms of the waiver",
-    "hint": "Section 107.200(a) states that the Administrator may issue a certificate of waiver if the applicant demonstrates that the operation can be safely conducted under the terms of that certificate.",
+    "correctAnswer": "A systematic approach to risk assessment and stress management",
+    "hint": "ADM involves a systematic approach to risk assessment and stress management in aviation.",
     "points": 2
   },
   {
-    "prompt": "§ 107.205 List of regulations subject to waiver\n\nThis section provides a list of specific regulations that may be waived by the FAA. Understanding which rules can be waived is crucial for operators who need to conduct operations outside the standard Part 107 regulations.",
-    "questionText": "Which of the following regulations is NOT subject to waiver under Part 107?",
+    "prompt": "Chapter 2: Visual Flight Rules (VFR) Terms & Symbols, Page 12-13: Remote pilots need to be familiar with the following information from the FAA Aeronautical Chart User's Guide website: All information on the VFR Terms tab and the following sections under 'VFR Aeronautical Chart Symbols' on the VFR Symbols tab: Airports, Airspace Information, Navigational and Procedural Information, Chart Limits, Culture, Hydrography, and Relief. Understanding these terms and symbols is crucial for interpreting aeronautical charts and operating safely within the National Airspace System.",
+    "questionText": "Which of the following is NOT listed as a section of VFR Aeronautical Chart Symbols that remote pilots need to be familiar with?",
     "answers": [
-      "Operation from a moving vehicle or aircraft",
-      "Daylight operation",
-      "Visual line of sight aircraft operation",
-      "Maintenance and preflight inspection procedures"
+      "Airports",
+      "Airspace Information",
+      "Weather Patterns",
+      "Hydrography"
     ],
-    "correctAnswer": "Maintenance and preflight inspection procedures",
-    "hint": "Section 107.205 does not list maintenance and preflight inspection procedures as subject to waiver.",
-    "points": 3
-  },
-  {
-    "prompt": "Subpart D—Waivers\n\nThis subpart covers the entire waiver process, including policies, requirements, and the list of regulations subject to waiver. It's important for operators who need to conduct operations outside the standard Part 107 regulations.",
-    "questionText": "What is the purpose of the waiver process in Part 107?",
-    "answers": [
-      "To allow operators to ignore safety regulations",
-      "To permit operations that would otherwise be prohibited if they can be conducted safely",
-      "To bypass the need for a remote pilot certificate",
-      "To allow operations in restricted airspace without permission"
-    ],
-    "correctAnswer": "To permit operations that would otherwise be prohibited if they can be conducted safely",
-    "hint": "The waiver process allows for deviations from certain regulations if the applicant can demonstrate that the operation can be conducted safely under the terms of the waiver.",
+    "correctAnswer": "Weather Patterns",
+    "hint": "Weather Patterns is not listed among the VFR Aeronautical Chart Symbols sections mentioned.",
     "points": 2
   },
   {
-    "prompt": "General Knowledge of UAS\n\nWhile not a specific section of Part 107, general knowledge of UAS systems and operations is crucial for safe and effective drone piloting.",
-    "questionText": "What does the term 'payload' refer to in the context of UAS operations?",
+    "prompt": "Chapter 2: Notices to Airmen (NOTAMs), Page 13: Notices to Airmen, or NOTAMs, are time-critical aeronautical information either temporary in nature or not sufficiently known in advance to permit publication on aeronautical charts or in other operational publications. The information receives immediate dissemination via the National Notice to Airmen (NOTAM) System. NOTAMs contain current notices to airmen that are considered essential to the safety of flight, as well as supplemental data affecting other operational publications. There are many different reasons that NOTAMs are issued, including hazards such as air shows, parachute jumps, kite flying, and rocket launches; flights by important people such as heads of state; inoperable lights on tall obstructions; temporary erection of obstacles near airfields; and passage of flocks of birds through airspace (a NOTAM in this category is known as a BIRDTAM).",
+    "questionText": "What is the primary purpose of Notices to Airmen (NOTAMs)?",
     "answers": [
-      "The total weight of the UAS",
-      "The maximum flight time of the UAS",
-      "The equipment or cargo carried by the UAS for a specific purpose",
-      "The number of propellers on the UAS"
+      "To provide long-term weather forecasts",
+      "To disseminate time-critical aeronautical information",
+      "To list all available airports in a region",
+      "To provide maintenance schedules for aircraft"
     ],
-    "correctAnswer": "The equipment or cargo carried by the UAS for a specific purpose",
-    "hint": "In UAS operations, 'payload' typically refers to the equipment or cargo that the drone carries to perform its intended function.",
+    "correctAnswer": "To disseminate time-critical aeronautical information",
+    "hint": "NOTAMs are used to disseminate time-critical aeronautical information that is temporary or not known far enough in advance for other publications.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3a: Aviation Weather Sources, Page 15: In aviation, weather service is a combined effort of the National Weather Service (NWS), Federal Aviation Administration (FAA), Department of Defense (DOD), other aviation groups, and individuals. Because of the increasing need for worldwide weather services, foreign weather organizations also provide vital input. While weather forecasts are not 100 percent accurate, meteorologists, through careful scientific study and computer modeling, have the ability to predict weather patterns, trends, and characteristics with increasing accuracy. Through a complex system of weather services, government agencies, and independent weather observers, pilots and other aviation professionals receive the benefit of this vast knowledge base in the form of up-to-date weather reports and forecasts. These reports and forecasts enable pilots to make informed decisions regarding weather and flight safety before and during a flight.",
+    "questionText": "Which of the following is NOT mentioned as a contributor to aviation weather services?",
+    "answers": [
+      "National Weather Service (NWS)",
+      "Federal Aviation Administration (FAA)",
+      "Department of Defense (DOD)",
+      "National Transportation Safety Board (NTSB)"
+    ],
+    "correctAnswer": "National Transportation Safety Board (NTSB)",
+    "hint": "The NTSB is not mentioned as a contributor to aviation weather services in this passage.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3a: Aviation Weather Sources - Surface Aviation Weather Observations, Page 15: Surface aviation weather observations are a compilation of elements of the current weather at individual ground stations across the United States. The network is made up of government and privately contracted facilities that provide continuous up-to-date weather information. Automated weather sources, such as the Automated Weather Observing Systems (AWOS), Automated Surface Observing Systems (ASOS), as well as other automated facilities, also play a major role in the gathering of surface observations.",
+    "questionText": "What role do automated weather sources like AWOS and ASOS play in surface aviation weather observations?",
+    "answers": [
+      "They provide long-term climate data only",
+      "They play a major role in gathering surface observations",
+      "They are used exclusively for high-altitude weather information",
+      "They are only used as backup systems when human observers are unavailable"
+    ],
+    "correctAnswer": "They play a major role in gathering surface observations",
+    "hint": "Automated weather sources play a major role in the gathering of surface observations.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3a: Aviation Weather Sources - Surface Aviation Weather Observations, Page 15: Surface observations provide local weather conditions and other relevant information for a specific airport. This information includes the type of report, station identifier, date and time, modifier (as required), wind, visibility, runway visual range (RVR), weather phenomena, sky condition, temperature/dew point, altimeter reading, and applicable remarks. The information gathered for the surface observation may be from a person, an automated station, or an automated station that is updated or enhanced by a weather observer. In any form, the surface observation provides valuable information about individual airports around the country. These reports cover a small area and will be beneficial to the remote pilot.",
+    "questionText": "Which of the following is NOT mentioned as part of the information provided in surface observations?",
+    "answers": [
+      "Wind",
+      "Visibility",
+      "Temperature/dew point",
+      "Fuel availability"
+    ],
+    "correctAnswer": "Fuel availability",
+    "hint": "Fuel availability is not mentioned as part of the information provided in surface observations.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3a: Aviation Weather Sources - Aviation Weather Reports, Page 15: Aviation weather reports are designed to give accurate depictions of current weather conditions. Each report provides current information that is updated at different times. Some typical reports are METARs and PIREPs. To view a weather report, go to http://www.aviationweather.gov/.",
+    "questionText": "What is the purpose of aviation weather reports?",
+    "answers": [
+      "To predict long-term climate changes",
+      "To give accurate depictions of current weather conditions",
+      "To provide maintenance schedules for weather equipment",
+      "To list available flight routes"
+    ],
+    "correctAnswer": "To give accurate depictions of current weather conditions",
+    "hint": "Aviation weather reports are designed to give accurate depictions of current weather conditions.",
     "points": 1
   },
   {
-    "prompt": "UAS Registration\n\nWhile covered briefly in § 107.13, understanding UAS registration requirements is crucial for compliance with FAA regulations.",
-    "questionText": "Under what condition must a small UAS be registered with the FAA?",
+    "prompt": "Chapter 3a: Aviation Weather Sources - Aviation Routine Weather Report (METAR), Page 15-16: A METAR is an observation of current surface weather reported in a standard international format. METARs are issued on a regularly scheduled basis unless significant weather changes have occurred. A special METAR (SPECI) can be issued at any time between routine METAR reports. The information in a METAR includes type of report, station identifier, date and time, modifier, wind, visibility, runway visual range, weather phenomena, sky condition, temperature/dew point, altimeter setting, and remarks.",
+    "questionText": "What does METAR stand for?",
     "answers": [
-      "Only if it's used for commercial purposes",
-      "If it weighs more than 0.55 lbs (250 grams) and less than 55 lbs (25 kg)",
-      "Only if it's flown in controlled airspace",
-      "Only if it's capable of flying above 400 feet AGL"
+      "Meteorological Terminal Air Report",
+      "Military Emergency Transmission and Response",
+      "Modern Equipment for Tracking Atmospheric Readings",
+      "Measured Environmental Conditions and Radar"
     ],
-    "correctAnswer": "If it weighs more than 0.55 lbs (250 grams) and less than 55 lbs (25 kg)",
-    "hint": "FAA regulations require registration for UAS weighing more than 0.55 lbs (250 grams) and less than 55 lbs (25 kg), regardless of use.",
+    "correctAnswer": "Meteorological Terminal Air Report",
+    "hint": "METAR stands for Meteorological Terminal Air Report.",
     "points": 2
   },
   {
-    "prompt": "Airspace Classification\n\nWhile touched upon in various sections of Part 107, a comprehensive understanding of airspace classification is essential for safe UAS operations.",
-    "questionText": "In which class of airspace is ATC authorization not required for small UAS operations under Part 107?",
-    "answers": ["Class B", "Class C", "Class D", "Class G"],
-    "correctAnswer": "Class G",
-    "hint": "Class G is uncontrolled airspace and does not require ATC authorization for small UAS operations under Part 107.",
-    "points": 2
-  },
-  {
-    "prompt": "Weather and Micrometeorology\n\nUnderstanding weather conditions and their effects on UAS operations is crucial for safe flying, as mentioned in § 107.49 and other sections.",
-    "questionText": "What weather phenomenon can pose a significant risk to small UAS operations due to unpredictable wind shifts?",
-    "answers": ["High cirrus clouds", "Light rain", "Thermals", "Fog"],
-    "correctAnswer": "Thermals",
-    "hint": "Thermals, or rising columns of warm air, can create unpredictable wind shifts that may affect small UAS operations.",
+    "prompt": "Chapter 3a: Aviation Weather Sources - Aviation Routine Weather Report (METAR), Page 16: In a METAR report, the wind is reported with five digits (14021KT) unless the speed is greater than 99 knots, in which case the wind is reported with six digits. The first three digits indicate the direction the true wind is blowing from in tens of degrees. If the wind is variable, it is reported as 'VRB.' The last two digits indicate the speed of the wind in knots unless the wind is greater than 99 knots, in which case it is indicated by three digits. If the winds are gusting, the letter 'G' follows the wind speed (G26KT). After the letter 'G,' the peak gust recorded is provided.",
+    "questionText": "How is wind speed reported in a METAR when it exceeds 99 knots?",
+    "answers": [
+      "It is not reported",
+      "It is reported with five digits",
+      "It is reported with six digits",
+      "It is reported in miles per hour instead of knots"
+    ],
+    "correctAnswer": "It is reported with six digits",
+    "hint": "When wind speed is greater than 99 knots, it is reported with six digits in a METAR.",
     "points": 3
   },
   {
-    "prompt": "UAS Loading and Performance\n\nUnderstanding how loading affects UAS performance is crucial for safe operations, as hinted at in § 107.49.",
-    "questionText": "How does increasing the weight of a UAS generally affect its performance?",
+    "prompt": "Chapter 3a: Aviation Weather Sources - METAR, Page 16: In a METAR report, visibility is reported in statute miles as denoted by the letters 'SM.' It is reported in both miles and fractions of miles. At times, runway visual range (RVR) is reported following the prevailing visibility. RVR is the distance a pilot can see down the runway in a moving aircraft. When RVR is reported, it is shown with an R, then the runway number followed by a slant, then the visual range in feet. For example, when the RVR is reported as R17L/1400FT, it translates to a visual range of 1,400 feet on runway 17 left.",
+    "questionText": "How is runway visual range (RVR) reported in a METAR?",
     "answers": [
-      "It increases flight time",
-      "It decreases the required battery capacity",
-      "It reduces maneuverability and endurance",
-      "It improves stability in high winds"
+      "In statute miles",
+      "As a percentage of normal visibility",
+      "With an R, runway number, and visual range in feet",
+      "Only when visibility is less than one mile"
     ],
-    "correctAnswer": "It reduces maneuverability and endurance",
-    "hint": "Increasing the weight of a UAS typically reduces its maneuverability and flight endurance due to increased power requirements.",
+    "correctAnswer": "With an R, runway number, and visual range in feet",
+    "hint": "RVR is reported with an R, the runway number, and the visual range in feet.",
     "points": 2
   },
   {
-    "prompt": "Emergency Procedures\n\nWhile mentioned in § 107.21 and other sections, a comprehensive understanding of emergency procedures is essential for all remote pilots.",
-    "questionText": "What should be the first step if a small UAS experiences a flyaway (loss of control)?",
+    "prompt": "Chapter 3a: Aviation Weather Sources - METAR, Page 16-17: Weather phenomena in a METAR can be broken down into two different categories: qualifiers and weather phenomenon. First, the qualifiers of intensity, proximity, and the descriptor of the weather are given. The intensity may be light (–), moderate ( ), or heavy (+). Proximity only depicts weather phenomena that are in the airport vicinity. The notation 'VC' indicates a specific weather phenomenon is in the vicinity of five to ten miles from the airport. Descriptors are used to describe certain types of precipitation and obscurations. Weather phenomena may be reported as being precipitation, obscurations, and other phenomena, such as squalls or funnel clouds.",
+    "questionText": "What does the notation 'VC' indicate in a METAR report?",
     "answers": [
-      "Immediately call the local authorities",
-      "Try to reestablish control using the control station",
-      "Activate the return-to-home feature if available",
-      "Notify nearby aircraft of the situation"
+      "Very Clear conditions",
+      "Vicinity, indicating weather phenomena 5-10 miles from the airport",
+      "Variable Ceiling",
+      "Volcanic Cloud in the area"
     ],
-    "correctAnswer": "Try to reestablish control using the control station",
-    "hint": "The first step in a flyaway situation should be to attempt to regain control of the UAS using the control station.",
+    "correctAnswer": "Vicinity, indicating weather phenomena 5-10 miles from the airport",
+    "hint": "'VC' indicates a weather phenomenon in the vicinity of five to ten miles from the airport.",
     "points": 2
   },
   {
-    "prompt": "Crew Resource Management\n\nWhile not a specific section in Part 107, crew resource management is mentioned in § 107.73 and is crucial for safe UAS operations involving multiple team members.",
-    "questionText": "What is a key principle of Crew Resource Management (CRM) in UAS operations?",
+    "prompt": "Chapter 3a: Aviation Weather Sources - METAR, Page 17: Sky condition in a METAR is always reported in the sequence of amount, height, and type or indefinite ceiling/height (vertical visibility). For example, BKN008 OVC012CB, VV003. The heights of the cloud bases are reported with a three-digit number in hundreds of feet AGL. Clouds above 12,000 feet are not detected or reported by an automated station. The types of clouds, specifically towering cumulus (TCU) or cumulonimbus (CB) clouds, are reported with their height. Contractions are used to describe the amount of cloud coverage and obscuring phenomena. The amount of sky coverage is reported in eighths of the sky from horizon to horizon.",
+    "questionText": "How are cloud heights reported in a METAR?",
     "answers": [
-      "Relying solely on the remote pilot for all decisions",
-      "Avoiding communication during the flight to maintain focus",
-      "Effective communication and coordination among all team members",
-      "Assigning blame when mistakes occur"
+      "In meters above ground level",
+      "With a three-digit number in hundreds of feet AGL",
+      "In kilometers above sea level",
+      "As a percentage of total sky coverage"
     ],
-    "correctAnswer": "Effective communication and coordination among all team members",
-    "hint": "CRM emphasizes effective communication and coordination among all team members to ensure safe operations.",
+    "correctAnswer": "With a three-digit number in hundreds of feet AGL",
+    "hint": "Cloud base heights are reported with a three-digit number in hundreds of feet AGL.",
     "points": 2
   },
   {
-    "prompt": "Maintenance and Inspection\n\nWhile briefly mentioned in § 107.15, understanding proper maintenance and inspection procedures is crucial for ensuring the airworthiness of a small UAS.",
-    "questionText": "What should be included in a pre-flight inspection of a small UAS?",
+    "prompt": "Chapter 3a: Aviation Weather Sources - METAR, Page 17: In a METAR, the temperature and dew point are always given in degrees Celsius (C) or (18/17). Temperatures below 0 °C are preceded by the letter 'M' to indicate minus. The altimeter setting is reported as inches of mercury ('Hg) in a four-digit number group (A2970). It is always preceded by the letter 'A.' Rising or falling pressure may also be denoted in the 'Remarks' sections as 'PRESRR' or 'PRESFR,' respectively.",
+    "questionText": "How are temperatures below 0°C indicated in a METAR?",
     "answers": [
-      "Only a visual check of the propellers",
-      "A full disassembly and reassembly of the UAS",
-      "A comprehensive check of all systems, including structure, propulsion, and control links",
-      "Only a battery charge level check"
+      "With a minus sign (-)",
+      "Preceded by the letter 'M'",
+      "In Fahrenheit instead of Celsius",
+      "With the letter 'C' for cold"
     ],
-    "correctAnswer": "A comprehensive check of all systems, including structure, propulsion, and control links",
-    "hint": "A thorough pre-flight inspection should include checking all systems to ensure the UAS is in a condition for safe operation.",
+    "correctAnswer": "Preceded by the letter 'M'",
+    "hint": "Temperatures below 0 °C are preceded by the letter 'M' to indicate minus.",
     "points": 2
   },
   {
-    "prompt": "Privacy Considerations\n\nWhile not explicitly covered in Part 107, understanding privacy considerations is an important aspect of responsible UAS operations.",
-    "questionText": "What is a best practice for addressing privacy concerns in UAS operations?",
+    "prompt": "Chapter 3a: Aviation Weather Sources - Aviation Forecasts, Page 18: Observed weather condition reports are often used in the creation of forecasts for the same area. A variety of different forecast products are produced and designed to be used in the preflight planning stage. The printed forecasts that pilots need to be familiar with are the terminal aerodrome forecast (TAF), aviation area forecast (FA), inflight weather advisories (Significant Meteorological Information (SIGMET), Airman's Meteorological Information (AIRMET)), and the winds and temperatures aloft forecast (FB).",
+    "questionText": "Which of the following is NOT mentioned as a type of aviation forecast pilots should be familiar with?",
     "answers": [
-      "Ignoring all privacy issues as they're not part of FAA regulations",
-      "Only flying over public property",
-      "Informing affected parties about the nature and purpose of UAS operations when possible",
-      "Always flying at the maximum allowed altitude to avoid privacy issues"
+      "Terminal aerodrome forecast (TAF)",
+      "Aviation area forecast (FA)",
+      "Winds and temperatures aloft forecast (FB)",
+      "Pilot weather report (PIREP)"
     ],
-    "correctAnswer": "Informing affected parties about the nature and purpose of UAS operations when possible",
-    "hint": "While not an FAA requirement, informing affected parties about UAS operations is a best practice for addressing privacy concerns.",
+    "correctAnswer": "Pilot weather report (PIREP)",
+    "hint": "PIREP is not mentioned in the list of forecast products pilots need to be familiar with.",
     "points": 2
   },
   {
-    "prompt": "Night Operations\n\nWhile Part 107 has been updated to allow night operations under certain conditions, understanding these requirements is crucial for safe nighttime flights.",
-    "questionText": "What is required for night operations under the updated Part 107 rules?",
-    "answers": [
-      "A waiver from the FAA",
-      "Anti-collision lighting visible for 3 statute miles",
-      "A manned aircraft escort",
-      "Operations only in Class G airspace"
-    ],
-    "correctAnswer": "Anti-collision lighting visible for 3 statute miles",
-    "hint": "The updated Part 107 rules allow night operations with appropriate anti-collision lighting visible for 3 statute miles.",
+    "prompt": "Chapter 3a: Aviation Weather Sources - Terminal Aerodrome Forecasts (TAF), Page 18: A TAF is a report established for the five statute mile radius around an airport. TAF reports are usually given for larger airports. Each TAF is valid for a 24 or 30-hour time period and is updated four times a day at 0000Z, 0600Z, 1200Z, and 1800Z. The TAF utilizes the same descriptors and abbreviations as used in the METAR report. These weather reports can be beneficial to the remote pilot for flight planning purposes.",
+    "questionText": "How often are Terminal Aerodrome Forecasts (TAFs) typically updated?",
+    "answers": ["Every hour", "Twice daily", "Four times a day", "Once a day"],
+    "correctAnswer": "Four times a day",
+    "hint": "TAFs are updated four times a day at 0000Z, 0600Z, 1200Z, and 1800Z.",
     "points": 2
   },
   {
-    "prompt": "Remote ID\n\nWhile not originally part of Part 107, understanding Remote ID requirements is becoming increasingly important for UAS operators.",
-    "questionText": "What is the primary purpose of the FAA's Remote ID rule for UAS?",
+    "prompt": "Chapter 3a: Aviation Weather Sources - Terminal Aerodrome Forecasts (TAF), Page 18-19: A TAF includes the following information in sequential order: type of report, ICAO station identifier, date and time of origin, valid period dates and times, forecast wind, forecast visibility, forecast significant weather, forecast sky condition, and forecast change group. The forecast wind is coded in a five-digit number group. An example would be 15011KT. The first three digits indicate the direction of the wind in reference to true north. The last two digits state the wind speed in knots appended with 'KT.' Like the METAR, winds greater than 99 knots are given in three digits.",
+    "questionText": "In a TAF, how is the forecast wind direction and speed typically reported?",
     "answers": [
-      "To track all UAS for tax purposes",
-      "To provide identification and location information about UAS in flight",
-      "To prevent UAS from flying in restricted airspace",
-      "To improve Wi-Fi connectivity for UAS"
+      "In miles per hour with a compass direction",
+      "As a five-digit number group indicating direction and speed in knots",
+      "Using the Beaufort scale",
+      "Only when wind speed exceeds 15 knots"
     ],
-    "correctAnswer": "To provide identification and location information about UAS in flight",
-    "hint": "The primary purpose of Remote ID is to provide identification and location information about UAS in flight for safety and security reasons.",
+    "correctAnswer": "As a five-digit number group indicating direction and speed in knots",
+    "hint": "The forecast wind is coded in a five-digit number group, with the first three digits indicating direction and the last two indicating speed in knots.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3a: Aviation Weather Sources - Terminal Aerodrome Forecasts (TAF), Page 19: In a TAF, forecast visibility is given in statute miles and may be in whole numbers or fractions. If the forecast is greater than six miles, it is coded as 'P6SM.' Forecast significant weather phenomena are coded in the TAF reports in the same format as the METAR. The forecast sky condition is given in the same format as the METAR. Only CB (cumulonimbus) clouds are forecast in this portion of the TAF report as opposed to CBs and towering cumulus in the METAR.",
+    "questionText": "How is a forecast visibility greater than six miles coded in a TAF?",
+    "answers": ["6+", "P6SM", ">6", "UNLTD"],
+    "correctAnswer": "P6SM",
+    "hint": "If the forecast visibility is greater than six miles, it is coded as 'P6SM' in a TAF.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3a: Aviation Weather Sources - Terminal Aerodrome Forecasts (TAF), Page 19: The forecast change group in a TAF is used for any significant weather change forecast to occur during the TAF time period. The expected conditions and time period are included in this group. This information may be shown as from (FM), and temporary (TEMPO). 'FM' is used when a rapid and significant change, usually within an hour, is expected. 'TEMPO' is used for temporary fluctuations of weather, expected to last less than 1 hour. 'PROB30' is used to describe a 30% probability of thunderstorms and precipitation occurring in the coming hours. This forecast is not used for the first 6 hours of the 24-hour forecast.",
+    "questionText": "What does 'TEMPO' indicate in a TAF?",
+    "answers": [
+      "A permanent change in weather conditions",
+      "Temporary fluctuations of weather expected to last less than 1 hour",
+      "A 30% probability of thunderstorms",
+      "The end of the forecast period"
+    ],
+    "correctAnswer": "Temporary fluctuations of weather expected to last less than 1 hour",
+    "hint": "'TEMPO' is used for temporary fluctuations of weather, expected to last less than 1 hour.",
     "points": 3
   },
   {
-    "prompt": "§ 107.200 Waiver policy and requirements\n\nThis section outlines the FAA's policy on issuing waivers for certain Part 107 regulations. It explains that the Administrator may issue a certificate of waiver authorizing a deviation from any regulation specified in §107.205 if the Administrator finds that the proposed operation can be safely conducted under the terms of that certificate of waiver.",
-    "questionText": "What must an applicant demonstrate to obtain a waiver under Part 107?",
+    "prompt": "Chapter 3a: Aviation Weather Sources - Convective Significant Meteorological Information (WST), Page 19: Convective SIGMETs are issued for severe thunderstorms with surface winds greater than 50 knots, hail at the surface greater than or equal to ¾ inch in diameter, or tornadoes. They are also issued to advise pilots of embedded thunderstorms, lines of thunderstorms, or thunderstorms with heavy or greater precipitation that affect 40 percent or more of a 3,000 square mile or greater region. A remote pilot will find these weather alerts helpful for flight planning.",
+    "questionText": "For which of the following conditions are Convective SIGMETs NOT issued?",
     "answers": [
-      "That they have completed 100 hours of flight time with a small UAS",
-      "That the proposed operation can be conducted safely under the terms of the waiver",
-      "That they have a perfect safety record with no incidents",
-      "That they have a college degree in aviation"
+      "Severe thunderstorms with surface winds greater than 50 knots",
+      "Hail at the surface greater than or equal to ¾ inch in diameter",
+      "Tornadoes",
+      "Light rain showers affecting a small area"
     ],
-    "correctAnswer": "That the proposed operation can be conducted safely under the terms of the waiver",
-    "hint": "Section 107.200(a) states that the Administrator may issue a waiver if the applicant demonstrates that the operation can be safely conducted under the terms of that waiver.",
+    "correctAnswer": "Light rain showers affecting a small area",
+    "hint": "Convective SIGMETs are issued for severe weather conditions, not for light rain showers affecting a small area.",
     "points": 2
   },
   {
-    "prompt": "§ 107.200 Waiver policy and requirements (continued)\n\nThis section also specifies that a certificate of waiver may be issued to allow a deviation from specific regulations listed in §107.205.",
-    "questionText": "Who has the authority to issue a certificate of waiver under Part 107?",
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Introduction, Page 21: This chapter discusses the factors that affect aircraft performance, which include the aircraft weight, atmospheric conditions, runway environment, and the fundamental physical laws governing the forces acting on an aircraft. Since the characteristics of the atmosphere have a major effect on performance, it is necessary to review two dominant factors—pressure and temperature.",
+    "questionText": "Which two atmospheric factors are identified as having a major effect on aircraft performance?",
     "answers": [
-      "Any FAA employee",
-      "The local police department",
-      "The Administrator of the FAA",
-      "The applicant's flight instructor"
+      "Humidity and wind speed",
+      "Pressure and temperature",
+      "Visibility and cloud cover",
+      "Precipitation and turbulence"
     ],
-    "correctAnswer": "The Administrator of the FAA",
-    "hint": "Section 107.200(a) states that the Administrator may issue a certificate of waiver authorizing a deviation from any regulation specified in §107.205.",
+    "correctAnswer": "Pressure and temperature",
+    "hint": "The two dominant atmospheric factors identified as having a major effect on performance are pressure and temperature.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Density Altitude, Page 21: The more appropriate term for correlating aerodynamic performance in the nonstandard atmosphere is density altitude—the altitude in the standard atmosphere corresponding to a particular value of air density. As the density of the air increases (lower density altitude), aircraft performance increases. Conversely, as air density decreases (higher density altitude), aircraft performance decreases. A decrease in air density means a high density altitude; an increase in air density means a lower density altitude. Density altitude has a direct effect on aircraft performance.",
+    "questionText": "How does an increase in density altitude affect aircraft performance?",
+    "answers": [
+      "It improves aircraft performance",
+      "It has no effect on aircraft performance",
+      "It decreases aircraft performance",
+      "It only affects large aircraft, not small UAS"
+    ],
+    "correctAnswer": "It decreases aircraft performance",
+    "hint": "As air density decreases (higher density altitude), aircraft performance decreases.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Density Altitude, Page 21: Air density is affected by changes in altitude, temperature, and humidity. High density altitude refers to thin air while low density altitude refers to dense air. The conditions that result in a high density altitude are high elevations, low atmospheric pressures, high temperatures, high humidity, or some combination of these factors. Lower elevations, high atmospheric pressure, low temperatures, and low humidity are more indicative of low density altitude.",
+    "questionText": "Which combination of conditions would most likely result in high density altitude?",
+    "answers": [
+      "Low elevation, high pressure, low temperature",
+      "High elevation, low pressure, high temperature",
+      "Low elevation, low pressure, low temperature",
+      "High elevation, high pressure, low temperature"
+    ],
+    "correctAnswer": "High elevation, low pressure, high temperature",
+    "hint": "High elevation, low pressure, and high temperature contribute to high density altitude.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Effects of Pressure on Density, Page 22: Since air is a gas, it can be compressed or expanded. When air is compressed, a greater amount of air can occupy a given volume. Conversely, when pressure on a given volume of air is decreased, the air expands and occupies a greater space. That is, the original column of air at a lower pressure contains a smaller mass of air. In other words, the density is decreased. In fact, density is directly proportional to pressure. If the pressure is doubled, the density is doubled, and if the pressure is lowered, so is the density. This statement is true only at a constant temperature.",
+    "questionText": "How does air pressure relate to air density at a constant temperature?",
+    "answers": [
+      "They are inversely proportional",
+      "They are directly proportional",
+      "They have no relationship",
+      "The relationship varies depending on altitude"
+    ],
+    "correctAnswer": "They are directly proportional",
+    "hint": "Density is directly proportional to pressure at a constant temperature.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Effects of Temperature on Density, Page 22: Increasing the temperature of a substance decreases its density. Conversely, decreasing the temperature increases the density. Thus, the density of air varies inversely with temperature. This statement is true only at a constant pressure. In the atmosphere, both temperature and pressure decrease with altitude and have conflicting effects upon density. However, the fairly rapid drop in pressure as altitude is increased usually has the dominant effect. Hence, pilots can expect the density to decrease with altitude.",
+    "questionText": "How does temperature affect air density at a constant pressure?",
+    "answers": [
+      "Increasing temperature increases density",
+      "Increasing temperature decreases density",
+      "Temperature has no effect on density",
+      "The relationship depends on humidity"
+    ],
+    "correctAnswer": "Increasing temperature decreases density",
+    "hint": "The density of air varies inversely with temperature at a constant pressure.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Effects of Humidity (Moisture) on Density, Page 22: The small amount of water vapor suspended in the atmosphere may be negligible under certain conditions, but in other conditions humidity may become an important factor in the performance of an aircraft. Water vapor is lighter than air; consequently, moist air is lighter than dry air. Therefore, as the water content of the air increases, the air becomes less dense, increasing density altitude and decreasing performance. It is lightest or least dense when, in a given set of conditions, it contains the maximum amount of water vapor.",
+    "questionText": "How does increased humidity affect air density and aircraft performance?",
+    "answers": [
+      "It increases air density and improves performance",
+      "It decreases air density and reduces performance",
+      "It has no significant effect on density or performance",
+      "It increases air density but reduces performance"
+    ],
+    "correctAnswer": "It decreases air density and reduces performance",
+    "hint": "Increased humidity makes air less dense, increasing density altitude and decreasing performance.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Measurement of Atmosphere Pressure, Page 22-23: To provide a common reference, the International Standard Atmosphere (ISA) has been established. These standard conditions are the basis for most aircraft performance data. Standard sea level pressure is defined as 29.92 \"Hg and a standard temperature of 59 °F (15 °C). Atmospheric pressure is also reported in millibars (mb), with 1 \"Hg equal to approximately 34 mb. Standard sea level pressure is 1,013.2 mb. Typical mb pressure readings range from 950.0 to 1,040.0 mb. Surface charts, high and low pressure centers, and hurricane data are reported using mb.",
+    "questionText": "What is the standard sea level pressure in inches of mercury (\"Hg)?",
+    "answers": ["30.00 \"Hg", "29.92 \"Hg", "28.92 \"Hg", "31.00 \"Hg"],
+    "correctAnswer": "29.92 \"Hg",
+    "hint": "Standard sea level pressure is defined as 29.92 \"Hg.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Effect of Obstructions on Wind, Page 23: Another atmospheric hazard exists that can create problems for pilots. Obstructions on the ground affect the flow of wind and can be an unseen danger. Ground topography and large buildings can break up the flow of the wind and create wind gusts that change rapidly in direction and speed. These obstructions range from man-made structures, like hangars, to large natural obstructions, such as mountains, bluffs, or canyons. The intensity of the turbulence associated with ground obstructions depends on the size of the obstacle and the primary velocity of the wind. This can affect the performance of any aircraft and can present a very serious hazard.",
+    "questionText": "How do ground obstructions affect wind patterns?",
+    "answers": [
+      "They have no effect on wind patterns",
+      "They only affect wind direction, not speed",
+      "They can create rapidly changing wind gusts in both direction and speed",
+      "They always reduce wind speed"
+    ],
+    "correctAnswer": "They can create rapidly changing wind gusts in both direction and speed",
+    "hint": "Ground obstructions can break up wind flow, creating gusts that change rapidly in direction and speed.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Low-Level Wind Shear, Page 23-24: Wind shear is a sudden, drastic change in wind speed and/or direction over a very small area. Wind shear can subject an aircraft to violent updrafts and downdrafts, as well as abrupt changes to the horizontal movement of the aircraft. While wind shear can occur at any altitude, low-level wind shear is especially hazardous due to the proximity of an aircraft to the ground. Low-level wind shear is commonly associated with passing frontal systems, thunderstorms, temperature inversions, and strong upper level winds (greater than 25 knots).",
+    "questionText": "Why is low-level wind shear considered especially hazardous?",
+    "answers": [
+      "It only affects large aircraft",
+      "It occurs close to the ground",
+      "It's easy to predict and avoid",
+      "It only happens at high altitudes"
+    ],
+    "correctAnswer": "It occurs close to the ground",
+    "hint": "Low-level wind shear is especially hazardous due to the proximity of an aircraft to the ground.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Low-Level Wind Shear, Page 24: The most severe type of low-level wind shear, a microburst, is associated with convective precipitation into dry air at cloud base. Microburst activity may be indicated by an intense rain shaft at the surface but virga at cloud base and a ring of blowing dust is often the only visible clue. A typical microburst has a horizontal diameter of 1–2 miles and a nominal depth of 1,000 feet. The lifespan of a microburst is about 5–15 minutes during which time it can produce downdrafts of up to 6,000 feet per minute (fpm) and headwind losses of 30–90 knots, seriously degrading performance.",
+    "questionText": "What is the typical lifespan of a microburst?",
+    "answers": [
+      "1-2 minutes",
+      "5-15 minutes",
+      "30-60 minutes",
+      "Several hours"
+    ],
+    "correctAnswer": "5-15 minutes",
+    "hint": "The lifespan of a microburst is about 5–15 minutes.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Atmospheric Stability, Page 24: The stability of the atmosphere depends on its ability to resist vertical motion. A stable atmosphere makes vertical movement difficult, and small vertical disturbances dampen out and disappear. In an unstable atmosphere, small vertical air movements tend to become larger, resulting in turbulent airflow and convective activity. Instability can lead to significant turbulence, extensive vertical clouds, and severe weather.",
+    "questionText": "What characterizes an unstable atmosphere?",
+    "answers": [
+      "Resistance to vertical air movement",
+      "Small vertical disturbances that quickly disappear",
+      "Tendency for small vertical air movements to become larger",
+      "Always calm and clear weather conditions"
+    ],
+    "correctAnswer": "Tendency for small vertical air movements to become larger",
+    "hint": "In an unstable atmosphere, small vertical air movements tend to become larger, resulting in turbulent airflow.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Atmospheric Stability, Page 24-25: The combination of moisture and temperature determine the stability of the air and the resulting weather. Cool, dry air is very stable and resists vertical movement, which leads to good and generally clear weather. The greatest instability occurs when the air is moist and warm, as it is in the tropical regions in the summer. Typically, thunderstorms appear on a daily basis in these regions due to the instability of the surrounding air.",
+    "questionText": "Which combination of conditions typically leads to the greatest atmospheric instability?",
+    "answers": [
+      "Cool and dry air",
+      "Warm and moist air",
+      "Cool and moist air",
+      "Warm and dry air"
+    ],
+    "correctAnswer": "Warm and moist air",
+    "hint": "The greatest instability occurs when the air is moist and warm.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Inversion, Page 24-25: As air rises and expands in the atmosphere, the temperature decreases. There is an atmospheric anomaly that can occur; however, that changes this typical pattern of atmospheric behavior. When the temperature of the air rises with altitude, a temperature inversion exists. Inversion layers are commonly shallow layers of smooth, stable air close to the ground. The temperature of the air increases with altitude to a certain point, which is the top of the inversion. The air at the top of the layer acts as a lid, keeping weather and pollutants trapped below. If the relative humidity of the air is high, it can contribute to the formation of clouds, fog, haze, or smoke resulting in diminished visibility in the inversion layer.",
+    "questionText": "What is a temperature inversion?",
+    "answers": [
+      "When temperature decreases with altitude",
+      "When temperature remains constant with altitude",
+      "When temperature increases with altitude",
+      "When temperature fluctuates randomly with altitude"
+    ],
+    "correctAnswer": "When temperature increases with altitude",
+    "hint": "A temperature inversion exists when the temperature of the air rises with altitude.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Temperature/Dew Point Relationship, Page 25: The relationship between dew point and temperature defines the concept of relative humidity. The dew point, given in degrees, is the temperature at which the air can hold no more moisture. When the temperature of the air is reduced to the dew point, the air is completely saturated and moisture begins to condense out of the air in the form of fog, dew, frost, clouds, rain, or snow.",
+    "questionText": "What happens when the air temperature reaches the dew point?",
+    "answers": [
+      "The air becomes completely dry",
+      "Thunderstorms always form",
+      "Moisture begins to condense out of the air",
+      "Wind speed increases dramatically"
+    ],
+    "correctAnswer": "Moisture begins to condense out of the air",
+    "hint": "When the temperature reaches the dew point, moisture begins to condense out of the air in various forms.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Clouds, Page 25: To pilots, the cumulonimbus cloud is perhaps the most dangerous cloud type. It appears individually or in groups and is known as either an air mass or orographic thunderstorm. Heating of the air near the Earth's surface creates an air mass thunderstorm; the upslope motion of air in the mountainous regions causes orographic thunderstorms. Cumulonimbus clouds that form in a continuous line are nonfrontal bands of thunderstorms or squall lines.",
+    "questionText": "What type of cloud is considered the most dangerous to pilots?",
+    "answers": ["Stratus", "Cirrus", "Cumulonimbus", "Nimbostratus"],
+    "correctAnswer": "Cumulonimbus",
+    "hint": "The cumulonimbus cloud is described as perhaps the most dangerous cloud type to pilots.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Clouds, Page 25: Since rising air currents cause cumulonimbus clouds, they are extremely turbulent and pose a significant hazard to flight safety. For example, if a small UA enters a thunderstorm, the small UA could experience updrafts and downdrafts that exceed 3,000 fpm. In addition, thunderstorms can produce large hailstones, damaging lightning, tornadoes, and large quantities of water, all of which are potentially hazardous to an aircraft.",
+    "questionText": "What is the maximum speed of updrafts and downdrafts that a small UA might experience in a thunderstorm?",
+    "answers": ["1,000 fpm", "2,000 fpm", "3,000 fpm", "More than 3,000 fpm"],
+    "correctAnswer": "More than 3,000 fpm",
+    "hint": "The passage states that updrafts and downdrafts can exceed 3,000 fpm in a thunderstorm.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Standing Lenticular Altocumulus Clouds, Page 25: Standing lenticular altocumulus clouds are formed on the crests of waves created by barriers in the wind flow. The clouds show little movement, hence the name standing. Wind, however, can be quite strong blowing through such clouds. They are characterized by their smooth, polished edges. The presence of these clouds is a good indication of very strong turbulence and should be avoided.",
+    "questionText": "What does the presence of standing lenticular altocumulus clouds indicate?",
+    "answers": [
+      "Calm weather conditions",
+      "Light precipitation",
+      "Very strong turbulence",
+      "High humidity"
+    ],
+    "correctAnswer": "Very strong turbulence",
+    "hint": "The presence of standing lenticular altocumulus clouds is a good indication of very strong turbulence.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Stability, Page 26: Stability of an air mass determines its typical weather characteristics. When one type of air mass overlies another, conditions change with height. Characteristics typical of an unstable air mass are: Cumuliform clouds, Showery precipitation, Rough air (turbulence), Good visibility (except in blowing obstructions). Characteristics typical of a stable air mass are: Stratiform clouds and fog, Continuous precipitation, Smooth air, Fair to poor visibility in haze and smoke.",
+    "questionText": "Which of the following is NOT a characteristic of an unstable air mass?",
+    "answers": [
+      "Cumuliform clouds",
+      "Showery precipitation",
+      "Rough air (turbulence)",
+      "Continuous precipitation"
+    ],
+    "correctAnswer": "Continuous precipitation",
+    "hint": "Continuous precipitation is listed as a characteristic of a stable air mass, not an unstable one.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Fronts, Page 26: As air masses move out of their source regions, they come in contact with other air masses of different properties. The zone between two different air masses is a frontal zone or front. Across this zone, temperature, humidity and wind often change rapidly over short distances.",
+    "questionText": "What is a frontal zone or front?",
+    "answers": [
+      "A area of uniform weather conditions",
+      "The center of a high pressure system",
+      "The zone between two different air masses",
+      "A region of constant temperature and humidity"
+    ],
+    "correctAnswer": "The zone between two different air masses",
+    "hint": "A frontal zone or front is defined as the zone between two different air masses.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Mountain Flying, Page 26: When planning a flight over mountainous terrain, gather as much preflight information as possible on cloud reports, wind direction, wind speed, and stability of air. Satellites often help locate mountain waves. Adequate information may not always be available, so remain alert for signposts in the sky. Wind at mountain top level in excess of 25 knots suggests some turbulence. Wind in excess of 40 knots across a mountain barrier dictates caution. Stratified clouds mean stable air. Standing lenticular and/or rotor clouds suggest a mountain wave; expect turbulence many miles to the lee of mountains and relative smooth flight on the windward side. Convective clouds on the windward side of mountains mean unstable air; expect turbulence in close proximity to and on either side of the mountain.",
+    "questionText": "What wind speed at mountain top level suggests some turbulence?",
+    "answers": ["10 knots", "25 knots", "40 knots", "50 knots"],
+    "correctAnswer": "25 knots",
+    "hint": "Wind at mountain top level in excess of 25 knots suggests some turbulence.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Structural Icing, Page 26: Two conditions are necessary for structural icing in flight: 1. The aircraft must be flying through visible water such as rain or cloud droplets 2. The temperature at the point where the moisture strikes the aircraft must be 0° C or colder. Aerodynamic cooling can lower temperature of an airfoil to 0° C even though the ambient temperature is a few degrees warmer.",
+    "questionText": "What are the two necessary conditions for structural icing in flight?",
+    "answers": [
+      "High altitude and low visibility",
+      "Strong winds and heavy precipitation",
+      "Visible moisture and freezing temperature at the point of contact",
+      "Clear skies and extremely cold temperatures"
+    ],
+    "correctAnswer": "Visible moisture and freezing temperature at the point of contact",
+    "hint": "Structural icing requires visible water and a temperature of 0° C or colder where moisture strikes the aircraft.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Thunderstorm Life Cycle, Page 26-27: A thunderstorm cell during its life cycle progresses through three stages-(1) the cumulus, (2) the mature, and (3) the dissipating. It is virtually impossible to visually detect the transition from one stage to another; the transition is subtle and by no means abrupt. Furthermore, a thunderstorm may be a cluster of cells in different stages of the lifecycle.",
+    "questionText": "How many stages are in a thunderstorm cell's life cycle?",
+    "answers": ["Two", "Three", "Four", "Five"],
+    "correctAnswer": "Three",
+    "hint": "A thunderstorm cell progresses through three stages: cumulus, mature, and dissipating.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - The Cumulus Stage, Page 26-27: Although most cumulus clouds do not grow into thunderstorms, every thunderstorm begins as a cumulus. The key feature of the cumulus stage is an updraft. The updraft varies in strength and extends from very near the surface to the cloud top. Growth rate of the cloud may exceed 3,000 feet per minute, so it is inadvisable to operate a small UA in an area of rapidly building cumulus clouds. Early during the cumulus stage, water droplets are quite small but grow to raindrop size as the cloud grows. The upwelling air carries the liquid water above the freezing level creating an icing hazard.",
+    "questionText": "What is the key feature of the cumulus stage of a thunderstorm?",
+    "answers": ["Downdraft", "Updraft", "Lightning", "Heavy precipitation"],
+    "correctAnswer": "Updraft",
+    "hint": "The key feature of the cumulus stage is an updraft.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - The Mature Stage, Page 27: Precipitation beginning to fall from the cloud base is your signal that a downdraft has developed and a cell has entered the mature stage. Cold rain in the downdraft retards compressional heating, and the downdraft remains cooler than surrounding air. Therefore, its downward speed is accelerated and may exceed 2,500 feet per minute. The down rushing air spreads outward at the surface producing strong, gusty surface winds, a sharp temperature drop, and a rapid rise in pressure. The surface wind surge is a 'plow wind' and its leading edge is the 'first gust.' Meanwhile, updrafts reach a maximum with speeds possibly exceeding 6,000 feet per minute. Updrafts and downdrafts in close proximity create strong vertical shear and a very turbulent environment. All thunderstorm hazards reach their greatest intensity during the mature stage.",
+    "questionText": "What signals that a thunderstorm cell has entered the mature stage?",
+    "answers": [
+      "Formation of cumulus clouds",
+      "Precipitation beginning to fall from the cloud base",
+      "Dissipation of the cloud",
+      "Increase in temperature at ground level"
+    ],
+    "correctAnswer": "Precipitation beginning to fall from the cloud base",
+    "hint": "Precipitation beginning to fall from the cloud base signals that a downdraft has developed and a cell has entered the mature stage.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - The Dissipating Stage, Page 27: Downdrafts characterize the dissipating stage of the thunderstorm cell as shown in figure 3-4 and the storm dies rapidly. When rain has ended and downdrafts have abated, the dissipating stage is complete. When all cells of the thunderstorm have completed this stage, only harmless cloud remnants remain.",
+    "questionText": "What characterizes the dissipating stage of a thunderstorm?",
+    "answers": [
+      "Strong updrafts",
+      "Heavy precipitation",
+      "Downdrafts",
+      "Increased lightning activity"
+    ],
+    "correctAnswer": "Downdrafts",
+    "hint": "Downdrafts characterize the dissipating stage of the thunderstorm cell.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Ceiling, Page 28: For aviation purposes, a ceiling is the lowest layer of clouds reported as being broken or overcast, or the vertical visibility into an obscuration like fog or haze. Clouds are reported as broken when five-eighths to seven-eighths of the sky is covered with clouds. Overcast means the entire sky is covered with clouds. Current ceiling information is reported by the aviation routine weather report (METAR) and automated weather stations of various types.",
+    "questionText": "How is a ceiling defined for aviation purposes?",
+    "answers": [
+      "The highest altitude at which an aircraft can fly",
+      "The lowest layer of clouds reported as broken or overcast",
+      "The maximum visibility reported by weather stations",
+      "The altitude at which precipitation begins to form"
+    ],
+    "correctAnswer": "The lowest layer of clouds reported as broken or overcast",
+    "hint": "A ceiling is defined as the lowest layer of clouds reported as being broken or overcast, or the vertical visibility into an obscuration.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 3b: Effects of Weather on Small Unmanned Aircraft Performance - Visibility, Page 28: Closely related to cloud cover and reported ceilings is visibility information. Visibility refers to the greatest horizontal distance at which prominent objects can be viewed with the naked eye. Current visibility is also reported in METAR and other aviation weather reports, as well as by automated weather systems. Visibility information, as predicted by meteorologists, is available for a pilot during a preflight weather briefing.",
+    "questionText": "How is visibility defined in aviation?",
+    "answers": [
+      "The vertical distance from the ground to the cloud base",
+      "The greatest horizontal distance at which prominent objects can be viewed with the naked eye",
+      "The distance between two airports",
+      "The maximum altitude at which an aircraft can fly"
+    ],
+    "correctAnswer": "The greatest horizontal distance at which prominent objects can be viewed with the naked eye",
+    "hint": "Visibility refers to the greatest horizontal distance at which prominent objects can be viewed with the naked eye.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Introduction, Page 29: Before any flight, the remote pilot-in-command (PIC) should verify the aircraft is correctly loaded by determining the weight and balance condition of the aircraft. An aircraft's weight and balance restrictions established by the manufacturer or the builder should be closely followed. Compliance with the manufacturer's weight and balance limits is critical to flight safety. The remote PIC must consider the consequences of an overweight aircraft if an emergency condition arises.",
+    "questionText": "Why is it important for a remote PIC to verify the aircraft's weight and balance before flight?",
+    "answers": [
+      "To increase the aircraft's speed",
+      "To comply with FAA regulations on fuel efficiency",
+      "To ensure flight safety and comply with manufacturer's limits",
+      "To reduce the cost of the flight"
+    ],
+    "correctAnswer": "To ensure flight safety and comply with manufacturer's limits",
+    "hint": "Compliance with the manufacturer's weight and balance limits is critical to flight safety.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Introduction, Page 29: Although a maximum gross takeoff weight may be specified, the aircraft may not always safely take off with this load under all conditions. Conditions that affect takeoff and climb performance, such as high elevations, high air temperatures, and high humidity (high density altitudes) may require a reduction in weight before flight is attempted. Other factors to consider prior to takeoff are runway/launch area length, surface, slope, surface wind, and the presence of obstacles. These factors may require a reduction in weight prior to flight.",
+    "questionText": "Which of the following conditions might require a reduction in aircraft weight before takeoff?",
+    "answers": [
+      "Low elevation and cool temperatures",
+      "Short runway and calm winds",
+      "High elevation and high air temperatures",
+      "Smooth runway surface and no obstacles"
+    ],
+    "correctAnswer": "High elevation and high air temperatures",
+    "hint": "High elevations and high air temperatures (high density altitudes) may require a reduction in weight before flight.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Introduction, Page 29: Weight changes during flight also have a direct effect on aircraft performance. Fuel burn is the most common weight change that takes place during flight. As fuel is used, the aircraft becomes lighter and performance is improved, but this could have a negative effect on balance. In small UA operations, weight change during flight may occur when expendable items are used on board (e.g., a jettisonable load).",
+    "questionText": "How does fuel burn typically affect aircraft performance during flight?",
+    "answers": [
+      "It decreases performance as the aircraft gets heavier",
+      "It improves performance as the aircraft becomes lighter",
+      "It has no effect on performance",
+      "It always negatively affects the aircraft's balance"
+    ],
+    "correctAnswer": "It improves performance as the aircraft becomes lighter",
+    "hint": "As fuel is used, the aircraft becomes lighter and performance is improved.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Introduction, Page 29: Adverse balance conditions (i.e., weight distribution) may affect flight characteristics in much the same manner as those mentioned for an excess weight condition. Limits for the location of the center of gravity (CG) may be established by the manufacturer. The CG is not a fixed point marked on the aircraft; its location depends on the distribution of aircraft weight. As variable load items are shifted or expended, there may be a resultant shift in CG location. The remote PIC should determine how the CG will shift and the resultant effects on the aircraft. If the CG is not within the allowable limits after loading or do not remain within the allowable limits for safe flight, it will be necessary to relocate or shed some weight before flight is attempted.",
+    "questionText": "What should a remote PIC do if the center of gravity (CG) is not within allowable limits after loading?",
+    "answers": [
+      "Proceed with the flight as planned",
+      "Increase the aircraft's speed to compensate",
+      "Relocate or shed some weight before flight",
+      "Ignore the CG limits as they only apply to larger aircraft"
+    ],
+    "correctAnswer": "Relocate or shed some weight before flight",
+    "hint": "If the CG is not within allowable limits, it's necessary to relocate or shed some weight before flight.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Weight, Page 29: Gravity is the pulling force that tends to draw all bodies to the center of the earth. The CG may be considered as a point at which all the weight of the aircraft is concentrated. If the aircraft were supported at its exact CG, it would balance in any attitude. It will be noted that CG is of major importance in a small UA, for its position has a great bearing upon stability. The allowable location of the CG is determined by the general design of each particular aircraft. The designers determine how far the center of pressure (CP) will travel. It is important to understand that an aircraft's weight is concentrated at the CG and the aerodynamic forces of lift occur at the CP.",
+    "questionText": "What is the center of gravity (CG) in relation to an aircraft?",
+    "answers": [
+      "The point where the aircraft touches the ground",
+      "The midpoint of the aircraft's wingspan",
+      "A point where all the weight of the aircraft is considered to be concentrated",
+      "The location of the aircraft's fuel tanks"
+    ],
+    "correctAnswer": "A point where all the weight of the aircraft is considered to be concentrated",
+    "hint": "The CG may be considered as a point at which all the weight of the aircraft is concentrated.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Weight, Page 29-30: When the CG is forward of the CP, there is a natural tendency for the aircraft to want to pitch nose down. If the CP is forward of the CG, a nose up pitching moment is created. Therefore, designers fix the aft limit of the CG forward of the CP for the corresponding flight speed in order to retain flight equilibrium. Weight has a definite relationship to lift. This relationship is simple, but important in understanding the aerodynamics of flying. Lift is the upward force on the wing acting perpendicular to the relative wind and perpendicular to the aircraft's lateral axis. Lift is required to counteract the aircraft's weight. In stabilized level flight, when the lift force is equal to the weight force, the aircraft is in a state of equilibrium and neither accelerates upward or downward. If lift becomes less than weight, the vertical speed will decrease. When lift is greater than weight, the vertical speed will increase.",
+    "questionText": "What happens to an aircraft's vertical speed when lift becomes less than weight?",
+    "answers": [
+      "It increases",
+      "It decreases",
+      "It remains constant",
+      "It fluctuates randomly"
+    ],
+    "correctAnswer": "It decreases",
+    "hint": "If lift becomes less than weight, the vertical speed will decrease.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Stability, Page 30: Stability is the inherent quality of an aircraft to correct for conditions that may disturb its equilibrium and to return to or to continue on the original flight path. It is primarily an aircraft design characteristic. Stability in an aircraft affects two areas significantly: Maneuverability—the quality of an aircraft that permits it to be maneuvered easily and to withstand the stresses imposed by maneuvers. It is governed by the aircraft's weight, inertia, size and location of flight controls, structural strength, and powerplant. It too is an aircraft design characteristic. Controllability—the capability of an aircraft to respond to the pilot's control, especially with regard to flight path and attitude. It is the quality of the aircraft's response to the pilot's control application when maneuvering the aircraft, regardless of its stability characteristics.",
+    "questionText": "What is stability in an aircraft?",
+    "answers": [
+      "The ability to fly at high speeds",
+      "The inherent quality to correct disturbances and return to the original flight path",
+      "The capacity to carry heavy loads",
+      "The efficiency of fuel consumption"
+    ],
+    "correctAnswer": "The inherent quality to correct disturbances and return to the original flight path",
+    "hint": "Stability is defined as the inherent quality of an aircraft to correct for conditions that may disturb its equilibrium and return to the original flight path.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Load Factors, Page 30: In aerodynamics, the maximum load factor (at given bank angle) is a proportion between lift and weight and has a trigonometric relationship. The load factor is measured in Gs (acceleration of gravity), a unit of force equal to the force exerted by gravity on a body at rest and indicates the force to which a body is subjected when it is accelerated. Any force applied to an aircraft to deflect its flight from a straight line produces a stress on its structure. The amount of this force is the load factor. While a course in aerodynamics is not a prerequisite for obtaining a remote pilot certificate, the competent pilot should have a solid understanding of the forces that act on the aircraft, the advantageous use of these forces, and the operating limitations of the aircraft being flown.",
+    "questionText": "What is a load factor in aerodynamics?",
+    "answers": [
+      "The total weight of the aircraft",
+      "The ratio of an aircraft's speed to its weight",
+      "The force exerted on an aircraft during acceleration, measured in Gs",
+      "The maximum altitude an aircraft can reach"
+    ],
+    "correctAnswer": "The force exerted on an aircraft during acceleration, measured in Gs",
+    "hint": "The load factor is measured in Gs and indicates the force to which a body is subjected when it is accelerated.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Load Factors, Page 30: For example, a load factor of 3 means the total load on an aircraft's structure is three times its weight. Since load factors are expressed in terms of Gs, a load factor of 3 may be spoken of as 3 Gs, or a load factor of 4 as 4 Gs. With the structural design of aircraft planned to withstand only a certain amount of overload, a knowledge of load factors has become essential for all pilots. Load factors are important for two reasons: 1. It is possible for a pilot to impose a dangerous overload on the aircraft structures. 2. An increased load factor increases the stalling speed and makes stalls possible at seemingly safe flight speeds.",
+    "questionText": "Why is knowledge of load factors essential for pilots?",
+    "answers": [
+      "To calculate fuel efficiency",
+      "To determine the aircraft's maximum speed",
+      "To avoid dangerous overloads and understand stall risks",
+      "To plan flight routes more effectively"
+    ],
+    "correctAnswer": "To avoid dangerous overloads and understand stall risks",
+    "hint": "Load factors are important because pilots can impose dangerous overloads, and increased load factors affect stalling speed.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Load Factors in Steep Turns, Page 31: At a constant altitude, during a coordinated turn in any aircraft, the load factor is the result of two forces: centrifugal force and weight. For any given bank angle, the rate-of-turn varies with the airspeed—the higher the speed, the slower the rate-of-turn (ROT). This compensates for added centrifugal force, allowing the load factor to remain the same. Figure 4-2 reveals an important fact about turns—the load factor increases at a terrific rate after a bank has reached 45° or 50°. The load factor for any aircraft in a coordinated level turn at 60° bank is 2 Gs. The load factor in an 80° bank is 5.76 Gs. The wing must produce lift equal to these load factors if altitude is to be maintained.",
+    "questionText": "What happens to the load factor in a turn as the bank angle increases beyond 45-50 degrees?",
+    "answers": [
+      "It decreases slightly",
+      "It remains constant",
+      "It increases at a terrific rate",
+      "It becomes negative"
+    ],
+    "correctAnswer": "It increases at a terrific rate",
+    "hint": "The load factor increases at a terrific rate after a bank has reached 45° or 50°.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Load Factors and Stalling Speeds, Page 31-32: Any aircraft, within the limits of its structure, may be stalled at any airspeed. When a sufficiently high AOA is imposed, the smooth flow of air over an airfoil breaks up and separates, producing an abrupt change of flight characteristics and a sudden loss of lift, which results in a stall. A study of this effect has revealed that an aircraft's stalling speed increases in proportion to the square root of the load factor. This means that an aircraft with a normal unaccelerated stalling speed of 50 knots can be stalled at 100 knots by inducing a load factor of 4 Gs. If it were possible for this aircraft to withstand a load factor of nine, it could be stalled at a speed of 150 knots. A pilot should be aware of the danger of inadvertently stalling the aircraft by increasing the load factor, as in a steep turn or spiral.",
+    "questionText": "How does the load factor affect an aircraft's stalling speed?",
+    "answers": [
+      "Stalling speed decreases as load factor increases",
+      "Stalling speed increases in proportion to the square root of the load factor",
+      "Load factor has no effect on stalling speed",
+      "Stalling speed increases linearly with load factor"
+    ],
+    "correctAnswer": "Stalling speed increases in proportion to the square root of the load factor",
+    "hint": "The passage states that an aircraft's stalling speed increases in proportion to the square root of the load factor.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Weight and Balance, Page 32: Compliance with the weight and balance limits of any aircraft is critical to flight safety. Operating above the maximum weight limitation compromises the structural integrity of an aircraft and adversely affects its performance. Operation with the center of gravity (CG) outside the approved limits results in control difficulty. The aircraft's weight and balance data is important information for a pilot that must be frequently reevaluated.",
+    "questionText": "What are the potential consequences of operating an aircraft above its maximum weight limitation?",
+    "answers": [
+      "Improved fuel efficiency",
+      "Enhanced maneuverability",
+      "Compromised structural integrity and adverse effects on performance",
+      "Increased maximum altitude capability"
+    ],
+    "correctAnswer": "Compromised structural integrity and adverse effects on performance",
+    "hint": "The passage states that operating above the maximum weight limitation compromises the structural integrity of an aircraft and adversely affects its performance.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Weight Control, Page 32: Weight is the force with which gravity attracts a body toward the center of the Earth. It is a product of the mass of a body and the acceleration acting on the body. Weight is a major factor in aircraft construction and operation and demands respect from all pilots. The force of gravity continuously attempts to pull an aircraft down toward Earth. The force of lift is the only force that counteracts weight and sustains an aircraft in flight. The amount of lift produced by an airfoil is limited by the airfoil design, AOA, airspeed, and air density. To assure that the lift generated is sufficient to counteract weight, loading an aircraft beyond the manufacturer's recommended weight must be avoided. If the weight is greater than the lift generated, the aircraft may be incapable of flight.",
+    "questionText": "What is the only force that counteracts an aircraft's weight during flight?",
+    "answers": ["Thrust", "Drag", "Lift", "Gravity"],
+    "correctAnswer": "Lift",
+    "hint": "The passage states that the force of lift is the only force that counteracts weight and sustains an aircraft in flight.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Effects of Weight, Page 33: Any item aboard an aircraft that increases the total weight is undesirable for performance. Manufacturers attempt to make an aircraft as light as possible without sacrificing strength or safety. The pilot should always be aware of the consequences of overloading. An overloaded aircraft may not be able to leave the ground, or if it does become airborne, it may exhibit unexpected and unusually poor flight characteristics. If not properly loaded, the initial indication of poor performance usually takes place during takeoff.",
+    "questionText": "What is a potential consequence of an overloaded aircraft during takeoff?",
+    "answers": [
+      "Improved acceleration",
+      "Shorter takeoff distance",
+      "Inability to leave the ground",
+      "Enhanced climb performance"
+    ],
+    "correctAnswer": "Inability to leave the ground",
+    "hint": "The passage states that an overloaded aircraft may not be able to leave the ground.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 4: Small Unmanned Aircraft Loading - Effects of Weight, Page 33: Excessive weight reduces the flight performance in almost every respect. For example, the most important performance deficiencies of an overloaded aircraft are: Higher takeoff speed, Longer takeoff run, Reduced rate and angle of climb, Lower maximum altitude, Shorter range, Reduced cruising speed, Reduced maneuverability, Higher stalling speed, Higher approach and landing speed, Longer landing roll.",
+    "questionText": "Which of the following is NOT listed as a performance deficiency of an overloaded aircraft?",
+    "answers": [
+      "Higher takeoff speed",
+      "Shorter range",
+      "Reduced cruising speed",
+      "Improved fuel efficiency"
+    ],
+    "correctAnswer": "Improved fuel efficiency",
+    "hint": "Improved fuel efficiency is not mentioned in the list of performance deficiencies for an overloaded aircraft.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 5: Emergency Procedures - Introduction, Page 35: An inflight emergency is usually an unexpected and unforeseen event that can have serious consequences for an unprepared remote pilot. During an emergency, a remote pilot is permitted to deviate from any part of 14 CFR part 107 to respond to the emergency. When a remote pilot does deviate from a rule due to an emergency, the remote pilot will report the emergency if asked to do so by the FAA (also referred to as 'the Administrator').",
+    "questionText": "In the event of an inflight emergency, what is a remote pilot permitted to do regarding 14 CFR part 107 rules?",
+    "answers": [
+      "Strictly adhere to all rules regardless of the emergency",
+      "Deviate from any part of the rules to respond to the emergency",
+      "Only deviate from rules after obtaining FAA permission",
+      "Ignore all rules until the emergency is over"
+    ],
+    "correctAnswer": "Deviate from any part of the rules to respond to the emergency",
+    "hint": "During an emergency, a remote pilot is permitted to deviate from any part of 14 CFR part 107 to respond to the emergency.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 5: Emergency Procedures - Inflight Emergency, Page 35: A remote pilot is responsible for the safe operation of the small UA at all times. A remote pilot must ensure that the aircraft is in a safe operating condition before flight, that there is not any hazard to persons or property, and that all required crew members are properly briefed on the operation and emergency procedures.",
+    "questionText": "What is a key responsibility of a remote pilot before flight?",
+    "answers": [
+      "Maximizing flight time regardless of conditions",
+      "Ensuring the aircraft is in a safe operating condition",
+      "Minimizing pre-flight checks to save time",
+      "Delegating all safety checks to ground crew"
+    ],
+    "correctAnswer": "Ensuring the aircraft is in a safe operating condition",
+    "hint": "A remote pilot must ensure that the aircraft is in a safe operating condition before flight.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 5: Emergency Procedures - Inflight Emergency, Page 35: Before every flight, a remote pilot will conduct a preflight inspection of the aircraft. If any irregularities are found in the inspection, they must be corrected before the small UA is operated. Some small UA manufacturers will provide the remote pilot with preflight inspection items. For those small UAs that do not have a manufacturer checklist, the remote pilot should develop a checklist that will provide enough information that the aircraft will be operated in a safe condition.",
+    "questionText": "What should a remote pilot do if irregularities are found during a preflight inspection?",
+    "answers": [
+      "Proceed with the flight and address issues later",
+      "Note the issues but continue with the operation",
+      "Correct the irregularities before operating the small UA",
+      "Consult with other pilots about the severity of the issues"
+    ],
+    "correctAnswer": "Correct the irregularities before operating the small UA",
+    "hint": "If any irregularities are found in the inspection, they must be corrected before the small UA is operated.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 5: Emergency Procedures - Inflight Emergency, Page 35: When a remote pilot does experience an inflight emergency, the pilot may take any action to ensure that there is not a hazard to other people or property. For example, if during a flight the small UA experiences a battery fire, the remote pilot may need to climb the small UA above 400' AGL to maneuver to a safe landing area. In this instance, a report will need to be made only if asked to do so by the FAA.",
+    "questionText": "In the event of a battery fire during flight, what action might a remote pilot need to take?",
+    "answers": [
+      "Immediately land the UA regardless of location",
+      "Continue the flight as planned",
+      "Climb above 400' AGL to maneuver to a safe landing area",
+      "Shut off all power to the UA mid-flight"
+    ],
+    "correctAnswer": "Climb above 400' AGL to maneuver to a safe landing area",
+    "hint": "The example states that the remote pilot may need to climb the small UA above 400' AGL to maneuver to a safe landing area.",
+    "points": 3
+  },
+  {
+    "prompt": "Chapter 5: Emergency Procedures - Inflight Emergency, Page 35: When other crew members are used during a flight, all of those crew members must be briefed on the flight and the planned emergency procedures for the flight. The briefing will be given to any visual observers (VO) that might be used and any non-certificated person who is allowed to manipulate the flight controls of the small UA.",
+    "questionText": "Who must be briefed on planned emergency procedures before a flight?",
+    "answers": [
+      "Only the remote pilot",
+      "All crew members, including visual observers and non-certificated persons manipulating controls",
+      "FAA officials only",
+      "Only certificated pilots"
+    ],
+    "correctAnswer": "All crew members, including visual observers and non-certificated persons manipulating controls",
+    "hint": "All crew members, including visual observers and non-certificated persons allowed to manipulate flight controls, must be briefed on emergency procedures.",
+    "points": 2
+  },
+  {
+    "prompt": "Chapter 5: Emergency Procedures, Page 35: For more information about emergencies, refer to 14 CFR part 107 and AC 107-2.",
+    "questionText": "Where can additional information about emergency procedures for small UA operations be found?",
+    "answers": [
+      "Only in the manufacturer's manual",
+      "In 14 CFR part 107 and AC 107-2",
+      "Exclusively in online forums",
+      "In the local airport's guidelines"
+    ],
+    "correctAnswer": "In 14 CFR part 107 and AC 107-2",
+    "hint": "The passage directs readers to 14 CFR part 107 and AC 107-2 for more information about emergencies.",
     "points": 1
-  },
-  {
-    "prompt": "§ 107.200 Waiver policy and requirements (continued)\n\nThis section also outlines the requirements for waiver applications and the FAA's discretion in prescribing additional limitations.",
-    "questionText": "What must a request for a certificate of waiver contain?",
-    "answers": [
-      "Only the specific regulation to be waived",
-      "A complete description of the proposed operation and justification that it can be conducted safely",
-      "The applicant's entire flight history",
-      "A non-refundable fee of $1000"
-    ],
-    "correctAnswer": "A complete description of the proposed operation and justification that it can be conducted safely",
-    "hint": "Section 107.200(b) requires that a request for a certificate of waiver must contain a complete description of the proposed operation and justification that establishes that the operation can safely be conducted under the terms of a certificate of waiver.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver\n\nThis section provides a comprehensive list of the specific regulations that may be waived by the Administrator. Understanding which regulations can be waived is crucial for operators who need to conduct operations outside the standard Part 107 rules.",
-    "questionText": "Which of the following regulations is subject to waiver under Part 107?",
-    "answers": [
-      "Remote pilot certification requirements",
-      "Registration requirements",
-      "Operation from a moving vehicle or aircraft",
-      "Prohibition on careless or reckless operation"
-    ],
-    "correctAnswer": "Operation from a moving vehicle or aircraft",
-    "hint": "Section 107.205(a) lists operation from a moving vehicle or aircraft (§107.25) as subject to waiver.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section lists several other regulations that may be waived, including those related to daylight operation, visual line of sight, and operation over people.",
-    "questionText": "Which of the following operational rules is NOT subject to waiver under Part 107?",
-    "answers": [
-      "Daylight operation",
-      "Visual line of sight aircraft operation",
-      "Operation over people",
-      "Carriage of hazardous materials"
-    ],
-    "correctAnswer": "Carriage of hazardous materials",
-    "hint": "The carriage of hazardous materials is not listed in §107.205 as a regulation subject to waiver.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section also includes regulations related to operating limitations for small unmanned aircraft as subject to waiver.",
-    "questionText": "Which operating limitation is subject to waiver under Part 107?",
-    "answers": [
-      "The requirement to register the UAS",
-      "The prohibition on careless or reckless operation",
-      "The maximum groundspeed of 87 knots",
-      "The requirement to maintain a current remote pilot certificate"
-    ],
-    "correctAnswer": "The maximum groundspeed of 87 knots",
-    "hint": "Section 107.205(i) lists the operating limitations in §107.51, which includes the maximum groundspeed, as subject to waiver.",
-    "points": 2
-  },
-  {
-    "prompt": "Waiver Process Overview\n\nWhile not a specific section in Part 107, understanding the overall waiver process is crucial for operators who need to conduct operations outside the standard rules.",
-    "questionText": "What is the primary purpose of the waiver process in Part 107?",
-    "answers": [
-      "To allow operators to bypass safety regulations",
-      "To permit operations that would otherwise be prohibited, if they can be conducted safely",
-      "To generate additional revenue for the FAA",
-      "To simplify the regulation of UAS operations"
-    ],
-    "correctAnswer": "To permit operations that would otherwise be prohibited, if they can be conducted safely",
-    "hint": "The waiver process is designed to allow flexibility in UAS operations while maintaining safety.",
-    "points": 2
-  },
-  {
-    "prompt": "Safety Risk Assessment\n\nWhile not explicitly mentioned in Part 107, conducting a safety risk assessment is an important part of the waiver application process and safe UAS operations in general.",
-    "questionText": "What is a key component of a safety risk assessment for a waiver application?",
-    "answers": [
-      "Calculating the cost of potential damages",
-      "Identifying potential hazards and mitigation strategies",
-      "Determining the market value of the UAS",
-      "Estimating the number of spectators for the operation"
-    ],
-    "correctAnswer": "Identifying potential hazards and mitigation strategies",
-    "hint": "A thorough safety risk assessment involves identifying potential hazards and developing strategies to mitigate those risks.",
-    "points": 2
-  },
-  {
-    "prompt": "Night Operations Waiver\n\nWhile Part 107 has been updated to allow night operations under certain conditions, understanding the previous waiver requirements for night operations is still relevant.",
-    "questionText": "Under the original Part 107 rules, what was required for night operations?",
-    "answers": [
-      "Nothing, night operations were always allowed",
-      "A waiver from the FAA",
-      "Special night vision equipment",
-      "A minimum of 10 hours of night flight experience"
-    ],
-    "correctAnswer": "A waiver from the FAA",
-    "hint": "Originally, §107.29 (daylight operation) was subject to waiver, requiring FAA approval for night operations.",
-    "points": 2
-  },
-  {
-    "prompt": "Visual Line of Sight Waiver\n\nOperations beyond visual line of sight (BVLOS) require a waiver under Part 107. Understanding the implications of BVLOS operations is important for advanced UAS operations.",
-    "questionText": "What is a key consideration when applying for a beyond visual line of sight (BVLOS) waiver?",
-    "answers": [
-      "The color of the UAS",
-      "The type of payload being carried",
-      "How to maintain awareness of other aircraft and obstacles",
-      "The number of batteries available"
-    ],
-    "correctAnswer": "How to maintain awareness of other aircraft and obstacles",
-    "hint": "For BVLOS operations, maintaining situational awareness and avoiding conflicts with other aircraft and obstacles is crucial.",
-    "points": 3
-  },
-  {
-    "prompt": "Operation Over People Waiver\n\nWhile Part 107 has been updated to allow some operations over people, understanding the waiver process for this type of operation is still relevant.",
-    "questionText": "What factor is most critical when applying for a waiver to operate over people?",
-    "answers": [
-      "The speed of the UAS",
-      "The color of the UAS",
-      "The potential risk of injury to people on the ground",
-      "The battery life of the UAS"
-    ],
-    "correctAnswer": "The potential risk of injury to people on the ground",
-    "hint": "When considering operations over people, the safety of those on the ground is paramount.",
-    "points": 2
-  },
-  {
-    "prompt": "Waiver Performance-Based Standards\n\nThe FAA has developed performance-based standards for waiver applications. Understanding these standards can help in preparing a successful waiver application.",
-    "questionText": "What is the purpose of the FAA's performance-based standards for waivers?",
-    "answers": [
-      "To make the waiver process more difficult",
-      "To provide a clear understanding of the FAA's safety expectations",
-      "To reduce the number of waiver applications",
-      "To increase FAA workload"
-    ],
-    "correctAnswer": "To provide a clear understanding of the FAA's safety expectations",
-    "hint": "Performance-based standards are designed to clarify what the FAA expects in terms of safety for various types of waiver requests.",
-    "points": 2
-  },
-  {
-    "prompt": "Waiver Application Process\n\nUnderstanding the waiver application process is crucial for operators who need to conduct operations outside the standard Part 107 rules.",
-    "questionText": "Through what system are Part 107 waiver applications typically submitted?",
-    "answers": [
-      "By mail to the local FSDO",
-      "The FAA's DroneZone portal",
-      "In person at an FAA office",
-      "Through a certified flight instructor"
-    ],
-    "correctAnswer": "The FAA's DroneZone portal",
-    "hint": "The FAA's DroneZone portal is the primary system for submitting Part 107 waiver applications.",
-    "points": 1
-  },
-  {
-    "prompt": "Waiver Renewal\n\nWaivers are typically issued with an expiration date. Understanding the renewal process is important for maintaining operational continuity.",
-    "questionText": "What is a best practice when it comes to renewing a waiver?",
-    "answers": [
-      "Wait until the day before it expires to apply for renewal",
-      "Assume it will be automatically renewed",
-      "Apply for renewal well in advance of the expiration date",
-      "Only renew if you've used the waiver frequently"
-    ],
-    "correctAnswer": "Apply for renewal well in advance of the expiration date",
-    "hint": "Applying for renewal well in advance allows time for processing and ensures continuity of operations.",
-    "points": 2
-  },
-  {
-    "prompt": "Waiver Responsibilities\n\nOperators who receive a waiver have specific responsibilities to ensure safe operations.",
-    "questionText": "What is a key responsibility of an operator who has been granted a waiver?",
-    "answers": [
-      "Keeping the waiver certificate secret",
-      "Ignoring the limitations specified in the waiver",
-      "Complying with all conditions and limitations specified in the waiver",
-      "Sharing the waiver with other operators to use"
-    ],
-    "correctAnswer": "Complying with all conditions and limitations specified in the waiver",
-    "hint": "Waiver holders must comply with all conditions and limitations specified in the waiver to maintain its validity and ensure safe operations.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.73 Initial and recurrent knowledge tests\n\nThis section outlines the areas of knowledge covered in both initial and recurrent aeronautical knowledge tests for remote pilots.",
-    "questionText": "Which of the following is NOT a required knowledge area for the initial aeronautical knowledge test?",
-    "answers": [
-      "Applicable regulations relating to small UAS rating privileges",
-      "Aviation weather sources and effects of weather on small UAS performance",
-      "Advanced aerodynamics and aircraft design",
-      "Crew resource management"
-    ],
-    "correctAnswer": "Advanced aerodynamics and aircraft design",
-    "hint": "Section 107.73(a) lists the required knowledge areas, which do not include advanced aerodynamics and aircraft design.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.73 Initial and recurrent knowledge tests (continued)\n\nThis section also specifies the areas of knowledge covered in the recurrent aeronautical knowledge test.",
-    "questionText": "Which of the following is a topic covered in the recurrent aeronautical knowledge test but NOT in the initial test?",
-    "answers": [
-      "Radio communication procedures",
-      "Physiological effects of drugs and alcohol",
-      "Small unmanned aircraft loading",
-      "None of the above"
-    ],
-    "correctAnswer": "None of the above",
-    "hint": "Section 107.73(b) shows that the recurrent test covers a subset of the initial test topics, with no new topics added.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.74 Initial and recurrent training courses\n\nThis section describes the content of initial and recurrent training courses for remote pilots who hold other pilot certificates.",
-    "questionText": "What is a topic covered in the initial training course but NOT in the recurrent training course?",
-    "answers": [
-      "Applicable regulations relating to small UAS",
-      "Emergency procedures",
-      "Crew resource management",
-      "Determining the performance of small unmanned aircraft"
-    ],
-    "correctAnswer": "Determining the performance of small unmanned aircraft",
-    "hint": "Section 107.74 shows that determining UAS performance is covered in the initial course (a) but not in the recurrent course (b).",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.77 Change of name or address\n\nThis section outlines the procedures for updating personal information on a remote pilot certificate.",
-    "questionText": "What document is NOT required when applying for a name change on a remote pilot certificate?",
-    "answers": [
-      "Remote pilot certificate with small UAS rating",
-      "Marriage license (if applicable)",
-      "Court order (if applicable)",
-      "Birth certificate"
-    ],
-    "correctAnswer": "Birth certificate",
-    "hint": "Section 107.77(a) lists the required documents for a name change, which do not include a birth certificate.",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.77 Change of name or address (continued)\n\nThis section also specifies the timeframe and methods for notifying the FAA of an address change.",
-    "questionText": "How long does a certificate holder have to notify the FAA of a change in permanent mailing address?",
-    "answers": [
-      "10 days",
-      "30 days",
-      "60 days",
-      "90 days"
-    ],
-    "correctAnswer": "30 days",
-    "hint": "Section 107.77(c) states that the holder must notify the FAA within 30 days of a change in permanent mailing address.",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.79 Voluntary surrender of certificate\n\nThis section describes the process for voluntarily surrendering a remote pilot certificate.",
-    "questionText": "What statement must be included when voluntarily surrendering a remote pilot certificate?",
-    "answers": [
-      "A promise to never fly UAS again",
-      "An explanation for surrendering the certificate",
-      "A statement acknowledging that the certificate will not be reissued without completing the requirements again",
-      "A request for a refund of certification fees"
-    ],
-    "correctAnswer": "A statement acknowledging that the certificate will not be reissued without completing the requirements again",
-    "hint": "Section 107.79(b) requires a statement acknowledging that the certificate will not be reissued without completing the requirements again.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.200 Waiver policy and requirements\n\nThis section outlines the FAA's policy on issuing waivers for certain Part 107 regulations.",
-    "questionText": "What must an applicant demonstrate to obtain a waiver under Part 107?",
-    "answers": [
-      "That they have completed 100 hours of flight time with a small UAS",
-      "That the proposed operation can be conducted safely under the terms of the waiver",
-      "That they have a perfect safety record with no incidents",
-      "That they have a college degree in aviation"
-    ],
-    "correctAnswer": "That the proposed operation can be conducted safely under the terms of the waiver",
-    "hint": "Section 107.200(a) states that the Administrator may issue a waiver if the applicant demonstrates that the operation can be safely conducted under the terms of that waiver.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.200 Waiver policy and requirements (continued)\n\nThis section also specifies the requirements for waiver applications.",
-    "questionText": "What must a request for a certificate of waiver contain?",
-    "answers": [
-      "Only the specific regulation to be waived",
-      "A complete description of the proposed operation and safety justification",
-      "The applicant's entire flight history",
-      "A non-refundable fee of $1000"
-    ],
-    "correctAnswer": "A complete description of the proposed operation and safety justification",
-    "hint": "Section 107.200(b) requires a complete description of the proposed operation and justification that establishes that the operation can safely be conducted.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver\n\nThis section provides a list of the specific regulations that may be waived by the Administrator.",
-    "questionText": "Which of the following regulations is NOT subject to waiver under Part 107?",
-    "answers": [
-      "Operation from a moving vehicle or aircraft",
-      "Daylight operation",
-      "Visual line of sight aircraft operation",
-      "Carriage of hazardous materials"
-    ],
-    "correctAnswer": "Carriage of hazardous materials",
-    "hint": "Section 107.205 does not list the carriage of hazardous materials (§ 107.36) as a regulation subject to waiver.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section lists several regulations that may be waived, including those related to operation over people and in certain airspace.",
-    "questionText": "Which of the following operational rules is subject to waiver under Part 107?",
-    "answers": [
-      "Registration requirements",
-      "Remote pilot certification requirements",
-      "Operation over people",
-      "Carriage of hazardous materials"
-    ],
-    "correctAnswer": "Operation over people",
-    "hint": "Section 107.205(g) lists operation over people (§ 107.39) as a regulation subject to waiver.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section also includes operating limitations for small unmanned aircraft as subject to waiver.",
-    "questionText": "Which operating limitation is subject to waiver under Part 107?",
-    "answers": [
-      "The requirement to register the UAS",
-      "The prohibition on careless or reckless operation",
-      "The maximum groundspeed of 87 knots",
-      "The requirement to maintain a current remote pilot certificate"
-    ],
-    "correctAnswer": "The maximum groundspeed of 87 knots",
-    "hint": "Section 107.205(i) lists the operating limitations in § 107.51, which includes the maximum groundspeed, as subject to waiver.",
-    "points": 2
-  },
-  {
-    "prompt": "Subpart D—Waivers (Overview)\n\nThis subpart covers the entire waiver process, including policies, requirements, and the list of regulations subject to waiver.",
-    "questionText": "What is the primary purpose of the waiver process in Part 107?",
-    "answers": [
-      "To allow operators to bypass safety regulations",
-      "To permit operations that would otherwise be prohibited, if they can be conducted safely",
-      "To generate additional revenue for the FAA",
-      "To simplify the regulation of UAS operations"
-    ],
-    "correctAnswer": "To permit operations that would otherwise be prohibited, if they can be conducted safely",
-    "hint": "The waiver process is designed to allow flexibility in UAS operations while maintaining safety, as outlined in Subpart D.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.200 Waiver policy and requirements (Additional considerations)\n\nThis section also gives the Administrator the authority to prescribe additional limitations for waivers.",
-    "questionText": "According to § 107.200, what can the Administrator do when issuing a certificate of waiver?",
-    "answers": [
-      "Ignore safety considerations",
-      "Prescribe additional limitations as necessary",
-      "Waive all Part 107 regulations",
-      "Extend the waiver indefinitely"
-    ],
-    "correctAnswer": "Prescribe additional limitations as necessary",
-    "hint": "Section 107.200(c) states that the Administrator may prescribe additional limitations that the Administrator considers necessary.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.200 Waiver policy and requirements (Compliance)\n\nThis section also outlines the compliance requirements for those who receive a waiver.",
-    "questionText": "What is required of a person who receives a certificate of waiver?",
-    "answers": [
-      "They must publish the waiver details online",
-      "They must notify local law enforcement of the waiver",
-      "They must comply with any conditions or limitations specified in the waiver",
-      "They must renew the waiver every 30 days"
-    ],
-    "correctAnswer": "They must comply with any conditions or limitations specified in the waiver",
-    "hint": "Section 107.200(d)(2) states that a person who receives a waiver must comply with any conditions or limitations specified in the certificate of waiver.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver (Specific operations)\n\nThis section lists specific operations that may be eligible for a waiver, including operation from a moving vehicle or aircraft.",
-    "questionText": "Under what condition is a waiver for operation from a moving vehicle or aircraft NOT allowed?",
-    "answers": [
-      "When operating over water",
-      "When operating at night",
-      "When carrying property of another for compensation or hire",
-      "When operating in Class G airspace"
-    ],
-    "correctAnswer": "When carrying property of another for compensation or hire",
-    "hint": "Section 107.205(a) states that no waiver will be issued to allow the carriage of property of another by aircraft for compensation or hire.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.65 Aeronautical knowledge recency\n\nThis section outlines the requirements for maintaining current aeronautical knowledge to operate a small UAS.",
-    "questionText": "How often must a remote pilot demonstrate aeronautical knowledge recency?",
-    "answers": [
-      "Every 6 months",
-      "Every 12 months",
-      "Every 24 calendar months",
-      "Every 36 months"
-    ],
-    "correctAnswer": "Every 24 calendar months",
-    "hint": "Section 107.65 requires demonstration of aeronautical knowledge recency within the preceding 24 calendar months.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.67 Knowledge tests: General procedures and passing grades\n\nThis section describes the requirements for taking the aeronautical knowledge test.",
-    "questionText": "What is NOT required as part of the proper identification for a knowledge test applicant?",
-    "answers": [
-      "Photograph",
-      "Signature",
-      "Date of birth",
-      "Social Security Number"
-    ],
-    "correctAnswer": "Social Security Number",
-    "hint": "Section 107.67(b) lists the required identification elements, which do not include a Social Security Number.",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.69 Knowledge tests: Cheating or other unauthorized conduct\n\nThis section outlines prohibited behaviors during knowledge tests and their consequences.",
-    "questionText": "What is the penalty for an applicant who is found to have cheated on a knowledge test?",
-    "answers": [
-      "A fine of $1000",
-      "Prohibition from applying for any certificate, rating, or authorization for 1 year",
-      "Permanent revocation of all airman certificates",
-      "Mandatory retesting within 30 days"
-    ],
-    "correctAnswer": "Prohibition from applying for any certificate, rating, or authorization for 1 year",
-    "hint": "Section 107.69(b) states that an applicant who commits a prohibited act is prohibited from applying for any certificate, rating, or authorization for 1 year.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.71 Retesting after failure\n\nThis section specifies the waiting period required before retaking a failed knowledge test.",
-    "questionText": "How long must an applicant wait before retaking a failed knowledge test?",
-    "answers": [
-      "7 calendar days",
-      "14 calendar days",
-      "30 calendar days",
-      "60 calendar days"
-    ],
-    "correctAnswer": "14 calendar days",
-    "hint": "Section 107.71 states that an applicant who fails a knowledge test may not reapply for the test for 14 calendar days after failing the test.",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.73 Initial and recurrent knowledge tests\n\nThis section outlines the areas of knowledge covered in both initial and recurrent aeronautical knowledge tests.",
-    "questionText": "Which of the following is NOT a required knowledge area for the recurrent aeronautical knowledge test?",
-    "answers": [
-      "Applicable regulations relating to small UAS",
-      "Emergency procedures",
-      "Crew resource management",
-      "Radio communication procedures"
-    ],
-    "correctAnswer": "Radio communication procedures",
-    "hint": "Section 107.73(b) lists the areas covered in the recurrent test, which does not include radio communication procedures.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.74 Initial and recurrent training courses\n\nThis section describes the content of initial and recurrent training courses for remote pilots who hold other pilot certificates.",
-    "questionText": "Which topic is covered in the initial training course but NOT in the recurrent training course?",
-    "answers": [
-      "Applicable regulations",
-      "Emergency procedures",
-      "Crew resource management",
-      "Small unmanned aircraft loading"
-    ],
-    "correctAnswer": "Small unmanned aircraft loading",
-    "hint": "Section 107.74 shows that small unmanned aircraft loading is covered in the initial course (a) but not in the recurrent course (b).",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.77 Change of name or address\n\nThis section outlines the procedures for updating personal information on a remote pilot certificate.",
-    "questionText": "How long does a certificate holder have to notify the FAA of a change in permanent mailing address?",
-    "answers": [
-      "10 days",
-      "30 days",
-      "60 days",
-      "90 days"
-    ],
-    "correctAnswer": "30 days",
-    "hint": "Section 107.77(c) states that the holder must notify the FAA within 30 days of a change in permanent mailing address.",
-    "points": 1
-  },
-  {
-    "prompt": "§ 107.79 Voluntary surrender of certificate\n\nThis section describes the process for voluntarily surrendering a remote pilot certificate.",
-    "questionText": "What statement must be included when voluntarily surrendering a remote pilot certificate?",
-    "answers": [
-      "A promise to never fly UAS again",
-      "An explanation for surrendering the certificate",
-      "A statement acknowledging that the certificate will not be reissued without completing the requirements again",
-      "A request for a refund of certification fees"
-    ],
-    "correctAnswer": "A statement acknowledging that the certificate will not be reissued without completing the requirements again",
-    "hint": "Section 107.79(b) requires a statement acknowledging that the certificate will not be reissued without completing the requirements specified in §§ 107.61 and 107.63 again.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.200 Waiver policy and requirements\n\nThis section outlines the FAA's policy on issuing waivers for certain Part 107 regulations.",
-    "questionText": "What must an applicant demonstrate to obtain a waiver under Part 107?",
-    "answers": [
-      "That they have completed 100 hours of flight time with a small UAS",
-      "That the proposed operation can be conducted safely under the terms of the waiver",
-      "That they have a perfect safety record with no incidents",
-      "That they have a college degree in aviation"
-    ],
-    "correctAnswer": "That the proposed operation can be conducted safely under the terms of the waiver",
-    "hint": "Section 107.200(a) states that the Administrator may issue a waiver if the applicant demonstrates that the operation can be safely conducted under the terms of that waiver.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.200 Waiver policy and requirements (continued)\n\nThis section also specifies the requirements for waiver applications.",
-    "questionText": "What must a request for a certificate of waiver contain?",
-    "answers": [
-      "Only the specific regulation to be waived",
-      "A complete description of the proposed operation and safety justification",
-      "The applicant's entire flight history",
-      "A non-refundable fee of $1000"
-    ],
-    "correctAnswer": "A complete description of the proposed operation and safety justification",
-    "hint": "Section 107.200(b) requires a complete description of the proposed operation and justification that establishes that the operation can safely be conducted.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver\n\nThis section provides a list of the specific regulations that may be waived by the Administrator.",
-    "questionText": "Which of the following regulations is NOT subject to waiver under Part 107?",
-    "answers": [
-      "Operation from a moving vehicle or aircraft",
-      "Daylight operation",
-      "Visual line of sight aircraft operation",
-      "Carriage of hazardous materials"
-    ],
-    "correctAnswer": "Carriage of hazardous materials",
-    "hint": "Section 107.205 does not list the carriage of hazardous materials (§ 107.36) as a regulation subject to waiver.",
-    "points": 3
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section lists several regulations that may be waived, including those related to operation over people and in certain airspace.",
-    "questionText": "Which of the following operational rules is subject to waiver under Part 107?",
-    "answers": [
-      "Registration requirements",
-      "Remote pilot certification requirements",
-      "Operation over people",
-      "Carriage of hazardous materials"
-    ],
-    "correctAnswer": "Operation over people",
-    "hint": "Section 107.205(g) lists operation over people (§ 107.39) as a regulation subject to waiver.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver (continued)\n\nThis section also includes operating limitations for small unmanned aircraft as subject to waiver.",
-    "questionText": "Which operating limitation is subject to waiver under Part 107?",
-    "answers": [
-      "The requirement to register the UAS",
-      "The prohibition on careless or reckless operation",
-      "The maximum groundspeed of 87 knots",
-      "The requirement to maintain a current remote pilot certificate"
-    ],
-    "correctAnswer": "The maximum groundspeed of 87 knots",
-    "hint": "Section 107.205(i) lists the operating limitations in § 107.51, which includes the maximum groundspeed, as subject to waiver.",
-    "points": 2
-  },
-  {
-    "prompt": "§ 107.205 List of regulations subject to waiver (Specific operations)\n\nThis section lists specific operations that may be eligible for a waiver, including operation from a moving vehicle or aircraft.",
-    "questionText": "Under what condition is a waiver for operation from a moving vehicle or aircraft NOT allowed?",
-    "answers": [
-      "When operating over water",
-      "When operating at night",
-      "When carrying property of another for compensation or hire",
-      "When operating in Class G airspace"
-    ],
-    "correctAnswer": "When carrying property of another for compensation or hire",
-    "hint": "Section 107.205(a) states that no waiver will be issued to allow the carriage of property of another by aircraft for compensation or hire.",
-    "points": 3
-  },
-  {
-    "prompt": "Subpart D—Waivers (Overview)\n\nThis subpart covers the entire waiver process, including policies, requirements, and the list of regulations subject to waiver.",
-    "questionText": "What is the primary purpose of the waiver process in Part 107?",
-    "answers": [
-      "To allow operators to bypass safety regulations",
-      "To permit operations that would otherwise be prohibited, if they can be conducted safely",
-      "To generate additional revenue for the FAA",
-      "To simplify the regulation of UAS operations"
-    ],
-    "correctAnswer": "To permit operations that would otherwise be prohibited, if they can be conducted safely",
-    "hint": "The waiver process is designed to allow flexibility in UAS operations while maintaining safety, as outlined in Subpart D.",
-    "points": 2
   }
 ]
