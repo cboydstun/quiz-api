@@ -19,12 +19,6 @@ mutation RegisterUser($input: CreateUserInput!) {
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      badges {
-        id
-        name
-        description
-        earnedAt
-      }
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -65,12 +59,6 @@ mutation LoginUser($email: String!, $password: String!) {
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      badges {
-        id
-        name
-        description
-        earnedAt
-      }
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -106,12 +94,6 @@ query Me {
     questionsAnswered
     questionsCorrect
     questionsIncorrect
-    badges {
-      id
-      name
-      description
-      earnedAt
-    }
     lifetimePoints
     yearlyPoints
     monthlyPoints
@@ -137,12 +119,6 @@ query GetUsers {
     questionsAnswered
     questionsCorrect
     questionsIncorrect
-    badges {
-      id
-      name
-      description
-      earnedAt
-    }
     lifetimePoints
     yearlyPoints
     monthlyPoints
@@ -168,12 +144,6 @@ query GetUser($id: ID!) {
     questionsAnswered
     questionsCorrect
     questionsIncorrect
-    badges {
-      id
-      name
-      description
-      earnedAt
-    }
     lifetimePoints
     yearlyPoints
     monthlyPoints
@@ -220,12 +190,6 @@ mutation UpdateUserStats($userId: ID!, $stats: UserStatsInput!) {
     questionsAnswered
     questionsCorrect
     questionsIncorrect
-    badges {
-      id
-      name
-      description
-      earnedAt
-    }
     lifetimePoints
     yearlyPoints
     monthlyPoints

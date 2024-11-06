@@ -12,7 +12,6 @@ const userSchema = gql`
     questionsAnswered: Int!
     questionsCorrect: Int!
     questionsIncorrect: Int!
-    skills: [String]
     lifetimePoints: Int
     yearlyPoints: Int
     monthlyPoints: Int
@@ -35,7 +34,6 @@ const userSchema = gql`
     questionsCorrect: Int
     questionsIncorrect: Int
     pointsEarned: Int
-    newSkills: [String]
     lifetimePoints: Int
     yearlyPoints: Int
     monthlyPoints: Int

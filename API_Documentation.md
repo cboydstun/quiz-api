@@ -348,12 +348,6 @@ mutation RegisterUser($input: CreateUserInput!) {
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      badges {
-        id
-        name
-        description
-        earnedAt
-      }
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -397,12 +391,6 @@ mutation LoginUser($email: String!, $password: String!) {
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      badges {
-        id
-        name
-        description
-        earnedAt
-      }
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -427,7 +415,7 @@ Variables:
 
 ### Get current user (requires authentication)
 
-Retrieves the information of the currently authenticated user, including the total number of questions answered and earned badges.
+Retrieves the information of the currently authenticated user, including the total number of questions answered.
 
 ```graphql
 query Me {
@@ -440,12 +428,6 @@ query Me {
     questionsAnswered
     questionsCorrect
     questionsIncorrect
-    badges {
-      id
-      name
-      description
-      earnedAt
-    }
     lifetimePoints
     yearlyPoints
     monthlyPoints
@@ -460,7 +442,7 @@ query Me {
 
 ### Get all users (requires admin permission)
 
-Retrieves a list of all users in the system, including their total number of questions answered and earned badges.
+Retrieves a list of all users in the system, including their total number of questions answered.
 
 ```graphql
 query GetUsers {
@@ -473,12 +455,6 @@ query GetUsers {
     questionsAnswered
     questionsCorrect
     questionsIncorrect
-    badges {
-      id
-      name
-      description
-      earnedAt
-    }
     lifetimePoints
     yearlyPoints
     monthlyPoints
@@ -508,12 +484,6 @@ query GetUserFull($id: ID!) {
     questionsAnswered
     questionsCorrect
     questionsIncorrect
-    badges {
-      id
-      name
-      description
-      earnedAt
-    }
     lifetimePoints
     yearlyPoints
     monthlyPoints
@@ -571,7 +541,7 @@ mutation DeleteUser($userId: ID!) {
 
 ### Update user stats (requires admin permission)
 
-Updates the statistics for a specific user, including the total number of questions answered and adds a new badge if provided.
+Updates the statistics for a specific user, including the total number of questions answered.
 
 ```graphql
 mutation UpdateUserStats($userId: ID!, $stats: UserStatsInput!) {
@@ -584,12 +554,6 @@ mutation UpdateUserStats($userId: ID!, $stats: UserStatsInput!) {
     questionsAnswered
     questionsCorrect
     questionsIncorrect
-    badges {
-      id
-      name
-      description
-      earnedAt
-    }
     lifetimePoints
     yearlyPoints
     monthlyPoints
@@ -709,24 +673,12 @@ input UserStatsInput {
   questionsCorrect: Int
   questionsIncorrect: Int
   pointsEarned: Int
-  newBadge: BadgeInput
   consecutiveLoginDays: Int
   lifetimePoints: Int
   yearlyPoints: Int
   monthlyPoints: Int
   dailyPoints: Int
   lastLoginDate: String
-}
-```
-
-### BadgeInput
-
-Input type for adding a new badge to a user.
-
-```graphql
-input BadgeInput {
-  name: String!
-  description: String!
 }
 ```
 
@@ -766,6 +718,5 @@ When handling errors in your application, always check for the presence of the "
 - The API implements rate limiting to prevent abuse. Excessive requests may be temporarily blocked.
 - Email addresses in the leaderboard query results are masked for privacy.
 - The `questionsAnswered` field in user queries and mutations represents the total number of questions a user has ever answered. This allows users to track their progress over time.
-- Badges represent achievements earned by users. They can be awarded for various accomplishments such as answering a certain number of questions, maintaining a login streak, or achieving a perfect score on a quiz.
 - Regular users have limited access to other users' data. They can only see non-sensitive information such as username, role, score, and question statistics.
 - GitHub Actions CI/CD Pipeline enabled.

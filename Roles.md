@@ -61,7 +61,6 @@ Users can register to go through quiz questions. They do not have any administra
   - QuestionsAnswered
   - QuestionsCorrect
   - QuestionsIncorrect
-  - Badges
   - LifetimePoints
   - YearlyPoints
   - MonthlyPoints
@@ -91,15 +90,7 @@ Users can register to go through quiz questions. They do not have any administra
   - ID
   - Role Name (Super Admin, Admin, Editor, User)
 
-### 4. Badges
-
-- **Fields:**
-  - ID
-  - Name
-  - Description
-  - EarnedAt
-
-### 5. User Responses
+### 4. User Responses
 
 - **Fields:**
   - User ID

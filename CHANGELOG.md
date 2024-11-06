@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - User authentication (local and Google OAuth)
 - CRUD operations for quiz questions
 - User response tracking
-- Skill-based user progression
+- Skill-based user progression (WORK IN PROGRESS)
 - Daily, monthly, yearly, and lifetime point tracking
 - Consecutive login tracking
 - Leaderboard functionality

@@ -40,7 +40,6 @@ describe("Mutation resolvers - updateUserStats", () => {
     questionsAnswered: 15,
     questionsCorrect: 12,
     questionsIncorrect: 3,
-    skills: ["Math", "Science", "History"],
     lifetimePoints: 1500,
     yearlyPoints: 750,
     monthlyPoints: 300,
@@ -63,7 +62,6 @@ describe("Mutation resolvers - updateUserStats", () => {
         questionsCorrect: 4,
         questionsIncorrect: 1,
         pointsEarned: 50,
-        newSkills: ["History"],
         consecutiveLoginDays: 7,
         lifetimePoints: 1500,
         yearlyPoints: 750,
@@ -93,8 +91,7 @@ describe("Mutation resolvers - updateUserStats", () => {
           dailyPoints: 75,
           lastLoginDate: new Date("2023-05-15T00:00:00.000Z"),
           consecutiveLoginDays: 7,
-        },
-        $addToSet: { skills: { $each: ["History"] } },
+        }
       }),
       { new: true }
     );
@@ -113,7 +110,6 @@ describe("Mutation resolvers - updateUserStats", () => {
         questionsCorrect: 4,
         questionsIncorrect: 1,
         pointsEarned: 50,
-        newSkills: ["History"],
         consecutiveLoginDays: 7,
         lifetimePoints: 1500,
         yearlyPoints: 750,
@@ -143,7 +139,6 @@ describe("Mutation resolvers - updateUserStats", () => {
         questionsCorrect: 4,
         questionsIncorrect: 1,
         pointsEarned: 50,
-        newSkills: ["History"],
         consecutiveLoginDays: 7,
         lifetimePoints: 1500,
         yearlyPoints: 750,
@@ -173,7 +168,6 @@ describe("Mutation resolvers - updateUserStats", () => {
         questionsCorrect: "invalid" as unknown as number, // Invalid string instead of number
         questionsIncorrect: 1,
         pointsEarned: 50,
-        newSkills: ["History"],
         consecutiveLoginDays: 7,
         lifetimePoints: -100, // Invalid negative value
         yearlyPoints: "invalid" as unknown as number, // Invalid string instead of number
@@ -200,8 +194,7 @@ describe("Mutation resolvers - updateUserStats", () => {
           dailyPoints: 75,
           lastLoginDate: expect.any(Date),
           consecutiveLoginDays: 7,
-        },
-        $addToSet: { skills: { $each: ["History"] } },
+        }
       }),
       { new: true }
     );
