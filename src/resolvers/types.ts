@@ -5,7 +5,6 @@ export type UserStats = {
   questionsCorrect?: number;
   questionsIncorrect?: number;
   pointsEarned?: number;
-  newSkills?: string[];
   lifetimePoints?: number;
   yearlyPoints?: number;
   monthlyPoints?: number;
@@ -25,7 +24,6 @@ export type UserResolvers = {
       questionsAnswered: number;
       questionsCorrect: number;
       questionsIncorrect: number;
-      skills: string[];
       lifetimePoints: number;
       yearlyPoints: number;
       monthlyPoints: number;

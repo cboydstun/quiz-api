@@ -23,7 +23,6 @@ const REGISTER_USER = `
         questionsAnswered
         questionsCorrect
         questionsIncorrect
-        skills
         lifetimePoints
         yearlyPoints
         monthlyPoints
@@ -50,7 +49,6 @@ const LOGIN_USER = `
         questionsAnswered
         questionsCorrect
         questionsIncorrect
-        skills
         lifetimePoints
         yearlyPoints
         monthlyPoints
@@ -85,7 +83,6 @@ const AUTHENTICATE_WITH_GOOGLE = `
         questionsAnswered
         questionsCorrect
         questionsIncorrect
-        skills
         lifetimePoints
         yearlyPoints
         monthlyPoints
@@ -150,7 +147,6 @@ describe("Authentication Integration Tests", () => {
       expect(res.data?.register.token).toBeTruthy();
       expect(res.data?.register.user.score).toBe(0);
       expect(res.data?.register.user.questionsAnswered).toBe(0);
-      expect(res.data?.register.user.skills).toEqual([]);
       expect(res.data?.register.user.lifetimePoints).toBe(0);
       expect(res.data?.register.user.consecutiveLoginDays).toBe(0);
     });
@@ -208,7 +204,6 @@ describe("Authentication Integration Tests", () => {
       expect(res.data?.login.token).toBeTruthy();
       expect(res.data?.login.user.score).toBe(0);
       expect(res.data?.login.user.questionsAnswered).toBe(0);
-      expect(res.data?.login.user.skills).toEqual([]);
       expect(res.data?.login.user.lifetimePoints).toBe(0);
       expect(res.data?.login.user.consecutiveLoginDays).toBe(0);
     });
@@ -306,7 +301,6 @@ describe("Authentication Integration Tests", () => {
       expect(res.data?.authenticateWithGoogle.token).toBeTruthy();
       expect(res.data?.authenticateWithGoogle.user.score).toBe(0);
       expect(res.data?.authenticateWithGoogle.user.questionsAnswered).toBe(0);
-      expect(res.data?.authenticateWithGoogle.user.skills).toEqual([]);
       expect(res.data?.authenticateWithGoogle.user.lifetimePoints).toBe(0);
       expect(res.data?.authenticateWithGoogle.user.consecutiveLoginDays).toBe(0);
     });
@@ -335,7 +329,6 @@ describe("Authentication Integration Tests", () => {
       expect(res.data?.authenticateWithGoogle.token).toBeTruthy();
       expect(res.data?.authenticateWithGoogle.user.score).toBe(0);
       expect(res.data?.authenticateWithGoogle.user.questionsAnswered).toBe(0);
-      expect(res.data?.authenticateWithGoogle.user.skills).toEqual([]);
       expect(res.data?.authenticateWithGoogle.user.lifetimePoints).toBe(0);
       expect(res.data?.authenticateWithGoogle.user.consecutiveLoginDays).toBe(0);
 

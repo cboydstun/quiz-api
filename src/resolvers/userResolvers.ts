@@ -28,7 +28,6 @@ const userResolvers: UserResolvers = {
         questionsAnswered: user.questionsAnswered || 0,
         questionsCorrect: user.questionsCorrect || 0,
         questionsIncorrect: user.questionsIncorrect || 0,
-        skills: user.skills || [],
         lifetimePoints: user.lifetimePoints || 0,
         yearlyPoints: user.yearlyPoints || 0,
         monthlyPoints: user.monthlyPoints || 0,
@@ -69,7 +68,6 @@ const userResolvers: UserResolvers = {
         return {
           ...baseUserData,
           email: user.email,
-          skills: user.skills || [],
           lifetimePoints: user.lifetimePoints || 0,
           yearlyPoints: user.yearlyPoints || 0,
           monthlyPoints: user.monthlyPoints || 0,
@@ -129,7 +127,6 @@ const userResolvers: UserResolvers = {
         questionsCorrect: Math.max(0, Number(stats.questionsCorrect) || 0),
         questionsIncorrect: Math.max(0, Number(stats.questionsIncorrect) || 0),
         pointsEarned: Math.max(0, Number(stats.pointsEarned) || 0),
-        newSkills: Array.isArray(stats.newSkills) ? stats.newSkills : [],
         lifetimePoints: Math.max(0, Number(stats.lifetimePoints) || 0),
         yearlyPoints: Math.max(0, Number(stats.yearlyPoints) || 0),
         monthlyPoints: Math.max(0, Number(stats.monthlyPoints) || 0),
@@ -153,8 +150,7 @@ const userResolvers: UserResolvers = {
             dailyPoints: sanitizedStats.dailyPoints,
             lastLoginDate: sanitizedStats.lastLoginDate,
             consecutiveLoginDays: sanitizedStats.consecutiveLoginDays,
-          },
-          $addToSet: { skills: { $each: sanitizedStats.newSkills } },
+          }
         },
         { new: true }
       );

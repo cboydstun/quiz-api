@@ -13,7 +13,6 @@ export interface IUser extends Document {
   questionsAnswered: number;
   questionsCorrect: number;
   questionsIncorrect: number;
-  skills: string[];
   lifetimePoints: number;
   yearlyPoints: number;
   monthlyPoints: number;
@@ -23,7 +22,7 @@ export interface IUser extends Document {
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
-  createdQuestions: mongoose.Types.ObjectId[]; 
+  createdQuestions: mongoose.Types.ObjectId[];
 }
 
 const UserSchema = new mongoose.Schema({
@@ -40,7 +39,6 @@ const UserSchema = new mongoose.Schema({
   questionsAnswered: { type: Number, default: 0 },
   questionsCorrect: { type: Number, default: 0 },
   questionsIncorrect: { type: Number, default: 0 },
-  skills: { type: [String], default: [] },
   lifetimePoints: { type: Number, default: 0 },
   yearlyPoints: { type: Number, default: 0 },
   monthlyPoints: { type: Number, default: 0 },

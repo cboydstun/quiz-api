@@ -22,7 +22,6 @@ const GET_USERS = `
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      skills
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -60,7 +59,6 @@ const GET_USER_FULL = `
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      skills
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -84,7 +82,6 @@ const GET_ME = `
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      skills
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -125,7 +122,6 @@ const UPDATE_USER_STATS = `
       questionsAnswered
       questionsCorrect
       questionsIncorrect
-      skills
       lifetimePoints
       yearlyPoints
       monthlyPoints
@@ -348,7 +344,6 @@ describe("User Operations Integration Tests", () => {
 
       // Check that sensitive information is not included in the response
       expect(res.data?.user.email).toBeUndefined();
-      expect(res.data?.user.skills).toBeUndefined();
       expect(res.data?.user.lifetimePoints).toBeUndefined();
       expect(res.data?.user.yearlyPoints).toBeUndefined();
       expect(res.data?.user.monthlyPoints).toBeUndefined();
