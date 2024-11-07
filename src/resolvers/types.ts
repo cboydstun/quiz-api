@@ -1,5 +1,20 @@
 // src/resolvers/types.ts
 
+import { Document } from 'mongoose';
+import { IQuestion } from '../models/Question';
+
+type QuestionDifficulty = 'basic' | 'intermediate' | 'advanced';
+type QuestionType = 'multiple_choice' | 'true_false' | 'fill_in_blank';
+type QuestionStatus = 'draft' | 'review' | 'active' | 'archived';
+
+interface QuestionFilters {
+  difficulty?: QuestionDifficulty;
+  type?: QuestionType;
+  status?: QuestionStatus;
+  mainTopic?: string;
+  tags?: string[];
+}
+
 export type UserStats = {
   questionsAnswered?: number;
   questionsCorrect?: number;
@@ -78,21 +93,33 @@ export type UserResolvers = {
 
 export type QuestionResolvers = {
   Query: {
-    questions: () => Promise<any>;
-    question: (parent: any, args: { id: string }) => Promise<any>;
-    userResponses: (parent: any, args: any, context: any) => Promise<any>;
+    questions: (
+      parent: any,
+      args: QuestionFilters,
+      context: any
+    ) => Promise<Document<unknown, any, IQuestion>[]>;
+    question: (
+      parent: any,
+      args: { id: string },
+      context: any
+    ) => Promise<Document<unknown, any, IQuestion>>;
+    userResponses: (
+      parent: any,
+      args: any,
+      context: any
+    ) => Promise<any>;
   };
   Mutation: {
     createQuestion: (
       parent: any,
       args: { input: any },
       context: any
-    ) => Promise<any>;
+    ) => Promise<Document<unknown, any, IQuestion>>;
     updateQuestion: (
       parent: any,
       args: { id: string; input: any },
       context: any
-    ) => Promise<any>;
+    ) => Promise<Document<unknown, any, IQuestion>>;
     deleteQuestion: (
       parent: any,
       args: { id: string },
@@ -102,7 +129,12 @@ export type QuestionResolvers = {
       parent: any,
       args: { questionId: string; selectedAnswer: string },
       context: any
-    ) => Promise<any>;
+    ) => Promise<{
+      success: boolean;
+      isCorrect: boolean;
+      feedback: string;
+      points: number;
+    }>;
   };
 };
 

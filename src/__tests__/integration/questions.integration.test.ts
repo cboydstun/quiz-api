@@ -17,12 +17,44 @@ const CREATE_QUESTION = `
       id
       prompt
       questionText
-      answers
-      correctAnswer
+      answers {
+        text
+        isCorrect
+        explanation
+      }
+      difficulty
+      type
+      topics {
+        mainTopic
+        subTopics
+      }
+      sourceReferences {
+        page
+        lines {
+          start
+          end
+        }
+        text
+      }
+      learningObjectives
+      tags
+      hint
       points
-      createdBy {
-        id
-        username
+      feedback {
+        correct
+        incorrect
+      }
+      metadata {
+        createdBy {
+          id
+          username
+        }
+        lastModifiedBy {
+          id
+          username
+        }
+        version
+        status
       }
     }
   }
@@ -34,12 +66,44 @@ const GET_QUESTIONS = `
       id
       prompt
       questionText
-      answers
-      correctAnswer
+      answers {
+        text
+        isCorrect
+        explanation
+      }
+      difficulty
+      type
+      topics {
+        mainTopic
+        subTopics
+      }
+      sourceReferences {
+        page
+        lines {
+          start
+          end
+        }
+        text
+      }
+      learningObjectives
+      tags
+      hint
       points
-      createdBy {
-        id
-        username
+      feedback {
+        correct
+        incorrect
+      }
+      metadata {
+        createdBy {
+          id
+          username
+        }
+        lastModifiedBy {
+          id
+          username
+        }
+        version
+        status
       }
     }
   }
@@ -51,12 +115,44 @@ const GET_QUESTION = `
       id
       prompt
       questionText
-      answers
-      correctAnswer
+      answers {
+        text
+        isCorrect
+        explanation
+      }
+      difficulty
+      type
+      topics {
+        mainTopic
+        subTopics
+      }
+      sourceReferences {
+        page
+        lines {
+          start
+          end
+        }
+        text
+      }
+      learningObjectives
+      tags
+      hint
       points
-      createdBy {
-        id
-        username
+      feedback {
+        correct
+        incorrect
+      }
+      metadata {
+        createdBy {
+          id
+          username
+        }
+        lastModifiedBy {
+          id
+          username
+        }
+        version
+        status
       }
     }
   }
@@ -68,12 +164,44 @@ const UPDATE_QUESTION = `
       id
       prompt
       questionText
-      answers
-      correctAnswer
+      answers {
+        text
+        isCorrect
+        explanation
+      }
+      difficulty
+      type
+      topics {
+        mainTopic
+        subTopics
+      }
+      sourceReferences {
+        page
+        lines {
+          start
+          end
+        }
+        text
+      }
+      learningObjectives
+      tags
+      hint
       points
-      createdBy {
-        id
-        username
+      feedback {
+        correct
+        incorrect
+      }
+      metadata {
+        createdBy {
+          id
+          username
+        }
+        lastModifiedBy {
+          id
+          username
+        }
+        version
+        status
       }
     }
   }
@@ -121,7 +249,6 @@ describe("Question Operations Integration Tests", () => {
 
       process.env.JWT_SECRET = "test-secret";
 
-      // Mock the getGoogleAuthUrl resolver
       const mockResolvers = {
         ...resolvers,
         Query: {
@@ -139,14 +266,12 @@ describe("Question Operations Integration Tests", () => {
       console.error('Error in test setup:', error);
       throw error;
     }
-  }, 60000); // 60 seconds timeout for beforeAll
+  }, 60000);
 
   afterAll(async () => {
     try {
       await mongoose.disconnect();
-
       await mongoServer.stop();
-
       delete process.env.JWT_SECRET;
     } catch (error) {
       console.error('Error in test teardown:', error);
@@ -189,9 +314,31 @@ describe("Question Operations Integration Tests", () => {
               input: {
                 prompt: "Consider the following geographical question:",
                 questionText: "What is the capital of France?",
-                answers: ["London", "Berlin", "Paris", "Madrid"],
-                correctAnswer: "Paris",
+                answers: [
+                  { text: "London", isCorrect: false, explanation: "Capital of UK" },
+                  { text: "Berlin", isCorrect: false, explanation: "Capital of Germany" },
+                  { text: "Paris", isCorrect: true, explanation: "Correct! Capital of France" },
+                  { text: "Madrid", isCorrect: false, explanation: "Capital of Spain" }
+                ],
+                difficulty: "basic",
+                type: "multiple_choice",
+                topics: {
+                  mainTopic: "Geography",
+                  subTopics: ["European Capitals"]
+                },
+                sourceReferences: [{
+                  page: 1,
+                  lines: { start: 1, end: 5 },
+                  text: "Paris is the capital of France"
+                }],
+                learningObjectives: ["Learn European capitals"],
+                tags: ["geography", "europe", "capitals"],
+                hint: "This city is known as the City of Light",
                 points: 2,
+                feedback: {
+                  correct: "Great job! Paris is indeed the capital of France",
+                  incorrect: "Try again! Think about the City of Light"
+                }
               },
             },
           },
@@ -205,13 +352,18 @@ describe("Question Operations Integration Tests", () => {
         expect(res.data?.createQuestion.questionText).toBe(
           "What is the capital of France?"
         );
+        expect(res.data?.createQuestion.answers).toHaveLength(4);
+        expect(res.data?.createQuestion.answers.find((a: { isCorrect: boolean }) => a.isCorrect)?.text).toBe("Paris");
+        expect(res.data?.createQuestion.difficulty).toBe("basic");
+        expect(res.data?.createQuestion.type).toBe("multiple_choice");
+        expect(res.data?.createQuestion.topics.mainTopic).toBe("Geography");
         expect(res.data?.createQuestion.points).toBe(2);
-        expect(res.data?.createQuestion.createdBy.username).toBe("admin");
+        expect(res.data?.createQuestion.metadata.createdBy.username).toBe("admin");
       } catch (error) {
         console.error('Error in test:', error);
         throw error;
       }
-    }, 30000); // 30 seconds timeout for this specific test
+    }, 30000);
 
     it("should allow an editor to create a question", async () => {
       const res = await server.executeOperation(
@@ -221,9 +373,31 @@ describe("Question Operations Integration Tests", () => {
             input: {
               prompt: "Think about our solar system:",
               questionText: "What is the largest planet in our solar system?",
-              answers: ["Mars", "Jupiter", "Saturn", "Neptune"],
-              correctAnswer: "Jupiter",
+              answers: [
+                { text: "Mars", isCorrect: false, explanation: "Much smaller than Jupiter" },
+                { text: "Jupiter", isCorrect: true, explanation: "Correct! The largest planet" },
+                { text: "Saturn", isCorrect: false, explanation: "Second largest" },
+                { text: "Neptune", isCorrect: false, explanation: "An ice giant, but smaller" }
+              ],
+              difficulty: "basic",
+              type: "multiple_choice",
+              topics: {
+                mainTopic: "Astronomy",
+                subTopics: ["Solar System", "Planets"]
+              },
+              sourceReferences: [{
+                page: 1,
+                lines: { start: 1, end: 5 },
+                text: "Jupiter is the largest planet"
+              }],
+              learningObjectives: ["Learn about planets"],
+              tags: ["astronomy", "planets", "solar system"],
+              hint: "This planet has a great red spot",
               points: 3,
+              feedback: {
+                correct: "Excellent! Jupiter is the largest planet",
+                incorrect: "Not quite. Think about the gas giants"
+              }
             },
           },
         },
@@ -237,8 +411,10 @@ describe("Question Operations Integration Tests", () => {
       expect(res.data?.createQuestion.questionText).toBe(
         "What is the largest planet in our solar system?"
       );
+      expect(res.data?.createQuestion.answers).toHaveLength(4);
+      expect(res.data?.createQuestion.answers.find((a: { isCorrect: boolean }) => a.isCorrect)?.text).toBe("Jupiter");
       expect(res.data?.createQuestion.points).toBe(3);
-      expect(res.data?.createQuestion.createdBy.username).toBe("editor");
+      expect(res.data?.createQuestion.metadata.createdBy.username).toBe("editor");
     });
 
     it("should not allow a regular user to create a question", async () => {
@@ -250,13 +426,30 @@ describe("Question Operations Integration Tests", () => {
               prompt: "Let's discuss literature:",
               questionText: "Who wrote Romeo and Juliet?",
               answers: [
-                "Charles Dickens",
-                "William Shakespeare",
-                "Jane Austen",
-                "Mark Twain",
+                { text: "Charles Dickens", isCorrect: false, explanation: "Wrong era" },
+                { text: "William Shakespeare", isCorrect: true, explanation: "Correct!" },
+                { text: "Jane Austen", isCorrect: false, explanation: "Wrong era" },
+                { text: "Mark Twain", isCorrect: false, explanation: "Wrong era" }
               ],
-              correctAnswer: "William Shakespeare",
+              difficulty: "basic",
+              type: "multiple_choice",
+              topics: {
+                mainTopic: "Literature",
+                subTopics: ["Shakespeare", "Plays"]
+              },
+              sourceReferences: [{
+                page: 1,
+                lines: { start: 1, end: 5 },
+                text: "Shakespeare wrote Romeo and Juliet"
+              }],
+              learningObjectives: ["Learn about Shakespeare"],
+              tags: ["literature", "shakespeare", "plays"],
+              hint: "Think about the Elizabethan era",
               points: 1,
+              feedback: {
+                correct: "Correct! Shakespeare wrote this famous play",
+                incorrect: "Try again! Think about the most famous playwright"
+              }
             },
           },
         },
@@ -271,10 +464,36 @@ describe("Question Operations Integration Tests", () => {
       const question = await Question.create({
         prompt: "Do some basic math:",
         questionText: "What is 2 + 2?",
-        answers: ["3", "4", "5", "6"],
-        correctAnswer: "4",
+        answers: [
+          { text: "3", isCorrect: false, explanation: "Too low" },
+          { text: "4", isCorrect: true, explanation: "Correct!" },
+          { text: "5", isCorrect: false, explanation: "Too high" },
+          { text: "6", isCorrect: false, explanation: "Too high" }
+        ],
+        difficulty: "basic",
+        type: "multiple_choice",
+        topics: {
+          mainTopic: "Mathematics",
+          subTopics: ["Addition"]
+        },
+        sourceReferences: [{
+          page: 1,
+          lines: { start: 1, end: 5 },
+          text: "Basic addition"
+        }],
+        learningObjectives: ["Learn basic addition"],
+        tags: ["math", "addition"],
         points: 1,
-        createdBy: adminUser._id,
+        feedback: {
+          correct: "Great job!",
+          incorrect: "Try again"
+        },
+        metadata: {
+          createdBy: adminUser._id,
+          lastModifiedBy: adminUser._id,
+          version: 1,
+          status: 'active'
+        }
       });
 
       const res = await server.executeOperation(
@@ -285,9 +504,24 @@ describe("Question Operations Integration Tests", () => {
             input: {
               prompt: "Let's try a different math question:",
               questionText: "What is 2 + 3?",
-              answers: ["3", "4", "5", "6"],
-              correctAnswer: "5",
+              answers: [
+                { text: "3", isCorrect: false, explanation: "Too low" },
+                { text: "4", isCorrect: false, explanation: "Too low" },
+                { text: "5", isCorrect: true, explanation: "Correct!" },
+                { text: "6", isCorrect: false, explanation: "Too high" }
+              ],
+              difficulty: "basic",
+              type: "multiple_choice",
+              topics: {
+                mainTopic: "Mathematics",
+                subTopics: ["Addition"]
+              },
               points: 2,
+              feedback: {
+                correct: "Excellent!",
+                incorrect: "Keep trying"
+              },
+              tags: ["math"]
             },
           },
         },
@@ -299,7 +533,7 @@ describe("Question Operations Integration Tests", () => {
         "Let's try a different math question:"
       );
       expect(res.data?.updateQuestion.questionText).toBe("What is 2 + 3?");
-      expect(res.data?.updateQuestion.correctAnswer).toBe("5");
+      expect(res.data?.updateQuestion.answers.find((a: { isCorrect: boolean }) => a.isCorrect)?.text).toBe("5");
       expect(res.data?.updateQuestion.points).toBe(2);
     });
 
@@ -307,10 +541,36 @@ describe("Question Operations Integration Tests", () => {
       const question = await Question.create({
         prompt: "Let's talk about world capitals:",
         questionText: "What is the capital of Japan?",
-        answers: ["Seoul", "Beijing", "Tokyo", "Bangkok"],
-        correctAnswer: "Tokyo",
+        answers: [
+          { text: "Seoul", isCorrect: false, explanation: "Capital of South Korea" },
+          { text: "Beijing", isCorrect: false, explanation: "Capital of China" },
+          { text: "Tokyo", isCorrect: true, explanation: "Correct!" },
+          { text: "Bangkok", isCorrect: false, explanation: "Capital of Thailand" }
+        ],
+        difficulty: "basic",
+        type: "multiple_choice",
+        topics: {
+          mainTopic: "Geography",
+          subTopics: ["Asian Capitals"]
+        },
+        sourceReferences: [{
+          page: 1,
+          lines: { start: 1, end: 5 },
+          text: "Tokyo is the capital of Japan"
+        }],
+        learningObjectives: ["Learn Asian capitals"],
+        tags: ["geography", "asia", "capitals"],
         points: 2,
-        createdBy: adminUser._id,
+        feedback: {
+          correct: "Great job!",
+          incorrect: "Try again"
+        },
+        metadata: {
+          createdBy: adminUser._id,
+          lastModifiedBy: adminUser._id,
+          version: 1,
+          status: 'active'
+        }
       });
 
       const res = await server.executeOperation(
@@ -336,19 +596,71 @@ describe("Question Operations Integration Tests", () => {
       await Question.create({
         prompt: "Consider this geography question:",
         questionText: "What is the capital of France?",
-        answers: ["London", "Berlin", "Paris", "Madrid"],
-        correctAnswer: "Paris",
+        answers: [
+          { text: "London", isCorrect: false, explanation: "Capital of UK" },
+          { text: "Berlin", isCorrect: false, explanation: "Capital of Germany" },
+          { text: "Paris", isCorrect: true, explanation: "Correct!" },
+          { text: "Madrid", isCorrect: false, explanation: "Capital of Spain" }
+        ],
+        difficulty: "basic",
+        type: "multiple_choice",
+        topics: {
+          mainTopic: "Geography",
+          subTopics: ["European Capitals"]
+        },
+        sourceReferences: [{
+          page: 1,
+          lines: { start: 1, end: 5 },
+          text: "Paris is the capital of France"
+        }],
+        learningObjectives: ["Learn European capitals"],
+        tags: ["geography", "europe", "capitals"],
         points: 2,
-        createdBy: adminUser._id,
+        feedback: {
+          correct: "Great job!",
+          incorrect: "Try again"
+        },
+        metadata: {
+          createdBy: adminUser._id,
+          lastModifiedBy: adminUser._id,
+          version: 1,
+          status: 'active'
+        }
       });
 
       await Question.create({
         prompt: "Think about our solar system:",
         questionText: "What is the largest planet in our solar system?",
-        answers: ["Mars", "Jupiter", "Saturn", "Neptune"],
-        correctAnswer: "Jupiter",
+        answers: [
+          { text: "Mars", isCorrect: false, explanation: "Too small" },
+          { text: "Jupiter", isCorrect: true, explanation: "Correct!" },
+          { text: "Saturn", isCorrect: false, explanation: "Second largest" },
+          { text: "Neptune", isCorrect: false, explanation: "Too small" }
+        ],
+        difficulty: "basic",
+        type: "multiple_choice",
+        topics: {
+          mainTopic: "Astronomy",
+          subTopics: ["Planets"]
+        },
+        sourceReferences: [{
+          page: 1,
+          lines: { start: 1, end: 5 },
+          text: "Jupiter is the largest planet"
+        }],
+        learningObjectives: ["Learn about planets"],
+        tags: ["astronomy", "planets"],
         points: 3,
-        createdBy: editorUser._id,
+        feedback: {
+          correct: "Excellent!",
+          incorrect: "Try again"
+        },
+        metadata: {
+          createdBy: editorUser._id,
+          lastModifiedBy: editorUser._id,
+          version: 1,
+          status: 'active'
+        }
       });
 
       const res = await server.executeOperation(
@@ -366,6 +678,7 @@ describe("Question Operations Integration Tests", () => {
       expect(res.data?.questions[0].questionText).toBe(
         "What is the capital of France?"
       );
+      expect(res.data?.questions[0].answers.find((a: { isCorrect: boolean }) => a.isCorrect)?.text).toBe("Paris");
       expect(res.data?.questions[0].points).toBe(2);
       expect(res.data?.questions[1].prompt).toBe(
         "Think about our solar system:"
@@ -373,6 +686,7 @@ describe("Question Operations Integration Tests", () => {
       expect(res.data?.questions[1].questionText).toBe(
         "What is the largest planet in our solar system?"
       );
+      expect(res.data?.questions[1].answers.find((a: { isCorrect: boolean }) => a.isCorrect)?.text).toBe("Jupiter");
       expect(res.data?.questions[1].points).toBe(3);
     });
 
@@ -381,14 +695,35 @@ describe("Question Operations Integration Tests", () => {
         prompt: "Let's talk about literature:",
         questionText: "Who wrote Romeo and Juliet?",
         answers: [
-          "Charles Dickens",
-          "William Shakespeare",
-          "Jane Austen",
-          "Mark Twain",
+          { text: "Charles Dickens", isCorrect: false, explanation: "Wrong era" },
+          { text: "William Shakespeare", isCorrect: true, explanation: "Correct!" },
+          { text: "Jane Austen", isCorrect: false, explanation: "Wrong era" },
+          { text: "Mark Twain", isCorrect: false, explanation: "Wrong era" }
         ],
-        correctAnswer: "William Shakespeare",
+        difficulty: "basic",
+        type: "multiple_choice",
+        topics: {
+          mainTopic: "Literature",
+          subTopics: ["Shakespeare"]
+        },
+        sourceReferences: [{
+          page: 1,
+          lines: { start: 1, end: 5 },
+          text: "Shakespeare wrote Romeo and Juliet"
+        }],
+        learningObjectives: ["Learn about Shakespeare"],
+        tags: ["literature", "shakespeare"],
         points: 2,
-        createdBy: editorUser._id,
+        feedback: {
+          correct: "Great job!",
+          incorrect: "Try again"
+        },
+        metadata: {
+          createdBy: editorUser._id,
+          lastModifiedBy: editorUser._id,
+          version: 1,
+          status: 'active'
+        }
       });
 
       const res = await server.executeOperation(
@@ -406,8 +741,9 @@ describe("Question Operations Integration Tests", () => {
       expect(res.data?.question.questionText).toBe(
         "Who wrote Romeo and Juliet?"
       );
+      expect(res.data?.question.answers.find((a: { isCorrect: boolean }) => a.isCorrect)?.text).toBe("William Shakespeare");
       expect(res.data?.question.points).toBe(2);
-      expect(res.data?.question.createdBy.username).toBe("editor");
+      expect(res.data?.question.metadata.createdBy.username).toBe("editor");
     });
   });
 });

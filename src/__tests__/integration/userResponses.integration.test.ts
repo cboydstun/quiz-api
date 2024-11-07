@@ -100,9 +100,47 @@ describe("User Response Operations Integration Tests", () => {
     question = await Question.create({
       prompt: "What is the capital of France?",
       questionText: "What is the capital of France?",
-      answers: ["London", "Berlin", "Paris", "Madrid"],
-      correctAnswer: "Paris",
-      createdBy: adminUser._id,
+      answers: [
+        { text: "Paris", isCorrect: true, explanation: "Paris is the capital of France" },
+        { text: "Berlin", isCorrect: false, explanation: "Berlin is the capital of Germany" },
+        { text: "Madrid", isCorrect: false, explanation: "Madrid is the capital of Spain" },
+        { text: "Rome", isCorrect: false, explanation: "Rome is the capital of Italy" }
+      ],
+      difficulty: "basic",
+      type: "multiple_choice",
+      topics: {
+        mainTopic: "Geography",
+        subTopics: ["European Capitals"]
+      },
+      sourceReferences: [{
+        page: 1,
+        lines: {
+          start: 1,
+          end: 2
+        },
+        text: "Paris is the capital of France"
+      }],
+      metadata: {
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: adminUser._id,
+        lastModifiedBy: adminUser._id,
+        version: 1,
+        status: "active"
+      },
+      stats: {
+        timesAnswered: 0,
+        correctAnswers: 0,
+        averageTimeToAnswer: 0,
+        difficultyRating: 3
+      },
+      learningObjectives: ["Identify European capital cities"],
+      tags: ["geography", "europe", "capitals"],
+      points: 1,
+      feedback: {
+        correct: "That's right! Paris is the capital of France.",
+        incorrect: "That's incorrect. The capital of France is Paris."
+      }
     });
   });
 
