@@ -179,12 +179,24 @@ Here are some example GraphQL queries and mutations:
        id
        prompt
        questionText
-       answers
-       correctAnswer
+       answers {
+         text
+         isCorrect
+         explanation
+       }
+       difficulty
+       type
+       topics {
+         mainTopic
+         subTopics
+       }
+       learningObjectives
+       tags
+       hint
        points
-       createdBy {
-         id
-         username
+       feedback {
+         correct
+         incorrect
        }
      }
    }
@@ -197,9 +209,59 @@ Here are some example GraphQL queries and mutations:
      "input": {
        "prompt": "Consider the following geographical question:",
        "questionText": "What is the capital of France?",
-       "answers": ["London", "Berlin", "Paris", "Madrid"],
-       "correctAnswer": "Paris",
-       "points": 2
+       "answers": [
+         {
+           "text": "London",
+           "isCorrect": false,
+           "explanation": "London is the capital of the United Kingdom"
+         },
+         {
+           "text": "Berlin",
+           "isCorrect": false,
+           "explanation": "Berlin is the capital of Germany"
+         },
+         {
+           "text": "Paris",
+           "isCorrect": true,
+           "explanation": "Paris is indeed the capital of France"
+         },
+         {
+           "text": "Madrid",
+           "isCorrect": false,
+           "explanation": "Madrid is the capital of Spain"
+         }
+       ],
+       "difficulty": "BASIC",
+       "type": "MULTIPLE_CHOICE",
+       "topics": {
+         "mainTopic": "Geography",
+         "subTopics": ["European Capitals", "France"]
+       },
+       "sourceReferences": [
+         {
+           "page": 15,
+           "chapter": "European Geography",
+           "section": "Capital Cities",
+           "paragraph": "France",
+           "lines": {
+             "start": 1,
+             "end": 3
+           },
+           "text": "Paris is the capital and largest city of France."
+         }
+       ],
+       "learningObjectives": [
+         "Identify European capital cities",
+         "Understand basic French geography"
+       ],
+       "relatedQuestions": [],
+       "tags": ["geography", "europe", "capitals", "france"],
+       "hint": "This city is known as the City of Light",
+       "points": 2,
+       "feedback": {
+         "correct": "Excellent! Paris is indeed the capital of France",
+         "incorrect": "The capital of France is Paris"
+       }
      }
    }
    ```
@@ -212,12 +274,34 @@ Here are some example GraphQL queries and mutations:
        id
        prompt
        questionText
-       answers
-       correctAnswer
+       answers {
+         text
+         isCorrect
+         explanation
+       }
+       difficulty
+       type
+       topics {
+         mainTopic
+         subTopics
+       }
+       metadata {
+         createdAt
+         updatedAt
+         createdBy {
+           id
+           username
+         }
+         version
+         status
+       }
+       learningObjectives
+       tags
+       hint
        points
-       createdBy {
-         id
-         username
+       feedback {
+         correct
+         incorrect
        }
      }
    }
@@ -231,12 +315,34 @@ Here are some example GraphQL queries and mutations:
        id
        prompt
        questionText
-       answers
-       correctAnswer
+       answers {
+         text
+         isCorrect
+         explanation
+       }
+       difficulty
+       type
+       topics {
+         mainTopic
+         subTopics
+       }
+       metadata {
+         createdAt
+         updatedAt
+         createdBy {
+           id
+           username
+         }
+         version
+         status
+       }
+       learningObjectives
+       tags
+       hint
        points
-       createdBy {
-         id
-         username
+       feedback {
+         correct
+         incorrect
        }
      }
    }
@@ -273,9 +379,9 @@ quiz-api/
 ├── .env                # Environment variables
 ├── ecosystem.config.js # PM2 configuration
 ├── package.json        # Project dependencies and scripts
-├── tsconfig.json       # TypeScript configuration
+├── tsconfig.json      # TypeScript configuration
 ├── CHANGELOG.md        # Documentation of all notable changes
-└── README.md           # Project documentation
+└── README.md          # Project documentation
 ```
 
 ## Error Handling and Logging
@@ -334,7 +440,7 @@ We strongly recommend reviewing this checklist regularly and ensuring that all s
 
 ## Testing
 
-Run the test suite with:
+The project includes a comprehensive test suite with both unit tests and integration tests. Run the test suite with:
 
 ```
 pnpm test
@@ -346,7 +452,68 @@ For watch mode:
 pnpm run test:watch
 ```
 
-Tests are located in the `src/__tests__/` directory and include unit tests for resolvers and integration tests for the API.
+### Test Coverage
+
+The test suite consists of:
+
+- 23 test suites covering all major functionality
+- 97 individual test cases
+- Both unit and integration tests
+
+Test categories include:
+
+- **Integration Tests:**
+  - Authentication flows
+  - User operations
+  - Question management
+  - Leaderboard functionality
+  - User responses
+- **Resolver Tests:**
+
+  - Query resolvers (users, questions, me, etc.)
+  - Mutation resolvers (login, register, updateUser, etc.)
+  - Authentication resolvers
+  - Leaderboard resolvers
+
+- **Authentication Tests:**
+  - Local authentication
+  - Token verification
+  - User registration
+  - Login functionality
+  - Role-based access
+
+Tests are located in the `src/__tests__/` directory with the following structure:
+
+```
+src/__tests__/
+├── integration/           # Integration tests
+│   ├── auth.test.ts
+│   ├── leaderboard.test.ts
+│   ├── questions.test.ts
+│   ├── userResponses.test.ts
+│   └── users.test.ts
+└── resolvers/            # Resolver unit tests
+    ├── auth.test.ts
+    ├── leaderboardResolvers.test.ts
+    ├── mutation/
+    │   ├── changeUserRole.test.ts
+    │   ├── createQuestion.test.ts
+    │   ├── deleteQuestion.test.ts
+    │   ├── deleteUser.test.ts
+    │   ├── login.test.ts
+    │   ├── register.test.ts
+    │   ├── updateLoginStreak.test.ts
+    │   ├── updateQuestion.test.ts
+    │   ├── updateUser.test.ts
+    │   └── updateUserStats.test.ts
+    └── query/
+        ├── getGoogleAuthUrl.test.ts
+        ├── me.test.ts
+        ├── question.test.ts
+        ├── questions.test.ts
+        ├── user.test.ts
+        └── users.test.ts
+```
 
 ## Contributing
 
