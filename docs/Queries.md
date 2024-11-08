@@ -245,12 +245,49 @@ mutation CreateQuestion($input: CreateQuestionInput!) {
     id
     prompt
     questionText
-    answers
-    correctAnswer
+    answers {
+      text
+      isCorrect
+      explanation
+    }
+    difficulty
+    type
+    topics {
+      mainTopic
+      subTopics
+    }
+    sourceReferences {
+      page
+      chapter
+      section
+      paragraph
+      lines {
+        start
+        end
+      }
+      text
+    }
+    metadata {
+      createdAt
+      updatedAt
+      createdBy {
+        id
+        username
+      }
+      lastModifiedBy {
+        id
+        username
+      }
+      version
+      status
+    }
+    learningObjectives
+    tags
+    hint
     points
-    createdBy {
-      id
-      username
+    feedback {
+      correct
+      incorrect
     }
   }
 }
@@ -261,11 +298,49 @@ Variables:
 ```json
 {
   "input": {
-    "prompt": "Consider the following geographical question:",
-    "questionText": "What is the capital of France?",
-    "answers": ["London", "Berlin", "Paris", "Madrid"],
-    "correctAnswer": "Paris",
-    "points": 2
+    "prompt": "Consider the following code snippet:",
+    "questionText": "What would be the output of this code?",
+    "answers": [
+      {
+        "text": "Hello World",
+        "isCorrect": true,
+        "explanation": "The console.log statement outputs the string directly"
+      },
+      {
+        "text": "SyntaxError",
+        "isCorrect": false,
+        "explanation": "The code is syntactically correct"
+      }
+    ],
+    "difficulty": "INTERMEDIATE",
+    "type": "MULTIPLE_CHOICE",
+    "topics": {
+      "mainTopic": "JavaScript Basics",
+      "subTopics": ["Console Output", "String Manipulation"]
+    },
+    "sourceReferences": [
+      {
+        "page": 42,
+        "chapter": "Basic JavaScript",
+        "section": "Console Methods",
+        "lines": {
+          "start": 15,
+          "end": 20
+        },
+        "text": "The console.log() method outputs a message to the web console"
+      }
+    ],
+    "learningObjectives": [
+      "Understand basic console output in JavaScript",
+      "Identify correct syntax for string output"
+    ],
+    "tags": ["javascript", "console", "basics"],
+    "hint": "Look at the syntax of the console.log statement",
+    "points": 10,
+    "feedback": {
+      "correct": "Great job! You understand how console.log works in JavaScript",
+      "incorrect": "Remember that console.log outputs its arguments directly to the console"
+    }
   }
 }
 ```
@@ -278,13 +353,66 @@ query GetQuestions {
     id
     prompt
     questionText
-    answers
-    correctAnswer
-    points
-    createdBy {
-      id
-      username
+    answers {
+      text
+      isCorrect
+      explanation
     }
+    difficulty
+    type
+    topics {
+      mainTopic
+      subTopics
+    }
+    metadata {
+      createdAt
+      updatedAt
+      createdBy {
+        id
+        username
+      }
+      version
+      status
+    }
+    stats {
+      timesAnswered
+      correctAnswers
+      averageTimeToAnswer
+      difficultyRating
+    }
+    tags
+    points
+  }
+}
+```
+
+### Get questions by topic
+
+```graphql
+query GetQuestionsByTopic($mainTopic: String!) {
+  questionsByTopic(mainTopic: $mainTopic) {
+    id
+    questionText
+    topics {
+      mainTopic
+      subTopics
+    }
+    difficulty
+    type
+  }
+}
+```
+
+### Get questions by difficulty
+
+```graphql
+query GetQuestionsByDifficulty($difficulty: QuestionDifficulty!) {
+  questionsByDifficulty(difficulty: $difficulty) {
+    id
+    questionText
+    difficulty
+    type
+    points
   }
 }
 ```
@@ -297,12 +425,49 @@ query GetQuestion($id: ID!) {
     id
     prompt
     questionText
-    answers
-    correctAnswer
+    answers {
+      text
+      isCorrect
+      explanation
+    }
+    difficulty
+    type
+    topics {
+      mainTopic
+      subTopics
+    }
+    sourceReferences {
+      page
+      chapter
+      section
+      paragraph
+      lines {
+        start
+        end
+      }
+      text
+    }
+    metadata {
+      createdAt
+      updatedAt
+      createdBy {
+        id
+        username
+      }
+      lastModifiedBy {
+        id
+        username
+      }
+      version
+      status
+    }
+    learningObjectives
+    tags
+    hint
     points
-    createdBy {
-      id
-      username
+    feedback {
+      correct
+      incorrect
     }
   }
 }
@@ -316,12 +481,27 @@ mutation UpdateQuestion($id: ID!, $input: UpdateQuestionInput!) {
     id
     prompt
     questionText
-    answers
-    correctAnswer
+    answers {
+      text
+      isCorrect
+      explanation
+    }
+    difficulty
+    type
+    topics {
+      mainTopic
+      subTopics
+    }
+    metadata {
+      version
+      status
+    }
+    learningObjectives
+    tags
     points
-    createdBy {
-      id
-      username
+    feedback {
+      correct
+      incorrect
     }
   }
 }
@@ -338,10 +518,25 @@ mutation DeleteQuestion($id: ID!) {
 ### Submit answer to a question
 
 ```graphql
-mutation SubmitAnswer($questionId: ID!, $selectedAnswer: String!) {
-  submitAnswer(questionId: $questionId, selectedAnswer: $selectedAnswer) {
+mutation SubmitAnswer(
+  $questionId: ID!
+  $selectedAnswer: String!
+  $timeToAnswer: Float!
+) {
+  submitAnswer(
+    questionId: $questionId
+    selectedAnswer: $selectedAnswer
+    timeToAnswer: $timeToAnswer
+  ) {
     success
     isCorrect
+    feedback
+    points
+    stats {
+      timesAnswered
+      correctAnswers
+      averageTimeToAnswer
+    }
   }
 }
 ```
@@ -354,9 +549,16 @@ query GetUserResponses {
     questionId {
       id
       questionText
+      difficulty
+      type
+      topics {
+        mainTopic
+        subTopics
+      }
     }
     selectedAnswer
     isCorrect
+    timeToAnswer
   }
 }
 ```
