@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The generated resolver types are committed. If the schema changed
+      # without regenerating, this leaves a diff and the next step fails.
+      - name: Check generated GraphQL types are current
+        run: |
+          pnpm --filter @quiz/graphql codegen
+          git diff --exit-code -- packages/graphql/src/generated
+
+      # Likewise for migrations: a schema edit with no migration would leave
+      # the PGlite test database and Neon permanently out of step.
+      - name: Check drizzle migrations are current
+        run: |
+          pnpm --filter @quiz/db generate
+          git diff --exit-code -- packages/db/drizzle
+
+      - run: pnpm exec turbo run typecheck lint test

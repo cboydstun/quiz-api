@@ -1,0 +1,5 @@
+pnpm-lock.yaml
+packages/db/drizzle/
+packages/graphql/src/generated/
+.next/
+.turbo/
