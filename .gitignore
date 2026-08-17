@@ -19,3 +19,10 @@ coverage/
 next-env.d.ts
 .DS_Store
 .vercel
+
+# Written by `vercel env pull`. `.env.example` is already tracked, so the
+# broad glob does not untrack it.
+.env*
+
+# Personal scratch file.
+IDEAS.md
