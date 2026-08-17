@@ -1,6 +1,6 @@
 [
   {
-    "prompt": "14 CFR 107.51: The remote pilot in command is bound by explicit operating limitations on how fast and how high a small unmanned aircraft may be flown. The rule states that the groundspeed of the small unmanned aircraft may not exceed 87 knots (100 miles per hour), and that the altitude may not be higher than 400 feet above ground level unless the aircraft is flown within a 400-foot radius of a structure and does not fly higher than 400 feet above that structure's immediate uppermost limit.",
+    "prompt": "14 CFR 107.51: The remote pilot in command is bound by explicit operating limitations on how fast and how high a small unmanned aircraft may be flown. The rule states that the groundspeed of the small unmanned aircraft may not exceed 87 knots (100 miles per hour), and that the altitude may not be higher than 400 feet above ground level unless the aircraft is flown within a 400-foot radius of a structure and does not fly higher than 400 feet above that structure's immediate uppermost limit.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.51",
     "questionText": "Under 14 CFR part 107, what is the maximum groundspeed permitted for a small unmanned aircraft?",
     "answers": [
       "87 knots (100 miles per hour)",
@@ -14,7 +14,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.51: Altitude under part 107 is measured above ground level, not above sea level, and the rule carries one exception for operations near tall structures. A small unmanned aircraft may be flown higher than 400 feet AGL only if it stays within a 400-foot radius of a structure and does not fly more than 400 feet above that structure's immediate uppermost limit.",
+    "prompt": "14 CFR 107.51: Altitude under part 107 is measured above ground level, not above sea level, and the rule carries one exception for operations near tall structures. A small unmanned aircraft may be flown higher than 400 feet AGL only if it stays within a 400-foot radius of a structure and does not fly more than 400 feet above that structure's immediate uppermost limit.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.51",
     "questionText": "A remote pilot wants to inspect the top of a 900-foot tower. What does part 107 allow?",
     "answers": [
       "Flight up to 1,300 feet AGL, provided the aircraft stays within a 400-foot radius of the tower",
@@ -28,7 +28,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.51: Part 107 sets minimum weather conditions for the operation itself. The minimum flight visibility, as observed from the location of the control station, may not be less than 3 statute miles, and the minimum distance from clouds may not be less than 500 feet below the cloud and 2,000 feet horizontally from the cloud.",
+    "prompt": "14 CFR 107.51: Part 107 sets minimum weather conditions for the operation itself. The minimum flight visibility, as observed from the location of the control station, may not be less than 3 statute miles, and the minimum distance from clouds may not be less than 500 feet below the cloud and 2,000 feet horizontally from the cloud.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.51",
     "questionText": "What are the minimum cloud clearance requirements for a small unmanned aircraft operated under part 107?",
     "answers": [
       "500 feet below and 2,000 feet horizontally",
@@ -42,7 +42,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.51: Flight visibility under part 107 is judged from a specific vantage point rather than from the aircraft. The rule specifies that the minimum flight visibility, as observed from the location of the control station, may not be less than 3 statute miles.",
+    "prompt": "14 CFR 107.51: Flight visibility under part 107 is judged from a specific vantage point rather than from the aircraft. The rule specifies that the minimum flight visibility, as observed from the location of the control station, may not be less than 3 statute miles.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.51",
     "questionText": "Where is the 3 statute mile minimum flight visibility measured from?",
     "answers": [
       "The location of the control station",
@@ -56,7 +56,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.9: Part 107 requires a report to the FAA after certain accidents. The remote pilot in command must report within 10 calendar days any operation that results in serious injury to any person or any loss of consciousness, or damage to any property other than the small unmanned aircraft, if the cost of repair or the fair market value of the property exceeds $500.",
+    "prompt": "14 CFR 107.9: Part 107 requires a report to the FAA after certain accidents. The remote pilot in command must report within 10 calendar days any operation that results in serious injury to any person or any loss of consciousness, or damage to any property other than the small unmanned aircraft, if the cost of repair or the fair market value of the property exceeds $500.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.9",
     "questionText": "Within what period must a remote pilot in command report a qualifying accident to the FAA?",
     "answers": [
       "10 calendar days",
@@ -70,7 +70,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.9: The property-damage trigger for an accident report excludes the unmanned aircraft itself. A report is required when damage to any property other than the small unmanned aircraft exceeds $500 to repair, or exceeds $500 in fair market value if the property is not repaired.",
+    "prompt": "14 CFR 107.9: The property-damage trigger for an accident report excludes the unmanned aircraft itself. A report is required when damage to any property other than the small unmanned aircraft exceeds $500 to repair, or exceeds $500 in fair market value if the property is not repaired.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.9",
     "questionText": "A small unmanned aircraft is destroyed on impact and also breaks a $200 window. No one is injured. What reporting is required?",
     "answers": [
       "No report is required, because the damage to other property is under $500",
@@ -84,7 +84,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.3 and 107.1: Part 107 applies to a defined class of aircraft by weight. A small unmanned aircraft is one weighing less than 55 pounds on takeoff, including everything that is on board or otherwise attached to the aircraft.",
+    "prompt": "14 CFR 107.3 and 107.1: Part 107 applies to a defined class of aircraft by weight. A small unmanned aircraft is one weighing less than 55 pounds on takeoff, including everything that is on board or otherwise attached to the aircraft.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.3",
     "questionText": "How is the 55-pound limit for a small unmanned aircraft measured?",
     "answers": [
       "Less than 55 pounds at takeoff, including everything on board or attached",
@@ -98,7 +98,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.31: Part 107 requires the remote pilot in command, the person manipulating the controls, and the visual observer, if one is used, to be able to see the unmanned aircraft throughout the entire flight with vision unaided by any device other than corrective lenses.",
+    "prompt": "14 CFR 107.31: Part 107 requires the remote pilot in command, the person manipulating the controls, and the visual observer, if one is used, to be able to see the unmanned aircraft throughout the entire flight with vision unaided by any device other than corrective lenses.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.31",
     "questionText": "Which device may be used and still satisfy the visual line of sight requirement of 14 CFR 107.31?",
     "answers": [
       "Corrective lenses",
@@ -112,7 +112,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.35: Part 107 limits how many aircraft a single person may handle. A person may not operate or act as a remote pilot in command or visual observer in the operation of more than one unmanned aircraft at the same time.",
+    "prompt": "14 CFR 107.35: Part 107 limits how many aircraft a single person may handle. A person may not operate or act as a remote pilot in command or visual observer in the operation of more than one unmanned aircraft at the same time.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.35",
     "questionText": "Under part 107, how many small unmanned aircraft may one person operate at the same time?",
     "answers": [
       "One",
@@ -126,7 +126,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.25: Operating from a moving vehicle is restricted under part 107. A remote pilot may not operate a small unmanned aircraft from a moving aircraft, or from a moving land or water-borne vehicle unless the small unmanned aircraft is flown over a sparsely populated area and is not transporting another person's property for compensation or hire.",
+    "prompt": "14 CFR 107.25: Operating from a moving vehicle is restricted under part 107. A remote pilot may not operate a small unmanned aircraft from a moving aircraft, or from a moving land or water-borne vehicle unless the small unmanned aircraft is flown over a sparsely populated area and is not transporting another person's property for compensation or hire.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.25",
     "questionText": "When may a small unmanned aircraft be operated from a moving land vehicle under part 107?",
     "answers": [
       "Over a sparsely populated area, when not carrying another person's property for compensation or hire",
@@ -140,7 +140,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.36: Part 107 places an absolute prohibition on certain cargo. A small unmanned aircraft may not carry hazardous material as defined in 49 CFR 171.8.",
+    "prompt": "14 CFR 107.36: Part 107 places an absolute prohibition on certain cargo. A small unmanned aircraft may not carry hazardous material as defined in 49 CFR 171.8.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.36",
     "questionText": "What does part 107 say about carrying hazardous materials on a small unmanned aircraft?",
     "answers": [
       "It is prohibited",
@@ -154,7 +154,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.37: Right of way under part 107 runs one way. Each small unmanned aircraft must yield the right of way to all aircraft, airborne vehicles, and launch and reentry vehicles, and no person may operate a small unmanned aircraft so close to another aircraft as to create a collision hazard.",
+    "prompt": "14 CFR 107.37: Right of way under part 107 runs one way. Each small unmanned aircraft must yield the right of way to all aircraft, airborne vehicles, and launch and reentry vehicles, and no person may operate a small unmanned aircraft so close to another aircraft as to create a collision hazard.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.37",
     "questionText": "A manned aircraft approaches the area where a small unmanned aircraft is operating. Who has the right of way?",
     "answers": [
       "The manned aircraft, and the small unmanned aircraft must yield",
@@ -168,7 +168,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.41: Airspace access under part 107 depends on the class of airspace. No person may operate a small unmanned aircraft in Class B, Class C, or Class D airspace, or within the lateral boundaries of the surface area of Class E airspace designated for an airport, unless that person has prior authorization from Air Traffic Control.",
+    "prompt": "14 CFR 107.41: Airspace access under part 107 depends on the class of airspace. No person may operate a small unmanned aircraft in Class B, Class C, or Class D airspace, or within the lateral boundaries of the surface area of Class E airspace designated for an airport, unless that person has prior authorization from Air Traffic Control.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.41",
     "questionText": "In which class of airspace may a remote pilot operate under part 107 without prior ATC authorization?",
     "answers": [
       "Class G",
@@ -182,7 +182,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.19: Part 107 assigns final authority for the flight to one person. The remote pilot in command is directly responsible for and is the final authority as to the operation of the small unmanned aircraft system, and must ensure the operation poses no undue hazard to other people, aircraft, or property in the event of a loss of control.",
+    "prompt": "14 CFR 107.19: Part 107 assigns final authority for the flight to one person. The remote pilot in command is directly responsible for and is the final authority as to the operation of the small unmanned aircraft system, and must ensure the operation poses no undue hazard to other people, aircraft, or property in the event of a loss of control.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.19",
     "questionText": "Who is directly responsible for and the final authority as to the operation of a small unmanned aircraft system?",
     "answers": [
       "The remote pilot in command",
@@ -196,7 +196,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.21: Part 107 allows a departure from the rules when circumstances demand it. In an in-flight emergency requiring immediate action, the remote pilot in command may deviate from any rule of part 107 to the extent necessary to meet that emergency, and upon request of the Administrator must send a written report of that deviation.",
+    "prompt": "14 CFR 107.21: Part 107 allows a departure from the rules when circumstances demand it. In an in-flight emergency requiring immediate action, the remote pilot in command may deviate from any rule of part 107 to the extent necessary to meet that emergency, and upon request of the Administrator must send a written report of that deviation.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.21",
     "questionText": "After deviating from a rule of part 107 to meet an in-flight emergency, what must the remote pilot in command do?",
     "answers": [
       "Send a written report of the deviation upon request of the Administrator",
@@ -210,7 +210,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.27, which incorporates 91.17 and 91.19: Part 107 carries the same substance rules that apply to manned flight. No person may act as a remote pilot in command or manipulate the flight controls within 8 hours after consuming alcohol, while under the influence of alcohol, while using any drug that affects safety, or while having an alcohol concentration of 0.04 or greater.",
+    "prompt": "14 CFR 107.27, which incorporates 91.17 and 91.19: Part 107 carries the same substance rules that apply to manned flight. No person may act as a remote pilot in command or manipulate the flight controls within 8 hours after consuming alcohol, while under the influence of alcohol, while using any drug that affects safety, or while having an alcohol concentration of 0.04 or greater.\n\nSource: https://www.ecfr.gov/current/title-14/section-91.17",
     "questionText": "How long after consuming alcohol must a person wait before acting as a remote pilot in command?",
     "answers": [
       "8 hours",
@@ -224,7 +224,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.61: Eligibility for a remote pilot certificate with a small UAS rating carries an age floor and a language requirement. An applicant must be at least 16 years of age, must be able to read, speak, write, and understand the English language, and must be in a physical and mental condition to safely operate a small unmanned aircraft system.",
+    "prompt": "14 CFR 107.61: Eligibility for a remote pilot certificate with a small UAS rating carries an age floor and a language requirement. An applicant must be at least 16 years of age, must be able to read, speak, write, and understand the English language, and must be in a physical and mental condition to safely operate a small unmanned aircraft system.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.61",
     "questionText": "What is the minimum age to be eligible for a remote pilot certificate with a small UAS rating?",
     "answers": [
       "16 years of age",
@@ -238,7 +238,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.65: A remote pilot certificate does not stay current on its own. A person may not operate a small unmanned aircraft system unless that person has completed an initial or recurrent aeronautical knowledge test or training within the previous 24 calendar months.",
+    "prompt": "14 CFR 107.65: A remote pilot certificate does not stay current on its own. A person may not operate a small unmanned aircraft system unless that person has completed an initial or recurrent aeronautical knowledge test or training within the previous 24 calendar months.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.65",
     "questionText": "How often must a certificated remote pilot complete recurrent training to stay current?",
     "answers": [
       "Within the previous 24 calendar months",
@@ -252,7 +252,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.7: A remote pilot must be able to produce documentation on demand. A remote pilot in command, owner, or person manipulating the flight controls of a small unmanned aircraft system must, upon request, make available to the Administrator the remote pilot certificate and any other document, record, or report required to be kept under the regulations.",
+    "prompt": "14 CFR 107.7: A remote pilot must be able to produce documentation on demand. A remote pilot in command, owner, or person manipulating the flight controls of a small unmanned aircraft system must, upon request, make available to the Administrator the remote pilot certificate and any other document, record, or report required to be kept under the regulations.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.7",
     "questionText": "An FAA inspector asks a remote pilot in command to produce their remote pilot certificate at the operating site. What is required?",
     "answers": [
       "The certificate must be made available upon request",
@@ -266,7 +266,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "14 CFR 107.200 and 107.205: Part 107 provides a route around some, but not all, of its operating rules. The Administrator may issue a certificate of waiver authorizing a deviation from the sections listed in 107.205 if the applicant shows the operation can safely be conducted under the terms of that waiver. Sections such as 107.36, which prohibits carriage of hazardous material, are not on that list.",
+    "prompt": "14 CFR 107.200 and 107.205: Part 107 provides a route around some, but not all, of its operating rules. The Administrator may issue a certificate of waiver authorizing a deviation from the sections listed in 107.205 if the applicant shows the operation can safely be conducted under the terms of that waiver. Sections such as 107.36, which prohibits carriage of hazardous material, are not on that list.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.200",
     "questionText": "What must an applicant demonstrate to obtain a certificate of waiver under 14 CFR 107.200?",
     "answers": [
       "That the operation can be conducted safely under the terms of the certificate of waiver",
@@ -280,7 +280,7 @@
     "domain": "Regulations"
   },
   {
-    "prompt": "AC 107-2A, Emergency Procedures: A lost link is a loss of the control link between the control station and the small unmanned aircraft. Most small unmanned aircraft systems are programmed with a predetermined lost link procedure, such as returning to the launch point, hovering in place, or landing. The remote pilot in command is expected to know what the aircraft will do before the flight begins, so that the ground area affected by that behaviour can be kept clear.",
+    "prompt": "14 CFR 107.19(c): The remote pilot in command must ensure that the small unmanned aircraft will pose no undue hazard to other people, other aircraft, or other property in the event of a loss of control of the small unmanned aircraft for any reason. Most small unmanned aircraft systems are programmed with a predetermined behaviour when the control link is lost — returning to the launch point, hovering, or landing — so the remote pilot is expected to know what the aircraft will do before the flight begins.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.19",
     "questionText": "Why should a remote pilot know the aircraft's programmed lost link behaviour before flight?",
     "answers": [
       "So the area the aircraft will fly to or land in can be assessed and kept clear beforehand",
@@ -294,7 +294,7 @@
     "domain": "Emergency procedures"
   },
   {
-    "prompt": "14 CFR 107.21: In an in-flight emergency requiring immediate action, the remote pilot in command may deviate from any rule of part 107 to the extent necessary to meet that emergency. The authority is limited to what the emergency actually requires, and the deviation may have to be justified afterwards in a written report requested by the Administrator.",
+    "prompt": "14 CFR 107.21: In an in-flight emergency requiring immediate action, the remote pilot in command may deviate from any rule of part 107 to the extent necessary to meet that emergency. The authority is limited to what the emergency actually requires, and the deviation may have to be justified afterwards in a written report requested by the Administrator.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.21",
     "questionText": "How far may a remote pilot in command deviate from part 107 during an in-flight emergency?",
     "answers": [
       "Only to the extent necessary to meet the emergency",
@@ -308,7 +308,7 @@
     "domain": "Emergency procedures"
   },
   {
-    "prompt": "AC 107-2A, Emergency Procedures: A flyaway occurs when the small unmanned aircraft no longer responds to control inputs and departs the operating area on its own. Because the aircraft is no longer under control and may leave visual line of sight, the remote pilot in command's first concern is the safety of people and other aircraft in the area the aircraft is heading toward.",
+    "prompt": "AC 107-2A Appendix B.6.1 lists loss of control (LOC) and flyaways among the reported problems with small UAS, and 14 CFR 107.19(c) makes the remote pilot in command responsible for ensuring the aircraft poses no undue hazard in the event of a loss of control. In a flyaway the aircraft no longer responds to control inputs and departs the operating area on its own.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.19",
     "questionText": "A small unmanned aircraft stops responding to control inputs and flies away from the operating site. What should the remote pilot in command do first?",
     "answers": [
       "Take action to protect people and other aircraft in the aircraft's path, including alerting anyone at risk",
@@ -322,7 +322,7 @@
     "domain": "Emergency procedures"
   },
   {
-    "prompt": "AC 107-2A, Preflight and Emergency Planning: Part of preflight planning is deciding, before launch, where the aircraft will be put down if something goes wrong. An emergency landing site should be clear of people and property and reachable within the aircraft's remaining endurance from the areas the flight will cover.",
+    "prompt": "AC 107-2A, Preflight and Emergency Planning: Part of preflight planning is deciding, before launch, where the aircraft will be put down if something goes wrong. An emergency landing site should be clear of people and property and reachable within the aircraft's remaining endurance from the areas the flight will cover.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "What characterizes a suitable emergency landing site chosen during preflight planning?",
     "answers": [
       "It is clear of people and property and reachable from the planned flight area",
@@ -336,7 +336,7 @@
     "domain": "Emergency procedures"
   },
   {
-    "prompt": "AC 107-2A, Loss of GPS: Many small unmanned aircraft rely on satellite positioning for station keeping and for return-to-home. When GPS reception degrades, the aircraft may drift with the wind, and automated features that depend on position may become unreliable. Remote pilots are encouraged to be proficient at manual flight modes for this reason.",
+    "prompt": "AC 107-2A Appendix B.6.1 notes that loss of control (LOC) and flyaways are among the reported problems with small UAS, and 14 CFR 107.19(c) makes the remote pilot in command responsible for ensuring the aircraft poses no undue hazard in the event of a loss of control. Many small unmanned aircraft rely on satellite positioning for station keeping and return-to-home, so when GPS reception degrades the aircraft may drift with the wind and position-dependent features become unreliable.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "A small unmanned aircraft loses GPS reception in flight. What is the most likely immediate effect?",
     "answers": [
       "The aircraft may drift with the wind and position-holding features may become unreliable",
@@ -350,7 +350,7 @@
     "domain": "Emergency procedures"
   },
   {
-    "prompt": "AC 107-2A, Emergency Procedures: Before an operation begins, everyone involved should know what to do when something goes wrong. A crew briefing that covers emergency procedures, the location of the emergency landing site, and each person's role removes the need to improvise those decisions under time pressure.",
+    "prompt": "AC 107-2A, Emergency Procedures: Before an operation begins, everyone involved should know what to do when something goes wrong. A crew briefing that covers emergency procedures, the location of the emergency landing site, and each person's role removes the need to improvise those decisions under time pressure.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.49",
     "questionText": "When should a crew be briefed on emergency procedures for an operation?",
     "answers": [
       "Before the operation begins",
@@ -364,7 +364,7 @@
     "domain": "Emergency procedures"
   },
   {
-    "prompt": "14 CFR 107.9: A report to the FAA is required within 10 calendar days of an operation that results in serious injury to any person or any loss of consciousness, or damage to property other than the small unmanned aircraft exceeding $500 to repair or in fair market value.",
+    "prompt": "14 CFR 107.9: A report to the FAA is required within 10 calendar days of an operation that results in serious injury to any person or any loss of consciousness, or damage to property other than the small unmanned aircraft exceeding $500 to repair or in fair market value.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.9",
     "questionText": "A small unmanned aircraft strikes a bystander, who is knocked unconscious. What reporting is required?",
     "answers": [
       "A report to the FAA within 10 calendar days, because a loss of consciousness occurred",
@@ -378,7 +378,7 @@
     "domain": "Emergency procedures"
   },
   {
-    "prompt": "AC 107-2A, Battery Considerations: Lithium-based batteries can fail energetically. Physical damage, punctures, swelling, overcharging, and overheating are recognized precursors, and a battery showing any of them should be removed from service rather than flown.",
+    "prompt": "AC 107-2A, Battery Considerations: Lithium-based batteries can fail energetically. Physical damage, punctures, swelling, overcharging, and overheating are recognized precursors, and a battery showing any of them should be removed from service rather than flown.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "A remote pilot notices that a lithium battery pack has swollen since its last use. What is the appropriate action?",
     "answers": [
       "Remove the battery from service and do not fly it",
@@ -392,7 +392,7 @@
     "domain": "Emergency procedures"
   },
   {
-    "prompt": "AC 107-2A, Crew Resource Management: CRM is the effective use of all available resources, including human resources, hardware, and information, to achieve a safe operation. For a small UAS crew, those resources include the remote pilot in command, the person manipulating the controls, any visual observers, and the people and equipment supporting the flight.",
+    "prompt": "AC 107-2A, Crew Resource Management: CRM is the effective use of all available resources, including human resources, hardware, and information, to achieve a safe operation. For a small UAS crew, those resources include the remote pilot in command, the person manipulating the controls, any visual observers, and the people and equipment supporting the flight.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "What does crew resource management refer to in a small UAS operation?",
     "answers": [
       "The effective use of all available resources, including people, hardware, and information",
@@ -406,7 +406,7 @@
     "domain": "Crew resource management"
   },
   {
-    "prompt": "14 CFR 107.33 and AC 107-2A: When a visual observer is used, the remote pilot in command, the person manipulating the controls, and the visual observer must maintain effective communication with each other at all times. The visual observer must be able to see the unmanned aircraft well enough to know its location, attitude, altitude, and direction, and to scan for other air traffic and hazards.",
+    "prompt": "14 CFR 107.33 and AC 107-2A: When a visual observer is used, the remote pilot in command, the person manipulating the controls, and the visual observer must maintain effective communication with each other at all times. The visual observer must be able to see the unmanned aircraft well enough to know its location, attitude, altitude, and direction, and to scan for other air traffic and hazards.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.33",
     "questionText": "What is the primary duty of a visual observer under 14 CFR 107.33?",
     "answers": [
       "To see the unmanned aircraft and scan the airspace for other traffic and hazards",
@@ -420,7 +420,7 @@
     "domain": "Crew resource management"
   },
   {
-    "prompt": "14 CFR 107.33: The rule requires that the remote pilot in command, the person manipulating the flight controls, and the visual observer maintain effective communication with each other at all times. If that communication cannot be maintained, the visual observer cannot be relied on to satisfy the see-and-avoid requirement.",
+    "prompt": "14 CFR 107.33: The rule requires that the remote pilot in command, the person manipulating the flight controls, and the visual observer maintain effective communication with each other at all times. If that communication cannot be maintained, the visual observer cannot be relied on to satisfy the see-and-avoid requirement.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.33",
     "questionText": "A visual observer is positioned far enough away that radio contact with the remote pilot is intermittent. What does part 107 require?",
     "answers": [
       "Effective communication must be maintained at all times, so the arrangement is not acceptable",
@@ -434,7 +434,7 @@
     "domain": "Crew resource management"
   },
   {
-    "prompt": "AC 107-2A, Crew Resource Management: A crew briefing conducted before the operation establishes each person's role and responsibilities, the planned flight profile, the hazards identified during site assessment, the communication method, and the actions to be taken in an emergency.",
+    "prompt": "AC 107-2A, Crew Resource Management: A crew briefing conducted before the operation establishes each person's role and responsibilities, the planned flight profile, the hazards identified during site assessment, the communication method, and the actions to be taken in an emergency.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "What is the purpose of a crew briefing before a small UAS operation?",
     "answers": [
       "To establish roles, the flight plan, identified hazards, communication, and emergency actions",
@@ -448,7 +448,7 @@
     "domain": "Crew resource management"
   },
   {
-    "prompt": "AC 107-2A, Crew Resource Management: Situational awareness is the accurate perception of the operational and environmental factors affecting the flight during a specific period of time. Losing it, whether through distraction, fixation on one task, or a heavy workload, is a recognized precursor to an accident.",
+    "prompt": "AC 107-2A, Crew Resource Management: Situational awareness is the accurate perception of the operational and environmental factors affecting the flight during a specific period of time. Losing it, whether through distraction, fixation on one task, or a heavy workload, is a recognized precursor to an accident.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "Which of the following most directly degrades a remote pilot's situational awareness?",
     "answers": [
       "Fixating on the camera feed and neglecting to scan for other traffic",
@@ -462,7 +462,7 @@
     "domain": "Crew resource management"
   },
   {
-    "prompt": "AC 107-2A, Crew Resource Management: Workload management means recognizing when the demands of the operation exceed what one person can safely handle, and distributing the tasks accordingly. Adding a visual observer, sequencing tasks so they do not overlap, or postponing non-essential work are all ways of managing that load.",
+    "prompt": "AC 107-2A, Crew Resource Management: Workload management means recognizing when the demands of the operation exceed what one person can safely handle, and distributing the tasks accordingly. Adding a visual observer, sequencing tasks so they do not overlap, or postponing non-essential work are all ways of managing that load.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "A single remote pilot must fly the aircraft, operate the camera, and watch for traffic near a busy road. What is the appropriate crew resource management response?",
     "answers": [
       "Add a visual observer or otherwise redistribute the tasks before flying",
@@ -476,7 +476,7 @@
     "domain": "Crew resource management"
   },
   {
-    "prompt": "14 CFR 107.19 and AC 107-2A: A person may manipulate the flight controls of a small unmanned aircraft system without holding a remote pilot certificate, provided a certificated remote pilot in command is directly supervising and has the ability to immediately take direct control of the aircraft.",
+    "prompt": "14 CFR 107.19 and AC 107-2A: A person may manipulate the flight controls of a small unmanned aircraft system without holding a remote pilot certificate, provided a certificated remote pilot in command is directly supervising and has the ability to immediately take direct control of the aircraft.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.12",
     "questionText": "An uncertificated person wishes to fly the aircraft under part 107. What makes this permissible?",
     "answers": [
       "A certificated remote pilot in command directly supervises and can immediately take direct control",
@@ -490,7 +490,7 @@
     "domain": "Crew resource management"
   },
   {
-    "prompt": "AC 107-2A, Crew Resource Management: Standard, unambiguous phraseology agreed during the crew briefing reduces the chance that an instruction is misheard or misinterpreted. This matters most during the moments when the crew has least time to clarify, such as a traffic call or a handover of the controls.",
+    "prompt": "AC 107-2A, Crew Resource Management: Standard, unambiguous phraseology agreed during the crew briefing reduces the chance that an instruction is misheard or misinterpreted. This matters most during the moments when the crew has least time to clarify, such as a traffic call or a handover of the controls.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "Why should a crew agree on standard phraseology during the briefing?",
     "answers": [
       "So instructions given at high-workload moments are not misinterpreted",
@@ -504,7 +504,7 @@
     "domain": "Crew resource management"
   },
   {
-    "prompt": "AC 107-2A, Crew Resource Management: Effective CRM depends on every crew member being willing to raise a safety concern, and on the remote pilot in command being willing to hear it. A visual observer who sees a hazard the pilot has not seen is providing exactly the resource the observer was added for.",
+    "prompt": "AC 107-2A, Crew Resource Management: Effective CRM depends on every crew member being willing to raise a safety concern, and on the remote pilot in command being willing to hear it. A visual observer who sees a hazard the pilot has not seen is providing exactly the resource the observer was added for.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "A visual observer tells the remote pilot in command that an aircraft is approaching, but the pilot does not see it. What is the appropriate response?",
     "answers": [
       "Act on the observer's report and take action to remain well clear",
@@ -518,7 +518,7 @@
     "domain": "Crew resource management"
   },
   {
-    "prompt": "AC 107-2A, Crew Resource Management: Task management includes recognizing that some tasks belong on the ground rather than in the air. Reviewing airspace, checking NOTAMs and weather, inspecting the aircraft, and briefing the crew are all completed before launch precisely so they do not compete with flying the aircraft.",
+    "prompt": "AC 107-2A, Crew Resource Management: Task management includes recognizing that some tasks belong on the ground rather than in the air. Reviewing airspace, checking NOTAMs and weather, inspecting the aircraft, and briefing the crew are all completed before launch precisely so they do not compete with flying the aircraft.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "Why are airspace review, weather checks, and the crew briefing completed before launch?",
     "answers": [
       "So they do not compete for attention with flying the aircraft",
@@ -532,7 +532,7 @@
     "domain": "Crew resource management"
   },
   {
-    "prompt": "AIM Chapter 4, Section 1: The common traffic advisory frequency, or CTAF, is a frequency designated for the purpose of carrying out airport advisory practices while operating to or from an airport without an operating control tower. Pilots self-announce their position and intentions on it so that everyone in the vicinity has the same picture of the traffic.",
+    "prompt": "AIM Chapter 4, Section 1: The common traffic advisory frequency, or CTAF, is a frequency designated for the purpose of carrying out airport advisory practices while operating to or from an airport without an operating control tower. Pilots self-announce their position and intentions on it so that everyone in the vicinity has the same picture of the traffic.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_1.html",
     "questionText": "What is the purpose of the common traffic advisory frequency (CTAF)?",
     "answers": [
       "To carry airport advisory practices at airports without an operating control tower",
@@ -546,7 +546,7 @@
     "domain": "Radio procedures"
   },
   {
-    "prompt": "Sectional Chart Legend: On a sectional chart, the CTAF for an airport is identified by a solid filled circle containing the letter C, placed immediately after the frequency in the airport data block.",
+    "prompt": "Sectional Chart Legend: On a sectional chart, the CTAF for an airport is identified by a solid filled circle containing the letter C, placed immediately after the frequency in the airport data block.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_1.html",
     "questionText": "How is the CTAF identified in an airport's data block on a sectional chart?",
     "answers": [
       "By a solid filled circle containing the letter C after the frequency",
@@ -560,7 +560,7 @@
     "domain": "Radio procedures"
   },
   {
-    "prompt": "AIM Chapter 4, Section 1: A self-announce transmission at a nontowered airport identifies the airport being addressed, the aircraft, its position, and its intentions, and closes by naming the airport again. Naming the airport at both ends of the call keeps pilots on a shared frequency at a different field from acting on a call that was not meant for them.",
+    "prompt": "AIM Chapter 4, Section 1: A self-announce transmission at a nontowered airport identifies the airport being addressed, the aircraft, its position, and its intentions, and closes by naming the airport again. Naming the airport at both ends of the call keeps pilots on a shared frequency at a different field from acting on a call that was not meant for them.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_1.html",
     "questionText": "Why does a self-announce radio call at a nontowered airport begin and end with the airport name?",
     "answers": [
       "Because the same frequency may serve several airports, and the name identifies which one is meant",
@@ -574,7 +574,7 @@
     "domain": "Radio procedures"
   },
   {
-    "prompt": "AC 107-2A and AIM Chapter 4: Part 107 does not require a small unmanned aircraft operation to carry or use a radio. Monitoring the CTAF near a nontowered airport is nonetheless recommended, because hearing manned aircraft announce their positions gives the remote pilot advance warning of traffic that must be yielded to under 107.37.",
+    "prompt": "AC 107-2A and AIM Chapter 4: Part 107 does not require a small unmanned aircraft operation to carry or use a radio. Monitoring the CTAF near a nontowered airport is nonetheless recommended, because hearing manned aircraft announce their positions gives the remote pilot advance warning of traffic that must be yielded to under 107.37.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_1.html",
     "questionText": "Is a radio required for a small unmanned aircraft operation conducted under part 107?",
     "answers": [
       "No, but monitoring the CTAF near a nontowered airport is recommended for traffic awareness",
@@ -588,7 +588,7 @@
     "domain": "Radio procedures"
   },
   {
-    "prompt": "AIM Chapter 4, Section 1: UNICOM is a nongovernment air-to-ground radio communication station that may provide airport information at public use airports where there is no tower or FSS. At many airports UNICOM and CTAF share the same frequency.",
+    "prompt": "AIM Chapter 4, Section 1: UNICOM is a nongovernment air-to-ground radio communication station that may provide airport information at public use airports where there is no tower or FSS. At many airports UNICOM and CTAF share the same frequency.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_1.html",
     "questionText": "What is UNICOM?",
     "answers": [
       "A nongovernment air-to-ground station that may provide airport information",
@@ -602,7 +602,7 @@
     "domain": "Radio procedures"
   },
   {
-    "prompt": "AIM Chapter 4, Section 1: The Automatic Terminal Information Service, or ATIS, is a continuous broadcast of recorded noncontrol information at busier terminal areas. Each new recording is given a successive phonetic letter, and a pilot states that letter to confirm which observation they have.",
+    "prompt": "AIM Chapter 4, Section 1: The Automatic Terminal Information Service, or ATIS, is a continuous broadcast of recorded noncontrol information at busier terminal areas. Each new recording is given a successive phonetic letter, and a pilot states that letter to confirm which observation they have.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_1.html",
     "questionText": "What does the phonetic letter at the end of an ATIS broadcast indicate?",
     "answers": [
       "Which version of the recorded information the pilot has received",
@@ -616,7 +616,7 @@
     "domain": "Radio procedures"
   },
   {
-    "prompt": "AIM Chapter 7: Automated weather stations broadcast current observations continuously over a discrete radio frequency. ASOS and AWOS report conditions at the field itself, including wind, visibility, sky condition, temperature, dew point, and altimeter setting.",
+    "prompt": "AIM Chapter 7: Automated weather stations broadcast current observations continuously over a discrete radio frequency. ASOS and AWOS report conditions at the field itself, including wind, visibility, sky condition, temperature, dew point, and altimeter setting.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
     "questionText": "What information does an ASOS or AWOS broadcast provide?",
     "answers": [
       "A current surface weather observation for that airport",
@@ -630,7 +630,7 @@
     "domain": "Radio procedures"
   },
   {
-    "prompt": "AIM Chapter 4, Section 2: When an aircraft loses radio communication at an airport with an operating control tower, the tower directs it with a light gun. A steady green light directed at an aircraft in flight means cleared to land; directed at an aircraft on the ground it means cleared for takeoff.",
+    "prompt": "AIM Chapter 4, Section 2: When an aircraft loses radio communication at an airport with an operating control tower, the tower directs it with a light gun. A steady green light directed at an aircraft in flight means cleared to land; directed at an aircraft on the ground it means cleared for takeoff.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_3.html",
     "questionText": "A tower directs a steady green light gun signal at an aircraft in flight. What does it mean?",
     "answers": [
       "Cleared to land",
@@ -644,7 +644,7 @@
     "domain": "Radio procedures"
   },
   {
-    "prompt": "AIM Chapter 4, Section 2: Light gun signals differ in meaning depending on whether the aircraft is in flight or on the ground. A flashing red light directed at an aircraft in flight means the airport is unsafe and the pilot should not land; directed at an aircraft on the ground it means taxi clear of the runway in use.",
+    "prompt": "AIM Chapter 4, Section 2: Light gun signals differ in meaning depending on whether the aircraft is in flight or on the ground. A flashing red light directed at an aircraft in flight means the airport is unsafe and the pilot should not land; directed at an aircraft on the ground it means taxi clear of the runway in use.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_3.html",
     "questionText": "What does a flashing red light gun signal mean to an aircraft in flight?",
     "answers": [
       "Airport unsafe, do not land",
@@ -658,7 +658,7 @@
     "domain": "Radio procedures"
   },
   {
-    "prompt": "AC 107-2A: A remote pilot who transmits on an aviation frequency near a nontowered airport should keep the call brief and factual, stating the location and nature of the unmanned operation, because manned pilots on that frequency are managing their own approach and landing while listening.",
+    "prompt": "AC 107-2A: A remote pilot who transmits on an aviation frequency near a nontowered airport should keep the call brief and factual, stating the location and nature of the unmanned operation, because manned pilots on that frequency are managing their own approach and landing while listening.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_1.html",
     "questionText": "What is the guiding principle for a remote pilot's radio transmission near a nontowered airport?",
     "answers": [
       "Keep it brief and factual, stating the location and nature of the operation",
@@ -672,7 +672,7 @@
     "domain": "Radio procedures"
   },
   {
-    "prompt": "AC 107-2A, Physiological Factors: The IMSAFE checklist is a personal preflight assessment covering Illness, Medication, Stress, Alcohol, Fatigue, and Emotion. It is applied to the remote pilot rather than to the aircraft, and it is completed before the decision to fly is made.",
+    "prompt": "PHAK (FAA-H-8083-25C) Chapter 2: The IMSAFE checklist is a personal preflight assessment of physical and mental readiness to fly, covering Illness, Medication, Stress, Alcohol, Fatigue, and Emotion. It is applied to the pilot rather than to the aircraft, and it is completed before the decision to fly is made.\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "What do the letters of the IMSAFE checklist stand for?",
     "answers": [
       "Illness, Medication, Stress, Alcohol, Fatigue, Emotion",
@@ -681,12 +681,12 @@
       "Illness, Motivation, Skill, Attitude, Fitness, Experience"
     ],
     "correctAnswer": "Illness, Medication, Stress, Alcohol, Fatigue, Emotion",
-    "hint": "Every item is a condition affecting the person, not the aircraft or the site.",
+    "hint": "Every item is a condition affecting the person, not the aircraft. Note that AC 107-2A's version of the checklist substitutes Eating for Emotion.",
     "points": 1,
     "domain": "Physiological effects"
   },
   {
-    "prompt": "AC 107-2A, Physiological Factors: Dehydration is the critical loss of water from the body, and heat stress compounds it. Early symptoms include headache, fatigue, cramps, dizziness, and drowsiness, all of which degrade the judgment a remote pilot needs. Drinking water regularly during an operation, rather than waiting for thirst, is the recommended countermeasure.",
+    "prompt": "AC 107-2A, Physiological Factors: Dehydration is the critical loss of water from the body, and heat stress compounds it. Early symptoms include headache, fatigue, cramps, dizziness, and drowsiness, all of which degrade the judgment a remote pilot needs. Drinking water regularly during an operation, rather than waiting for thirst, is the recommended countermeasure.\n\nSource: https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf",
     "questionText": "A remote pilot working outdoors on a hot day develops a headache, dizziness, and drowsiness. What should be suspected first?",
     "answers": [
       "Dehydration and heat stress",
@@ -700,7 +700,7 @@
     "domain": "Physiological effects"
   },
   {
-    "prompt": "AC 107-2A, Physiological Factors: Fatigue is one of the most treacherous hazards to flight safety because it may not be apparent to the person affected. Acute fatigue follows a short period of intense activity or lost sleep; chronic fatigue builds over a longer period and is not cured by a single night's rest.",
+    "prompt": "AC 107-2A, Physiological Factors: Fatigue is one of the most treacherous hazards to flight safety because it may not be apparent to the person affected. Acute fatigue follows a short period of intense activity or lost sleep; chronic fatigue builds over a longer period and is not cured by a single night's rest.\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "Why is fatigue considered particularly dangerous for a remote pilot?",
     "answers": [
       "It degrades performance and judgment while often going unnoticed by the affected person",
@@ -714,7 +714,7 @@
     "domain": "Physiological effects"
   },
   {
-    "prompt": "14 CFR 107.27 and 91.17: No person may act as a remote pilot in command or manipulate the flight controls of a small unmanned aircraft system while having an alcohol concentration of 0.04 or greater in the blood or breath, while under the influence of alcohol, or within 8 hours after consuming alcohol.",
+    "prompt": "14 CFR 107.27 and 91.17: No person may act as a remote pilot in command or manipulate the flight controls of a small unmanned aircraft system while having an alcohol concentration of 0.04 or greater in the blood or breath, while under the influence of alcohol, or within 8 hours after consuming alcohol.\n\nSource: https://www.ecfr.gov/current/title-14/section-91.17",
     "questionText": "What blood alcohol concentration disqualifies a person from acting as a remote pilot in command?",
     "answers": [
       "0.04 or greater",
@@ -728,7 +728,7 @@
     "domain": "Physiological effects"
   },
   {
-    "prompt": "AC 107-2A, Physiological Factors: Over-the-counter medications can carry side effects such as drowsiness, slowed reaction time, and impaired judgment even when the underlying illness is minor. Both the medication and the condition it treats are reasons to reconsider flying.",
+    "prompt": "AC 107-2A, Physiological Factors: Over-the-counter medications can carry side effects such as drowsiness, slowed reaction time, and impaired judgment even when the underlying illness is minor. Both the medication and the condition it treats are reasons to reconsider flying.\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "A remote pilot takes an over-the-counter antihistamine that lists drowsiness as a side effect. What is the appropriate decision?",
     "answers": [
       "Do not fly, because both the medication and the underlying illness can impair performance",
@@ -742,7 +742,7 @@
     "domain": "Physiological effects"
   },
   {
-    "prompt": "AC 107-2A, Physiological Factors: Hyperventilation is an abnormal increase in the rate and depth of breathing, often brought on by stress or anxiety, which flushes carbon dioxide from the body. Symptoms include light-headedness, tingling, and a sense of suffocation. Slowing the breathing rate restores the balance.",
+    "prompt": "AC 107-2A, Physiological Factors: Hyperventilation is an abnormal increase in the rate and depth of breathing, often brought on by stress or anxiety, which flushes carbon dioxide from the body. Symptoms include light-headedness, tingling, and a sense of suffocation. Slowing the breathing rate restores the balance.\n\nSource: https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf",
     "questionText": "What is the recommended response to symptoms of hyperventilation?",
     "answers": [
       "Consciously slow the rate of breathing",
@@ -756,7 +756,7 @@
     "domain": "Physiological effects"
   },
   {
-    "prompt": "AC 107-2A, Vision in Flight: The eye contains two kinds of light-sensitive cells. Cones are concentrated near the centre of the retina and provide colour vision and detail in good light. Rods are concentrated outside the centre, are far more sensitive in low light, and are effectively blind to colour.",
+    "prompt": "AC 107-2A, Vision in Flight: The eye contains two kinds of light-sensitive cells. Cones are concentrated near the centre of the retina and provide colour vision and detail in good light. Rods are concentrated outside the centre, are far more sensitive in low light, and are effectively blind to colour.\n\nSource: https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf",
     "questionText": "Which cells in the eye are responsible for vision in low light, and where are they concentrated?",
     "answers": [
       "Rods, concentrated outside the centre of the retina",
@@ -770,7 +770,7 @@
     "domain": "Physiological effects"
   },
   {
-    "prompt": "AC 107-2A, Vision in Flight: Because the rods lie off the centre of the retina, an object viewed straight on at night may disappear. Off-center viewing, in which the pilot looks slightly to the side of the object and shifts the gaze every few seconds, keeps the image on the more sensitive part of the retina.",
+    "prompt": "AC 107-2A, Vision in Flight: Because the rods lie off the centre of the retina, an object viewed straight on at night may disappear. Off-center viewing, in which the pilot looks slightly to the side of the object and shifts the gaze every few seconds, keeps the image on the more sensitive part of the retina.\n\nSource: https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf",
     "questionText": "What is off-center viewing and why is it used at night?",
     "answers": [
       "Looking slightly to the side of an object, so its image falls on the light-sensitive rods",
@@ -784,7 +784,7 @@
     "domain": "Physiological effects"
   },
   {
-    "prompt": "AC 107-2A, Vision in Flight: Adapting fully to darkness takes the eyes roughly 30 minutes, and exposure to a bright white light undoes much of that adaptation in an instant. Remote pilots operating at night are advised to avoid bright lights and to protect their night vision before and during the operation.",
+    "prompt": "AC 107-2A, Vision in Flight: Adapting fully to darkness takes the eyes roughly 30 minutes, and exposure to a bright white light undoes much of that adaptation in an instant. Remote pilots operating at night are advised to avoid bright lights and to protect their night vision before and during the operation.\n\nSource: https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf",
     "questionText": "Approximately how long does it take for the eyes to adapt fully to darkness?",
     "answers": [
       "About 30 minutes",
@@ -798,7 +798,7 @@
     "domain": "Physiological effects"
   },
   {
-    "prompt": "AC 107-2A, Physiological Factors: Stress is the body's response to demands placed upon it. Acute stress arises from an immediate threat and is short-lived; chronic stress accumulates over time from ongoing pressures. Either can narrow attention, slow decisions, and cause important information to be missed.",
+    "prompt": "AC 107-2A, Physiological Factors: Stress is the body's response to demands placed upon it. Acute stress arises from an immediate threat and is short-lived; chronic stress accumulates over time from ongoing pressures. Either can narrow attention, slow decisions, and cause important information to be missed.\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "How does stress most commonly affect a remote pilot's performance?",
     "answers": [
       "It narrows attention and degrades decision-making, so information is missed",
@@ -812,7 +812,7 @@
     "domain": "Physiological effects"
   },
   {
-    "prompt": "AC 107-2A, Aeronautical Decision-Making: ADM is a systematic approach to the mental process used by pilots to consistently determine the best course of action in response to a given set of circumstances. It is a learned skill rather than an innate one, and it is what turns a recognized hazard into a managed risk.",
+    "prompt": "AC 107-2A, Aeronautical Decision-Making: ADM is a systematic approach to the mental process used by pilots to consistently determine the best course of action in response to a given set of circumstances. It is a learned skill rather than an innate one, and it is what turns a recognized hazard into a managed risk.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "What is aeronautical decision-making (ADM)?",
     "answers": [
       "A systematic approach to determining the best course of action for a given set of circumstances",
@@ -826,7 +826,7 @@
     "domain": "Decision-making"
   },
   {
-    "prompt": "AC 107-2A, Hazardous Attitudes: Five hazardous attitudes are recognized as contributors to poor aeronautical decisions: anti-authority, impulsivity, invulnerability, macho, and resignation. Each has a specific antidote that the pilot repeats to counter it.",
+    "prompt": "AC 107-2A, Hazardous Attitudes: Five hazardous attitudes are recognized as contributors to poor aeronautical decisions: anti-authority, impulsivity, invulnerability, macho, and resignation. Each has a specific antidote that the pilot repeats to counter it.\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "A remote pilot thinks, 'The rules do not really apply to an operation this small.' Which hazardous attitude is this?",
     "answers": [
       "Anti-authority",
@@ -840,7 +840,7 @@
     "domain": "Decision-making"
   },
   {
-    "prompt": "AC 107-2A, Hazardous Attitudes: Invulnerability is the belief that accidents happen to other people but not to oneself. Its antidote is the reminder, 'It could happen to me.'",
+    "prompt": "AC 107-2A, Hazardous Attitudes: Invulnerability is the belief that accidents happen to other people but not to oneself. Its antidote is the reminder, 'It could happen to me.'\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "What is the antidote to the hazardous attitude of invulnerability?",
     "answers": [
       "It could happen to me",
@@ -854,7 +854,7 @@
     "domain": "Decision-making"
   },
   {
-    "prompt": "AC 107-2A, Hazardous Attitudes: Impulsivity is the attitude of people who feel the need to do something, anything, immediately, without stopping to consider the best alternative. Its antidote is, 'Not so fast, think first.'",
+    "prompt": "AC 107-2A, Hazardous Attitudes: Impulsivity is the attitude of people who feel the need to do something, anything, immediately, without stopping to consider the best alternative. Its antidote is, 'Not so fast, think first.'\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "A remote pilot reacts to an unexpected radio call by immediately descending without evaluating the situation. Which hazardous attitude does this illustrate?",
     "answers": [
       "Impulsivity",
@@ -868,7 +868,7 @@
     "domain": "Decision-making"
   },
   {
-    "prompt": "AC 107-2A, Hazardous Attitudes: Resignation is the attitude of pilots who do not see themselves as making a great deal of difference in what happens to them, and who leave the outcome to luck or to others. Its antidote is, 'I am not helpless, I can make a difference.'",
+    "prompt": "AC 107-2A, Hazardous Attitudes: Resignation is the attitude of pilots who do not see themselves as making a great deal of difference in what happens to them, and who leave the outcome to luck or to others. Its antidote is, 'I am not helpless, I can make a difference.'\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "Which hazardous attitude is characterized by a pilot believing that what happens is beyond their control?",
     "answers": [
       "Resignation",
@@ -882,7 +882,7 @@
     "domain": "Decision-making"
   },
   {
-    "prompt": "AC 107-2A, Risk Management: The PAVE checklist divides the risks of a flight into four categories — Pilot, Aircraft, enVironment, and External pressures — so that each can be assessed on its own before the decision to fly is made.",
+    "prompt": "AC 107-2A, Risk Management: The PAVE checklist divides the risks of a flight into four categories — Pilot, Aircraft, enVironment, and External pressures — so that each can be assessed on its own before the decision to fly is made.\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "In the PAVE checklist, what does the E represent?",
     "answers": [
       "External pressures",
@@ -896,7 +896,7 @@
     "domain": "Decision-making"
   },
   {
-    "prompt": "AC 107-2A, Risk Management: External pressures are the influences outside the flight itself that create a sense of urgency — a client waiting, a schedule to meet, the cost of returning another day. They are hazardous because they push a decision toward flying regardless of the other three PAVE categories.",
+    "prompt": "AC 107-2A, Risk Management: External pressures are the influences outside the flight itself that create a sense of urgency — a client waiting, a schedule to meet, the cost of returning another day. They are hazardous because they push a decision toward flying regardless of the other three PAVE categories.\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "A client is waiting on site and the weather is marginal. Which PAVE category does the client's presence fall under?",
     "answers": [
       "External pressures",
@@ -910,7 +910,7 @@
     "domain": "Decision-making"
   },
   {
-    "prompt": "AC 107-2A, Risk Management: Risk is commonly assessed on two axes — the likelihood that an event occurs and the severity of its consequences if it does. A risk assessment matrix combines the two to indicate whether the risk is acceptable, whether it must be mitigated, or whether the operation should not proceed.",
+    "prompt": "AC 107-2A, Risk Management: Risk is commonly assessed on two axes — the likelihood that an event occurs and the severity of its consequences if it does. A risk assessment matrix combines the two to indicate whether the risk is acceptable, whether it must be mitigated, or whether the operation should not proceed.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "Which two factors are combined in a risk assessment matrix?",
     "answers": [
       "The likelihood of an event and the severity of its consequences",
@@ -924,7 +924,7 @@
     "domain": "Decision-making"
   },
   {
-    "prompt": "AC 107-2A, Aeronautical Decision-Making: The DECIDE model is a six-step loop: Detect the change, Estimate the need to react, Choose a desirable outcome, Identify actions, Do the action, and Evaluate the effect. The final step feeds back into the first, so the process continues as the situation develops.",
+    "prompt": "AC 107-2A, Aeronautical Decision-Making: The DECIDE model is a six-step loop: Detect the change, Estimate the need to react, Choose a desirable outcome, Identify actions, Do the action, and Evaluate the effect. The final step feeds back into the first, so the process continues as the situation develops.\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "What is the final step of the DECIDE model?",
     "answers": [
       "Evaluate the effect of the action taken",
@@ -938,7 +938,7 @@
     "domain": "Decision-making"
   },
   {
-    "prompt": "AC 107-2A, Aeronautical Decision-Making: Complacency is the erosion of vigilance that follows long stretches of routine, uneventful operation. It is a particular hazard on repeated flights over familiar sites, where the pilot's expectation of what will happen begins to replace observation of what is happening.",
+    "prompt": "AC 107-2A, Aeronautical Decision-Making: Complacency is the erosion of vigilance that follows long stretches of routine, uneventful operation. It is a particular hazard on repeated flights over familiar sites, where the pilot's expectation of what will happen begins to replace observation of what is happening.\n\nSource: https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
     "questionText": "Why is complacency a hazard on routine, familiar operations?",
     "answers": [
       "Expectation of the usual outcome begins to replace active observation",
@@ -952,7 +952,7 @@
     "domain": "Decision-making"
   },
   {
-    "prompt": "14 CFR 91.126 and AIM Chapter 4, Section 3: Unless otherwise indicated, all turns in the traffic pattern at an airport without an operating control tower are made to the left. A right-hand pattern is used only where it is specifically published.",
+    "prompt": "14 CFR 91.126 and AIM Chapter 4, Section 3: Unless otherwise indicated, all turns in the traffic pattern at an airport without an operating control tower are made to the left. A right-hand pattern is used only where it is specifically published.\n\nSource: https://www.ecfr.gov/current/title-14/section-91.126",
     "questionText": "At an airport without an operating control tower, which direction are traffic pattern turns made unless otherwise indicated?",
     "answers": [
       "To the left",
@@ -966,8 +966,8 @@
     "domain": "Airport operations"
   },
   {
-    "prompt": "AIM Chapter 4, Section 3: A runway is numbered for its magnetic alignment. The number is the magnetic heading of the runway rounded to the nearest 10 degrees, with the final zero dropped, so a runway aligned 088 degrees magnetic is numbered 9.",
-    "questionText": "A runway is aligned with a magnetic heading of 175 degrees. What is its runway number?",
+    "prompt": "AIM 2-3-3: A runway is numbered for its magnetic alignment. The runway number is the whole number nearest one-tenth the magnetic azimuth of the centerline of the runway, measured clockwise from magnetic north, so a runway aligned 088 degrees magnetic is numbered 9.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap2_section_3.html",
+    "questionText": "A runway is aligned with a magnetic heading of 176 degrees. What is its runway number?",
     "answers": [
       "18",
       "17",
@@ -975,12 +975,12 @@
       "36"
     ],
     "correctAnswer": "18",
-    "hint": "Round the magnetic heading to the nearest 10 degrees, then drop the trailing zero.",
+    "hint": "Take one-tenth of the magnetic azimuth and round to the nearest whole number.",
     "points": 1,
     "domain": "Airport operations"
   },
   {
-    "prompt": "AIM Chapter 4, Section 3: A wind sock or wind cone indicates both the direction the wind is coming from and, by how fully it is extended, its approximate speed. Aircraft take off and land into the wind, so the sock also indicates which runway is likely in use.",
+    "prompt": "AIM 4-3-4: The wind direction indicator — a wind cone, wind sock, or wind tee — is installed near the operational runway to indicate wind direction. The large end of the wind cone points into the wind, and how fully the cone stands out indicates roughly how strong the wind is. Aircraft take off and land into the wind, so the indicator also suggests which runway is in use.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_3.html",
     "questionText": "What does a wind sock at an airport indicate?",
     "answers": [
       "Wind direction and approximate wind speed",
@@ -994,7 +994,7 @@
     "domain": "Airport operations"
   },
   {
-    "prompt": "AIM Chapter 4, Section 3: The segmented circle is located in a position visible from the air and provides traffic pattern information at airports without an operating control tower. Traffic pattern indicators extending from it show the direction of turns for each runway when the pattern is nonstandard.",
+    "prompt": "AIM Chapter 4, Section 3: The segmented circle is located in a position visible from the air and provides traffic pattern information at airports without an operating control tower. Traffic pattern indicators extending from it show the direction of turns for each runway when the pattern is nonstandard.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_3.html",
     "questionText": "What information does a segmented circle provide?",
     "answers": [
       "Traffic pattern information for the airport, including nonstandard pattern directions",
@@ -1008,7 +1008,7 @@
     "domain": "Airport operations"
   },
   {
-    "prompt": "Sectional Chart Legend: Airport symbols on a sectional chart are printed in one of two colours. Blue indicates an airport with an operating control tower; magenta indicates an airport without one.",
+    "prompt": "Sectional Chart Legend: Airport symbols on a sectional chart are printed in one of two colours. Blue indicates an airport with an operating control tower; magenta indicates an airport without one.\n\nSource: https://www.faa.gov/sites/faa.gov/files/air_traffic/flight_info/aeronav/digital_products/aero_guide/Chart_Users_Guide_VFR.pdf",
     "questionText": "On a sectional chart, what does a magenta airport symbol indicate?",
     "answers": [
       "An airport without an operating control tower",
@@ -1022,7 +1022,7 @@
     "domain": "Airport operations"
   },
   {
-    "prompt": "AIM Chapter 2, Section 3: Airport surface markings are colour-coded. Runway markings, including the runway number, centreline, and threshold markings, are white. Taxiway markings, including the taxiway centreline and edge markings, are yellow.",
+    "prompt": "AIM Chapter 2, Section 3: Airport surface markings are colour-coded. Runway markings, including the runway number, centreline, and threshold markings, are white. Taxiway markings, including the taxiway centreline and edge markings, are yellow.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap2_section_3.html",
     "questionText": "What colour are runway markings, and what colour are taxiway markings?",
     "answers": [
       "Runway markings are white and taxiway markings are yellow",
@@ -1036,7 +1036,7 @@
     "domain": "Airport operations"
   },
   {
-    "prompt": "AIM Chapter 2, Section 3: A displaced threshold is a landing threshold located somewhere other than the physical beginning of the runway. The paved area before it may be used for taxiing, takeoff, and landing rollout, but not for landing touchdown.",
+    "prompt": "AIM Chapter 2, Section 3: A displaced threshold is a landing threshold located somewhere other than the physical beginning of the runway. The paved area before it may be used for taxiing, takeoff, and landing rollout, but not for landing touchdown.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap2_section_3.html",
     "questionText": "What may the paved surface before a displaced threshold be used for?",
     "answers": [
       "Taxiing, takeoff, and landing rollout, but not landing touchdown",
@@ -1050,7 +1050,7 @@
     "domain": "Airport operations"
   },
   {
-    "prompt": "14 CFR 107.43: No person may operate a small unmanned aircraft in a manner that interferes with operations and traffic patterns at any airport, heliport, or seaplane base. The prohibition applies regardless of the class of airspace involved.",
+    "prompt": "14 CFR 107.43: No person may operate a small unmanned aircraft in a manner that interferes with operations and traffic patterns at any airport, heliport, or seaplane base. The prohibition applies regardless of the class of airspace involved.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.43",
     "questionText": "What does 14 CFR 107.43 prohibit?",
     "answers": [
       "Operating in a manner that interferes with airport operations and traffic patterns",
@@ -1064,7 +1064,7 @@
     "domain": "Airport operations"
   },
   {
-    "prompt": "AC 107-2A, Airport Operations: Manned aircraft in the traffic pattern are lowest and least manoeuvrable on final approach and shortly after takeoff. A remote pilot planning an operation near an airport should establish where the approach and departure paths lie and stay clear of them, since 107.37 places the entire duty to yield on the unmanned aircraft.",
+    "prompt": "AC 107-2A, Airport Operations: Manned aircraft in the traffic pattern are lowest and least manoeuvrable on final approach and shortly after takeoff. A remote pilot planning an operation near an airport should establish where the approach and departure paths lie and stay clear of them, since 107.37 places the entire duty to yield on the unmanned aircraft.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.37",
     "questionText": "Why should a remote pilot identify an airport's approach and departure paths before operating nearby?",
     "answers": [
       "Because manned aircraft are lowest there, and the unmanned aircraft carries the whole duty to yield",
@@ -1078,7 +1078,7 @@
     "domain": "Airport operations"
   },
   {
-    "prompt": "AIM Chapter 2, Section 3: The runway holding position marking consists of two solid and two dashed yellow lines. An aircraft on the taxiway side must hold short of the solid lines until cleared to proceed; an aircraft exiting the runway has crossed it only when past all four lines.",
+    "prompt": "AIM Chapter 2, Section 3: The runway holding position marking consists of two solid and two dashed yellow lines. An aircraft on the taxiway side must hold short of the solid lines until cleared to proceed; an aircraft exiting the runway has crossed it only when past all four lines.\n\nSource: https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap2_section_3.html",
     "questionText": "What does a runway holding position marking of two solid and two dashed yellow lines mean to an aircraft approaching from the taxiway?",
     "answers": [
       "Hold short of the solid lines until cleared to proceed",
@@ -1092,7 +1092,7 @@
     "domain": "Airport operations"
   },
   {
-    "prompt": "AC 107-2A, Maintenance: Scheduled maintenance is performed at intervals specified by the manufacturer, whether or not anything appears to be wrong. Where the manufacturer provides no maintenance instructions, the owner or operator is expected to establish a reasonable schedule of their own.",
+    "prompt": "AC 107-2A, Maintenance: Scheduled maintenance is performed at intervals specified by the manufacturer, whether or not anything appears to be wrong. Where the manufacturer provides no maintenance instructions, the owner or operator is expected to establish a reasonable schedule of their own.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "A small unmanned aircraft's manufacturer publishes no maintenance schedule. What is the operator expected to do?",
     "answers": [
       "Establish a reasonable maintenance schedule of their own",
@@ -1106,7 +1106,7 @@
     "domain": "Maintenance"
   },
   {
-    "prompt": "AC 107-2A, Maintenance: Unscheduled maintenance is prompted by an event or a discovery rather than by an interval. A hard landing, a strike, an overheated battery, or an abnormal indication in flight are all reasons to inspect the aircraft before it is flown again.",
+    "prompt": "AC 107-2A, Maintenance: Unscheduled maintenance is prompted by an event or a discovery rather than by an interval. A hard landing, a strike, an overheated battery, or an abnormal indication in flight are all reasons to inspect the aircraft before it is flown again.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "A small unmanned aircraft makes a hard landing but appears undamaged. What does this call for?",
     "answers": [
       "Unscheduled maintenance: an inspection before the next flight",
@@ -1120,7 +1120,7 @@
     "domain": "Maintenance"
   },
   {
-    "prompt": "14 CFR 107.15: No person may operate a small unmanned aircraft system unless it is in a condition for safe operation. Before each flight, the remote pilot in command must check the small unmanned aircraft system to determine that it is in a condition for safe operation, and must discontinue the flight if an unsafe condition develops.",
+    "prompt": "14 CFR 107.15: No person may operate a small unmanned aircraft system unless it is in a condition for safe operation. Before each flight, the remote pilot in command must check the small unmanned aircraft system to determine that it is in a condition for safe operation, and must discontinue the flight if an unsafe condition develops.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.15",
     "questionText": "Under 14 CFR 107.15, what must the remote pilot in command do if an unsafe condition develops during flight?",
     "answers": [
       "Discontinue the flight",
@@ -1134,7 +1134,7 @@
     "domain": "Maintenance"
   },
   {
-    "prompt": "AC 107-2A, Maintenance Recordkeeping: Although part 107 prescribes no maintenance log format, keeping a record of what was done, when, and by whom lets an operator establish trends, show that scheduled work was performed, and hand an aircraft to another pilot with its history intact.",
+    "prompt": "AC 107-2A, Maintenance Recordkeeping: Although part 107 prescribes no maintenance log format, keeping a record of what was done, when, and by whom lets an operator establish trends, show that scheduled work was performed, and hand an aircraft to another pilot with its history intact.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "Why is a maintenance record recommended even though part 107 does not prescribe one?",
     "answers": [
       "It establishes what was done and when, so trends and completed work can be verified",
@@ -1148,7 +1148,7 @@
     "domain": "Maintenance"
   },
   {
-    "prompt": "AC 107-2A, Maintenance: Propellers are among the most frequently damaged components on a small unmanned aircraft. Cracks, nicks, chips, and deformation unbalance the propeller, increase vibration, and can lead to failure in flight. A damaged propeller is replaced rather than repaired.",
+    "prompt": "AC 107-2A, Maintenance: Propellers are among the most frequently damaged components on a small unmanned aircraft. Cracks, nicks, chips, and deformation unbalance the propeller, increase vibration, and can lead to failure in flight. A damaged propeller is replaced rather than repaired.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "A preflight inspection reveals a small crack in one propeller blade. What is the appropriate action?",
     "answers": [
       "Replace the propeller before flight",
@@ -1162,7 +1162,7 @@
     "domain": "Maintenance"
   },
   {
-    "prompt": "AC 107-2A, Battery Considerations: Lithium-based batteries are affected by temperature and state of charge in storage. Manufacturers typically specify a storage charge level and a temperature range, and departures from either shorten battery life and can create a safety hazard.",
+    "prompt": "AC 107-2A paragraph 7.2 directs operators to maintain the small UAS and its components in accordance with the manufacturer's instructions, and Appendix B.5 notes that lithium-based battery fires can be caused by improper charging, extreme temperatures, damage, or mishandling. Manufacturers accordingly specify a storage charge level and a storage temperature range.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "Which two factors do manufacturers typically specify for storing lithium batteries?",
     "answers": [
       "State of charge and temperature range",
@@ -1176,7 +1176,7 @@
     "domain": "Maintenance"
   },
   {
-    "prompt": "AC 107-2A, Maintenance: Firmware updates can change how an aircraft behaves, including its failsafe and return-to-home logic. Updates are applied on the ground with time to verify the result, not immediately before a flight or in the field where a failed update can leave the aircraft unflyable.",
+    "prompt": "AC 107-2A paragraph 7.2 includes system software upgrades in the definition of small UAS maintenance, and 7.2.2 states that where an unscheduled software update is required to correct a problem, flight operations should not occur until the issue is corrected. Firmware can change failsafe and return-to-home behaviour, so an update is applied on the ground with time to verify the result.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "When should a firmware update be applied to a small unmanned aircraft system?",
     "answers": [
       "On the ground with time to verify the aircraft afterwards, not immediately before a flight",
@@ -1190,7 +1190,7 @@
     "domain": "Maintenance"
   },
   {
-    "prompt": "AC 107-2A, Maintenance: Some repairs are beyond what an operator should attempt. When a component's condition is in doubt, or a repair calls for tools, parts, or knowledge the operator does not have, the manufacturer or a qualified technician should perform the work.",
+    "prompt": "AC 107-2A, Maintenance: Some repairs are beyond what an operator should attempt. When a component's condition is in doubt, or a repair calls for tools, parts, or knowledge the operator does not have, the manufacturer or a qualified technician should perform the work.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "A remote pilot is unsure whether an airframe arm was damaged in a collision. What is the appropriate course of action?",
     "answers": [
       "Have the manufacturer or a qualified technician assess it before further flight",
@@ -1204,7 +1204,7 @@
     "domain": "Maintenance"
   },
   {
-    "prompt": "AC 107-2A, Preflight Inspection: Compass and inertial sensor calibration can be disturbed by nearby ferrous metal and by moving the aircraft a long distance between operating sites. Calibration is performed away from metal structures, vehicles, and reinforced concrete.",
+    "prompt": "AC 107-2A paragraph 7.2 directs operators to follow the manufacturer's instructions. Compass and inertial sensor calibration reads the earth's magnetic field, so manufacturers direct that it be performed away from ferrous metal — structures, vehicles, and reinforced concrete.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "Where should a compass calibration be performed?",
     "answers": [
       "Away from metal structures, vehicles, and reinforced concrete",
@@ -1218,7 +1218,7 @@
     "domain": "Maintenance"
   },
   {
-    "prompt": "14 CFR 107.49: Before flight, the remote pilot in command must assess the operating environment, check local weather and airspace, inspect the small unmanned aircraft system to ensure all systems are functioning properly, verify that sufficient power exists to operate for the intended time, and ensure any object attached or carried is secure.",
+    "prompt": "14 CFR 107.49: Before flight, the remote pilot in command must assess the operating environment, check local weather and airspace, inspect the small unmanned aircraft system to ensure all systems are functioning properly, verify that sufficient power exists to operate for the intended time, and ensure any object attached or carried is secure.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.49",
     "questionText": "Which of the following is part of the preflight action required by 14 CFR 107.49?",
     "answers": [
       "Verifying that sufficient power exists to operate for the intended flight time",
@@ -1232,7 +1232,7 @@
     "domain": "Maintenance"
   },
   {
-    "prompt": "14 CFR 107.29: No person may operate a small unmanned aircraft system at night unless the aircraft has lighted anti-collision lighting visible for at least 3 statute miles, with a flash rate sufficient to avoid a collision. The remote pilot in command may reduce the intensity of, but may not extinguish, the lighting if doing so is in the interest of safety.",
+    "prompt": "14 CFR 107.29: No person may operate a small unmanned aircraft system at night unless the aircraft has lighted anti-collision lighting visible for at least 3 statute miles, with a flash rate sufficient to avoid a collision. The remote pilot in command may reduce the intensity of, but may not extinguish, the lighting if doing so is in the interest of safety.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.29",
     "questionText": "What anti-collision lighting does 14 CFR 107.29 require for night operations?",
     "answers": [
       "Lighting visible for at least 3 statute miles with a flash rate sufficient to avoid a collision",
@@ -1246,7 +1246,7 @@
     "domain": "Night operations"
   },
   {
-    "prompt": "14 CFR 107.29: The anti-collision lighting requirement applies both at night and during periods of civil twilight. Civil twilight is the period from the beginning of morning civil twilight to sunrise, and from sunset to the end of evening civil twilight.",
+    "prompt": "14 CFR 107.29(b) and (c): The anti-collision lighting requirement applies both at night and during periods of civil twilight. For the purposes of this section, civil twilight means — except in Alaska — the period beginning 30 minutes before official sunrise and ending at official sunrise, and the period beginning at official sunset and ending 30 minutes after official sunset. In Alaska it is the period of civil twilight defined in the Air Almanac.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.29",
     "questionText": "Is anti-collision lighting required during civil twilight?",
     "answers": [
       "Yes, the same lighting required at night applies during civil twilight",
@@ -1260,7 +1260,7 @@
     "domain": "Night operations"
   },
   {
-    "prompt": "14 CFR 1.1: Night is defined as the time between the end of evening civil twilight and the beginning of morning civil twilight, as published in the Air Almanac and converted to local time.",
+    "prompt": "14 CFR 1.1: Night is defined as the time between the end of evening civil twilight and the beginning of morning civil twilight, as published in the Air Almanac and converted to local time.\n\nSource: https://www.ecfr.gov/current/title-14/section-1.1",
     "questionText": "How is night defined for the purposes of the regulations?",
     "answers": [
       "The period between the end of evening civil twilight and the beginning of morning civil twilight",
@@ -1274,7 +1274,7 @@
     "domain": "Night operations"
   },
   {
-    "prompt": "14 CFR 107.29: The remote pilot in command may reduce the intensity of the anti-collision lighting when doing so is in the interest of safety, but the lighting may not be turned off entirely while the aircraft is operated at night or during civil twilight.",
+    "prompt": "14 CFR 107.29: The remote pilot in command may reduce the intensity of the anti-collision lighting when doing so is in the interest of safety, but the lighting may not be turned off entirely while the aircraft is operated at night or during civil twilight.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.29",
     "questionText": "May a remote pilot dim the anti-collision lighting during a night operation?",
     "answers": [
       "Yes, the intensity may be reduced in the interest of safety, but the lighting may not be extinguished",
@@ -1288,7 +1288,7 @@
     "domain": "Night operations"
   },
   {
-    "prompt": "14 CFR 107.65 and the 2021 amendment to part 107: Night operations no longer require a certificate of waiver. A remote pilot may operate at night provided the aircraft carries the anti-collision lighting required by 107.29 and the pilot has completed the initial or recurrent training that covers night operations.",
+    "prompt": "14 CFR 107.65 and the 2021 amendment to part 107: Night operations no longer require a certificate of waiver. A remote pilot may operate at night provided the aircraft carries the anti-collision lighting required by 107.29 and the pilot has completed the initial or recurrent training that covers night operations.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.29",
     "questionText": "What does a remote pilot need in order to operate at night under the current rule?",
     "answers": [
       "The anti-collision lighting required by 107.29 and current training covering night operations",
@@ -1302,7 +1302,7 @@
     "domain": "Night operations"
   },
   {
-    "prompt": "AC 107-2A, Night Operations: Depth perception and the ability to judge distance are substantially degraded in darkness, which makes it harder to tell how far away the aircraft is and how far it has drifted. Surveying the site in daylight beforehand gives the pilot a mental picture of the obstacles that will not be visible at night.",
+    "prompt": "AC 107-2A, Night Operations: Depth perception and the ability to judge distance are substantially degraded in darkness, which makes it harder to tell how far away the aircraft is and how far it has drifted. Surveying the site in daylight beforehand gives the pilot a mental picture of the obstacles that will not be visible at night.\n\nSource: https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf",
     "questionText": "Why is a daylight survey of the operating site recommended before a night operation?",
     "answers": [
       "Obstacles that will be invisible at night can be identified and their positions memorized",
@@ -1316,7 +1316,7 @@
     "domain": "Night operations"
   },
   {
-    "prompt": "14 CFR 107.31 and AC 107-2A: The visual line of sight requirement does not change at night. The remote pilot must still be able to see the unmanned aircraft throughout the flight with vision unaided by any device other than corrective lenses, which in practice means the anti-collision lighting has to be adequate for the pilot to keep the aircraft in sight.",
+    "prompt": "14 CFR 107.31 and AC 107-2A: The visual line of sight requirement does not change at night. The remote pilot must still be able to see the unmanned aircraft throughout the flight with vision unaided by any device other than corrective lenses, which in practice means the anti-collision lighting has to be adequate for the pilot to keep the aircraft in sight.\n\nSource: https://www.ecfr.gov/current/title-14/section-107.31",
     "questionText": "How does the visual line of sight requirement of 107.31 apply at night?",
     "answers": [
       "It applies unchanged, so the aircraft's lighting must let the pilot keep it in sight",
@@ -1330,7 +1330,7 @@
     "domain": "Night operations"
   },
   {
-    "prompt": "AC 107-2A, Night Operations: At night an aircraft's orientation is far harder to judge, because the airframe itself is not visible and only its lights are. Many small unmanned aircraft use different coloured lights front and rear so the pilot can tell which way the aircraft is facing.",
+    "prompt": "AC 107-2A paragraph 7.2 directs operators to maintain the small UAS in accordance with the manufacturer's instructions. At night an aircraft's orientation is far harder to judge, because the airframe itself is not visible and only its lights are, so many manufacturers fit different coloured lights front and rear to show which way the aircraft is facing.\n\nSource: https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
     "questionText": "Why do many small unmanned aircraft use different coloured lights at the front and rear?",
     "answers": [
       "So the remote pilot can determine the aircraft's orientation when the airframe is not visible",
@@ -1344,7 +1344,7 @@
     "domain": "Night operations"
   },
   {
-    "prompt": "AC 107-2A, Night Operations: Exposure to a bright light source destroys dark adaptation that took roughly 30 minutes to build. Vehicle headlights, phone screens at full brightness, and work lights at the control station all cost the pilot night vision that then has to be regained.",
+    "prompt": "AC 107-2A, Night Operations: Exposure to a bright light source destroys dark adaptation that took roughly 30 minutes to build. Vehicle headlights, phone screens at full brightness, and work lights at the control station all cost the pilot night vision that then has to be regained.\n\nSource: https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf",
     "questionText": "A remote pilot checks a phone at full screen brightness midway through a night operation. What is the consequence?",
     "answers": [
       "Dark adaptation is lost and must be regained over roughly 30 minutes",
@@ -1358,7 +1358,7 @@
     "domain": "Night operations"
   },
   {
-    "prompt": "AC 107-2A, Night Operations: Judging the distance and altitude of another aircraft at night is considerably harder, because only its lights are visible and there is no size cue to fix the distance. Manned aircraft position lights — red on the left wingtip, green on the right, white at the tail — are the main indication of another aircraft's direction of travel.",
+    "prompt": "AC 107-2A, Night Operations: Judging the distance and altitude of another aircraft at night is considerably harder, because only its lights are visible and there is no size cue to fix the distance. Manned aircraft position lights — red on the left wingtip, green on the right, white at the tail — are the main indication of another aircraft's direction of travel.\n\nSource: https://www.ecfr.gov/current/title-14/section-25.1385",
     "questionText": "A remote pilot at night sees a green light on the right and a red light on the left of an approaching aircraft. What does this indicate?",
     "answers": [
       "The aircraft is heading toward the observer",
