@@ -34,6 +34,8 @@ export interface Question {
   correctAnswer: string;
   hint?: string;
   points: number;
+  /** Part 107 subject area. Null until an editor classifies the question. */
+  domain?: string | null;
   createdBy: {
     id: string;
     username: string;

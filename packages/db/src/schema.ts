@@ -87,6 +87,12 @@ export const questions = pgTable(
     hint: text("hint"),
     points: integer("points").notNull().default(1),
 
+    // Part 107 subject area. Nullable on purpose: the bank predates this
+    // column and nothing guesses a value for the rows that came over from
+    // MongoDB. An unclassified question is simply left out of the per-domain
+    // accuracy breakdown — editors assign domains through /management.
+    domain: text("domain"),
+
     createdBy: uuid("created_by")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
@@ -100,7 +106,10 @@ export const questions = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (table) => [index("questions_created_by_idx").on(table.createdBy)],
+  (table) => [
+    index("questions_created_by_idx").on(table.createdBy),
+    index("questions_domain_idx").on(table.domain),
+  ],
 );
 
 export const userResponses = pgTable(

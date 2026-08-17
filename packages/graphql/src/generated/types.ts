@@ -28,6 +28,7 @@ export type AuthPayload = {
 export type CreateQuestionInput = {
   answers: Array<Scalars['String']['input']>;
   correctAnswer: Scalars['String']['input'];
+  domain?: InputMaybe<Scalars['String']['input']>;
   hint?: InputMaybe<Scalars['String']['input']>;
   points?: InputMaybe<Scalars['Int']['input']>;
   prompt: Scalars['String']['input'];
@@ -43,6 +44,21 @@ export type CreateUserInput = {
    */
   role?: InputMaybe<Role>;
   username: Scalars['String']['input'];
+};
+
+/**
+ * One row per domain the user has answered in. The answered count is
+ * submissions, not distinct questions — a question answered twice counts
+ * twice, because user_responses has no uniqueness constraint on
+ * (user, question).
+ */
+export type DomainAccuracy = {
+  __typename?: 'DomainAccuracy';
+  /** correct / answered, 0-100, rounded to one decimal place. */
+  accuracy: Scalars['Float']['output'];
+  answered: Scalars['Int']['output'];
+  correct: Scalars['Int']['output'];
+  domain: Scalars['String']['output'];
 };
 
 export type GoogleAuthUrl = {
@@ -164,6 +180,9 @@ export type Query = {
   getLeaderboard: LeaderboardResponse;
   me?: Maybe<User>;
   question?: Maybe<Question>;
+  /** Every distinct domain present in the bank, sorted. Nulls omitted. */
+  questionDomains: Array<Scalars['String']['output']>;
+  /** Optionally narrowed to a single domain. Unclassified questions are only returned when no domain is given. */
   questions: Array<Question>;
   user?: Maybe<User>;
   users: Array<User>;
@@ -180,6 +199,11 @@ export type QueryQuestionArgs = {
 };
 
 
+export type QueryQuestionsArgs = {
+  domain?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryUserArgs = {
   id: Scalars['ID']['input'];
 };
@@ -190,6 +214,11 @@ export type Question = {
   correctAnswer: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
   createdBy: User;
+  /**
+   * Part 107 subject area, e.g. "Regulations". Null for questions that predate
+   * classification; those are excluded from User.domainAccuracy.
+   */
+  domain?: Maybe<Scalars['String']['output']>;
   hint?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   points: Scalars['Int']['output'];
@@ -219,6 +248,7 @@ export type UpdatePasswordResponse = {
 export type UpdateQuestionInput = {
   answers: Array<Scalars['String']['input']>;
   correctAnswer: Scalars['String']['input'];
+  domain?: InputMaybe<Scalars['String']['input']>;
   hint?: InputMaybe<Scalars['String']['input']>;
   points?: InputMaybe<Scalars['Int']['input']>;
   prompt: Scalars['String']['input'];
@@ -230,6 +260,12 @@ export type User = {
   consecutiveLoginDays: Scalars['Int']['output'];
   createdAt: Scalars['String']['output'];
   dailyPoints: Scalars['Int']['output'];
+  /**
+   * Accuracy per question domain, from this user's answer history. Readable
+   * only by the user themselves or an admin. Questions with no domain are
+   * excluded, so an unclassified bank yields an empty list.
+   */
+  domainAccuracy: Array<DomainAccuracy>;
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   /** ISO 8601 string — the frontend formats these with new Date(value). */
@@ -329,6 +365,8 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateQuestionInput: CreateQuestionInput;
   CreateUserInput: CreateUserInput;
+  DomainAccuracy: ResolverTypeWrapper<DomainAccuracy>;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   GoogleAuthUrl: ResolverTypeWrapper<GoogleAuthUrl>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
@@ -352,6 +390,8 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   CreateQuestionInput: CreateQuestionInput;
   CreateUserInput: CreateUserInput;
+  DomainAccuracy: DomainAccuracy;
+  Float: Scalars['Float']['output'];
   GoogleAuthUrl: GoogleAuthUrl;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
@@ -371,6 +411,13 @@ export type ResolversParentTypes = ResolversObject<{
 export type AuthPayloadResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = ResolversObject<{
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+}>;
+
+export type DomainAccuracyResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['DomainAccuracy'] = ResolversParentTypes['DomainAccuracy']> = ResolversObject<{
+  accuracy?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  answered?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  correct?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  domain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
 
 export type GoogleAuthUrlResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['GoogleAuthUrl'] = ResolversParentTypes['GoogleAuthUrl']> = ResolversObject<{
@@ -415,7 +462,8 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   getLeaderboard?: Resolver<ResolversTypes['LeaderboardResponse'], ParentType, ContextType, Partial<QueryGetLeaderboardArgs>>;
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   question?: Resolver<Maybe<ResolversTypes['Question']>, ParentType, ContextType, RequireFields<QueryQuestionArgs, 'id'>>;
-  questions?: Resolver<Array<ResolversTypes['Question']>, ParentType, ContextType>;
+  questionDomains?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  questions?: Resolver<Array<ResolversTypes['Question']>, ParentType, ContextType, Partial<QueryQuestionsArgs>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 }>;
@@ -425,6 +473,7 @@ export type QuestionResolvers<ContextType = GraphQLContext, ParentType extends R
   correctAnswer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  domain?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hint?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   points?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -447,6 +496,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
   consecutiveLoginDays?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   dailyPoints?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  domainAccuracy?: Resolver<Array<ResolversTypes['DomainAccuracy']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   lastLoginDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -465,6 +515,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
 
 export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   AuthPayload?: AuthPayloadResolvers<ContextType>;
+  DomainAccuracy?: DomainAccuracyResolvers<ContextType>;
   GoogleAuthUrl?: GoogleAuthUrlResolvers<ContextType>;
   LeaderboardEntry?: LeaderboardEntryResolvers<ContextType>;
   LeaderboardResponse?: LeaderboardResponseResolvers<ContextType>;

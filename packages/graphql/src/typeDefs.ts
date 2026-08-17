@@ -39,6 +39,14 @@ export const typeDefs = /* GraphQL */ `
     dailyPoints: Int!
 
     consecutiveLoginDays: Int!
+
+    """
+    Accuracy per question domain, from this user's answer history. Readable
+    only by the user themselves or an admin. Questions with no domain are
+    excluded, so an unclassified bank yields an empty list.
+    """
+    domainAccuracy: [DomainAccuracy!]!
+
     "ISO 8601 string — the frontend formats these with new Date(value)."
     lastLoginDate: String
     createdAt: String!
@@ -53,9 +61,28 @@ export const typeDefs = /* GraphQL */ `
     correctAnswer: String!
     hint: String
     points: Int!
+    """
+    Part 107 subject area, e.g. "Regulations". Null for questions that predate
+    classification; those are excluded from User.domainAccuracy.
+    """
+    domain: String
     createdBy: User!
     createdAt: String!
     updatedAt: String!
+  }
+
+  """
+  One row per domain the user has answered in. The answered count is
+  submissions, not distinct questions — a question answered twice counts
+  twice, because user_responses has no uniqueness constraint on
+  (user, question).
+  """
+  type DomainAccuracy {
+    domain: String!
+    answered: Int!
+    correct: Int!
+    "correct / answered, 0-100, rounded to one decimal place."
+    accuracy: Float!
   }
 
   type AuthPayload {
@@ -119,6 +146,7 @@ export const typeDefs = /* GraphQL */ `
     correctAnswer: String!
     hint: String
     points: Int
+    domain: String
   }
 
   input UpdateQuestionInput {
@@ -128,14 +156,18 @@ export const typeDefs = /* GraphQL */ `
     correctAnswer: String!
     hint: String
     points: Int
+    domain: String
   }
 
   type Query {
     me: User
     users: [User!]!
     user(id: ID!): User
-    questions: [Question!]!
+    "Optionally narrowed to a single domain. Unclassified questions are only returned when no domain is given."
+    questions(domain: String): [Question!]!
     question(id: ID!): Question
+    "Every distinct domain present in the bank, sorted. Nulls omitted."
+    questionDomains: [String!]!
     getGoogleAuthUrl: GoogleAuthUrl!
     getLeaderboard(limit: Int): LeaderboardResponse!
   }
