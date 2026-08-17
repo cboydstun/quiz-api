@@ -15,6 +15,7 @@
     "db:generate": "pnpm --filter @quiz/db generate",
     "db:migrate": "pnpm --filter @quiz/db migrate",
     "migrate:mongo": "dotenv -e .env -- tsx scripts/migrate-mongo.ts",
+    "seed:questions": "dotenv -e .env.local -- tsx scripts/seed-questions.ts",
     "typecheck:scripts": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {

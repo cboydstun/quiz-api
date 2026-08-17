@@ -68,7 +68,14 @@ export default function Home() {
         {/* The seam is the gutter: panels butt together on a 1px hairline. */}
         <div className="grid grid-cols-2 gap-px border-t border-line-hairline bg-line-hairline lg:grid-cols-4">
           <div className="bg-ink-900">
-            <Readout label="Bank Size" value="1,000+" unit="items" />
+            {/*
+              Hardcoded, and it will drift as editors add questions. There is
+              no public count to derive it from — both `questions` and
+              `questionDomains` require a token, and this page is a server
+              component with no auth. Update it when the bank grows; an
+              understated figure is the safer way to be wrong.
+            */}
+            <Readout label="Bank Size" value="98" unit="items" />
           </div>
           <div className="bg-ink-900">
             <Readout label="Pass Rate" value="98" unit="%" tone="go" />
