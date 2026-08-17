@@ -101,6 +101,16 @@ single SQL statement — see `submitAnswer` in `packages/graphql/src/resolvers/r
 which is one CTE precisely because the quiz page fires every answer at once
 through `Promise.all` and read-modify-write counters would lose writes.
 
+`questions.domain` is nullable and nothing backfilled it — the bank predates
+the column and no value is guessed for the rows that came over from MongoDB.
+An unclassified question is left out of `User.domainAccuracy` entirely rather
+than bucketed as "Uncategorized"; editors assign domains through /management.
+Two things about that breakdown are deliberate and easy to misread as bugs:
+`answered` counts submissions rather than distinct questions (there is no
+unique constraint on `(user_id, question_id)` and `submitAnswer` always
+inserts), and every pre-cutover user starts empty because the Mongo import
+skipped `user_responses`.
+
 Migrations are `drizzle-kit generate` (never `push` — the test suite replays
 the generated SQL, and `push` produces no files, so the two would silently
 diverge). They are applied by an explicit `pnpm db:migrate`, never from the
@@ -200,12 +210,74 @@ cosmetic; the backend is the authority.
 
 ## Styling
 
-Tailwind v4, no CSS modules, no component library. No `tailwind.config.ts` —
-theme customisation goes in an `@theme` block in `apps/web/src/app/styles/global.css`.
-Note the v4 spellings: `shadow-sm`/`shadow-xs`, `outline-hidden`,
-`bg-linear-to-*`, and slash opacity (`bg-white/20`). The app-wide gradient and
-max-width live on `<body>`/`<main>` in `layout.tsx`, so pages should not re-add
-page-level padding containers.
+Tailwind v4, no CSS modules. No `tailwind.config.ts` — everything lives in
+`apps/web/src/app/styles/global.css`. Note the v4 spellings: `shadow-sm`/`shadow-xs`,
+`outline-hidden`, `bg-linear-to-*`, and slash opacity (`bg-white/20`).
+
+### The design system
+
+The visual language is the **Drone Pilot Quiz design system**, imported from
+<https://claude.ai/design/p/2c9a5234-4f17-46fb-ab75-691f0017c175>. Read its
+`readme.md` before designing anything new. The short version: near-black
+housing, hairline structure, `border-radius: 0` everywhere, mono uppercase
+micro-labels, one orange signal accent, **no gradients, no drop shadows, and
+nothing that scales or lifts on hover**. Copy is flat and technical — a quiz is
+a _run_, a user an _operator_, the admin area _Control_.
+
+`global.css` holds three things: an `@theme` block with the tokens (colours,
+type ramp, tracking, containers, the two `glow` shadows), a plain `:root` block
+for values Tailwind has no namespace for (`--scrim`, `--grid-overlay`, the
+durations), and five `@utility` definitions — `label-mono`, `transition-fast`,
+`grid-overlay`, `panel-bracket`, `focus-signal`. The design's `--black` and
+`--gray-*` are renamed `ink-950` and `mute-*` so they do not clobber Tailwind's
+own `black` and `gray-*`. The type
+ramp deliberately overrides Tailwind's defaults (`text-base` is 15px).
+
+The **18 components live in `apps/web/src/components/ds/`** and are re-exported
+from `@/components/ds`. Reach for them before writing new markup. They are
+Tailwind rewrites of the design's JSX: hover is a `hover:` variant, never
+`useState`, so most of them are server-safe — only `Modal`, `FlipCard`, `Navbar`
+and `AdminSidebar` carry `"use client"`. `ds/Navbar`, `ds/Footer` and
+`ds/AdminSidebar` are presentational; the app-coupled wrappers that feed them
+context stay at `src/components/Navbar.tsx`, `src/components/Footer.tsx` and
+`src/app/management/Sidebar.tsx`. Never nest a `Button` inside a `next/link` —
+use the exported `buttonClass()` on the link itself.
+
+Fonts are Archivo + JetBrains Mono via `next/font/google` in `layout.tsx`, both
+variable so no `weight` is passed. Nothing in the system is heavier than 600.
+
+### Layout
+
+`<main>` in `layout.tsx` is `grow` and nothing else — **each page supplies its
+own `max-w-*` container and padding**, because the nav is a full-bleed sticky
+64px bar and the landing hero runs edge to edge on the survey grid. (This is the
+opposite of the pre-redesign rule.) Container widths are `max-w-shell` 1400,
+`max-w-wide` 1120, `max-w-mid` 880, `max-w-narrow` 680, `max-w-form` 400.
+
+The theme is **dark only** — there is no `prefers-color-scheme` branch and no
+toggle. Panels butt together on a 1px hairline (`gap-px` over a
+`bg-line-hairline` grid); the seam is the gutter, not whitespace.
+
+Every route is on the design system. Nothing in `apps/web/src` should match
+`rounded-*`, `shadow-{sm,md,lg,xl}`, `bg-linear-to-*`, or `scale-*` outside a
+test — that grep is the standing regression check for the old language.
+
+Two pieces are **extrapolations, not in the source design**, and are marked as
+such in their own files:
+
+- `ds/Select` — the design ships no Select on the grounds the product has none,
+  but it does (role dropdowns, the role filter). It is a native `<select>`
+  styled in the language; keep it native so `option` roles survive.
+- `DataTable` sorting — optional `sortKey` / `sortDir` / `onSort`, header cells
+  become buttons carrying `aria-sort`. The direction arrow must stay its own
+  element: Testing Library matches an element's _direct_ text children, so
+  nesting it keeps `getByText("Points")` working on the header.
+
+One more trap worth knowing: `TextField` and `Select` render the required
+asterisk **outside** the `<label>`. Putting it inside makes the label's text
+`"Username *"`, which breaks every `getByLabelText("Username")` and makes a
+screen reader announce the asterisk. The input's own `required` carries the
+meaning.
 
 ## Environment
 
