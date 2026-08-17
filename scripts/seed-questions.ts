@@ -191,11 +191,12 @@ async function main(): Promise<void> {
     .filter((arg) => arg && arg !== "--");
 
   const dryRun = args.includes("--dry-run");
+  const update = args.includes("--update");
   const email = args.find((arg) => !arg.startsWith("--"));
 
   if (!email) {
     throw new Error(
-      "Usage: pnpm seed:questions owner@example.com [--dry-run]\n" +
+      "Usage: pnpm seed:questions owner@example.com [--dry-run] [--update]\n" +
         "The owner must already have registered through the app.",
     );
   }
@@ -240,9 +241,19 @@ async function main(): Promise<void> {
   }
 
   const existing = await db
-    .select({ questionText: questions.questionText })
+    .select({
+      id: questions.id,
+      prompt: questions.prompt,
+      questionText: questions.questionText,
+      answers: questions.answers,
+      correctAnswer: questions.correctAnswer,
+      hint: questions.hint,
+      points: questions.points,
+      domain: questions.domain,
+    })
     .from(questions);
   const known = new Set(existing.map((row) => row.questionText));
+  const byText = new Map(seed.map((q) => [q.questionText, q]));
 
   // `known` grows as the filter runs. Without that a questionText repeated
   // across two seed files would pass the check twice and insert twice — there
@@ -277,13 +288,56 @@ async function main(): Promise<void> {
     console.log(`  ${String(count).padStart(4)}  ${domain}`);
   }
 
+  // --update carries corrections back to rows that are already in the bank.
+  // Matching is on `question_text`, the same key the insert path dedupes on,
+  // so the question wording itself is the one field an update cannot change.
+  const stale = update
+    ? existing
+        .map((row) => {
+          const q = byText.get(row.questionText);
+          if (!q) return null;
+          const next = {
+            prompt: q.prompt,
+            answers: q.answers,
+            correctAnswer: q.correctAnswer,
+            hint: q.hint?.trim() ? q.hint.trim() : null,
+            points: q.points,
+            domain: resolveDomain(q),
+          };
+          const same =
+            row.prompt === next.prompt &&
+            row.correctAnswer === next.correctAnswer &&
+            row.hint === next.hint &&
+            row.points === next.points &&
+            row.domain === next.domain &&
+            row.answers.length === next.answers.length &&
+            row.answers.every((a, i) => a === next.answers[i]);
+          return same ? null : { id: row.id, ...next };
+        })
+        .filter((row) => row !== null)
+    : [];
+
+  if (update) console.log(`${stale.length} existing rows differ from the seed.`);
+
   if (dryRun) {
-    console.log(`\nDry run complete. ${rows.length} would be inserted.`);
+    console.log(
+      `\nDry run complete. ${rows.length} would be inserted` +
+        (update ? `, ${stale.length} updated.` : "."),
+    );
     return;
   }
 
+  for (const row of stale) {
+    const { id, ...values } = row;
+    await db
+      .update(questions)
+      .set({ ...values, updatedAt: new Date() })
+      .where(eq(questions.id, id));
+  }
+  if (stale.length > 0) console.log(`Updated ${stale.length} rows.`);
+
   if (rows.length === 0) {
-    console.log("Nothing to do.");
+    console.log("Nothing to insert.");
     return;
   }
 
