@@ -2,9 +2,19 @@
 
 import React, { useState } from "react";
 import { isRole, type NewUser, type Role, type User } from "@/types";
+import {
+  Button,
+  DataTable,
+  Modal,
+  Panel,
+  Select,
+  TextField,
+  type DataTableColumn,
+} from "@/components/ds";
+
+import type { SortDirection } from "@/components/ds";
 
 type SortField = "username" | "email" | "role";
-type SortDirection = "asc" | "desc";
 
 interface UserManagementProps {
   usersData?: { users: User[] | null };
@@ -49,11 +59,11 @@ const UserManagement: React.FC<UserManagementProps> = ({
     setNewUser({ username: "", email: "", role: "USER", password: "" });
   };
 
-  const handleSort = (field: SortField) => {
+  const handleSort = (field: string) => {
     if (field === sortField) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      setSortField(field);
+      setSortField(field as SortField);
       setSortDirection("asc");
     }
   };
@@ -71,203 +81,141 @@ const UserManagement: React.FC<UserManagementProps> = ({
       return 0;
     });
 
-  const SortIndicator = ({ field }: { field: SortField }) => {
-    if (field !== sortField) return null;
-    return <span className="ml-1">{sortDirection === "asc" ? "▲" : "▼"}</span>;
-  };
+  const canSeeSuperAdmin = user.role === "SUPER_ADMIN";
+
+  const columns: Array<string | DataTableColumn> = [
+    { label: "Username", sortKey: "username" },
+    { label: "Email", sortKey: "email" },
+    { label: "Role", sortKey: "role" },
+    "Actions",
+  ];
+
+  const rows = filteredAndSortedUsers.map((u) => {
+    const locked = u.role === "SUPER_ADMIN" && !canSeeSuperAdmin;
+    return [
+      u.username,
+      u.email,
+      <Select
+        key="role"
+        bare
+        aria-label={`Role for ${u.username}`}
+        value={u.role}
+        disabled={locked}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (isRole(value)) handleChangeUserRole(u.id, value);
+        }}
+      >
+        <option value="USER">USER</option>
+        <option value="EDITOR">EDITOR</option>
+        <option value="ADMIN">ADMIN</option>
+        {canSeeSuperAdmin && <option value="SUPER_ADMIN">SUPER_ADMIN</option>}
+      </Select>,
+      <Button
+        key="delete"
+        variant="abort"
+        size="sm"
+        disabled={locked}
+        onClick={() => handleDeleteUser(u.id)}
+      >
+        Delete
+      </Button>,
+    ];
+  });
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">User Management</h2>
-      <div className="flex justify-between items-center mb-4">
-        <button
-          onClick={openModal}
-          className="bg-green-500 text-white p-2 rounded-sm hover:bg-green-600"
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
+        <Select
+          bare
+          id="roleFilter"
+          label="Filter by Role:"
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value)}
+          className="w-56"
         >
+          <option value="ALL">ALL</option>
+          <option value="USER">USER</option>
+          <option value="EDITOR">EDITOR</option>
+          <option value="ADMIN">ADMIN</option>
+          {canSeeSuperAdmin && <option value="SUPER_ADMIN">SUPER_ADMIN</option>}
+        </Select>
+        <Button variant="signal" size="sm" onClick={openModal}>
           Create New User
-        </button>
-        <div>
-          <label htmlFor="roleFilter" className="mr-2">
-            Filter by Role:
-          </label>
-          <select
-            id="roleFilter"
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            className="p-2 border rounded-sm"
+        </Button>
+      </div>
+
+      <Panel
+        label="Operators"
+        meta={`${filteredAndSortedUsers.length} records`}
+        padding="none"
+      >
+        <DataTable
+          columns={columns}
+          rows={rows}
+          sortKey={sortField}
+          sortDir={sortDirection}
+          onSort={handleSort}
+          empty="No operators match."
+        />
+      </Panel>
+
+      <Modal
+        open={isModalOpen}
+        label="Invite Operator"
+        title="Create new user"
+        onDismiss={closeModal}
+        actions={
+          <>
+            <Button variant="ghost" size="sm" onClick={closeModal}>
+              Cancel
+            </Button>
+            <Button type="submit" form="create-user" variant="signal" size="sm">
+              Create User
+            </Button>
+          </>
+        }
+      >
+        <form id="create-user" onSubmit={handleSubmit}>
+          <TextField
+            id="new-username"
+            name="username"
+            label="Username"
+            value={newUser.username}
+            onChange={handleInputChange}
+            required
+          />
+          <TextField
+            id="new-email"
+            name="email"
+            label="Email"
+            type="email"
+            value={newUser.email}
+            onChange={handleInputChange}
+            required
+          />
+          <TextField
+            id="new-password"
+            name="password"
+            label="Temporary Password"
+            type="password"
+            value={newUser.password}
+            onChange={handleInputChange}
+            required
+          />
+          <Select
+            id="new-role"
+            name="role"
+            label="Role"
+            value={newUser.role}
+            onChange={handleInputChange}
           >
-            <option value="ALL">All Roles</option>
             <option value="USER">USER</option>
             <option value="EDITOR">EDITOR</option>
             <option value="ADMIN">ADMIN</option>
-            {user.role === "SUPER_ADMIN" && (
-              <option value="SUPER_ADMIN">SUPER_ADMIN</option>
-            )}
-          </select>
-        </div>
-      </div>
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th
-              className="border border-gray-300 p-2 cursor-pointer"
-              onClick={() => handleSort("username")}
-            >
-              Username <SortIndicator field="username" />
-            </th>
-            <th
-              className="border border-gray-300 p-2 cursor-pointer"
-              onClick={() => handleSort("email")}
-            >
-              Email <SortIndicator field="email" />
-            </th>
-            <th
-              className="border border-gray-300 p-2 cursor-pointer"
-              onClick={() => handleSort("role")}
-            >
-              Role <SortIndicator field="role" />
-            </th>
-            <th className="border border-gray-300 p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAndSortedUsers.map((u) => (
-            <tr key={u.id}>
-              <td className="border border-gray-300 p-2">{u.username}</td>
-              <td className="border border-gray-300 p-2">{u.email}</td>
-              <td className="border border-gray-300 p-2">
-                <select
-                  value={u.role}
-                  onChange={(e) => {
-                    if (isRole(e.target.value)) {
-                      handleChangeUserRole(u.id, e.target.value);
-                    }
-                  }}
-                  className="w-full p-1"
-                  disabled={
-                    u.role === "SUPER_ADMIN" && user.role !== "SUPER_ADMIN"
-                  }
-                >
-                  <option value="USER">USER</option>
-                  <option value="EDITOR">EDITOR</option>
-                  <option value="ADMIN">ADMIN</option>
-                  {user.role === "SUPER_ADMIN" && (
-                    <option value="SUPER_ADMIN">SUPER_ADMIN</option>
-                  )}
-                </select>
-              </td>
-              <td className="border border-gray-300 p-2 text-center">
-                <button
-                  onClick={() => handleDeleteUser(u.id)}
-                  className="bg-red-500 text-white p-1 rounded-sm hover:bg-red-600"
-                  disabled={
-                    u.role === "SUPER_ADMIN" && user.role !== "SUPER_ADMIN"
-                  }
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-600/50 overflow-y-auto h-full w-full">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <h3 className="text-lg font-bold mb-4">Create New User</h3>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="username"
-                >
-                  Username
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={newUser.username}
-                  onChange={handleInputChange}
-                  className="shadow-sm appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="email"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={newUser.email}
-                  onChange={handleInputChange}
-                  className="shadow-sm appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="password"
-                >
-                  Temporary Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={newUser.password}
-                  onChange={handleInputChange}
-                  minLength={8}
-                  autoComplete="new-password"
-                  className="shadow-sm appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="role"
-                >
-                  Role
-                </label>
-                <select
-                  id="role"
-                  name="role"
-                  value={newUser.role}
-                  onChange={handleInputChange}
-                  className="shadow-sm appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
-                >
-                  <option value="USER">USER</option>
-                  <option value="EDITOR">EDITOR</option>
-                  <option value="ADMIN">ADMIN</option>
-                </select>
-              </div>
-              <div className="flex items-center justify-between">
-                <button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:shadow-outline"
-                >
-                  Create User
-                </button>
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-sm focus:outline-hidden focus:shadow-outline"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+          </Select>
+        </form>
+      </Modal>
     </div>
   );
 };

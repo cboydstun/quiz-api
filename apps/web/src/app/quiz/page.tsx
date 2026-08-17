@@ -2,6 +2,17 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
+import {
+  Alert,
+  Button,
+  Label,
+  Panel,
+  QuestionCard,
+  Readout,
+  Spinner,
+  Status,
+  Modal,
+} from "@/components/ds";
 import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useMutation, useQuery } from "@apollo/client/react";
 import type { QuizQuestion, User } from "@/types";
@@ -75,6 +86,7 @@ export default function QuizPage() {
   const [quizScore, setQuizScore] = useState<{
     score: number;
     totalQuestions: number;
+    breakdown: { questionId: string; isCorrect: boolean }[];
   } | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [showHint, setShowHint] = useState(false);
@@ -131,14 +143,15 @@ export default function QuizPage() {
         ),
       );
 
-      const score = results.reduce(
-        (total, result) =>
-          result.data?.submitAnswer?.isCorrect ? total + 1 : total,
-        0,
-      );
+      const breakdown = results.map((result, i) => ({
+        questionId: answers[i]![0],
+        isCorrect: result.data?.submitAnswer?.isCorrect ?? false,
+      }));
+
+      const score = breakdown.filter((entry) => entry.isCorrect).length;
 
       setQuizSubmitted(true);
-      setQuizScore({ score, totalQuestions });
+      setQuizScore({ score, totalQuestions, breakdown });
     } catch (err) {
       console.error("Error submitting quiz:", err);
       setNotice("There was an error submitting your quiz. Please try again.");
@@ -202,17 +215,15 @@ export default function QuizPage() {
     advanceQuestion();
   }, [timeRemaining, quizSubmitted, advanceQuestion]);
 
-  if (userLoading || questionsLoading)
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-purple-100">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+  if (userLoading || questionsLoading) return <Spinner label="Loading bank" />;
+
   if (questionsError)
     return (
-      <p className="text-center text-red-600 text-xl mt-8">
-        Error loading questions. Please try again later.
-      </p>
+      <div className="mx-auto max-w-mid px-8 py-16">
+        <Alert tone="abort">
+          Error loading questions. Please try again later.
+        </Alert>
+      </div>
     );
 
   const currentUser = userData?.me;
@@ -266,300 +277,307 @@ export default function QuizPage() {
     setShowQuitConfirmation(false);
   };
 
-  const renderDifficultySelection = () => (
-    <div className="container mx-auto p-4 max-w-3xl">
-      <h1 className="text-4xl font-bold mb-6 text-center text-blue-600">
-        Welcome to the Drone Pilot Quiz
-      </h1>
-      <p className="mb-8 text-xl text-center text-gray-700">
-        Hello, <span className="font-semibold">{currentUser.username}</span>!
-        Please select a difficulty level and the number of questions:
-      </p>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">
-          Number of Questions: {questionCount}
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {([10, 20, 50, 100, 200, "infinite"] as QuestionCount[]).map(
-            (count) => (
-              <button
-                key={count}
-                onClick={() => handleQuestionCountSelection(count)}
-                className={`py-2 px-4 rounded-lg font-bold text-white transition-all duration-300 transform hover:scale-105 focus:outline-hidden focus:ring-4 ${
-                  questionCount === count
-                    ? "ring-4 ring-blue-500 bg-blue-600"
-                    : "bg-purple-500 hover:bg-purple-600 focus:ring-purple-300/50"
-                }`}
-              >
-                {count === "infinite" ? "Infinite" : count}
-              </button>
-            ),
-          )}
-        </div>
-      </div>
+  const LEVELS: {
+    level: Difficulty;
+    tone: "go" | "caution" | "abort";
+    clock: string;
+    detail: string;
+  }[] = [
+    {
+      level: "EASY",
+      tone: "go",
+      clock: "No clock",
+      detail: "Full scenario prompt. Hint available on request.",
+    },
+    {
+      level: "MEDIUM",
+      tone: "caution",
+      clock: "60s / item",
+      detail: "Prompt shown. Hint available on request.",
+    },
+    {
+      level: "HARD",
+      tone: "abort",
+      clock: "30s / item",
+      detail: "Question and answers only. No hint, no prompt.",
+    },
+  ];
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        {(["EASY", "MEDIUM", "HARD"] as Difficulty[]).map((level) => (
-          <button
-            key={level}
-            onClick={() => handleDifficultySelection(level)}
-            className={`w-full py-4 px-6 rounded-lg font-bold text-white transition-all duration-300 transform hover:scale-105 focus:outline-hidden focus:ring-4 ${
-              difficulty === level
-                ? "ring-4 ring-blue-500"
-                : level === "EASY"
-                  ? "bg-green-500 hover:bg-green-600 focus:ring-green-300"
-                  : level === "MEDIUM"
-                    ? "bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-300"
-                    : "bg-red-500 hover:bg-red-600 focus:ring-red-300"
-            }`}
-          >
-            {level}
-          </button>
-        ))}
-      </div>
-      <div className="bg-white rounded-lg p-6 shadow-md mt-8">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
-          Difficulty Levels:
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              level: "EASY",
-              color: "text-green-600",
-              bgColor: "bg-green-100",
-              description:
-                "No timer. Full text prompt provided. Multiple choice question and answers. Optional hint can be displayed.",
-            },
-            {
-              level: "MEDIUM",
-              color: "text-yellow-600",
-              bgColor: "bg-yellow-100",
-              description:
-                "60 second timer per question. No prompt provided - just question and answers. Optional hint can be displayed.",
-            },
-            {
-              level: "HARD",
-              color: "text-red-600",
-              bgColor: "bg-red-100",
-              description:
-                "30 second timer. Question and multiple choice answers only. No hint available.",
-            },
-          ].map(({ level, color, bgColor, description }) => (
-            <div
-              key={level}
-              className={`${bgColor} rounded-lg p-4 flex flex-col transition-all duration-300 transform hover:scale-105`}
+  const COUNTS: QuestionCount[] = [10, 20, 50, 100, 200, "infinite"];
+
+  const renderRunConfiguration = () => (
+    <div className="mx-auto max-w-mid px-8 py-16">
+      <Label tag="///" className="mb-6">
+        Run Configuration
+      </Label>
+      <h1 className="m-0 mb-10 text-2xl font-medium tracking-tight text-bone-100">
+        Configure evaluation run
+      </h1>
+
+      <Panel
+        label="Item Count"
+        meta={questionCount === "infinite" ? "ALL" : String(questionCount)}
+        padding="md"
+        className="mb-px"
+      >
+        <div className="flex flex-wrap gap-2">
+          {COUNTS.map((count) => (
+            <Button
+              key={String(count)}
+              variant="outline"
+              size="sm"
+              selected={questionCount === count}
+              onClick={() => handleQuestionCountSelection(count)}
             >
-              <span className={`font-bold ${color} text-lg mb-2`}>{level}</span>
-              <span className="text-gray-700 text-sm">{description}</span>
+              {count === "infinite" ? "All" : count}
+            </Button>
+          ))}
+        </div>
+      </Panel>
+
+      <Panel label="Difficulty" padding="none">
+        <div className="grid gap-px bg-line-hairline md:grid-cols-3">
+          {LEVELS.map((level) => (
+            <div key={level.level} className="bg-ink-800 p-5">
+              <Status tone={level.tone} filled>
+                {level.level}
+              </Status>
+              <div className="mt-4 mb-2 font-mono text-3xs uppercase tracking-label text-mute-400">
+                {level.clock}
+              </div>
+              <p className="m-0 mb-5 text-sm leading-normal text-mute-500">
+                {level.detail}
+              </p>
+              {/*
+                The button is named for the level rather than a generic
+                "Select" — three buttons all reading "Select" are ambiguous to
+                a screen reader, and the test suite addresses them by name.
+              */}
+              <Button
+                variant={level.tone}
+                size="sm"
+                fullWidth
+                onClick={() => handleDifficultySelection(level.level)}
+              >
+                {level.level}
+              </Button>
             </div>
           ))}
         </div>
-      </div>
+      </Panel>
     </div>
   );
 
-  const renderQuizCompleted = () => (
-    <div className="container mx-auto p-4 max-w-3xl">
-      <div className="bg-white rounded-lg p-8 shadow-md">
-        <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">
-          Quiz Completed
-        </h1>
-        <p className="mb-6 text-xl text-center text-gray-700">
-          Thank you for completing the {difficulty} quiz, {currentUser.username}
-          !
-        </p>
-        {quizScore && (
-          <div className="text-center mb-8">
-            <p className="text-2xl font-bold text-green-600">
-              Your score: {quizScore.score} out of {quizScore.totalQuestions}
-            </p>
-            <p className="text-lg text-gray-600">
-              ({((quizScore.score / quizScore.totalQuestions) * 100).toFixed(2)}
-              %)
-            </p>
-          </div>
-        )}
-        <div className="flex justify-center">
-          <button
-            onClick={resetQuiz}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105"
-          >
-            Take Another Quiz
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderQuestion = () => {
-    if (questions.length === 0) return null;
-
-    const currentQuestion = questions[currentQuestionIndex];
-    const isAnswered = userAnswers[currentQuestion.id] !== undefined;
-    const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const renderRunComplete = () => {
+    const score = quizScore?.score ?? 0;
+    const total = quizScore?.totalQuestions ?? 0;
+    const accuracy = total ? Math.round((score / total) * 100) : 0;
+    const points = questions.reduce((sum, question) => {
+      const entry = quizScore?.breakdown.find(
+        (b) => b.questionId === question.id,
+      );
+      return entry?.isCorrect ? sum + question.points : sum;
+    }, 0);
 
     return (
-      <div className="container mx-auto p-4 max-w-3xl">
-        <div className="bg-white rounded-lg p-8 shadow-md">
-          <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">
-            Drone Pilot Quiz - {difficulty} Level
-          </h1>
-          <p className="mb-6 text-xl text-center text-gray-700">
-            Welcome, {currentUser.username}!
-          </p>
-          {timeRemaining !== null && (
-            <p className="text-2xl font-bold mb-6 text-center text-red-600">
-              Time Remaining: {timeRemaining} seconds
-            </p>
-          )}
-          <div className="mb-8">
-            <p className="font-semibold text-lg mb-2">
-              Question {currentQuestionIndex + 1} of {questions.length}
-            </p>
-            <p className="text-sm text-gray-600 mb-4">
-              This question is worth {currentQuestion.points} points
-            </p>
-            {difficulty !== "HARD" && (
-              <p className="text-lg mb-4 text-gray-700">
-                {currentQuestion.prompt}
-              </p>
-            )}
-            <p className="text-xl mb-6 font-semibold">
-              {currentQuestion.questionText}
-            </p>
-            <div className="space-y-4">
-              {currentQuestion.answers.map((answer, index) => (
-                <label
-                  key={index}
-                  className="flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 hover:bg-gray-100"
+      <div className="mx-auto max-w-mid px-8 py-16">
+        <Panel
+          label="Run Complete"
+          tag="///"
+          meta={difficulty ?? undefined}
+          padding="none"
+        >
+          <div className="grid grid-cols-1 gap-px border-b border-line-hairline bg-line-hairline sm:grid-cols-3">
+            <div className="bg-ink-800">
+              <Readout label="Score" value={`${score} / ${total}`} />
+            </div>
+            <div className="bg-ink-800">
+              <Readout
+                label="Accuracy"
+                value={accuracy}
+                unit="%"
+                tone={accuracy >= 70 ? "go" : "abort"}
+              />
+            </div>
+            <div className="bg-ink-800">
+              <Readout label="Points" value={points} unit="pts" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 p-5">
+            {questions.map((question, i) => {
+              const entry = quizScore?.breakdown.find(
+                (b) => b.questionId === question.id,
+              );
+              const answered = entry !== undefined;
+              const ok = entry?.isCorrect ?? false;
+              return (
+                <div
+                  key={question.id}
+                  className={`flex items-center gap-4 border border-line-hairline border-l-2 bg-ink-700 px-4 py-3 ${
+                    !answered
+                      ? "border-l-line-strong"
+                      : ok
+                        ? "border-l-go"
+                        : "border-l-abort"
+                  }`}
                 >
-                  <input
-                    type="radio"
-                    name={`question-${currentQuestion.id}`}
-                    value={answer}
-                    checked={userAnswers[currentQuestion.id] === answer}
-                    onChange={() =>
-                      handleAnswerSelection(currentQuestion.id, answer)
-                    }
-                    className="form-radio h-5 w-5 text-blue-600"
-                  />
-                  <span className="text-lg">{answer}</span>
-                </label>
-              ))}
-            </div>
+                  <span className="font-mono text-3xs tracking-mono text-mute-500">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex-1 text-sm text-mute-400">
+                    {question.questionText}
+                  </span>
+                  <Status tone={!answered ? "neutral" : ok ? "go" : "abort"}>
+                    {!answered ? "Skipped" : ok ? "Correct" : "Missed"}
+                  </Status>
+                </div>
+              );
+            })}
           </div>
-          {difficulty !== "HARD" && currentQuestion.hint && (
-            <div className="mb-6">
-              <button
-                onClick={() => setShowHint(!showHint)}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105"
-              >
-                {showHint ? "Hide Hint" : "Show Hint"}
-              </button>
-              {showHint && (
-                <p className="mt-4 p-4 bg-yellow-100 rounded-lg text-gray-700">
-                  {currentQuestion.hint}
-                </p>
-              )}
-            </div>
-          )}
-          <div className="flex justify-between items-center">
-            <button
-              onClick={handlePreviousQuestion}
-              disabled={currentQuestionIndex === 0}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            {!isLastQuestion && (
-              <button
-                onClick={handleSkipQuestion}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105"
-              >
-                Skip
-              </button>
-            )}
-            <button
-              onClick={handleNextQuestion}
-              disabled={!isAnswered}
-              className={`font-bold py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105 ${
-                isAnswered
-                  ? "bg-blue-500 hover:bg-blue-600 text-white"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
-            >
-              {isLastQuestion ? "Submit Quiz" : "Next"}
-            </button>
+
+          <div className="flex gap-2 border-t border-line-hairline px-5 py-4">
+            <Button variant="signal" size="md" onClick={resetQuiz}>
+              New Run
+            </Button>
           </div>
-          <div className="mt-6 text-center">
-            <button
-              onClick={handleQuit}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105"
-            >
-              Quit Quiz
-            </button>
-          </div>
-        </div>
+        </Panel>
       </div>
     );
   };
 
-  const renderQuitConfirmation = () => (
-    <div className="fixed inset-0 bg-gray-600/50 overflow-y-auto h-full w-full flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-xl">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">
-          Are you sure you want to quit?
-        </h2>
-        <p className="mb-6 text-gray-600">
-          Your progress will be lost if you quit now.
-        </p>
-        <div className="flex justify-end space-x-4">
-          <button
-            onClick={() => setShowQuitConfirmation(false)}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full transition-all duration-300"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={confirmQuit}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300"
-          >
-            Quit
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  const renderQuestion = () => {
+    const question = questions[currentQuestionIndex];
+    if (!question) return null;
 
-  return (
-    <div className="min-h-screen py-12">
-      {notice && (
-        <div className="container mx-auto px-4 max-w-3xl mb-4">
-          <div
-            className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-lg flex items-start justify-between gap-4"
-            role="alert"
-          >
-            <p>{notice}</p>
-            <button
-              onClick={() => setNotice(null)}
-              aria-label="Dismiss message"
-              className="font-bold text-yellow-800 hover:text-yellow-900"
-            >
-              &times;
-            </button>
-          </div>
+    const isLast = currentQuestionIndex === questions.length - 1;
+    const isAnswered = Boolean(userAnswers[question.id]);
+    const tone =
+      difficulty === "EASY"
+        ? "go"
+        : difficulty === "MEDIUM"
+          ? "caution"
+          : "abort";
+
+    return (
+      <div className="mx-auto max-w-mid px-8 py-16">
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <Label tag="///">
+            {currentUser.username} · {difficulty} run ·{" "}
+            {questionCount === "infinite" ? "all" : questionCount} items
+          </Label>
+          {difficulty && (
+            <Status tone={tone} filled>
+              {difficulty}
+            </Status>
+          )}
         </div>
-      )}
-      {!difficulty || !questionCount ? (
-        renderDifficultySelection()
-      ) : quizSubmitted ? (
-        renderQuizCompleted()
-      ) : (
-        <>
-          {renderQuestion()}
-          {showQuitConfirmation && renderQuitConfirmation()}
-        </>
-      )}
-    </div>
-  );
+
+        {notice && (
+          <div className="mb-6">
+            <Alert
+              tone="caution"
+              kicker="NOTICE"
+              onDismiss={() => setNotice(null)}
+            >
+              {notice}
+            </Alert>
+          </div>
+        )}
+
+        <QuestionCard
+          label="Evaluation"
+          index={currentQuestionIndex + 1}
+          total={questions.length}
+          points={question.points}
+          timeRemaining={timeRemaining}
+          prompt={difficulty !== "HARD" ? question.prompt : undefined}
+          questionText={question.questionText}
+          answers={question.answers}
+          selected={userAnswers[question.id]}
+          onSelect={(answer) => handleAnswerSelection(question.id, answer)}
+          footer={
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={currentQuestionIndex === 0}
+                onClick={handlePreviousQuestion}
+              >
+                Previous
+              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="ghost" size="sm" onClick={handleQuit}>
+                  Abort
+                </Button>
+                {!isLast && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSkipQuestion}
+                  >
+                    Skip
+                  </Button>
+                )}
+                <Button
+                  variant="signal"
+                  size="sm"
+                  disabled={!isAnswered}
+                  onClick={isLast ? handleSubmitQuiz : handleNextQuestion}
+                >
+                  {isLast ? "Submit Run" : "Next"}
+                </Button>
+              </div>
+            </div>
+          }
+        >
+          {difficulty !== "HARD" && question.hint && (
+            <div>
+              <Button
+                variant="caution"
+                size="sm"
+                onClick={() => setShowHint(!showHint)}
+              >
+                {showHint ? "Hide Hint" : "Show Hint"}
+              </Button>
+              {showHint && (
+                <div className="mt-4">
+                  <Alert tone="caution" kicker="HINT">
+                    {question.hint}
+                  </Alert>
+                </div>
+              )}
+            </div>
+          )}
+        </QuestionCard>
+
+        <Modal
+          open={showQuitConfirmation}
+          label="Confirm"
+          title="Abort this run?"
+          onDismiss={() => setShowQuitConfirmation(false)}
+          actions={
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowQuitConfirmation(false)}
+              >
+                Cancel
+              </Button>
+              <Button variant="abort" size="sm" onClick={confirmQuit}>
+                Abort Run
+              </Button>
+            </>
+          }
+        >
+          Progress for this run will not be recorded.
+        </Modal>
+      </div>
+    );
+  };
+
+  if (!difficulty || !questionCount) return renderRunConfiguration();
+  if (quizSubmitted) return renderRunComplete();
+  return renderQuestion();
 }

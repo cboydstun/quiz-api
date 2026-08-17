@@ -86,9 +86,9 @@ describe("QuizPage", () => {
 
     await screen.findByText("What reduces visibility most?");
     await user.click(screen.getByLabelText("Sunshine"));
-    await user.click(screen.getByRole("button", { name: "Submit Quiz" }));
+    await user.click(screen.getByRole("button", { name: "Submit Run" }));
 
-    expect(await screen.findByText(/Your score: 1 out of 2/)).toBeVisible();
+    expect(await screen.findByText("1 / 2")).toBeVisible();
     expect(recorder.countOf("SubmitAnswer")).toBe(2);
   });
 
@@ -115,9 +115,9 @@ describe("QuizPage", () => {
     await user.click(screen.getByRole("button", { name: "Next" }));
     await screen.findByText("What reduces visibility most?");
     await user.click(screen.getByLabelText("Fog"));
-    await user.click(screen.getByRole("button", { name: "Submit Quiz" }));
+    await user.click(screen.getByRole("button", { name: "Submit Run" }));
 
-    expect(await screen.findByText(/Your score: 0 out of 2/)).toBeVisible();
+    expect(await screen.findByText("0 / 2")).toBeVisible();
   });
 
   it("skips to the next question without requiring an answer", async () => {
@@ -143,7 +143,7 @@ describe("QuizPage", () => {
     await screen.findByRole("button", { name: "HARD" });
     await user.click(screen.getByRole("button", { name: "HARD" }));
     await screen.findByText("Which class needs ATC authorization?");
-    expect(screen.getByText(/Time Remaining: 30 seconds/)).toBeVisible();
+    expect(screen.getByText("T\u221230s")).toBeVisible();
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(31_000);

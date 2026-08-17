@@ -82,7 +82,9 @@ describe("UserManagement visibility", () => {
         handleRegisterUser={noop}
       />,
     );
-    expect(screen.getAllByRole("row")).toHaveLength(1); // header only
+    // The design system renders an explicit empty-state row rather than an
+    // empty body, so the assertion is on the message rather than a row count.
+    expect(screen.getByText("No operators match.")).toBeInTheDocument();
   });
 });
 

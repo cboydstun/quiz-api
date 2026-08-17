@@ -11,6 +11,7 @@ import {
 import { useMutation, useQuery } from "@apollo/client/react";
 import { useAuth } from "@/contexts/AuthContext";
 import Banner, { type BannerKind } from "@/components/Banner";
+import { Alert, Label, Spinner } from "@/components/ds";
 import { splitAnswers } from "@/lib/questions";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import {
@@ -47,6 +48,7 @@ const GET_ALL_QUESTIONS: TypedDocumentNode<AllQuestionsResult> = gql`
       correctAnswer
       hint
       points
+      domain
       createdBy {
         id
         username
@@ -68,6 +70,7 @@ const CREATE_QUESTION: TypedDocumentNode<
       correctAnswer
       hint
       points
+      domain
     }
   }
 `;
@@ -85,6 +88,7 @@ const UPDATE_QUESTION: TypedDocumentNode<
       correctAnswer
       hint
       points
+      domain
       createdBy {
         id
         username
@@ -154,6 +158,7 @@ interface QuestionInput {
   correctAnswer: string;
   hint: string;
   points: number;
+  domain: string;
 }
 
 interface CreateQuestionResult {
@@ -235,23 +240,17 @@ const MainContent: React.FC<MainContentProps> = ({
 }) => {
   switch (activeTab) {
     case "users":
-      if (usersLoading)
-        return (
-          <div className="flex justify-center items-center h-full">
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
-          </div>
-        );
-      if (usersError)
-        return (
-          <div className="text-red-500 text-center">
-            Error loading users: {usersError.message}
-          </div>
-        );
+      if (usersLoading) return <Spinner label="Loading operators" />;
+      if (usersError) return <Alert tone="abort">{usersError.message}</Alert>;
       return <UserManagement user={user} usersData={usersData} {...props} />;
     case "questions":
       return <QuestionManagement user={user} {...props} />;
     default:
-      return <div className="text-center text-gray-600">Select a tab</div>;
+      return (
+        <Alert tone="info" kicker="NOTICE">
+          Select a tab
+        </Alert>
+      );
   }
 };
 
@@ -323,6 +322,7 @@ const ManagementPage: React.FC = () => {
             correctAnswer: readField("correctAnswer"),
             hint: readField("hint"),
             points,
+            domain: readField("domain"),
           },
         },
       });
@@ -354,6 +354,7 @@ const ManagementPage: React.FC = () => {
             correctAnswer: updatedQuestion.correctAnswer,
             hint: updatedQuestion.hint ?? "",
             points: updatedQuestion.points,
+            domain: updatedQuestion.domain ?? "",
           },
         },
       });
@@ -477,20 +478,22 @@ const ManagementPage: React.FC = () => {
     });
   };
 
-  if (authLoading)
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-blue-100 via-white to-purple-100">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+  if (authLoading) return <Spinner label="Loading control" />;
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen bg-linear-to-br from-blue-100 via-white to-purple-100">
+    <div className="flex min-h-screen border-t border-line-hairline">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} user={user} />
-      <main className="grow p-8 ml-64">
-        <h1 className="text-3xl font-bold mb-6 text-blue-600">
-          Management Dashboard
+      {/*
+        Offset matches Sidebar's fixed 264px rail exactly. It used to be
+        ml-64 (256px), which left an 8px sliver of content under the rail.
+      */}
+      <div className="min-w-0 grow px-8 py-10 lg:ml-[264px]">
+        <Label tag="///" className="mb-6">
+          Control
+        </Label>
+        <h1 className="m-0 mb-8 text-2xl font-medium tracking-tight text-bone-100">
+          {activeTab === "users" ? "Operators" : "Question bank"}
         </h1>
         {feedback && (
           <Banner
@@ -499,7 +502,7 @@ const ManagementPage: React.FC = () => {
             onDismiss={() => setFeedback(null)}
           />
         )}
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div>
           <MainContent
             activeTab={activeTab}
             user={user}
@@ -517,7 +520,7 @@ const ManagementPage: React.FC = () => {
             handleRegisterUser={handleRegisterUser}
           />
         </div>
-      </main>
+      </div>
       {confirmation && (
         <ConfirmDialog
           title={confirmation.title}

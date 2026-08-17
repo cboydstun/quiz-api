@@ -5,6 +5,17 @@ import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { formatDate } from "@/lib/format";
 import type { Role } from "@/types";
+import {
+  Alert,
+  Button,
+  Label,
+  Panel,
+  Readout,
+  Rule,
+  Spinner,
+  Status,
+  TextField,
+} from "@/components/ds";
 
 const GET_USER_PROFILE: TypedDocumentNode<GetUserProfileResult> = gql`
   query GetUserProfile {
@@ -26,6 +37,12 @@ const GET_USER_PROFILE: TypedDocumentNode<GetUserProfileResult> = gql`
       lastLoginDate
       createdAt
       updatedAt
+      domainAccuracy {
+        domain
+        answered
+        correct
+        accuracy
+      }
     }
   }
 `;
@@ -88,6 +105,14 @@ interface ProfileUser {
   lastLoginDate: string | null;
   createdAt: string | null;
   updatedAt: string | null;
+  domainAccuracy: DomainAccuracy[];
+}
+
+interface DomainAccuracy {
+  domain: string;
+  answered: number;
+  correct: number;
+  accuracy: number;
 }
 
 interface GetUserProfileResult {
@@ -185,210 +210,215 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading)
+  if (loading) return <Spinner label="Loading record" />;
+
+  if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-purple-100">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="mx-auto max-w-wide px-8 py-16">
+        <Alert tone="abort">{error.message}</Alert>
       </div>
     );
-  if (error)
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-purple-100">
-        <div className="bg-white p-8 rounded-lg shadow-xl">
-          <p className="text-center text-xl text-red-500">
-            Error: {error.message}
-          </p>
-        </div>
-      </div>
-    );
+  }
+
+  const accuracy =
+    profileUser && profileUser.questionsAnswered > 0
+      ? Math.round(
+          (profileUser.questionsCorrect / profileUser.questionsAnswered) * 1000,
+        ) / 10
+      : null;
+
+  const domains = profileUser?.domainAccuracy ?? [];
+  const badges = profileUser?.skills?.filter(Boolean) ?? [];
+
+  // Full class strings, not interpolated: Tailwind only emits classes it can
+  // see literally in the source, so `bg-${tone}` would generate nothing.
+  const BAR = {
+    go: { text: "text-go", bar: "bg-go" },
+    caution: { text: "text-caution", bar: "bg-caution" },
+    abort: { text: "text-abort", bar: "bg-abort" },
+  } as const;
+
+  const toneFor = (value: number): keyof typeof BAR =>
+    value >= 80 ? "go" : value >= 60 ? "caution" : "abort";
 
   return (
-    <div className="min-h-screen py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold mb-8 text-center text-blue-600">
-          Profile Management
-        </h1>
+    <div className="mx-auto max-w-wide px-8 py-16">
+      <Label tag="///" className="mb-6">
+        Operator Record
+      </Label>
+      <h1 className="m-0 mb-10 text-2xl font-medium tracking-tight text-bone-100">
+        {profileUser?.username ?? "Operator"}
+      </h1>
 
-        {message && (
-          <div
-            className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-8 rounded-lg transition-all duration-300 transform hover:scale-105"
-            role="alert"
+      {message && (
+        <div className="mb-8">
+          <Alert
+            tone={/fail|not match/i.test(message) ? "abort" : "go"}
+            onDismiss={() => setMessage("")}
           >
-            <p>{message}</p>
+            {message}
+          </Alert>
+        </div>
+      )}
+
+      {profileUser && (
+        <div className="mb-8 grid grid-cols-2 gap-px border border-line-hairline bg-line-hairline lg:grid-cols-4">
+          <div className="bg-ink-800">
+            <Readout
+              label="Lifetime"
+              value={profileUser.score.toLocaleString()}
+              unit="pts"
+            />
           </div>
-        )}
-
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-white shadow-lg rounded-lg p-6 transition-all duration-300 transform hover:scale-105">
-            <h2 className="text-2xl font-semibold mb-6 text-blue-600">
-              Update Profile
-            </h2>
-            <form onSubmit={handleUsernameUpdate} className="mb-8">
-              <div className="mb-4">
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  New Username
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300"
-              >
-                Update Username
-              </button>
-            </form>
-
-            <form onSubmit={handlePasswordUpdate}>
-              <div className="mb-4">
-                <label
-                  htmlFor="currentPassword"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Current Password
-                </label>
-                <input
-                  type="password"
-                  id="currentPassword"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="newPassword"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  New Password
-                </label>
-                <input
-                  type="password"
-                  id="newPassword"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Confirm New Password
-                </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300"
-              >
-                Update Password
-              </button>
-            </form>
+          <div className="bg-ink-800">
+            <Readout
+              label="Answered"
+              value={profileUser.questionsAnswered.toLocaleString()}
+            />
           </div>
+          <div className="bg-ink-800">
+            <Readout
+              label="Accuracy"
+              value={accuracy === null ? "\u2014" : accuracy}
+              unit={accuracy === null ? undefined : "%"}
+              tone={accuracy === null ? "muted" : toneFor(accuracy)}
+            />
+          </div>
+          <div className="bg-ink-800">
+            <Readout
+              label="Streak"
+              value={profileUser.consecutiveLoginDays ?? 0}
+              unit="days"
+              tone="signal"
+            />
+          </div>
+        </div>
+      )}
 
-          <div className="bg-white shadow-lg rounded-lg p-6 transition-all duration-300 transform hover:scale-105">
-            <h2 className="text-2xl font-semibold mb-6 text-blue-600">
-              Your Progress
-            </h2>
-            {profileUser && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-blue-100 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-2 text-blue-600">
-                      Total Score
-                    </h3>
-                    <p className="text-3xl font-bold text-blue-700">
-                      {profileUser.score}
-                    </p>
+      <div className="grid gap-px border border-line-hairline bg-line-hairline lg:grid-cols-[1.2fr_1fr]">
+        <div className="bg-ink-800 p-8">
+          <Label className="mb-6">Accuracy by Domain</Label>
+
+          {domains.length === 0 ? (
+            <p className="m-0 max-w-[46ch] text-sm leading-normal text-mute-500">
+              No classified answers yet. Questions carry a domain only once an
+              editor assigns one, so a run against unclassified items does not
+              appear here.
+            </p>
+          ) : (
+            <div className="flex flex-col gap-4">
+              {domains.map((d) => (
+                <div key={d.domain}>
+                  <div className="mb-2 flex justify-between gap-4">
+                    <span className="text-sm text-mute-400">{d.domain}</span>
+                    <span className="font-mono text-3xs tracking-mono text-mute-500">
+                      <span className={BAR[toneFor(d.accuracy)].text}>
+                        {d.accuracy}%
+                      </span>
+                      {" \u00b7 "}
+                      {d.correct}/{d.answered}
+                    </span>
                   </div>
-                  <div className="bg-green-100 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-2 text-green-600">
-                      Questions Answered
-                    </h3>
-                    <p className="text-3xl font-bold text-green-700">
-                      {profileUser.questionsAnswered ?? "Data not available"}
-                    </p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-purple-100 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-2 text-purple-600">
-                      Correct Answers
-                    </h3>
-                    <p className="text-3xl font-bold text-purple-700">
-                      {profileUser.questionsCorrect}
-                    </p>
-                  </div>
-                  <div className="bg-red-100 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-2 text-red-600">
-                      Incorrect Answers
-                    </h3>
-                    <p className="text-3xl font-bold text-red-700">
-                      {profileUser.questionsIncorrect}
-                    </p>
+                  <div className="h-0.5 bg-ink-950">
+                    <div
+                      className={`h-0.5 ${BAR[toneFor(d.accuracy)].bar}`}
+                      style={{ width: `${d.accuracy}%` }}
+                    />
                   </div>
                 </div>
-                <div className="bg-yellow-100 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold mb-2 text-yellow-600">
-                    Badges
-                  </h3>
-                  <p className="text-gray-700">
-                    {profileUser.skills?.length
-                      ? profileUser.skills.join(", ")
-                      : "No badges yet"}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-indigo-100 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-2 text-indigo-600">
-                      Login Streak
-                    </h3>
-                    <p className="text-3xl font-bold text-indigo-700">
-                      {profileUser.consecutiveLoginDays || 0} days
-                    </p>
-                  </div>
-                  <div className="bg-pink-100 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-2 text-pink-600">
-                      Last Login
-                    </h3>
-                    <p className="text-sm text-pink-700">
-                      {formatDate(profileUser.lastLoginDate)}
-                    </p>
-                  </div>
-                </div>
-                <div className="bg-gray-100 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold mb-2 text-gray-600">
-                    Account Details
-                  </h3>
-                  <p className="text-sm text-gray-700">
-                    Created: {formatDate(profileUser.createdAt)}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    Last Updated: {formatDate(profileUser.updatedAt)}
-                  </p>
-                </div>
+              ))}
+            </div>
+          )}
+
+          {badges.length > 0 && (
+            <>
+              <Rule className="my-6" />
+              <Label className="mb-4">Badges</Label>
+              <div className="flex flex-wrap gap-2">
+                {badges.map((badge) => (
+                  <Status key={badge} tone="info" dot={false}>
+                    {badge}
+                  </Status>
+                ))}
               </div>
-            )}
+            </>
+          )}
+        </div>
+
+        <div className="bg-ink-800 p-8">
+          <Label className="mb-6">Account</Label>
+
+          <form onSubmit={handleUsernameUpdate}>
+            <TextField
+              id="username"
+              label="New Username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <Button type="submit" variant="outline" size="sm" fullWidth>
+              Update Username
+            </Button>
+          </form>
+
+          <Rule className="my-6" />
+
+          <form onSubmit={handlePasswordUpdate}>
+            <TextField
+              id="currentPassword"
+              label="Current Password"
+              type="password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+            <TextField
+              id="newPassword"
+              label="New Password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              hint="Minimum 8 characters"
+            />
+            <TextField
+              id="confirmPassword"
+              label="Confirm New Password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              error={confirmPassword !== "" && confirmPassword !== newPassword}
+            />
+            <Button type="submit" variant="outline" size="sm" fullWidth>
+              Update Password
+            </Button>
+          </form>
+
+          <Rule className="my-6" />
+
+          <div className="flex flex-col gap-3">
+            <div className="flex justify-between gap-4">
+              <Label>Email</Label>
+              <span className="font-mono text-3xs text-mute-400">
+                {profileUser?.email}
+              </span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <Label>Role</Label>
+              <span className="font-mono text-3xs text-mute-400">
+                {profileUser?.role.replace("_", " ")}
+              </span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <Label>Created</Label>
+              <span className="font-mono text-3xs text-mute-400">
+                {formatDate(profileUser?.createdAt)}
+              </span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <Label>Last Login</Label>
+              <span className="font-mono text-3xs text-mute-400">
+                {formatDate(profileUser?.lastLoginDate)}
+              </span>
+            </div>
           </div>
         </div>
       </div>

@@ -102,7 +102,9 @@ describe("QuestionManagement sorting", () => {
       // "questiontext", which matched no field and silently did nothing.
       const user = userEvent.setup();
       renderTable();
-      await user.click(screen.getByText(columnLabel));
+      await user.click(
+        within(screen.getByRole("table")).getByText(columnLabel),
+      );
       expect(promptColumn()).toEqual(expectedOrder);
     },
   );
@@ -110,7 +112,7 @@ describe("QuestionManagement sorting", () => {
   it("sorts points numerically, not lexicographically", async () => {
     const user = userEvent.setup();
     renderTable();
-    await user.click(screen.getByText("Points"));
+    await user.click(within(screen.getByRole("table")).getByText("Points"));
     expect(promptColumn()).toEqual([
       "Alpha prompt", // 10
       "Bravo prompt", // 20
@@ -121,7 +123,7 @@ describe("QuestionManagement sorting", () => {
   it("reverses direction when the same column is clicked twice", async () => {
     const user = userEvent.setup();
     renderTable();
-    await user.click(screen.getByText("Prompt"));
+    await user.click(within(screen.getByRole("table")).getByText("Prompt"));
     expect(promptColumn()).toEqual([
       "Charlie prompt",
       "Bravo prompt",
@@ -160,7 +162,9 @@ describe("QuestionManagement search", () => {
         setEditingQuestion={noop}
       />,
     );
-    expect(screen.getAllByRole("row")).toHaveLength(1); // header only
+    // The design system renders an explicit empty-state row rather than an
+    // empty body, so the assertion is on the message rather than a row count.
+    expect(screen.getByText("No questions match.")).toBeInTheDocument();
   });
 });
 

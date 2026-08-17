@@ -1,16 +1,36 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
-import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  Alert,
+  Button,
+  FlipCard,
+  Label,
+  Panel,
+  Readout,
+  Rule,
+  Spinner,
+  Status,
+} from "@/components/ds";
 
-const GET_QUESTION_IDS: TypedDocumentNode<GetQuestionIdsResult> = gql`
-  query GetQuestionIds {
-    questions {
+const GET_QUESTION_IDS: TypedDocumentNode<
+  GetQuestionIdsResult,
+  GetQuestionIdsVars
+> = gql`
+  query GetQuestionIds($domain: String) {
+    questions(domain: $domain) {
       id
     }
+  }
+`;
+
+const GET_QUESTION_DOMAINS: TypedDocumentNode<GetQuestionDomainsResult> = gql`
+  query GetQuestionDomains {
+    questionDomains
   }
 `;
 
@@ -22,6 +42,7 @@ const GET_QUESTION: TypedDocumentNode<GetQuestionResult, GetQuestionVars> = gql`
       questionText
       answers
       correctAnswer
+      domain
       createdBy {
         id
         username
@@ -36,10 +57,18 @@ interface FlashCard {
   questionText: string;
   answers: string[];
   correctAnswer: string | null;
+  domain: string | null;
 }
 
 interface GetQuestionIdsResult {
   questions: { id: string }[] | null;
+}
+interface GetQuestionIdsVars {
+  domain?: string | null;
+}
+
+interface GetQuestionDomainsResult {
+  questionDomains: string[] | null;
 }
 
 interface GetQuestionResult {
@@ -49,11 +78,30 @@ interface GetQuestionVars {
   id: string;
 }
 
+const ALL = "All";
+
+/**
+ * The answer face. "All of the above" is expanded into the answers it stands
+ * for, because a card reading "all of the above" teaches nothing on its own.
+ */
+function cardBack(card: FlashCard): string[] {
+  if (!card.correctAnswer) return ["No answer recorded"];
+  if (card.correctAnswer.toLowerCase() === "all of the above") {
+    return card.answers.filter(
+      (answer) => answer.toLowerCase() !== "all of the above",
+    );
+  }
+  return [card.correctAnswer];
+}
+
 export default function FlashCardsPage() {
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [domain, setDomain] = useState<string>(ALL);
+  const [queue, setQueue] = useState<string[]>([]);
+  const [cards, setCards] = useState<Record<string, FlashCard>>({});
+  const [known, setKnown] = useState<string[]>([]);
+  const [again, setAgain] = useState<string[]>([]);
+  const [seen, setSeen] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [flashCards, setFlashCards] = useState<FlashCard[]>([]);
-  const [questionIds, setQuestionIds] = useState<string[]>([]);
 
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -62,9 +110,11 @@ export default function FlashCardsPage() {
     loading: idsLoading,
     error: idsError,
     data: idsData,
-  } = useQuery(GET_QUESTION_IDS);
-  const [getQuestion, { loading: questionLoading, error: questionError }] =
-    useLazyQuery(GET_QUESTION);
+  } = useQuery(GET_QUESTION_IDS, {
+    variables: { domain: domain === ALL ? null : domain },
+  });
+  const { data: domainsData } = useQuery(GET_QUESTION_DOMAINS);
+  const [getQuestion, { error: questionError }] = useLazyQuery(GET_QUESTION);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -72,178 +122,255 @@ export default function FlashCardsPage() {
     }
   }, [user, authLoading, router]);
 
+  const questionIds = useMemo(
+    () => idsData?.questions?.map((q) => q.id) ?? [],
+    [idsData],
+  );
+
+  // A new id set — a different domain, or the first load — restarts the deck.
   useEffect(() => {
-    if (idsData?.questions) {
-      setQuestionIds(idsData.questions.map((q) => q.id));
-    }
-  }, [idsData]);
+    setQueue(questionIds);
+    setKnown([]);
+    setAgain([]);
+    setSeen(0);
+    setIsFlipped(false);
+  }, [questionIds]);
+
+  const currentId = queue[0];
+  const card = currentId ? cards[currentId] : undefined;
+
+  // Cards are fetched one at a time as they reach the front of the queue, and
+  // cached by id so a requeued card is never re-fetched.
+  useEffect(() => {
+    if (!currentId || cards[currentId]) return;
+    getQuestion({ variables: { id: currentId } })
+      .then(({ data }) => {
+        const question = data?.question;
+        if (question) {
+          setCards((prev) => ({ ...prev, [question.id]: question }));
+        }
+      })
+      .catch((err) => console.error("Error fetching question:", err));
+  }, [currentId, cards, getQuestion]);
+
+  const advance = useCallback(
+    (verdict: "known" | "again") => {
+      if (!currentId) return;
+      setSeen((s) => s + 1);
+      setIsFlipped(false);
+
+      if (verdict === "known") {
+        setKnown((k) => (k.includes(currentId) ? k : [...k, currentId]));
+        setQueue((q) => q.filter((id) => id !== currentId));
+      } else {
+        setAgain((a) => (a.includes(currentId) ? a : [...a, currentId]));
+        setQueue((q) => [...q.filter((id) => id !== currentId), currentId]);
+      }
+    },
+    [currentId],
+  );
+
+  const restart = useCallback(() => {
+    setQueue(questionIds);
+    setKnown([]);
+    setAgain([]);
+    setSeen(0);
+    setIsFlipped(false);
+  }, [questionIds]);
 
   useEffect(() => {
-    if (
-      questionIds.length > 0 &&
-      currentCardIndex >= flashCards.length &&
-      currentCardIndex < questionIds.length
-    ) {
-      getQuestion({ variables: { id: questionIds[currentCardIndex] } })
-        .then(({ data }) => {
-          const question = data?.question;
-          if (question) {
-            setFlashCards((prev) => [...prev, question]);
-          }
-        })
-        .catch((err) => console.error("Error fetching question:", err));
-    }
-  }, [questionIds, currentCardIndex, flashCards, getQuestion]);
+    const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      // Buttons are skipped too: the card face is itself a button, so Space
+      // would otherwise both click it and run this handler.
+      if (
+        target &&
+        (["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(target.tagName) ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+      if (e.code === "Space") {
+        e.preventDefault();
+        setIsFlipped((f) => !f);
+      } else if (e.key === "1" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        advance("again");
+      } else if (e.key === "2" || e.key === "ArrowRight") {
+        e.preventDefault();
+        advance("known");
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [advance]);
 
-  const handleCardClick = () => {
-    setIsFlipped(!isFlipped);
-  };
+  if (authLoading || idsLoading) return <Spinner label="Loading deck" />;
+  if (!user) return null;
 
-  const handleNextCard = () => {
-    if (currentCardIndex < questionIds.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1);
-      setIsFlipped(false);
-    }
-  };
-
-  const handlePreviousCard = () => {
-    if (currentCardIndex > 0) {
-      setCurrentCardIndex(currentCardIndex - 1);
-      setIsFlipped(false);
-    }
-  };
-
-  const renderCardBack = (card: FlashCard): string[] => {
-    if (!card.correctAnswer) return ["No answer recorded"];
-    if (card.correctAnswer.toLowerCase() === "all of the above") {
-      return card.answers.filter(
-        (answer) => answer.toLowerCase() !== "all of the above",
-      );
-    }
-    return [card.correctAnswer];
-  };
-
-  if (authLoading || idsLoading)
+  const error = idsError ?? questionError;
+  if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-purple-100">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="mx-auto max-w-mid px-8 py-16">
+        <Alert tone="abort">{error.message}</Alert>
       </div>
     );
-  if (idsError)
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-purple-100">
-        <div className="bg-white p-8 rounded-lg shadow-xl">
-          <p className="text-center text-xl text-red-500">
-            Error loading question IDs: {idsError.message}
-          </p>
-        </div>
-      </div>
-    );
-  if (!user) return null; // This prevents any flash of content before redirect
-  if (questionIds.length === 0)
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-purple-100">
-        <div className="bg-white p-8 rounded-lg shadow-xl">
-          <p className="text-center text-xl">No flash cards available.</p>
-        </div>
-      </div>
-    );
+  }
 
-  const currentCard = flashCards[currentCardIndex];
-
-  if (questionLoading || !currentCard)
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-purple-100">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  if (questionError)
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-purple-100">
-        <div className="bg-white p-8 rounded-lg shadow-xl">
-          <p className="text-center text-xl text-red-500">
-            Error loading question: {questionError.message}
-          </p>
-        </div>
-      </div>
-    );
+  const total = questionIds.length;
+  const mastered = known.length;
+  const pct = total ? Math.round((mastered / total) * 100) : 0;
+  const domains = [ALL, ...(domainsData?.questionDomains ?? [])];
 
   return (
-    <div className="min-h-screen py-6">
-      <div className="container mx-auto p-4 max-w-2xl">
-        <h1 className="text-4xl font-bold mb-8 text-center text-blue-600">
-          Drone Pilot Flash Cards
-        </h1>
-        <p className="text-center mb-8 text-xl text-gray-700">
-          Welcome, {user.username}!
-        </p>
-
-        <div
-          className={`flip-card w-full h-80 mb-8 cursor-pointer transition-transform duration-300 transform hover:scale-105 ${
-            isFlipped ? "flipped" : ""
-          }`}
-          onClick={handleCardClick}
-        >
-          <div className="flip-card-inner relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-            <div className="flip-card-front absolute w-full h-full bg-white border-2 border-blue-300 rounded-lg shadow-lg p-6 flex flex-col items-center justify-center backface-hidden">
-              <p className="text-2xl text-center text-gray-800">
-                {currentCard.questionText}
-              </p>
-            </div>
-            <div className="flip-card-back absolute w-full h-full bg-blue-100 border-2 border-blue-300 rounded-lg shadow-lg p-6 flex flex-col items-center justify-center backface-hidden transform rotate-y-180">
-              {renderCardBack(currentCard).map((answer, index) => (
-                <p
-                  key={index}
-                  className="text-xl text-center mb-2 text-gray-800"
-                >
-                  {answer}
-                </p>
-              ))}
-            </div>
+    <div className="mx-auto max-w-mid px-8 py-16">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <Label tag="///" className="mb-4">
+            Recall Drill
+          </Label>
+          <h1 className="m-0 text-2xl font-medium tracking-tight text-bone-100">
+            Flash cards
+          </h1>
+        </div>
+        {domains.length > 1 && (
+          <div className="flex flex-wrap gap-2">
+            {domains.map((d) => (
+              <Button
+                key={d}
+                variant="outline"
+                size="sm"
+                selected={domain === d}
+                onClick={() => setDomain(d)}
+              >
+                {d}
+              </Button>
+            ))}
           </div>
-        </div>
-
-        <div className="flex justify-between mt-8">
-          <button
-            onClick={handlePreviousCard}
-            disabled={currentCardIndex === 0}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Previous Card
-          </button>
-          <button
-            onClick={handleNextCard}
-            disabled={currentCardIndex === questionIds.length - 1}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Next Card
-          </button>
-        </div>
-
-        <p className="text-center mt-8 text-xl text-gray-700">
-          Card {currentCardIndex + 1} of {questionIds.length}
-        </p>
+        )}
       </div>
 
-      <style jsx>{`
-        .flip-card {
-          perspective: 1000px;
-        }
-        .flip-card-inner {
-          transition: transform 0.6s;
-          transform-style: preserve-3d;
-        }
-        .flip-card.flipped .flip-card-inner {
-          transform: rotateY(180deg);
-        }
-        .flip-card-front,
-        .flip-card-back {
-          backface-visibility: hidden;
-        }
-        .flip-card-back {
-          transform: rotateY(180deg);
-        }
-      `}</style>
+      <div className="mb-8 grid grid-cols-2 gap-px border border-line-hairline bg-line-hairline lg:grid-cols-4">
+        <div className="bg-ink-800">
+          <Readout
+            label="Mastered"
+            value={mastered}
+            unit={`/ ${total}`}
+            tone={total > 0 && mastered === total ? "go" : "primary"}
+          />
+        </div>
+        <div className="bg-ink-800">
+          <Readout
+            label="Requeued"
+            value={again.length}
+            tone={again.length ? "caution" : "primary"}
+          />
+        </div>
+        <div className="bg-ink-800">
+          <Readout label="Reviewed" value={seen} />
+        </div>
+        <div className="bg-ink-800">
+          <Readout label="Progress" value={pct} unit="%" tone="signal" />
+        </div>
+      </div>
+
+      <div className="mb-8 h-0.5 bg-ink-950">
+        <div
+          className="h-0.5 bg-signal transition-[width] duration-[var(--duration-base)] ease-default"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+
+      {total === 0 ? (
+        <Panel label="Empty Deck" tag="///" meta={domain} padding="lg">
+          <p className="m-0 text-sm text-mute-500">
+            No questions in this domain yet.
+          </p>
+        </Panel>
+      ) : !currentId ? (
+        <Panel label="Deck Cleared" tag="///" meta={domain} padding="lg">
+          <div className="flex flex-wrap items-center justify-between gap-8">
+            <div>
+              <h2 className="m-0 mb-3 text-xl font-medium tracking-tight text-bone-100">
+                All {total} cards mastered
+              </h2>
+              <p className="m-0 text-sm text-mute-500">
+                {seen} reviews logged
+                {again.length
+                  ? ` · ${again.length} required a second pass`
+                  : " · no requeues"}
+                .
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Status tone="go" filled>
+                Complete
+              </Status>
+              <Button variant="signal" size="sm" onClick={restart}>
+                Run Again
+              </Button>
+            </div>
+          </div>
+        </Panel>
+      ) : !card ? (
+        <Spinner label="Loading card" />
+      ) : (
+        <>
+          <FlipCard
+            front={card.questionText}
+            back={cardBack(card)}
+            meta={card.domain ?? undefined}
+            index={mastered + 1}
+            total={total}
+            stack={queue.length - 1}
+            flipped={isFlipped}
+            onFlip={() => setIsFlipped((f) => !f)}
+          />
+
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex gap-2">
+              <Button
+                variant="caution"
+                size="sm"
+                onClick={() => advance("again")}
+              >
+                Again
+              </Button>
+              <Button variant="go" size="sm" onClick={() => advance("known")}>
+                Got It
+              </Button>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsFlipped((f) => !f)}
+              >
+                {isFlipped ? "Hide Answer" : "Reveal"}
+              </Button>
+              <Button variant="ghost" size="sm" onClick={restart}>
+                Restart
+              </Button>
+            </div>
+          </div>
+
+          <Rule label="Keys" className="mt-10" />
+          <div className="mt-4 flex flex-wrap gap-8">
+            {[
+              ["Space", "Reveal / hide"],
+              ["1 or ←", "Again"],
+              ["2 or →", "Got it"],
+            ].map(([key, meaning]) => (
+              <div key={key} className="flex items-center gap-3">
+                <span className="border border-line-strong px-[7px] py-[3px] font-mono text-3xs tracking-mono text-bone-100">
+                  {key}
+                </span>
+                <span className="label-mono text-mute-500">{meaning}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

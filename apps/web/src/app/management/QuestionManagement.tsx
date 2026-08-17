@@ -3,6 +3,15 @@
 import React, { useState, useMemo } from "react";
 import { joinAnswers, splitAnswers } from "@/lib/questions";
 import type { Question, User } from "@/types";
+import {
+  Button,
+  DataTable,
+  Label,
+  Panel,
+  TextField,
+  type DataTableColumn,
+  type SortDirection,
+} from "@/components/ds";
 
 type SortField =
   | "prompt"
@@ -11,8 +20,8 @@ type SortField =
   | "correctAnswer"
   | "hint"
   | "points"
+  | "domain"
   | "createdBy";
-type SortDirection = "asc" | "desc";
 
 // Explicit label -> sort field mapping. Deriving the field from the label
 // silently broke every multi-word column ("Question Text" -> "questiontext").
@@ -23,9 +32,21 @@ const COLUMNS: { label: string; field: SortField | null }[] = [
   { label: "Correct Answer", field: "correctAnswer" },
   { label: "Hint", field: "hint" },
   { label: "Points", field: "points" },
+  { label: "Domain", field: "domain" },
   { label: "Created By", field: "createdBy" },
   { label: "Actions", field: null },
 ];
+
+/** The editable columns, in the order they appear in the table. */
+const EDITABLE_FIELDS = [
+  "prompt",
+  "questionText",
+  "answers",
+  "correctAnswer",
+  "hint",
+  "points",
+  "domain",
+] as const;
 
 interface QuestionManagementProps {
   user: User;
@@ -49,11 +70,11 @@ const QuestionManagement: React.FC<QuestionManagementProps> = ({
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSort = (field: SortField) => {
+  const handleSort = (field: string) => {
     if (field === sortField) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      setSortField(field);
+      setSortField(field as SortField);
       setSortDirection("asc");
     }
   };
@@ -86,6 +107,10 @@ const QuestionManagement: React.FC<QuestionManagementProps> = ({
       } else if (sortField === "createdBy") {
         aValue = a.createdBy?.username ?? "";
         bValue = b.createdBy?.username ?? "";
+      } else if (sortField === "domain") {
+        // Unclassified questions sort last rather than jumbling with "".
+        aValue = a.domain ?? "￿";
+        bValue = b.domain ?? "￿";
       }
 
       if (typeof aValue === "string" && typeof bValue === "string") {
@@ -100,213 +125,171 @@ const QuestionManagement: React.FC<QuestionManagementProps> = ({
     });
   }, [questionsData, searchQuery, sortField, sortDirection]);
 
-  const SortIndicator = ({ field }: { field: SortField }) => {
-    if (field !== sortField) return null;
-    return <span className="ml-1">{sortDirection === "asc" ? "▲" : "▼"}</span>;
-  };
+  const isEditableField = (
+    key: string,
+  ): key is (typeof EDITABLE_FIELDS)[number] =>
+    (EDITABLE_FIELDS as readonly string[]).includes(key);
 
-  // Type guard function
-  const isQuestionKey = (key: string): key is keyof Question => {
-    return [
-      "prompt",
-      "questionText",
-      "answers",
-      "correctAnswer",
-      "hint",
-      "points",
-    ].includes(key);
-  };
-
-  // Helper function to render cell content
   const renderCellContent = (
     question: Question,
     field: string,
   ): React.ReactNode => {
+    if (!isEditableField(field)) return "";
+
     if (editingQuestion?.id === question.id) {
-      if (isQuestionKey(field)) {
-        return (
-          <input
-            type={field === "points" ? "number" : "text"}
-            value={
-              field === "answers"
-                ? joinAnswers(editingQuestion[field])
-                : String(editingQuestion[field] ?? "")
-            }
-            onChange={(e) => {
-              const raw = e.target.value;
-              const parsedPoints = parseInt(raw, 10);
-              setEditingQuestion({
-                ...editingQuestion,
-                [field]:
-                  field === "answers"
-                    ? splitAnswers(raw)
-                    : field === "points"
-                      ? // An emptied number input yields NaN, which the backend
-                        // rejects and React warns about as an uncontrolled value.
-                        Number.isNaN(parsedPoints)
-                        ? 0
-                        : parsedPoints
-                      : raw,
-              });
-            }}
-            className="w-full p-2 border rounded-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-          />
-        );
-      }
-    } else if (isQuestionKey(field)) {
-      return field === "answers"
-        ? joinAnswers(question[field])
-        : String(question[field] ?? "");
+      return (
+        <input
+          type={field === "points" ? "number" : "text"}
+          aria-label={field}
+          value={
+            field === "answers"
+              ? joinAnswers(editingQuestion.answers)
+              : String(editingQuestion[field] ?? "")
+          }
+          onChange={(e) => {
+            const raw = e.target.value;
+            const parsedPoints = parseInt(raw, 10);
+            setEditingQuestion({
+              ...editingQuestion,
+              [field]:
+                field === "answers"
+                  ? splitAnswers(raw)
+                  : field === "points"
+                    ? // An emptied number input yields NaN, which the backend
+                      // rejects and React warns about as an uncontrolled value.
+                      Number.isNaN(parsedPoints)
+                      ? 0
+                      : parsedPoints
+                    : raw,
+            });
+          }}
+          className="w-full border border-line-hairline bg-ink-950 px-2 py-1 font-mono text-sm tracking-mono text-bone-100 outline-hidden transition-fast focus:border-signal focus:shadow-glow-focus"
+        />
+      );
     }
-    return "";
+
+    if (field === "answers") return joinAnswers(question.answers);
+    if (field === "domain") {
+      return (
+        question.domain ?? (
+          <span className="font-mono text-3xs uppercase tracking-label text-mute-600">
+            Unassigned
+          </span>
+        )
+      );
+    }
+    return String(question[field] ?? "");
   };
 
+  const columns: Array<string | DataTableColumn> = COLUMNS.map((col) =>
+    col.field ? { label: col.label, sortKey: col.field } : col.label,
+  );
+
+  const rows = filteredAndSortedQuestions.map((question) => [
+    ...EDITABLE_FIELDS.map((field) => renderCellContent(question, field)),
+    question.createdBy?.username ?? "—",
+    <div key="actions" className="flex gap-2">
+      {editingQuestion?.id === question.id ? (
+        <Button
+          variant="go"
+          size="sm"
+          onClick={() => handleUpdateQuestion(question.id, editingQuestion)}
+        >
+          Save
+        </Button>
+      ) : (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setEditingQuestion(question)}
+        >
+          Edit
+        </Button>
+      )}
+      <Button
+        variant="abort"
+        size="sm"
+        onClick={() => handleDeleteQuestion(question.id)}
+      >
+        Delete
+      </Button>
+    </div>,
+  ]);
+
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-3xl font-bold mb-6 text-blue-600">
-        Question Management
-      </h2>
-
-      {/* Search input */}
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Search questions..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-        />
-      </div>
-
-      {/* Add New Question Form */}
-      <div className="mb-8 bg-gray-50 p-6 rounded-lg">
-        <h3 className="text-xl font-semibold mb-4 text-blue-600">
-          Add New Question
-        </h3>
-        <form onSubmit={handleCreateQuestion} className="space-y-4">
-          <input
-            type="text"
+    <div>
+      <Panel label="New Item" tag="///" padding="lg" className="mb-px">
+        <form onSubmit={handleCreateQuestion}>
+          <TextField
             name="prompt"
+            label="Prompt"
             placeholder="Prompt"
             required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
           />
-          <input
-            type="text"
+          <TextField
             name="questionText"
+            label="Question Text"
             placeholder="Question Text"
             required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
           />
-          <input
-            type="text"
+          <TextField
             name="answers"
+            label="Answers"
             placeholder="Answers (comma-separated)"
+            hint="Comma-separated"
             required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
           />
-          <input
-            type="text"
+          <TextField
             name="correctAnswer"
+            label="Correct Answer"
             placeholder="Correct Answer"
             required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
           />
-          <input
-            type="text"
-            name="hint"
-            placeholder="Hint (optional)"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-          />
-          <input
-            type="number"
+          <TextField name="hint" label="Hint" placeholder="Hint (optional)" />
+          <TextField
             name="points"
+            label="Points"
+            type="number"
+            min={1}
             placeholder="Points"
             required
-            min="1"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
           />
-          <button
-            type="submit"
-            className="w-full p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200"
-          >
+          <TextField
+            name="domain"
+            label="Domain"
+            placeholder="Regulations"
+            hint="Optional — drives the per-domain accuracy breakdown"
+          />
+          <Button type="submit" variant="signal" size="md" fullWidth>
             Create Question
-          </button>
+          </Button>
         </form>
-      </div>
+      </Panel>
 
-      {/* Manage Questions Table */}
-      <h3 className="text-xl font-semibold mb-4 text-blue-600">
-        Manage Questions
-      </h3>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse border border-gray-300 mb-4">
-          <thead>
-            <tr className="bg-gray-100">
-              {COLUMNS.map(({ label, field }) => (
-                <th
-                  key={label}
-                  className={`border border-gray-300 p-3 text-left transition duration-200 ${
-                    field ? "cursor-pointer hover:bg-gray-200" : ""
-                  }`}
-                  onClick={field ? () => handleSort(field) : undefined}
-                >
-                  {label} {field && <SortIndicator field={field} />}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAndSortedQuestions.map((question) => (
-              <tr
-                key={question.id}
-                className="hover:bg-gray-50 transition duration-200"
-              >
-                {[
-                  "prompt",
-                  "questionText",
-                  "answers",
-                  "correctAnswer",
-                  "hint",
-                  "points",
-                ].map((field) => (
-                  <td key={field} className="border border-gray-300 p-3">
-                    {renderCellContent(question, field)}
-                  </td>
-                ))}
-                <td className="border border-gray-300 p-3">
-                  {question.createdBy?.username ?? "\u2014"}
-                </td>
-                <td className="border border-gray-300 p-3 text-center">
-                  {editingQuestion?.id === question.id ? (
-                    <button
-                      onClick={() =>
-                        handleUpdateQuestion(question.id, editingQuestion)
-                      }
-                      className="bg-green-500 text-white p-2 rounded-sm hover:bg-green-600 transition duration-200 mr-2"
-                    >
-                      Save
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setEditingQuestion(question)}
-                      className="bg-blue-500 text-white p-2 rounded-sm hover:bg-blue-600 transition duration-200 mr-2"
-                    >
-                      Edit
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleDeleteQuestion(question.id)}
-                    className="bg-red-500 text-white p-2 rounded-sm hover:bg-red-600 transition duration-200"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Panel
+        label="Question Bank"
+        meta={`${filteredAndSortedQuestions.length} records`}
+        padding="none"
+      >
+        <div className="border-b border-line-hairline p-4">
+          <Label className="mb-2">Search</Label>
+          <input
+            type="text"
+            placeholder="Search questions..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="block w-full border border-line-hairline bg-ink-950 px-3.5 py-3 font-mono text-sm tracking-mono text-bone-100 placeholder:text-mute-600 outline-hidden transition-fast focus:border-signal focus:shadow-glow-focus"
+          />
+        </div>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          sortKey={sortField}
+          sortDir={sortDirection}
+          onSort={handleSort}
+          empty="No questions match."
+        />
+      </Panel>
     </div>
   );
 };
