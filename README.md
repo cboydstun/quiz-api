@@ -19,10 +19,15 @@ GraphQL Yoga · Drizzle ORM · Neon Postgres · pnpm workspaces · Turborepo
 
 ## Getting started
 
+Node 24 (see `.nvmrc`) and pnpm via corepack — the repo pins
+`packageManager`, so corepack resolves the exact version.
+
 ```bash
+nvm install                    # reads .nvmrc
+corepack enable
+
 pnpm install
 cp .env.example .env.local     # then fill it in — see below
-pnpm db:migrate                # create the schema
 pnpm dev                       # http://localhost:3000
 ```
 
@@ -31,6 +36,28 @@ You need at minimum `DATABASE_URL` and `JWT_SECRET`. Provision Postgres with
 sign-in additionally needs `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and a
 `GOOGLE_REDIRECT_URI` registered in Google Cloud Console for the origin you are
 running on.
+
+> **`.env.local` is production.** There is no separate development database —
+> `vercel env pull` hands you the live Neon credentials, and every machine set
+> up this way shares them. So `pnpm db:migrate`, `pnpm seed:questions` and any
+> ad-hoc script you point at `DATABASE_URL` write to live data. The schema is
+> already applied; you do not need to run `db:migrate` to get started.
+
+### On a second machine
+
+`.env.local` and `.vercel/` are both gitignored, so neither comes down with the
+clone — the project has to be linked again:
+
+```bash
+git clone https://github.com/cboydstun/quiz-api.git && cd quiz-api
+nvm install && corepack enable && pnpm install
+vercel login && vercel link     # team chris-boydstuns-projects, project quiz-api
+vercel env pull .env.local
+```
+
+Nothing here builds native code — `bcryptjs` is pure JavaScript and PGlite is
+WASM — so there are no platform-specific build tools to install. `.env` is not
+needed; its only consumer is the retired Mongo import.
 
 ## Commands
 
@@ -41,8 +68,9 @@ running on.
 | `pnpm test`                           | Every package (backend tests run on in-memory Postgres) |
 | `pnpm lint` / `pnpm typecheck`        | Across the workspace                                    |
 | `pnpm db:generate`                    | Generate a migration after editing the Drizzle schema   |
-| `pnpm db:migrate`                     | Apply migrations to `DATABASE_URL`                      |
-| `pnpm migrate:mongo`                  | One-off import from the old MongoDB backend             |
+| `pnpm db:migrate`                     | Apply migrations to `DATABASE_URL` — see the note above |
+| `pnpm seed:questions <email>`         | Seed the question bank, owned by an existing user       |
+| `pnpm migrate:mongo`                  | **Retired** — the source cluster no longer resolves     |
 | `pnpm --filter @quiz/graphql codegen` | Regenerate resolver types after an SDL change           |
 
 Migrations are applied explicitly, never from the Vercel build, so a failed
