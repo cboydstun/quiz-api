@@ -43,7 +43,7 @@ export default function Home() {
             Part 107 Remote Pilot &middot; Evaluation System
           </Label>
           <h1 className="m-0 max-w-[18ch] text-4xl leading-tight font-semibold tracking-tight text-bone-100 md:text-5xl">
-            Fly the checkride before the checkride
+            Ace the test before becoming an ace pilot.
           </h1>
           <p className="mt-8 max-w-[58ch] text-md leading-normal text-mute-400">
             A disciplined training environment for the FAA remote pilot
