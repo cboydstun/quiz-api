@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.2.12",
+    "@heroicons/react": "^2.2.0",
     "@quiz/db": "workspace:*",
     "@quiz/graphql": "workspace:*",
     "@vercel/analytics": "^2.0.1",

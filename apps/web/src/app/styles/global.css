@@ -18,26 +18,199 @@
   }
 }
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+/*
+  Drone Pilot Quiz design system.
+
+  Near-black housing, hairline structure, mono labels, one orange signal.
+  Radius is 0 everywhere; there are no drop shadows and no gradients. See
+  the design project for the full rationale:
+  https://claude.ai/design/p/2c9a5234-4f17-46fb-ab75-691f0017c175
+
+  Naming note: the design calls its darkest step `--black` and its grays
+  `--gray-400/500/600`. Those are renamed to `ink-950` and `mute-*` here so
+  they do not clobber Tailwind's own `black` and `gray-*` ramps, which the
+  not-yet-migrated pages still use.
+*/
+@theme {
+  /* Housing: near-black surface steps. Depth comes from these, not shadow. */
+  --color-ink-950: #050607;
+  --color-ink-900: #0a0c0d;
+  --color-ink-800: #101315;
+  --color-ink-700: #171a1d;
+  --color-ink-600: #1f2427;
+  --color-ink-500: #2a3034;
+
+  /* Bone: the off-white all type is set in. Pure #FFF is never used. */
+  --color-bone-100: #f4f3f0;
+  --color-bone-200: #d6d4ce;
+  --color-mute-400: #9aa1a6;
+  --color-mute-500: #6e767b;
+  --color-mute-600: #4a5054;
+
+  /* Hairlines: the only structural device in the system. */
+  --color-line-hairline: rgb(255 255 255 / 0.1);
+  --color-line-strong: rgb(255 255 255 / 0.22);
+
+  /* Signal: one accent. Primary action, live state, active nav. Nothing else. */
+  --color-signal: #ff6a00;
+  --color-signal-dim: #c24f00;
+  --color-signal-wash: rgb(255 106 0 / 0.12);
+
+  /* Annunciator: cockpit status trio. Status only, never decoration. */
+  --color-go: #2fd37a;
+  --color-go-wash: rgb(47 211 122 / 0.12);
+  --color-caution: #f5a623;
+  --color-caution-wash: rgb(245 166 35 / 0.12);
+  --color-abort: #ff3b30;
+  --color-abort-wash: rgb(255 59 48 / 0.12);
+  --color-info: #7fb7ff;
+  --color-info-wash: rgb(127 183 255 / 0.12);
+
+  /* Type. Both faces are Google Fonts substitutions loaded via next/font. */
+  --font-display:
+    var(--font-archivo), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono:
+    var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Ramp deliberately overrides Tailwind's defaults: body is 15px, not 16px. */
+  --text-3xs: 0.625rem;
+  --text-3xs--line-height: 1.4;
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1.4;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.4;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.5;
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.5;
+  --text-md: 1.0625rem;
+  --text-md--line-height: 1.5;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.18;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.18;
+  --text-2xl: 2rem;
+  --text-2xl--line-height: 1.04;
+  --text-3xl: 2.75rem;
+  --text-3xl--line-height: 1.04;
+  --text-4xl: 3.75rem;
+  --text-4xl--line-height: 1.04;
+  --text-5xl: 5rem;
+  --text-5xl--line-height: 1.04;
+  --text-6xl: 6.5rem;
+  --text-6xl--line-height: 1.04;
+
+  /* Tracking is the signature: display tight, mono labels wide. */
+  --tracking-tight: -0.025em;
+  --tracking-mono: 0.04em;
+  --tracking-label: 0.18em;
+
+  --leading-tight: 1.04;
+  --leading-snug: 1.18;
+  --leading-normal: 1.5;
+  --leading-loose: 1.65;
+
+  /* Containers. `shell` rather than `max` — `max-w-max` is already a utility. */
+  --container-shell: 1400px;
+  --container-wide: 1120px;
+  --container-mid: 880px;
+  --container-narrow: 680px;
+  --container-form: 400px;
+
+  /* The only box-shadows in the system. Signal focus, nothing else. */
+  --shadow-glow-focus: 0 0 0 1px var(--color-signal);
+  --shadow-glow-signal:
+    0 0 0 1px var(--color-signal), 0 0 28px -8px rgb(255 90 31 / 0.5);
+
+  --ease-default: cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+/* Values with no Tailwind theme namespace. Reach them with var(). */
+:root {
+  --scrim: rgb(5 6 7 / 0.82);
+  --grid-line: rgb(244 243 240 / 0.03);
+  --grid-overlay:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  --grid-size: 32px 32px;
+
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 400ms;
+  --duration-flip: 320ms;
+
+  --sidebar-width: 264px;
+  --bar-height: 64px;
+  --perspective-card: 1400px;
+}
+
+/* The mono uppercase micro-label used everywhere a small heading used to be. */
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+/* Colour and border only. Nothing scales, lifts or bounces. */
+@utility transition-fast {
+  transition-property:
+    color, background-color, border-color, box-shadow, opacity;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-default);
+}
+
+/* The one background device: a 32px survey grid at 3% bone. */
+@utility grid-overlay {
+  background-image: var(--grid-overlay);
+  background-size: var(--grid-size);
+}
+
+/* The 8px survey mark a panel carries in its top-right corner. */
+@utility panel-bracket {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 8px;
+    height: 8px;
+    border-top: 1px solid var(--color-line-strong);
+    border-right: 1px solid var(--color-line-strong);
+    pointer-events: none;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+/* Focus is a 1px signal border plus the signal glow. Never a browser outline. */
+@utility focus-signal {
+  &:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    border-color: var(--color-signal);
+    box-shadow: var(--shadow-glow-focus);
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-ink-900);
+    color: var(--color-bone-100);
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-signal);
+    color: var(--color-ink-950);
+  }
 }
