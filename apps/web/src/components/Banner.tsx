@@ -1,5 +1,7 @@
 "use client";
 
+import { Alert } from "@/components/ds";
+
 export type BannerKind = "success" | "error";
 
 interface BannerProps {
@@ -8,26 +10,15 @@ interface BannerProps {
   onDismiss: () => void;
 }
 
-const STYLES: Record<BannerKind, string> = {
-  success: "bg-green-100 border-green-500 text-green-800",
-  error: "bg-red-100 border-red-500 text-red-800",
-};
-
-/** Inline replacement for alert(). */
+/** Inline replacement for alert(), in the annunciator vocabulary. */
 export default function Banner({ kind, message, onDismiss }: BannerProps) {
   return (
-    <div
-      className={`border-l-4 p-4 mb-6 rounded-lg flex items-start justify-between gap-4 ${STYLES[kind]}`}
-      role="alert"
+    <Alert
+      tone={kind === "success" ? "go" : "abort"}
+      onDismiss={onDismiss}
+      className="mb-6"
     >
-      <p>{message}</p>
-      <button
-        onClick={onDismiss}
-        aria-label="Dismiss message"
-        className="font-bold leading-none"
-      >
-        &times;
-      </button>
-    </div>
+      {message}
+    </Alert>
   );
 }

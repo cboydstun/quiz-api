@@ -1,118 +1,133 @@
 import Link from "next/link";
+import { buttonClass, Label, Readout, Rule } from "@/components/ds";
 
-const DroneIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-12 w-12"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M22 10.5V8l-2.5-2.5-3.5 3.5h-3L10.5 6.5 8 9 6.5 7.5 4 10l1.5 1.5L4 13l2.5 2.5 3.5-3.5h3l2.5 2.5 2.5-2.5-1.5-1.5L18 9l1.5 1.5L22 8v2.5zm-7 2.5h-6v-1h6v1zm-2-2h-2v-1h2v1z" />
-  </svg>
-);
+const CAPABILITIES = [
+  {
+    code: "01",
+    title: "Current question bank",
+    body: "Every item is mapped to the live Part 107 airman certification standards and revised when the standards change.",
+  },
+  {
+    code: "02",
+    title: "Timed evaluation runs",
+    body: "Medium and hard runs hold you to a per-question clock, so the pace you train at is the pace you sit at.",
+  },
+  {
+    code: "03",
+    title: "Adaptive sequencing",
+    body: "Missed items resurface. The bank weights toward the areas where your accuracy is lowest.",
+  },
+];
+
+const DOMAINS = [
+  "Regulations",
+  "Airspace classification",
+  "Weather sources",
+  "Loading and performance",
+  "Emergency procedures",
+  "Crew resource management",
+  "Radio procedures",
+  "Physiological effects",
+  "Decision-making",
+  "Airport operations",
+  "Maintenance",
+  "Night operations",
+];
 
 export default function Home() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <header className="text-center mb-16">
-        <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-purple-600 animate-pulse">
-          Master Your Part 107 Drone License
-        </h1>
-        <p className="text-xl md:text-2xl mb-8 text-gray-700">
-          Elevate your skills and soar through your FAA certification with our
-          interactive quiz app
-        </p>
-        <Link
-          href="/quiz"
-          className="bg-linear-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 hover:shadow-lg inline-flex items-center"
-        >
-          <DroneIcon />
-          <span className="ml-2">Launch Free Quiz</span>
-        </Link>
-      </header>
-
-      <section className="grid md:grid-cols-3 gap-8 mb-16">
-        {[
-          {
-            title: "Up-to-date Content",
-            description: "Stay current with the latest FAA regulations",
-          },
-          {
-            title: "Adaptive Learning",
-            description: "Personalized quizzes that evolve with your progress",
-          },
-          {
-            title: "Comprehensive Coverage",
-            description: "Master all topics for the Part 107 exam",
-          },
-        ].map((feature, index) => (
-          <div
-            key={index}
-            className="bg-white p-6 rounded-xl shadow-md transform transition duration-500 hover:scale-105 hover:shadow-xl"
-          >
-            <h2 className="text-2xl font-semibold mb-4 text-blue-600">
-              {feature.title}
-            </h2>
-            <p className="text-gray-600">{feature.description}</p>
+    <div>
+      <section className="grid-overlay relative border-b border-line-hairline bg-ink-900">
+        <div className="mx-auto max-w-shell px-8 pt-32 pb-24">
+          <Label tag="///" className="mb-8">
+            Part 107 Remote Pilot &middot; Evaluation System
+          </Label>
+          <h1 className="m-0 max-w-[18ch] text-4xl leading-tight font-semibold tracking-tight text-bone-100 md:text-5xl">
+            Fly the checkride before the checkride
+          </h1>
+          <p className="mt-8 max-w-[58ch] text-md leading-normal text-mute-400">
+            A disciplined training environment for the FAA remote pilot
+            certificate. Timed runs, an auditable question bank, and per-domain
+            accuracy you can act on.
+          </p>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Link
+              href="/quiz"
+              className={buttonClass({ variant: "signal", size: "lg" })}
+            >
+              Begin Evaluation
+            </Link>
+            <Link
+              href="/study-materials"
+              className={buttonClass({ variant: "outline", size: "lg" })}
+            >
+              Study Materials
+            </Link>
           </div>
-        ))}
+        </div>
+        {/* The seam is the gutter: panels butt together on a 1px hairline. */}
+        <div className="grid grid-cols-2 gap-px border-t border-line-hairline bg-line-hairline lg:grid-cols-4">
+          <div className="bg-ink-900">
+            <Readout label="Bank Size" value="1,000+" unit="items" />
+          </div>
+          <div className="bg-ink-900">
+            <Readout label="Pass Rate" value="98" unit="%" tone="go" />
+          </div>
+          <div className="bg-ink-900">
+            <Readout label="Operators" value="10,000+" />
+          </div>
+          <div className="bg-ink-900">
+            <Readout label="Domains" value={String(DOMAINS.length)} />
+          </div>
+        </div>
       </section>
 
-      <section className="text-center mb-16">
-        <h2 className="text-4xl font-bold mb-6 text-gray-800">
-          Join Our Community of Certified Pilots
-        </h2>
-        <div className="flex justify-center items-center space-x-4 mb-8">
-          <span className="text-5xl font-bold text-blue-600">4.9</span>
-          <div className="flex text-yellow-400 text-3xl">{"★".repeat(5)}</div>
-          <span className="text-xl text-gray-600">(500+ reviews)</span>
-        </div>
-        <p className="text-xl text-gray-700 mb-8">
-          Over 10,000 students have successfully earned their Part 107 license
-          with our help
-        </p>
-        <div className="flex justify-center space-x-4">
-          {[
-            { count: "1000+", label: "Practice Questions" },
-            { count: "98%", label: "Pass Rate" },
-            { count: "24/7", label: "Support" },
-          ].map((stat, index) => (
-            <div key={index} className="bg-white p-4 rounded-lg shadow-md">
-              <div className="text-3xl font-bold text-purple-600">
-                {stat.count}
-              </div>
-              <div className="text-sm text-gray-600">{stat.label}</div>
+      <section className="mx-auto max-w-shell px-8 py-24">
+        <Rule label="Capability" className="mb-10" />
+        <div className="grid gap-px border border-line-hairline bg-line-hairline md:grid-cols-3">
+          {CAPABILITIES.map((c) => (
+            <div key={c.code} className="bg-ink-800 p-8">
+              <Label className="mb-6">{c.code}</Label>
+              <h2 className="m-0 mb-4 text-xl font-medium tracking-tight text-bone-100">
+                {c.title}
+              </h2>
+              <p className="m-0 text-sm leading-normal text-mute-500">
+                {c.body}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="bg-linear-to-r from-blue-500 to-purple-600 p-10 rounded-2xl mb-16 text-white">
-        <h2 className="text-3xl font-bold mb-6 text-center">
-          Ready to Become a Certified Drone Pilot?
-        </h2>
-        <p className="text-center mb-8 text-xl">
-          Start your journey today and navigate through your Part 107 exam with
-          confidence
-        </p>
-        <div className="text-center">
+      <section className="mx-auto max-w-shell px-8 pb-24">
+        <Rule label="Domains Covered" className="mb-8" />
+        <div className="grid grid-cols-2 gap-px border border-line-hairline bg-line-hairline md:grid-cols-3 lg:grid-cols-4">
+          {DOMAINS.map((d, i) => (
+            <div key={d} className="flex items-baseline gap-4 bg-ink-800 p-5">
+              <span className="font-mono text-3xs tracking-mono text-signal">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="text-sm text-mute-400">{d}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-line-hairline bg-ink-800">
+        <div className="mx-auto flex max-w-shell flex-wrap items-end justify-between gap-10 px-8 py-20">
+          <div>
+            <h2 className="m-0 max-w-[24ch] text-2xl font-medium tracking-tight text-bone-100">
+              Start with a ten-item run. No account required.
+            </h2>
+            <p className="mt-4 text-sm text-mute-500">
+              Scores are recorded once you sign in.
+            </p>
+          </div>
           <Link
             href="/quiz"
-            className="bg-white text-blue-600 font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 hover:shadow-lg inline-flex items-center"
+            className={buttonClass({ variant: "signal", size: "lg" })}
           >
-            <span>Begin Free Trial</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 ml-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            Begin Evaluation
           </Link>
         </div>
       </section>

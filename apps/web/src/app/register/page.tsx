@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useApolloClient, useMutation } from "@apollo/client/react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Alert, Button, Panel, TextField } from "@/components/ds";
 import type { Role } from "@/types";
 import Link from "next/link";
 
@@ -76,85 +77,62 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl transform transition-all hover:scale-105">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{" "}
-            <Link
-              href="/login"
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
-              sign in to your account
-            </Link>
-          </p>
-        </div>
-        {error && (
-          <div
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-sm relative"
-            role="alert"
-          >
-            <span className="block sm:inline">{error}</span>
-          </div>
-        )}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <input type="hidden" name="remember" defaultValue="true" />
-          <div className="rounded-md shadow-xs -space-y-px">
-            <div>
-              <label htmlFor="username" className="sr-only">
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Username"
-              />
-            </div>
-            <div>
-              <label htmlFor="email-address" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
-          </div>
+    <div className="flex justify-center px-8 py-24">
+      <div className="w-full max-w-form">
+        <Panel label="Request Access" tag="///" padding="lg">
+          <h1 className="m-0 mb-6 text-xl font-medium tracking-tight text-bone-100">
+            Create an operator account
+          </h1>
 
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300"
-            >
-              Register
-            </button>
-          </div>
-        </form>
+          {error && (
+            <div className="mb-5">
+              <Alert tone="abort">{error}</Alert>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <TextField
+              id="username"
+              name="username"
+              label="Callsign"
+              type="text"
+              required
+              placeholder="Username"
+            />
+            <TextField
+              id="email-address"
+              name="email"
+              label="Email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="Email address"
+            />
+            <TextField
+              id="password"
+              name="password"
+              label="Password"
+              type="password"
+              autoComplete="current-password"
+              required
+              placeholder="Password"
+              hint="Minimum 8 characters"
+            />
+
+            <Button type="submit" variant="signal" size="md" fullWidth>
+              Request Access
+            </Button>
+          </form>
+        </Panel>
+
+        <div className="mt-4 text-center">
+          <Link
+            href="/login"
+            className="label-mono text-mute-500 transition-fast hover:text-signal"
+          >
+            Already have an account
+          </Link>
+        </div>
       </div>
     </div>
   );
