@@ -9,7 +9,6 @@ import {
   Alert,
   Button,
   Label,
-  Panel,
   Readout,
   Rule,
   Spinner,
