@@ -85,6 +85,17 @@ export const questions = pgTable(
     answers: text("answers").array().notNull(),
     correctAnswer: text("correct_answer").notNull(),
     hint: text("hint"),
+
+    /**
+     * Why the correct answer is correct, shown after a run is graded.
+     *
+     * Nullable because the bank predates it and nothing invents one: a
+     * question with no explanation simply shows its answer without a reason.
+     * Distinct from `hint`, which is offered *before* answering and must not
+     * give the answer away.
+     */
+    explanation: text("explanation"),
+
     points: integer("points").notNull().default(1),
 
     // Part 107 subject area. Nullable on purpose: the bank predates this
@@ -128,7 +139,13 @@ export const userResponses = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (table) => [index("user_responses_user_idx").on(table.userId)],
+  (table) => [
+    index("user_responses_user_idx").on(table.userId),
+    // domainAccuracy joins questions on this column, and the ON DELETE CASCADE
+    // from questions has to find the rows to cascade to — an unindexed foreign
+    // key makes deleting one question a full scan of every response ever made.
+    index("user_responses_question_idx").on(table.questionId),
+  ],
 );
 
 export type UserRow = typeof users.$inferSelect;

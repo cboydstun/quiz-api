@@ -34,6 +34,7 @@ export type CreateQuestionInput = {
   answers: Array<Scalars['String']['input']>;
   correctAnswer: Scalars['String']['input'];
   domain?: InputMaybe<Scalars['String']['input']>;
+  explanation?: InputMaybe<Scalars['String']['input']>;
   hint?: InputMaybe<Scalars['String']['input']>;
   points?: InputMaybe<Scalars['Int']['input']>;
   prompt: Scalars['String']['input'];
@@ -73,6 +74,8 @@ export type GoogleAuthUrl = {
 
 export type GradedAnswer = {
   __typename?: 'GradedAnswer';
+  correctAnswer: Scalars['String']['output'];
+  explanation?: Maybe<Scalars['String']['output']>;
   isCorrect: Scalars['Boolean']['output'];
   questionId: Scalars['ID']['output'];
 };
@@ -83,6 +86,20 @@ export type LeaderboardEntry = {
   score: Scalars['Int']['output'];
   user: LeaderboardUser;
 };
+
+/**
+ * ALL_TIME ranks the stored score, which carries the history imported from the
+ * old backend. The windowed periods are computed from answer history instead of
+ * the daily/monthly/yearly point columns: nothing ever wrote those, and a
+ * counter that needs a scheduled reset to mean anything is a second thing to
+ * get wrong. Windowed boards therefore only know about answers recorded since
+ * the cutover, which is the truth rather than a flattering approximation.
+ */
+export type LeaderboardPeriod =
+  | 'ALL_TIME'
+  | 'DAILY'
+  | 'MONTHLY'
+  | 'WEEKLY';
 
 export type LeaderboardResponse = {
   __typename?: 'LeaderboardResponse';
@@ -119,6 +136,15 @@ export type Mutation = {
    */
   gradeAnswers: Array<GradedAnswer>;
   login: AuthPayload;
+  /**
+   * Records a flash-card verdict.
+   *
+   * Writes a response row, so a deck worked through feeds domain accuracy and
+   * the streak instead of evaporating on refresh — but awards no points. A card
+   * you flipped over until you knew it is not the same evidence as answering it
+   * cold, and the leaderboard ranks runs.
+   */
+  recordReview: SubmitAnswerResponse;
   register: AuthPayload;
   submitAnswer: SubmitAnswerResponse;
   updateLoginStreak: User;
@@ -165,6 +191,12 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationRecordReviewArgs = {
+  known: Scalars['Boolean']['input'];
+  questionId: Scalars['ID']['input'];
+};
+
+
 export type MutationRegisterArgs = {
   input: CreateUserInput;
 };
@@ -197,15 +229,53 @@ export type MutationUpdateUsernameArgs = {
   username: Scalars['String']['input'];
 };
 
+/**
+ * A question published as reference content on /practice/[domain]. Carries the
+ * answer and the explanation because the whole purpose is to be readable — and
+ * indexable — without an account. Separate from RunQuestion so that serving a
+ * study page can never be confused with serving an unattempted run.
+ */
+export type PublishedQuestion = {
+  __typename?: 'PublishedQuestion';
+  answers: Array<Scalars['String']['output']>;
+  correctAnswer: Scalars['String']['output'];
+  domain?: Maybe<Scalars['String']['output']>;
+  explanation?: Maybe<Scalars['String']['output']>;
+  hint?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  questionText: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getGoogleAuthUrl: GoogleAuthUrl;
   getLeaderboard: LeaderboardResponse;
   me?: Maybe<User>;
+  /**
+   * Questions published as study content for one domain, with answers and
+   * explanations. Public and stable in order — these back server-rendered pages
+   * that search engines crawl, and a random order would make every crawl look
+   * like a different page.
+   */
+  publishedQuestions: Array<PublishedQuestion>;
   question?: Maybe<Question>;
-  /** Every distinct domain present in the bank, sorted. Nulls omitted. */
+  /** How many questions the bank holds, optionally within one domain. Public. */
+  questionCount: Scalars['Int']['output'];
+  /**
+   * Every distinct domain present in the bank, sorted. Nulls omitted.
+   *
+   * Public: it is the index of the published study pages, and requiring a token
+   * to list them would leave nothing to link to.
+   */
   questionDomains: Array<Scalars['String']['output']>;
-  /** Optionally narrowed to a single domain. Unclassified questions are only returned when no domain is given. */
+  /**
+   * Optionally narrowed to a single domain. Unclassified questions are only
+   * returned when no domain is given.
+   *
+   * limit defaults to 500 and is capped at 500; offset pages through the rest.
+   * The bank is small today, but this is the query the management table and the
+   * flash-card deck both run, and neither should grow a payload without bound.
+   */
   questions: Array<Question>;
   /**
    * A run's worth of questions, in random order, without the answer key.
@@ -217,11 +287,21 @@ export type Query = {
    */
   sampleQuestions: Array<RunQuestion>;
   user?: Maybe<User>;
+  /** How many accounts exist. Public — the landing page counts operators. */
+  userCount: Scalars['Int']['output'];
+  /** limit defaults to 200 and is capped at 200; offset pages through the rest. */
   users: Array<User>;
 };
 
 
 export type QueryGetLeaderboardArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  period?: InputMaybe<LeaderboardPeriod>;
+};
+
+
+export type QueryPublishedQuestionsArgs = {
+  domain: Scalars['String']['input'];
   limit?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -231,8 +311,15 @@ export type QueryQuestionArgs = {
 };
 
 
+export type QueryQuestionCountArgs = {
+  domain?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryQuestionsArgs = {
   domain?: InputMaybe<Scalars['String']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -246,9 +333,20 @@ export type QueryUserArgs = {
   id: Scalars['ID']['input'];
 };
 
+
+export type QueryUsersArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type Question = {
   __typename?: 'Question';
   answers: Array<Scalars['String']['output']>;
+  /**
+   * The answer key. Available on a single question — flash cards need the back
+   * of the card — but refused for a signed-in non-editor asking for the whole
+   * list at once, which is the shape a bulk export takes.
+   */
   correctAnswer: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
   createdBy: User;
@@ -257,6 +355,9 @@ export type Question = {
    * classification; those are excluded from User.domainAccuracy.
    */
   domain?: Maybe<Scalars['String']['output']>;
+  /** Shown after grading. Null for questions that predate the column. */
+  explanation?: Maybe<Scalars['String']['output']>;
+  /** Offered before answering, so it must never give the answer away. */
   hint?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   points: Scalars['Int']['output'];
@@ -290,6 +391,14 @@ export type RunQuestion = {
 
 export type SubmitAnswerResponse = {
   __typename?: 'SubmitAnswerResponse';
+  /**
+   * Returned once the answer is in. Revealing it here rather than on the
+   * Question type is the point: a run can show what the right answer was
+   * without the answer key ever being fetchable ahead of the attempt.
+   */
+  correctAnswer: Scalars['String']['output'];
+  /** Why that answer is correct. Null for questions that predate the column. */
+  explanation?: Maybe<Scalars['String']['output']>;
   isCorrect: Scalars['Boolean']['output'];
   success: Scalars['Boolean']['output'];
 };
@@ -304,6 +413,7 @@ export type UpdateQuestionInput = {
   answers: Array<Scalars['String']['input']>;
   correctAnswer: Scalars['String']['input'];
   domain?: InputMaybe<Scalars['String']['input']>;
+  explanation?: InputMaybe<Scalars['String']['input']>;
   hint?: InputMaybe<Scalars['String']['input']>;
   points?: InputMaybe<Scalars['Int']['input']>;
   prompt: Scalars['String']['input'];
@@ -428,9 +538,11 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LeaderboardEntry: ResolverTypeWrapper<LeaderboardEntry>;
+  LeaderboardPeriod: LeaderboardPeriod;
   LeaderboardResponse: ResolverTypeWrapper<LeaderboardResponse>;
   LeaderboardUser: ResolverTypeWrapper<LeaderboardUser>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  PublishedQuestion: ResolverTypeWrapper<PublishedQuestion>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Question: ResolverTypeWrapper<QuestionModel>;
   Role: Role;
@@ -459,6 +571,7 @@ export type ResolversParentTypes = ResolversObject<{
   LeaderboardResponse: LeaderboardResponse;
   LeaderboardUser: LeaderboardUser;
   Mutation: Record<PropertyKey, never>;
+  PublishedQuestion: PublishedQuestion;
   Query: Record<PropertyKey, never>;
   Question: QuestionModel;
   RunQuestion: RunQuestion;
@@ -486,6 +599,8 @@ export type GoogleAuthUrlResolvers<ContextType = GraphQLContext, ParentType exte
 }>;
 
 export type GradedAnswerResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['GradedAnswer'] = ResolversParentTypes['GradedAnswer']> = ResolversObject<{
+  correctAnswer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  explanation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   isCorrect?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   questionId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 }>;
@@ -516,6 +631,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   deleteUser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'userId'>>;
   gradeAnswers?: Resolver<Array<ResolversTypes['GradedAnswer']>, ParentType, ContextType, RequireFields<MutationGradeAnswersArgs, 'answers'>>;
   login?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  recordReview?: Resolver<ResolversTypes['SubmitAnswerResponse'], ParentType, ContextType, RequireFields<MutationRecordReviewArgs, 'known' | 'questionId'>>;
   register?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'input'>>;
   submitAnswer?: Resolver<ResolversTypes['SubmitAnswerResponse'], ParentType, ContextType, RequireFields<MutationSubmitAnswerArgs, 'questionId' | 'selectedAnswer'>>;
   updateLoginStreak?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateLoginStreakArgs, 'userId'>>;
@@ -524,16 +640,29 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   updateUsername?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUsernameArgs, 'username'>>;
 }>;
 
+export type PublishedQuestionResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['PublishedQuestion'] = ResolversParentTypes['PublishedQuestion']> = ResolversObject<{
+  answers?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  correctAnswer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  domain?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  explanation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  hint?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  questionText?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getGoogleAuthUrl?: Resolver<ResolversTypes['GoogleAuthUrl'], ParentType, ContextType>;
   getLeaderboard?: Resolver<ResolversTypes['LeaderboardResponse'], ParentType, ContextType, Partial<QueryGetLeaderboardArgs>>;
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  publishedQuestions?: Resolver<Array<ResolversTypes['PublishedQuestion']>, ParentType, ContextType, RequireFields<QueryPublishedQuestionsArgs, 'domain'>>;
   question?: Resolver<Maybe<ResolversTypes['Question']>, ParentType, ContextType, RequireFields<QueryQuestionArgs, 'id'>>;
+  questionCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType, Partial<QueryQuestionCountArgs>>;
   questionDomains?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   questions?: Resolver<Array<ResolversTypes['Question']>, ParentType, ContextType, Partial<QueryQuestionsArgs>>;
   sampleQuestions?: Resolver<Array<ResolversTypes['RunQuestion']>, ParentType, ContextType, Partial<QuerySampleQuestionsArgs>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
-  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  userCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryUsersArgs>>;
 }>;
 
 export type QuestionResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Question'] = ResolversParentTypes['Question']> = ResolversObject<{
@@ -542,6 +671,7 @@ export type QuestionResolvers<ContextType = GraphQLContext, ParentType extends R
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   domain?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  explanation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hint?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   points?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -561,6 +691,8 @@ export type RunQuestionResolvers<ContextType = GraphQLContext, ParentType extend
 }>;
 
 export type SubmitAnswerResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['SubmitAnswerResponse'] = ResolversParentTypes['SubmitAnswerResponse']> = ResolversObject<{
+  correctAnswer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  explanation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   isCorrect?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 }>;
@@ -600,6 +732,7 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   LeaderboardResponse?: LeaderboardResponseResolvers<ContextType>;
   LeaderboardUser?: LeaderboardUserResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  PublishedQuestion?: PublishedQuestionResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Question?: QuestionResolvers<ContextType>;
   RunQuestion?: RunQuestionResolvers<ContextType>;

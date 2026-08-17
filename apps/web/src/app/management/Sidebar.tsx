@@ -18,8 +18,15 @@ export default function Sidebar({
   setActiveTab,
   user,
 }: SidebarProps) {
+  /*
+    The rail is only fixed from `lg`, because that is the only breakpoint where
+    the content is offset to make room for it (`lg:ml-[264px]` in page.tsx).
+    Fixed at every width, it sat on top of the content it was supposed to sit
+    beside, which made /management unusable on a phone. Below `lg` it becomes
+    an ordinary block above the panel.
+  */
   return (
-    <div className="fixed top-16 bottom-0 left-0 w-[264px] overflow-y-auto">
+    <div className="border-b border-line-hairline lg:fixed lg:top-16 lg:bottom-0 lg:left-0 lg:w-[264px] lg:overflow-y-auto lg:border-b-0">
       <AdminSidebar
         activeTab={activeTab as AdminTab}
         onTabChange={setActiveTab}

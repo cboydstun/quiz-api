@@ -1,10 +1,11 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { questions, userResponses } from "@quiz/db";
 import { createHarness, type TestHarness } from "./harness";
 import { maskEmail } from "../resolvers/leaderboard";
 
 const LEADERBOARD = /* GraphQL */ `
-  query GetLeaderboard($limit: Int) {
-    getLeaderboard(limit: $limit) {
+  query GetLeaderboard($limit: Int, $period: LeaderboardPeriod) {
+    getLeaderboard(limit: $limit, period: $period) {
       leaderboard {
         position
         user {
@@ -161,6 +162,114 @@ describe("getLeaderboard", () => {
     expect(res.data!.getLeaderboard.leaderboard[0]?.user.username).toBe(
       "aaa-leader",
     );
+  });
+
+  /**
+   * Windowed boards are computed from answer history rather than the
+   * daily/monthly/yearly columns, which nothing has ever written to. That
+   * means they only know about answers recorded since the cutover — including
+   * knowing about none at all, which is the honest answer for a fresh window.
+   */
+  describe("periods", () => {
+    it("ranks a windowed board from answers inside the window", async () => {
+      const editor = await h.createUser({ role: "EDITOR" });
+      const grinder = await h.createUser({
+        username: "grinder",
+        email: "grinder@example.com",
+      });
+
+      const [question] = await h.db
+        .insert(questions)
+        .values({
+          prompt: "p",
+          questionText: "q",
+          answers: ["a", "b"],
+          correctAnswer: "a",
+          points: 7,
+          createdBy: editor.id,
+        })
+        .returning();
+
+      await h.db.insert(userResponses).values({
+        userId: grinder.id,
+        questionId: question!.id,
+        selectedAnswer: "a",
+        isCorrect: true,
+      });
+
+      const res = await h.execute<Result>(LEADERBOARD, {
+        variables: { limit: 10, period: "DAILY" },
+      });
+
+      expect(res.errors).toEqual([]);
+      const entry = res.data!.getLeaderboard.leaderboard.find(
+        (e) => e.user.username === "grinder",
+      );
+      expect(entry?.score).toBe(7);
+    });
+
+    it("leaves an old answer out of a daily board", async () => {
+      const editor = await h.createUser({ role: "EDITOR" });
+      const veteran = await h.createUser({
+        username: "veteran",
+        email: "veteran@example.com",
+      });
+
+      const [question] = await h.db
+        .insert(questions)
+        .values({
+          prompt: "p",
+          questionText: "q",
+          answers: ["a", "b"],
+          correctAnswer: "a",
+          points: 99,
+          createdBy: editor.id,
+        })
+        .returning();
+
+      await h.db.insert(userResponses).values({
+        userId: veteran.id,
+        questionId: question!.id,
+        selectedAnswer: "a",
+        isCorrect: true,
+        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+      });
+
+      const daily = await h.execute<Result>(LEADERBOARD, {
+        variables: { limit: 100, period: "DAILY" },
+      });
+      const monthly = await h.execute<Result>(LEADERBOARD, {
+        variables: { limit: 100, period: "MONTHLY" },
+      });
+
+      expect(
+        daily.data!.getLeaderboard.leaderboard.some(
+          (e) => e.user.username === "veteran",
+        ),
+      ).toBe(false);
+      expect(
+        monthly.data!.getLeaderboard.leaderboard.some(
+          (e) => e.user.username === "veteran",
+        ),
+      ).toBe(true);
+    });
+
+    it("still masks emails on a windowed board", async () => {
+      const res = await h.execute<Result>(LEADERBOARD, {
+        variables: { limit: 10, period: "MONTHLY" },
+      });
+      for (const entry of res.data!.getLeaderboard.leaderboard) {
+        expect(entry.user.email).toContain("*");
+      }
+    });
+
+    it("serves a windowed board to anonymous callers too", async () => {
+      const res = await h.execute<Result>(LEADERBOARD, {
+        variables: { limit: 5, period: "WEEKLY" },
+      });
+      expect(res.errors).toEqual([]);
+      expect(res.data?.getLeaderboard.currentUserEntry).toBeNull();
+    });
   });
 
   it("defaults to ten entries when no limit is given", async () => {

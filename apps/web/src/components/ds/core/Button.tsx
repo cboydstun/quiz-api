@@ -21,8 +21,15 @@ const VARIANTS: Record<ButtonVariant, string> = {
   abort: "bg-transparent text-abort border-abort hover:bg-abort-wash",
 };
 
+/**
+ * `sm` carries a `min-h-11` up to `sm:`. The padding alone gives it a ~31px
+ * box: enough for WCAG 2.5.8 at AA, short of the 44px target size at AAA, and
+ * the quiz footer puts four of them in a row on a phone. The minimum is
+ * dropped at the small breakpoint so the density of the desktop layout — which
+ * is the design's whole idea — is unaffected.
+ */
 const SIZES: Record<ButtonSize, string> = {
-  sm: "px-3.5 py-2 text-2xs",
+  sm: "min-h-11 px-3.5 py-2 text-2xs sm:min-h-0",
   md: "px-5 py-3 text-xs",
   lg: "px-8 py-[18px] text-sm",
 };

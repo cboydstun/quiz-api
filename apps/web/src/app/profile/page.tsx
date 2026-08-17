@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useMutation, useQuery } from "@apollo/client/react";
@@ -253,7 +254,7 @@ export default function ProfilePage() {
     value >= 80 ? "go" : value >= 60 ? "caution" : "abort";
 
   return (
-    <div className="mx-auto max-w-wide px-8 py-16">
+    <div className="mx-auto max-w-wide px-4 sm:px-8 py-16">
       <Label tag="///" className="mb-6">
         Operator Record
       </Label>
@@ -325,11 +326,22 @@ export default function ProfilePage() {
               appear here.
             </p>
           ) : (
+            /*
+              Each bar is a link into a run narrowed to that domain. Reading
+              "Weather sources 40%" and being offered no way to act on it is
+              the difference between a diagnosis and a report.
+            */
             <div className="flex flex-col gap-4">
               {domains.map((d) => (
-                <div key={d.domain}>
+                <Link
+                  key={d.domain}
+                  href={`/quiz?domain=${encodeURIComponent(d.domain)}`}
+                  className="group block transition-fast focus-signal"
+                >
                   <div className="mb-2 flex justify-between gap-4">
-                    <span className="text-sm text-mute-400">{d.domain}</span>
+                    <span className="text-sm text-mute-400 group-hover:text-bone-100">
+                      {d.domain}
+                    </span>
                     <span className="font-mono text-3xs tracking-mono text-mute-500">
                       <span className={BAR[toneFor(d.accuracy)].text}>
                         {d.accuracy}%
@@ -344,7 +356,7 @@ export default function ProfilePage() {
                       style={{ width: `${d.accuracy}%` }}
                     />
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

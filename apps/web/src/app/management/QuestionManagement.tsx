@@ -19,6 +19,7 @@ type SortField =
   | "answers"
   | "correctAnswer"
   | "hint"
+  | "explanation"
   | "points"
   | "domain"
   | "createdBy";
@@ -31,6 +32,7 @@ const COLUMNS: { label: string; field: SortField | null }[] = [
   { label: "Answers", field: "answers" },
   { label: "Correct Answer", field: "correctAnswer" },
   { label: "Hint", field: "hint" },
+  { label: "Explanation", field: "explanation" },
   { label: "Points", field: "points" },
   { label: "Domain", field: "domain" },
   { label: "Created By", field: "createdBy" },
@@ -44,6 +46,7 @@ const EDITABLE_FIELDS = [
   "answers",
   "correctAnswer",
   "hint",
+  "explanation",
   "points",
   "domain",
 ] as const;
@@ -246,6 +249,17 @@ const QuestionManagement: React.FC<QuestionManagementProps> = ({
             required
           />
           <TextField name="hint" label="Hint" placeholder="Hint (optional)" />
+          {/*
+            Shown after a run is graded, and on the public /practice pages.
+            Distinct from the hint, which is offered before answering and must
+            not give the answer away.
+          */}
+          <TextField
+            name="explanation"
+            label="Explanation"
+            placeholder="Why the correct answer is correct (optional)"
+            hint="Shown after grading and on the public practice pages"
+          />
           <TextField
             name="points"
             label="Points"

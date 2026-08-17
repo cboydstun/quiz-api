@@ -15,7 +15,17 @@ export interface TokenPayload {
   score: number;
 }
 
-const EXPIRES_IN = "1d";
+/**
+ * Thirty days, up from one.
+ *
+ * There is no refresh mechanism: when the token expires the user is simply
+ * signed out. At a day, that meant a study tool built around a daily streak
+ * demanded a fresh sign-in before every streak day — the two features were
+ * working against each other. The trade is a longer window in which a stolen
+ * token is usable, which is bounded by the token living in localStorage on the
+ * user's own device and carrying no privileges beyond that user's own record.
+ */
+const EXPIRES_IN = "30d";
 const ALGORITHM = "HS256" as const;
 
 function secret(): string {

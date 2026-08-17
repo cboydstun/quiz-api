@@ -45,7 +45,7 @@ export function Footer({
 }: FooterProps) {
   return (
     <footer className="border-t border-line-hairline bg-ink-900 font-display">
-      <div className="mx-auto max-w-shell px-8 pt-16 pb-8">
+      <div className="mx-auto max-w-shell px-4 sm:px-8 pt-16 pb-8">
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,minmax(0,1fr))]">
           <div>
             <div className="mb-4 flex items-center gap-3">

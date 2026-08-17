@@ -8,6 +8,8 @@ const SUBMIT = /* GraphQL */ `
     submitAnswer(questionId: $questionId, selectedAnswer: $selectedAnswer) {
       success
       isCorrect
+      correctAnswer
+      explanation
     }
   }
 `;
@@ -28,6 +30,7 @@ describe("submitAnswer", () => {
         questionText: "q",
         answers: ["a", "b"],
         correctAnswer: "a",
+        explanation: "because a",
         points,
         createdBy,
       })
@@ -41,13 +44,23 @@ describe("submitAnswer", () => {
     const player = await h.createUser();
 
     const res = await h.execute<{
-      submitAnswer: { success: boolean; isCorrect: boolean };
+      submitAnswer: {
+        success: boolean;
+        isCorrect: boolean;
+        correctAnswer: string;
+        explanation: string | null;
+      };
     }>(SUBMIT, {
       token: h.tokenFor(player),
       variables: { questionId: question.id, selectedAnswer: "a" },
     });
 
-    expect(res.data?.submitAnswer).toEqual({ success: true, isCorrect: true });
+    expect(res.data?.submitAnswer).toEqual({
+      success: true,
+      isCorrect: true,
+      correctAnswer: "a",
+      explanation: "because a",
+    });
 
     const [row] = await h.db
       .select()
@@ -140,6 +153,96 @@ describe("submitAnswer", () => {
     expect(res.errors[0]?.message).toBe(
       "Authorization header must be provided",
     );
+  });
+
+  /**
+   * A wrong answer teaches nothing if the run cannot say what the right one
+   * was. Revealing it here rather than on the Question type keeps the answer
+   * key unreachable until the attempt is in.
+   */
+  it("reveals the answer and the reason once the attempt is recorded", async () => {
+    const editor = await h.createUser({ role: "EDITOR" });
+    const question = await seedQuestion(editor.id);
+    const player = await h.createUser();
+
+    const res = await h.execute<{
+      submitAnswer: {
+        isCorrect: boolean;
+        correctAnswer: string;
+        explanation: string | null;
+      };
+    }>(SUBMIT, {
+      token: h.tokenFor(player),
+      variables: { questionId: question.id, selectedAnswer: "b" },
+    });
+
+    expect(res.data?.submitAnswer.isCorrect).toBe(false);
+    expect(res.data?.submitAnswer.correctAnswer).toBe("a");
+    expect(res.data?.submitAnswer.explanation).toBe("because a");
+  });
+
+  /**
+   * Without this the mutation is a free-text oracle: submit guesses until one
+   * grades true, then submit the winner for points.
+   */
+  it("rejects an answer that was never one of the options", async () => {
+    const editor = await h.createUser({ role: "EDITOR" });
+    const question = await seedQuestion(editor.id);
+    const player = await h.createUser();
+
+    const res = await h.execute(SUBMIT, {
+      token: h.tokenFor(player),
+      variables: { questionId: question.id, selectedAnswer: "not an option" },
+    });
+
+    expect(res.errors[0]?.message).toMatch(/not one of the options/i);
+  });
+
+  /**
+   * The streak used to advance only when /profile was opened, so a user who
+   * answered questions daily and never looked at their record stayed on zero.
+   */
+  it("advances the login streak from answering, not from visiting a page", async () => {
+    const editor = await h.createUser({ role: "EDITOR" });
+    const question = await seedQuestion(editor.id);
+    const player = await h.createUser();
+
+    expect(player.consecutiveLoginDays).toBe(0);
+
+    await h.execute(SUBMIT, {
+      token: h.tokenFor(player),
+      variables: { questionId: question.id, selectedAnswer: "a" },
+    });
+
+    const [row] = await h.db
+      .select()
+      .from(users)
+      .where(eq(users.id, player.id));
+    expect(row?.consecutiveLoginDays).toBe(1);
+    expect(row?.lastLoginDate).not.toBeNull();
+  });
+
+  it("does not inflate the streak across a single run", async () => {
+    const editor = await h.createUser({ role: "EDITOR" });
+    const player = await h.createUser();
+    const questionRows = await Promise.all(
+      Array.from({ length: 5 }, () => seedQuestion(editor.id)),
+    );
+
+    await Promise.all(
+      questionRows.map((question) =>
+        h.execute(SUBMIT, {
+          token: h.tokenFor(player),
+          variables: { questionId: question.id, selectedAnswer: "a" },
+        }),
+      ),
+    );
+
+    const [row] = await h.db
+      .select()
+      .from(users)
+      .where(eq(users.id, player.id));
+    expect(row?.consecutiveLoginDays).toBe(1);
   });
 
   it("reports a missing question rather than failing silently", async () => {

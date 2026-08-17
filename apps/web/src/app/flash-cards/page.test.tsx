@@ -71,6 +71,16 @@ const renderPage = (cards: Card[] = CARDS) => {
       const card = cards.find((c) => c.id === variables.id);
       return { data: { question: card ? toQuestion(card) : null } };
     }
+    if (operationName === "RecordReview") {
+      return {
+        data: {
+          recordReview: {
+            __typename: "SubmitAnswerResponse",
+            success: true,
+          },
+        },
+      };
+    }
     return { data: null };
   });
 
@@ -224,5 +234,51 @@ describe("FlashCardsPage — domain filter", () => {
       await screen.findByText("Minimum flight visibility?"),
     ).toBeInTheDocument();
     await waitFor(() => expect(readout("Mastered")).toBe("0"));
+  });
+});
+
+/**
+ * Verdicts used to live only in component state, so a whole deck worked
+ * through vanished on refresh and never reached domain accuracy or the streak.
+ */
+describe("FlashCardsPage — persistence", () => {
+  it("records a Got It verdict as known", async () => {
+    const user = userEvent.setup();
+    const client = renderPage();
+
+    await screen.findByText("Maximum altitude for a small UA?");
+    await user.click(screen.getByRole("button", { name: /got it/i }));
+
+    await waitFor(() => expect(client.countOf("RecordReview")).toBe(1));
+    const call = client.operations.find(
+      (op) => op.operationName === "RecordReview",
+    );
+    expect(call?.variables).toMatchObject({ questionId: "1", known: true });
+  });
+
+  it("records an Again verdict as not known", async () => {
+    const user = userEvent.setup();
+    const client = renderPage();
+
+    await screen.findByText("Maximum altitude for a small UA?");
+    await user.click(screen.getByRole("button", { name: /again/i }));
+
+    await waitFor(() => expect(client.countOf("RecordReview")).toBe(1));
+    const call = client.operations.find(
+      (op) => op.operationName === "RecordReview",
+    );
+    expect(call?.variables).toMatchObject({ questionId: "1", known: false });
+  });
+
+  it("records one verdict per card, not one per render", async () => {
+    const user = userEvent.setup();
+    const client = renderPage();
+
+    await screen.findByText("Maximum altitude for a small UA?");
+    await user.click(screen.getByRole("button", { name: /got it/i }));
+    await screen.findByText("Minimum flight visibility?");
+    await user.click(screen.getByRole("button", { name: /got it/i }));
+
+    await waitFor(() => expect(client.countOf("RecordReview")).toBe(2));
   });
 });

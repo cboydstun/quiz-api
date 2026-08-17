@@ -9,6 +9,13 @@ import {
 
 export interface GraphQLContext {
   db: Database;
+  /**
+   * Who to count rate-limited requests against. Vercel sets x-forwarded-for
+   * and it is the only caller identity an unauthenticated request has; the
+   * literal "unknown" bucket is shared, which is the conservative direction
+   * for a header a client controls.
+   */
+  clientId: string;
   /** The authenticated caller, or null. */
   viewer: TokenPayload | null;
   /**
@@ -24,11 +31,23 @@ export interface ContextOptions {
   db?: Database;
 }
 
+/**
+ * x-forwarded-for is a comma-separated chain; the first entry is the original
+ * client. Vercel appends the true peer, but reading the leftmost value matches
+ * what every other consumer of this header expects.
+ */
+function clientIdOf(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  const first = forwarded?.split(",")[0]?.trim();
+  return first || request.headers.get("x-real-ip") || "unknown";
+}
+
 export function buildContext(
   request: Request,
   options: ContextOptions = {},
 ): GraphQLContext {
   const db = options.db ?? getDb();
+  const clientId = clientIdOf(request);
 
   // The client sends `authorization: ""` (not an absent header) when logged
   // out, so an empty value has to be treated as "missing".
@@ -36,6 +55,7 @@ export function buildContext(
   if (!header) {
     return {
       db,
+      clientId,
       viewer: null,
       viewerError: unauthenticated(MISSING_AUTH_HEADER),
     };
@@ -47,14 +67,15 @@ export function buildContext(
   if (!token) {
     return {
       db,
+      clientId,
       viewer: null,
       viewerError: unauthenticated(MALFORMED_AUTH_HEADER),
     };
   }
 
   try {
-    return { db, viewer: verifyToken(token), viewerError: null };
+    return { db, clientId, viewer: verifyToken(token), viewerError: null };
   } catch (error) {
-    return { db, viewer: null, viewerError: error as GraphQLError };
+    return { db, clientId, viewer: null, viewerError: error as GraphQLError };
   }
 }

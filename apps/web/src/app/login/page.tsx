@@ -218,7 +218,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex justify-center px-8 py-24">
+    <div className="flex justify-center px-4 py-16 sm:px-8 sm:py-24">
       <div className="w-full max-w-form">
         <Panel label="Authenticate" tag="///" padding="lg">
           <h1 className="m-0 mb-6 text-xl font-medium tracking-tight text-bone-100">

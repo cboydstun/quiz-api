@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Alert,
   Button,
@@ -45,8 +46,8 @@ const GET_RUN_QUESTIONS: TypedDocumentNode<
   GetRunQuestionsResult,
   GetRunQuestionsVars
 > = gql`
-  query SampleQuestions($limit: Int) {
-    sampleQuestions(limit: $limit) {
+  query SampleQuestions($limit: Int, $domain: String) {
+    sampleQuestions(limit: $limit, domain: $domain) {
       id
       prompt
       questionText
@@ -63,6 +64,8 @@ const SUBMIT_ANSWER: TypedDocumentNode<SubmitAnswerResult, SubmitAnswerVars> =
       submitAnswer(questionId: $questionId, selectedAnswer: $selectedAnswer) {
         success
         isCorrect
+        correctAnswer
+        explanation
       }
     }
   `;
@@ -74,6 +77,8 @@ const GRADE_ANSWERS: TypedDocumentNode<GradeAnswersResult, GradeAnswersVars> =
       gradeAnswers(answers: $answers) {
         questionId
         isCorrect
+        correctAnswer
+        explanation
       }
     }
   `;
@@ -87,10 +92,24 @@ interface GetRunQuestionsResult {
 }
 interface GetRunQuestionsVars {
   limit: number;
+  domain: string | null;
+}
+
+/** What the results screen needs to teach rather than merely score. */
+interface GradedEntry {
+  questionId: string;
+  isCorrect: boolean;
+  correctAnswer: string;
+  explanation: string | null;
 }
 
 interface SubmitAnswerResult {
-  submitAnswer: { success: boolean; isCorrect: boolean } | null;
+  submitAnswer: {
+    success: boolean;
+    isCorrect: boolean;
+    correctAnswer: string;
+    explanation: string | null;
+  } | null;
 }
 interface SubmitAnswerVars {
   questionId: string;
@@ -98,7 +117,7 @@ interface SubmitAnswerVars {
 }
 
 interface GradeAnswersResult {
-  gradeAnswers: { questionId: string; isCorrect: boolean }[] | null;
+  gradeAnswers: GradedEntry[] | null;
 }
 interface GradeAnswersVars {
   answers: { questionId: string; selectedAnswer: string }[];
@@ -117,6 +136,14 @@ const SECONDS_PER_QUESTION: Record<Difficulty, number | null> = {
 };
 
 export default function QuizPage() {
+  /**
+   * ?domain=Weather sources narrows the run. This is what the profile's
+   * accuracy bars and the flash-card deck link to: seeing that a domain is
+   * weak is only useful if there is a way to act on it from there.
+   */
+  const searchParams = useSearchParams();
+  const domainFilter = searchParams.get("domain");
+
   const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
   const [questionCount, setQuestionCount] = useState<QuestionCount>(10);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -125,12 +152,13 @@ export default function QuizPage() {
   const [quizScore, setQuizScore] = useState<{
     score: number;
     totalQuestions: number;
-    breakdown: { questionId: string; isCorrect: boolean }[];
+    breakdown: GradedEntry[];
   } | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [showQuitConfirmation, setShowQuitConfirmation] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [retrySet, setRetrySet] = useState<QuizQuestion[] | null>(null);
 
   // No redirect. The landing page offers this run without an account and now
   // it genuinely works without one: an anonymous visitor plays, is graded, and
@@ -147,6 +175,7 @@ export default function QuizPage() {
   } = useQuery(GET_RUN_QUESTIONS, {
     variables: {
       limit: questionCount === "infinite" ? RUN_MAX : questionCount,
+      domain: domainFilter,
     },
   });
   const [submitAnswer] = useMutation(SUBMIT_ANSWER);
@@ -154,10 +183,12 @@ export default function QuizPage() {
 
   // The server already applied the limit and the random order — no slicing
   // here. Slicing a createdAt-ordered bank client-side is exactly what made
-  // every run identical.
+  // every run identical. `retrySet` overrides the feed when the user chooses
+  // to re-run only what they missed, which needs the same questions rather
+  // than a fresh random draw.
   const questions = useMemo(
-    () => questionsData?.sampleQuestions ?? [],
-    [questionsData],
+    () => retrySet ?? questionsData?.sampleQuestions ?? [],
+    [retrySet, questionsData],
   );
 
   const resetTimer = useCallback(() => {
@@ -171,7 +202,7 @@ export default function QuizPage() {
     );
 
     try {
-      let breakdown: { questionId: string; isCorrect: boolean }[];
+      let breakdown: GradedEntry[];
 
       if (currentUser) {
         // One round trip per answer, but issued concurrently rather than
@@ -193,6 +224,8 @@ export default function QuizPage() {
         breakdown = results.map((result, i) => ({
           questionId: answers[i]!.questionId,
           isCorrect: result.data?.submitAnswer?.isCorrect ?? false,
+          correctAnswer: result.data?.submitAnswer?.correctAnswer ?? "",
+          explanation: result.data?.submitAnswer?.explanation ?? null,
         }));
       } else {
         // Signed out: one round trip, graded and thrown away.
@@ -288,7 +321,7 @@ export default function QuizPage() {
 
   if (questionsError)
     return (
-      <div className="mx-auto max-w-mid px-8 py-16">
+      <div className="mx-auto max-w-mid px-4 sm:px-8 py-16">
         <Alert tone="abort">
           Error loading questions. Please try again later.
         </Alert>
@@ -299,9 +332,11 @@ export default function QuizPage() {
   // explanation, on the app's main route.
   if (questions.length === 0)
     return (
-      <div className="mx-auto max-w-mid px-8 py-16">
+      <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
         <Alert tone="caution" kicker="EMPTY">
-          No questions are available yet. Check back shortly.
+          {domainFilter
+            ? `No questions are classified under ${domainFilter} yet.`
+            : "No questions are available yet. Check back shortly."}
         </Alert>
       </div>
     );
@@ -343,6 +378,36 @@ export default function QuizPage() {
     setShowQuitConfirmation(true);
   };
 
+  /**
+   * Re-runs only the items that were missed or skipped, on the same questions
+   * rather than a fresh draw. Getting a wrong answer explained and then being
+   * offered nothing but "New Run" is where the loop used to end.
+   */
+  const handleRetryMissed = () => {
+    const missed = questions.filter((question) => {
+      const entry = quizScore?.breakdown.find(
+        (b) => b.questionId === question.id,
+      );
+      return !entry || !entry.isCorrect;
+    });
+    if (missed.length === 0) return;
+
+    setRetrySet(missed);
+    setCurrentQuestionIndex(0);
+    setUserAnswers({});
+    setQuizSubmitted(false);
+    setQuizScore(null);
+    setShowHint(false);
+    setNotice(null);
+    resetTimer();
+    trackEvent("quiz_start", {
+      signed_in: Boolean(currentUser),
+      difficulty,
+      items: missed.length,
+      retry: true,
+    });
+  };
+
   const resetQuiz = () => {
     setDifficulty(null);
     setCurrentQuestionIndex(0);
@@ -352,6 +417,7 @@ export default function QuizPage() {
     setTimeRemaining(null);
     setShowHint(false);
     setNotice(null);
+    setRetrySet(null);
     // The variables have not changed, so nothing would refetch on its own and
     // "New Run" would deal the same hand again.
     refetchQuestions().catch((err) =>
@@ -393,7 +459,7 @@ export default function QuizPage() {
   const COUNTS: QuestionCount[] = [10, 20, 50, 100, 200, "infinite"];
 
   const renderRunConfiguration = () => (
-    <div className="mx-auto max-w-mid px-8 py-16">
+    <div className="mx-auto max-w-mid px-4 sm:px-8 py-16">
       <Label tag="///" className="mb-6">
         Run Configuration
       </Label>
@@ -459,6 +525,14 @@ export default function QuizPage() {
     const score = quizScore?.score ?? 0;
     const total = quizScore?.totalQuestions ?? 0;
     const accuracy = total ? Math.round((score / total) * 100) : 0;
+    // Skipped counts as missed here: an item you did not attempt is one you
+    // have no evidence of knowing.
+    const missedCount = questions.filter((question) => {
+      const entry = quizScore?.breakdown.find(
+        (b) => b.questionId === question.id,
+      );
+      return !entry || !entry.isCorrect;
+    }).length;
     const points = questions.reduce((sum, question) => {
       const entry = quizScore?.breakdown.find(
         (b) => b.questionId === question.id,
@@ -467,7 +541,7 @@ export default function QuizPage() {
     }, 0);
 
     return (
-      <div className="mx-auto max-w-mid px-8 py-16">
+      <div className="mx-auto max-w-mid px-4 sm:px-8 py-16">
         <Panel
           label="Run Complete"
           tag="///"
@@ -491,6 +565,11 @@ export default function QuizPage() {
             </div>
           </div>
 
+          {/*
+            The review. A list of Correct/Missed is a scoreboard; showing what
+            the answer was, what was chosen instead, and why, is the only part
+            of a run that teaches anything.
+          */}
           <div className="flex flex-col gap-2 p-5">
             {questions.map((question, i) => {
               const entry = quizScore?.breakdown.find(
@@ -498,10 +577,11 @@ export default function QuizPage() {
               );
               const answered = entry !== undefined;
               const ok = entry?.isCorrect ?? false;
+              const chosen = userAnswers[question.id];
               return (
                 <div
                   key={question.id}
-                  className={`flex items-center gap-4 border border-line-hairline border-l-2 bg-ink-700 px-4 py-3 ${
+                  className={`border border-line-hairline border-l-2 bg-ink-700 px-4 py-3 ${
                     !answered
                       ? "border-l-line-strong"
                       : ok
@@ -509,15 +589,39 @@ export default function QuizPage() {
                         : "border-l-abort"
                   }`}
                 >
-                  <span className="font-mono text-3xs tracking-mono text-mute-500">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="flex-1 text-sm text-mute-400">
-                    {question.questionText}
-                  </span>
-                  <Status tone={!answered ? "neutral" : ok ? "go" : "abort"}>
-                    {!answered ? "Skipped" : ok ? "Correct" : "Missed"}
-                  </Status>
+                  <div className="flex items-center gap-4">
+                    <span className="font-mono text-3xs tracking-mono text-mute-500">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="flex-1 text-sm text-mute-400">
+                      {question.questionText}
+                    </span>
+                    <Status tone={!answered ? "neutral" : ok ? "go" : "abort"}>
+                      {!answered ? "Skipped" : ok ? "Correct" : "Missed"}
+                    </Status>
+                  </div>
+
+                  {/* Only where there is something to learn: a correct answer
+                      needs no correction, and repeating it is noise. */}
+                  {answered && !ok && (
+                    <div className="mt-3 flex flex-col gap-1 border-t border-line-hairline pt-3 pl-9">
+                      {chosen && (
+                        <div className="text-sm text-mute-500">
+                          <span className="label-mono text-abort">Chose</span>{" "}
+                          {chosen}
+                        </div>
+                      )}
+                      <div className="text-sm text-bone-100">
+                        <span className="label-mono text-go">Answer</span>{" "}
+                        {entry.correctAnswer}
+                      </div>
+                      {entry.explanation && (
+                        <p className="m-0 mt-1 max-w-[68ch] text-sm leading-normal text-mute-400">
+                          {entry.explanation}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -555,10 +659,27 @@ export default function QuizPage() {
             </div>
           )}
 
-          <div className="flex gap-2 border-t border-line-hairline px-5 py-4">
-            <Button variant="signal" size="md" onClick={resetQuiz}>
+          <div className="flex flex-wrap gap-2 border-t border-line-hairline px-5 py-4">
+            {missedCount > 0 && (
+              <Button variant="signal" size="md" onClick={handleRetryMissed}>
+                Retry {missedCount} Missed
+              </Button>
+            )}
+            <Button
+              variant={missedCount > 0 ? "outline" : "signal"}
+              size="md"
+              onClick={resetQuiz}
+            >
               New Run
             </Button>
+            {currentUser && (
+              <Link
+                href="/profile"
+                className={buttonClass({ variant: "ghost", size: "md" })}
+              >
+                View Record
+              </Link>
+            )}
           </div>
         </Panel>
       </div>
@@ -579,11 +700,12 @@ export default function QuizPage() {
           : "abort";
 
     return (
-      <div className="mx-auto max-w-mid px-8 py-16">
+      <div className="mx-auto max-w-mid px-4 sm:px-8 py-16">
         <div className="mb-6 flex items-center justify-between gap-4">
           <Label tag="///">
             {currentUser?.username ?? "Guest"} · {difficulty} run ·{" "}
             {questionCount === "infinite" ? "all" : questionCount} items
+            {domainFilter ? ` · ${domainFilter}` : ""}
           </Label>
           {difficulty && (
             <Status tone={tone} filled>

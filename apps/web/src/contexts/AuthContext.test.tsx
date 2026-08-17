@@ -6,6 +6,8 @@ import { type MockedResponse } from "@apollo/client/testing";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { AuthProvider, useAuth } from "./AuthContext";
 
+// Must match the document in AuthContext field for field, or MockedProvider
+// never matches the request and the query hangs.
 const GET_CURRENT_USER = gql`
   query GetCurrentUser {
     me {
@@ -13,6 +15,7 @@ const GET_CURRENT_USER = gql`
       username
       email
       role
+      consecutiveLoginDays
     }
   }
 `;
@@ -27,6 +30,7 @@ const meMock: MockedResponse = {
         username: "amelia",
         email: "amelia@example.com",
         role: "ADMIN",
+        consecutiveLoginDays: 4,
       },
     },
   },

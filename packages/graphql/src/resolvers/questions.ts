@@ -4,8 +4,10 @@ import type { Resolvers } from "../generated/types";
 import {
   requireAuth,
   requireRole,
+  requireWithinRateLimit,
   QUESTION_EDITOR_ROLES,
 } from "../auth/guards";
+import { PUBLIC_RULE } from "../rate-limit";
 import { badInput, notFound } from "../errors";
 import type { QuestionModel } from "../models";
 
@@ -13,6 +15,15 @@ import type { QuestionModel } from "../models";
 const DEFAULT_RUN_SIZE = 10;
 /** The "All" option on the run configuration screen. */
 const MAX_RUN_SIZE = 200;
+/** Ceiling on one page of the bank. Comfortably above today's 196 items. */
+const MAX_QUESTION_PAGE = 500;
+/** How many questions a published study page shows. */
+const DEFAULT_PUBLISHED_SIZE = 25;
+const MAX_PUBLISHED_SIZE = 100;
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max);
+}
 
 /**
  * The answer list must actually contain the correct answer, or the question is
@@ -33,7 +44,7 @@ export const questionResolvers: Resolvers = {
     // list of questions would otherwise be one query per question.
     questions: async (
       _parent,
-      { domain },
+      { domain, limit, offset },
       context,
     ): Promise<QuestionModel[]> => {
       requireAuth(context);
@@ -43,9 +54,24 @@ export const questionResolvers: Resolvers = {
         .from(questions)
         .innerJoin(users, eq(questions.createdBy, users.id))
         .where(domain ? eq(questions.domain, domain) : undefined)
-        .orderBy(asc(questions.createdAt));
+        .orderBy(asc(questions.createdAt))
+        .limit(clamp(limit ?? MAX_QUESTION_PAGE, 1, MAX_QUESTION_PAGE))
+        .offset(Math.max(offset ?? 0, 0));
 
-      return rows.map((row) => ({ ...row.question, creator: row.creator }));
+      return rows.map((row) => ({
+        ...row.question,
+        creator: row.creator,
+        fromBulkList: true,
+      }));
+    },
+
+    questionCount: async (_parent, { domain }, context): Promise<number> => {
+      const [row] = await context.db
+        .select({ total: sql<number>`count(*)::int` })
+        .from(questions)
+        .where(domain ? eq(questions.domain, domain) : undefined);
+
+      return row?.total ?? 0;
     },
 
     /**
@@ -59,10 +85,8 @@ export const questionResolvers: Resolvers = {
      * for it either way.
      */
     sampleQuestions: async (_parent, { limit, domain }, context) => {
-      const size = Math.min(
-        Math.max(limit ?? DEFAULT_RUN_SIZE, 1),
-        MAX_RUN_SIZE,
-      );
+      await requireWithinRateLimit(context, "sample", PUBLIC_RULE);
+      const size = clamp(limit ?? DEFAULT_RUN_SIZE, 1, MAX_RUN_SIZE);
 
       return context.db
         .select({
@@ -80,11 +104,35 @@ export const questionResolvers: Resolvers = {
         .limit(size);
     },
 
-    // Drives the flash-card domain filter. Unclassified questions have no
+    /**
+     * The study content behind /practice/[domain]. Public, ordered, and
+     * complete with answers and explanations: the point of these pages is that
+     * a search engine can read them, and a run's worth of withheld answers is
+     * no use to a reader who arrived from a search result.
+     */
+    publishedQuestions: async (_parent, { domain, limit }, context) => {
+      await requireWithinRateLimit(context, "published", PUBLIC_RULE);
+
+      return context.db
+        .select({
+          id: questions.id,
+          questionText: questions.questionText,
+          answers: questions.answers,
+          correctAnswer: questions.correctAnswer,
+          explanation: questions.explanation,
+          hint: questions.hint,
+          domain: questions.domain,
+        })
+        .from(questions)
+        .where(eq(questions.domain, domain))
+        .orderBy(asc(questions.createdAt))
+        .limit(clamp(limit ?? DEFAULT_PUBLISHED_SIZE, 1, MAX_PUBLISHED_SIZE));
+    },
+
+    // Drives the flash-card domain filter and the study-page index. Public:
+    // it is the list of pages to link to. Unclassified questions have no
     // domain to offer, so they contribute nothing here.
     questionDomains: async (_parent, _args, context): Promise<string[]> => {
-      requireAuth(context);
-
       const rows = await context.db
         .selectDistinct({ domain: questions.domain })
         .from(questions)
@@ -128,6 +176,9 @@ export const questionResolvers: Resolvers = {
           correctAnswer: input.correctAnswer,
           // The client sends "" for an empty hint; store that as absent.
           hint: input.hint?.trim() ? input.hint.trim() : null,
+          explanation: input.explanation?.trim()
+            ? input.explanation.trim()
+            : null,
           points: input.points ?? 1,
           domain: input.domain?.trim() ? input.domain.trim() : null,
           createdBy: viewer._id,
@@ -150,6 +201,9 @@ export const questionResolvers: Resolvers = {
           answers: input.answers,
           correctAnswer: input.correctAnswer,
           hint: input.hint?.trim() ? input.hint.trim() : null,
+          explanation: input.explanation?.trim()
+            ? input.explanation.trim()
+            : null,
           points: input.points ?? 1,
           domain: input.domain?.trim() ? input.domain.trim() : null,
           updatedAt: new Date(),

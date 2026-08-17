@@ -1,6 +1,12 @@
 import type { Role } from "@quiz/db";
 import type { GraphQLContext } from "../context";
-import { forbidden, unauthenticated, MISSING_AUTH_HEADER } from "../errors";
+import {
+  forbidden,
+  unauthenticated,
+  tooManyRequests,
+  MISSING_AUTH_HEADER,
+} from "../errors";
+import { checkRateLimit, type RateLimitRule } from "../rate-limit";
 import type { TokenPayload } from "./jwt";
 
 export const USER_ADMIN_ROLES: Role[] = ["ADMIN", "SUPER_ADMIN"];
@@ -25,6 +31,24 @@ export function requireRole(
     throw forbidden(`this action requires one of: ${allowed.join(", ")}`);
   }
   return viewer;
+}
+
+/**
+ * Applies a rate limit and throws if it is exceeded.
+ *
+ * Keyed on the viewer when there is one and the client address otherwise, so a
+ * signed-in user is not throttled by whoever shares their NAT, and an
+ * anonymous caller cannot escape the bucket by rotating tokens they do not
+ * have.
+ */
+export async function requireWithinRateLimit(
+  context: GraphQLContext,
+  scope: string,
+  rule: RateLimitRule,
+): Promise<void> {
+  const identifier = context.viewer?._id ?? context.clientId;
+  const decision = await checkRateLimit(scope, identifier, rule);
+  if (!decision.allowed) throw tooManyRequests(decision.retryAfter);
 }
 
 /** Self, or an admin acting on someone else. */

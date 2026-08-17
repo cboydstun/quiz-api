@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { asc, eq, sql } from "drizzle-orm";
 import { questions, users } from "@quiz/db";
 import type { Resolvers } from "../generated/types";
 import {
@@ -14,6 +14,8 @@ import { findUserById } from "../shared";
 const MIN_USERNAME_LENGTH = 3;
 const MIN_PASSWORD_LENGTH = 8;
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
+/** One page of the user list. The management table asks for far fewer. */
+const MAX_USER_PAGE = 200;
 
 /** Whole calendar days between two instants, ignoring the time of day. */
 export function calendarDaysBetween(from: Date, to: Date): number {
@@ -42,9 +44,28 @@ export const userResolvers: Resolvers = {
       return user;
     },
 
-    users: async (_parent, _args, context) => {
+    // The one query whose result set grows with signups, so it is the one that
+    // has to be paged rather than left to return every column of every row.
+    users: async (_parent, { limit, offset }, context) => {
       requireRole(context, USER_ADMIN_ROLES);
-      return context.db.select().from(users);
+      return context.db
+        .select()
+        .from(users)
+        .orderBy(asc(users.createdAt))
+        .limit(Math.min(Math.max(limit ?? MAX_USER_PAGE, 1), MAX_USER_PAGE))
+        .offset(Math.max(offset ?? 0, 0));
+    },
+
+    /**
+     * Public, and only a count. The landing page advertises how many operators
+     * there are and had the figure hardcoded; a number is not something worth
+     * requiring a token for, and a token is not something the landing page has.
+     */
+    userCount: async (_parent, _args, context): Promise<number> => {
+      const [row] = await context.db
+        .select({ total: sql<number>`count(*)::int` })
+        .from(users);
+      return row?.total ?? 0;
     },
 
     user: async (_parent, { id }, context) => {

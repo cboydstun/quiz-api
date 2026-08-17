@@ -52,3 +52,15 @@ export function badInput(message: string): GraphQLError {
 export function notFound(message: string): GraphQLError {
   return graphqlError(message, "NOT_FOUND");
 }
+
+/**
+ * Rate limit exceeded. Carefully worded: it must not contain "unauthorized" or
+ * "unauthenticated", or a throttled user would be logged out by the client's
+ * error link on top of being throttled.
+ */
+export function tooManyRequests(retryAfterSeconds: number): GraphQLError {
+  return graphqlError(
+    `Too many requests. Try again in ${retryAfterSeconds} seconds.`,
+    "TOO_MANY_REQUESTS",
+  );
+}

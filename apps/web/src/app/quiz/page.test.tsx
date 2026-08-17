@@ -34,17 +34,31 @@ const questions = [
   },
 ];
 
-/** Grades q1's "Class B" as correct and everything else as incorrect. */
-const gradeStrictly = (variables: Record<string, unknown>) => ({
-  data: {
-    submitAnswer: {
-      __typename: "SubmitAnswerResponse",
-      success: true,
-      isCorrect:
-        variables.questionId === "q1" && variables.selectedAnswer === "Class B",
-    },
+const ANSWER_KEY: Record<string, { correct: string; explanation: string }> = {
+  q1: {
+    correct: "Class B",
+    explanation: "Class B sits over the busiest fields.",
   },
-});
+  q2: { correct: "Fog", explanation: "Fog is cloud at the surface." },
+};
+
+/** Grades q1's "Class B" as correct and everything else as incorrect. */
+const gradeStrictly = (variables: Record<string, unknown>) => {
+  const key = ANSWER_KEY[variables.questionId as string];
+  return {
+    data: {
+      submitAnswer: {
+        __typename: "SubmitAnswerResponse",
+        success: true,
+        isCorrect:
+          variables.questionId === "q1" &&
+          variables.selectedAnswer === "Class B",
+        correctAnswer: key?.correct ?? "",
+        explanation: key?.explanation ?? null,
+      },
+    },
+  };
+};
 
 /** Grades every answer against the same key gradeStrictly uses. */
 const gradeBatch = (variables: Record<string, unknown>) => ({
@@ -56,6 +70,8 @@ const gradeBatch = (variables: Record<string, unknown>) => ({
       questionId: answer.questionId,
       isCorrect:
         answer.questionId === "q1" && answer.selectedAnswer === "Class B",
+      correctAnswer: ANSWER_KEY[answer.questionId]?.correct ?? "",
+      explanation: ANSWER_KEY[answer.questionId]?.explanation ?? null,
     })),
   },
 });
@@ -227,6 +243,95 @@ describe("QuizPage", () => {
 
     expect(await screen.findByText(/question not found/i)).toBeVisible();
     expect(screen.queryByText("0 / 2")).not.toBeInTheDocument();
+  });
+
+  /**
+   * A run that only says "Missed" teaches nothing. This is the difference
+   * between a scoreboard and studying.
+   */
+  it("shows the right answer and the reason for a missed question", async () => {
+    const user = userEvent.setup();
+    renderQuiz();
+    await startEasyQuiz(user);
+
+    await user.click(screen.getByLabelText("Class G"));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await screen.findByText("What reduces visibility most?");
+    await user.click(screen.getByLabelText("Fog"));
+    await user.click(screen.getByRole("button", { name: "Submit Run" }));
+
+    await screen.findByText("0 / 2");
+    expect(screen.getByText("Class B")).toBeVisible();
+    expect(
+      screen.getByText(/class b sits over the busiest fields/i),
+    ).toBeVisible();
+    expect(screen.getByText(/class g/i)).toBeVisible();
+  });
+
+  it("says nothing extra about a question that was answered correctly", async () => {
+    const user = userEvent.setup();
+    renderQuiz();
+    await startEasyQuiz(user);
+
+    await user.click(screen.getByLabelText("Class B"));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await screen.findByText("What reduces visibility most?");
+    await user.click(screen.getByLabelText("Fog"));
+    await user.click(screen.getByRole("button", { name: "Submit Run" }));
+
+    await screen.findByText("1 / 2");
+    // q1 was right, so its explanation is not repeated back at the user.
+    expect(
+      screen.queryByText(/class b sits over the busiest fields/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it("offers to re-run only the missed items", async () => {
+    const user = userEvent.setup();
+    renderQuiz();
+    await startEasyQuiz(user);
+
+    await user.click(screen.getByLabelText("Class B"));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await screen.findByText("What reduces visibility most?");
+    await user.click(screen.getByLabelText("Fog"));
+    await user.click(screen.getByRole("button", { name: "Submit Run" }));
+
+    await screen.findByText("1 / 2");
+    await user.click(screen.getByRole("button", { name: /retry 1 missed/i }));
+
+    // Straight back into the missed question, not the run configuration screen.
+    expect(
+      await screen.findByText("What reduces visibility most?"),
+    ).toBeVisible();
+    expect(
+      screen.queryByText("Which class needs ATC authorization?"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("does not offer a retry when nothing was missed", async () => {
+    const user = userEvent.setup();
+    renderQuiz(() => ({
+      data: {
+        submitAnswer: {
+          __typename: "SubmitAnswerResponse",
+          success: true,
+          isCorrect: true,
+          correctAnswer: "whatever",
+          explanation: null,
+        },
+      },
+    }));
+    await startEasyQuiz(user);
+
+    await user.click(screen.getByLabelText("Class B"));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await screen.findByText("What reduces visibility most?");
+    await user.click(screen.getByLabelText("Fog"));
+    await user.click(screen.getByRole("button", { name: "Submit Run" }));
+
+    await screen.findByText("2 / 2");
+    expect(screen.queryByText(/retry/i)).not.toBeInTheDocument();
   });
 
   it("advances an unanswered question when the HARD timer expires", async () => {

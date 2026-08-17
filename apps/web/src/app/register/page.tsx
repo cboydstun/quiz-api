@@ -116,7 +116,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex justify-center px-8 py-24">
+    <div className="flex justify-center px-4 py-16 sm:px-8 sm:py-24">
       <div className="w-full max-w-form">
         {/*
           Named for what it is. "Request Access" reads as an application

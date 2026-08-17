@@ -204,11 +204,16 @@ describe("question domains", () => {
       expect(domains).not.toContain("");
     });
 
-    it("requires authentication", async () => {
-      const res = await h.execute(DOMAINS);
-      expect(res.errors[0]?.message).toBe(
-        "Authorization header must be provided",
-      );
+    /**
+     * Public since the study pages shipped: this list is the index of
+     * /practice/[domain], and a token requirement would leave the sitemap with
+     * nothing to enumerate. It is a list of subject names, not user data.
+     */
+    it("serves the domain list without a token", async () => {
+      const res = await h.execute<{ questionDomains: string[] }>(DOMAINS);
+
+      expect(res.errors).toEqual([]);
+      expect(res.data?.questionDomains).toContain("Airspace");
     });
   });
 

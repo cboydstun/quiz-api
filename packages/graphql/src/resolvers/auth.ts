@@ -5,10 +5,36 @@ import { buildAuthUrl, exchangeCode } from "../auth/google";
 import { signToken } from "../auth/jwt";
 import { hashPassword, verifyPassword } from "../auth/password";
 import { badInput, unauthenticated } from "../errors";
+import { requireWithinRateLimit } from "../auth/guards";
+import { AUTH_RULE } from "../rate-limit";
 import { uniqueUsername } from "../shared";
 
 const MIN_PASSWORD_LENGTH = 8;
 const MIN_USERNAME_LENGTH = 3;
+
+/**
+ * Deliberately permissive: something before an @, something after it, a dot in
+ * the domain, no spaces. Anything stricter rejects addresses that genuinely
+ * work. The client's type="email" is not a check — it is trivially bypassed by
+ * anything that is not a browser — and without this "a" registered fine.
+ */
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * Postgres unique_violation. The check-then-insert above cannot be atomic —
+ * neon-http has no transactions — so two simultaneous registrations for the
+ * same address both pass the check and the loser hits the constraint. Yoga
+ * masks anything that is not a GraphQLError, so without this the second caller
+ * is told "Unexpected error." instead of what actually happened.
+ */
+function isUniqueViolation(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: unknown }).code === "23505"
+  );
+}
 
 export const authResolvers: Resolvers = {
   Query: {
@@ -17,6 +43,8 @@ export const authResolvers: Resolvers = {
 
   Mutation: {
     register: async (_parent, { input }, context) => {
+      await requireWithinRateLimit(context, "register", AUTH_RULE);
+
       const email = input.email.trim().toLowerCase();
       const username = input.username.trim();
 
@@ -24,6 +52,9 @@ export const authResolvers: Resolvers = {
         throw badInput(
           `Username must be at least ${MIN_USERNAME_LENGTH} characters long`,
         );
+      }
+      if (!EMAIL_PATTERN.test(email)) {
+        throw badInput("Enter a valid email address");
       }
       if (input.password.length < MIN_PASSWORD_LENGTH) {
         throw badInput(
@@ -57,15 +88,23 @@ export const authResolvers: Resolvers = {
         throw badInput("Username or email already exists");
       }
 
-      const [created] = await context.db
-        .insert(users)
-        .values({
-          username,
-          email,
-          password: await hashPassword(input.password),
-          role,
-        })
-        .returning();
+      let created;
+      try {
+        [created] = await context.db
+          .insert(users)
+          .values({
+            username,
+            email,
+            password: await hashPassword(input.password),
+            role,
+          })
+          .returning();
+      } catch (error) {
+        if (isUniqueViolation(error)) {
+          throw badInput("Username or email already exists");
+        }
+        throw error;
+      }
 
       if (!created) throw new Error("Failed to create user");
 
@@ -73,6 +112,8 @@ export const authResolvers: Resolvers = {
     },
 
     login: async (_parent, { email, password }, context) => {
+      await requireWithinRateLimit(context, "login", AUTH_RULE);
+
       const [user] = await context.db
         .select()
         .from(users)
@@ -91,6 +132,8 @@ export const authResolvers: Resolvers = {
     },
 
     authenticateWithGoogle: async (_parent, { code }, context) => {
+      await requireWithinRateLimit(context, "google", AUTH_RULE);
+
       let profile;
       try {
         profile = await exchangeCode(code);

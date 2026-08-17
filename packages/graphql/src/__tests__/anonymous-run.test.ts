@@ -22,6 +22,8 @@ const GRADE = /* GraphQL */ `
     gradeAnswers(answers: $answers) {
       questionId
       isCorrect
+      correctAnswer
+      explanation
     }
   }
 `;
@@ -35,7 +37,12 @@ interface SampleResult {
   }[];
 }
 interface GradeResult {
-  gradeAnswers: { questionId: string; isCorrect: boolean }[];
+  gradeAnswers: {
+    questionId: string;
+    isCorrect: boolean;
+    correctAnswer: string;
+    explanation: string | null;
+  }[];
 }
 
 /**
@@ -60,6 +67,7 @@ describe("the anonymous run", () => {
           answers: ["right", "wrong"],
           correctAnswer: "right",
           hint: `hint ${i}`,
+          explanation: `because ${i}`,
           points: 2,
           // Half classified, half not — the shape the real bank is in.
           domain: i % 2 === 0 ? "Regulations" : null,
@@ -143,6 +151,90 @@ describe("the anonymous run", () => {
       const returned = res.data?.sampleQuestions ?? [];
       expect(returned.length).toBeGreaterThan(0);
       expect(returned.every((q) => q.domain === "Regulations")).toBe(true);
+    });
+  });
+
+  /**
+   * The study pages. These are the only place the bank is published as
+   * readable content, and the only reason anything in it can rank for a
+   * search — so they are public, ordered, and complete with answers.
+   */
+  describe("publishedQuestions", () => {
+    const PUBLISHED = /* GraphQL */ `
+      query PublishedQuestions($domain: String!, $limit: Int) {
+        publishedQuestions(domain: $domain, limit: $limit) {
+          id
+          questionText
+          answers
+          correctAnswer
+          explanation
+          domain
+        }
+      }
+    `;
+
+    it("publishes a domain's questions with answers, without a token", async () => {
+      const res = await h.execute<{
+        publishedQuestions: { correctAnswer: string; domain: string }[];
+      }>(PUBLISHED, { variables: { domain: "Regulations" } });
+
+      expect(res.errors).toEqual([]);
+      expect(res.data!.publishedQuestions.length).toBeGreaterThan(0);
+      expect(res.data!.publishedQuestions[0]?.correctAnswer).toBe("right");
+      expect(
+        res.data!.publishedQuestions.every((q) => q.domain === "Regulations"),
+      ).toBe(true);
+    });
+
+    /**
+     * A crawler that sees a different page every visit cannot decide the page
+     * is about anything. The run feed is random; this deliberately is not.
+     */
+    it("returns the same page in the same order on every request", async () => {
+      const [first, second] = await Promise.all([
+        h.execute<{ publishedQuestions: { id: string }[] }>(PUBLISHED, {
+          variables: { domain: "Regulations", limit: 10 },
+        }),
+        h.execute<{ publishedQuestions: { id: string }[] }>(PUBLISHED, {
+          variables: { domain: "Regulations", limit: 10 },
+        }),
+      ]);
+
+      expect(first.data!.publishedQuestions.map((q) => q.id)).toEqual(
+        second.data!.publishedQuestions.map((q) => q.id),
+      );
+    });
+
+    it("returns nothing for a domain that does not exist", async () => {
+      const res = await h.execute<{ publishedQuestions: unknown[] }>(
+        PUBLISHED,
+        { variables: { domain: "Underwater Basket Weaving" } },
+      );
+      expect(res.data?.publishedQuestions).toEqual([]);
+    });
+  });
+
+  describe("public counts", () => {
+    it("counts the bank without a token", async () => {
+      const res = await h.execute<{ questionCount: number }>(
+        `{ questionCount }`,
+      );
+      expect(res.errors).toEqual([]);
+      expect(res.data?.questionCount).toBe(40);
+    });
+
+    it("counts one domain", async () => {
+      const res = await h.execute<{ questionCount: number }>(
+        `query C($d: String) { questionCount(domain: $d) }`,
+        { variables: { d: "Regulations" } },
+      );
+      expect(res.data?.questionCount).toBe(20);
+    });
+
+    it("counts operators without a token", async () => {
+      const res = await h.execute<{ userCount: number }>(`{ userCount }`);
+      expect(res.errors).toEqual([]);
+      expect(res.data?.userCount).toBeGreaterThan(0);
     });
   });
 
@@ -237,6 +329,23 @@ describe("the anonymous run", () => {
         true,
         false,
       ]);
+    });
+
+    /**
+     * A signed-out run has to teach as much as a signed-in one, or the wall at
+     * the end is asking people to sign up for something they have not seen.
+     */
+    it("reveals the answer and the reason to a signed-out visitor", async () => {
+      const res = await h.execute<GradeResult>(GRADE, {
+        variables: {
+          answers: [{ questionId: seeded[0]!.id, selectedAnswer: "wrong" }],
+        },
+      });
+
+      const graded = res.data!.gradeAnswers[0]!;
+      expect(graded.isCorrect).toBe(false);
+      expect(graded.correctAnswer).toBe("right");
+      expect(graded.explanation).toMatch(/^because /);
     });
 
     it("handles an empty run", async () => {

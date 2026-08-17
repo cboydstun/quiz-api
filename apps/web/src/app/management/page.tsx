@@ -47,6 +47,7 @@ const GET_ALL_QUESTIONS: TypedDocumentNode<AllQuestionsResult> = gql`
       answers
       correctAnswer
       hint
+      explanation
       points
       domain
       createdBy {
@@ -69,6 +70,7 @@ const CREATE_QUESTION: TypedDocumentNode<
       answers
       correctAnswer
       hint
+      explanation
       points
       domain
     }
@@ -87,6 +89,7 @@ const UPDATE_QUESTION: TypedDocumentNode<
       answers
       correctAnswer
       hint
+      explanation
       points
       domain
       createdBy {
@@ -157,6 +160,7 @@ interface QuestionInput {
   answers: string[];
   correctAnswer: string;
   hint: string;
+  explanation: string;
   points: number;
   domain: string;
 }
@@ -321,6 +325,7 @@ const ManagementPage: React.FC = () => {
             answers: splitAnswers(readField("answers")),
             correctAnswer: readField("correctAnswer"),
             hint: readField("hint"),
+            explanation: readField("explanation"),
             points,
             domain: readField("domain"),
           },
@@ -353,6 +358,7 @@ const ManagementPage: React.FC = () => {
             answers: updatedQuestion.answers,
             correctAnswer: updatedQuestion.correctAnswer,
             hint: updatedQuestion.hint ?? "",
+            explanation: updatedQuestion.explanation ?? "",
             points: updatedQuestion.points,
             domain: updatedQuestion.domain ?? "",
           },

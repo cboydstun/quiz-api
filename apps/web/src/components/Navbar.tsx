@@ -84,6 +84,7 @@ export default function Navbar() {
       links={links}
       activeHref={pathname}
       loggedIn={isLoggedIn}
+      streakDays={user?.consecutiveLoginDays ?? 0}
       onAuthClick={handleAuthClick}
       banner={
         error ? (

@@ -17,6 +17,12 @@ export interface NavbarProps {
   activeHref?: string;
   loggedIn?: boolean;
   onAuthClick?: () => void;
+  /**
+   * Consecutive days answered. Shown in the bar because a streak nobody can
+   * see is not a streak — this one was only ever visible on /profile, which
+   * is also the only page that used to advance it.
+   */
+  streakDays?: number;
   /** Rendered under the bar — used for the auth error strip. */
   banner?: React.ReactNode;
 }
@@ -68,6 +74,7 @@ export function Navbar({
   activeHref,
   loggedIn = false,
   onAuthClick,
+  streakDays = 0,
   banner,
 }: NavbarProps) {
   const [open, setOpen] = useState(false);
@@ -95,6 +102,15 @@ export function Navbar({
         </div>
 
         <div className="flex flex-none items-center gap-2">
+          {loggedIn && streakDays > 0 && (
+            <span
+              title={`${streakDays} consecutive days answered`}
+              className="label-mono hidden items-center gap-2 border border-line-hairline px-2.5 py-1.5 text-mute-400 sm:inline-flex"
+            >
+              <span className="inline-block size-1.5 bg-signal" />
+              {streakDays}d
+            </span>
+          )}
           {!loggedIn && (
             <Link
               href="/register"

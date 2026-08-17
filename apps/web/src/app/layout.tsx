@@ -1,7 +1,10 @@
 // src/app/layout.tsx
 
+import type { Metadata } from "next";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SITE_NAME, siteOrigin } from "../lib/site";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import { ApolloWrapper } from "../components/ApolloWrapper";
@@ -26,10 +29,51 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-export const metadata = {
-  title: "Part 107 Drone License Quiz App",
+/**
+ * Every route inherited one title and one description, so every page looked
+ * identical in a search result and a shared link unfurled as a bare domain.
+ *
+ * `metadataBase` is what makes the relative opengraph-image resolve to an
+ * absolute URL — without it the og:image tag points at nothing a crawler can
+ * fetch. `title.template` lets each route set only its own half.
+ */
+export const metadata: Metadata = {
+  metadataBase: new URL(siteOrigin()),
+  title: {
+    default: "Part 107 Practice Test — Free FAA Drone License Quiz",
+    template: `%s · ${SITE_NAME}`,
+  },
   description:
-    "Prepare for your FAA certification with our comprehensive quiz app",
+    "Free Part 107 practice tests for the FAA remote pilot certificate. " +
+    "Timed runs across all 12 knowledge areas, answers explained, and " +
+    "per-domain accuracy tracking. No account needed to start.",
+  applicationName: SITE_NAME,
+  keywords: [
+    "Part 107",
+    "Part 107 practice test",
+    "FAA drone license",
+    "remote pilot certificate",
+    "drone pilot exam",
+    "UAS knowledge test",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: "Part 107 Practice Test — Free FAA Drone License Quiz",
+    description:
+      "Timed Part 107 practice runs across all 12 knowledge areas, with " +
+      "every answer explained. No account needed to start.",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Part 107 Practice Test — Free FAA Drone License Quiz",
+    description:
+      "Timed Part 107 practice runs, every answer explained. No account " +
+      "needed to start.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -79,6 +123,7 @@ export default function RootLayout({
           */}
           <main className="grow">{children}</main>
           <Analytics />
+          <SpeedInsights />
           <Footer />
         </ApolloWrapper>
       </body>

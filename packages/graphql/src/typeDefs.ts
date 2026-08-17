@@ -58,8 +58,16 @@ export const typeDefs = /* GraphQL */ `
     prompt: String!
     questionText: String!
     answers: [String!]!
+    """
+    The answer key. Available on a single question — flash cards need the back
+    of the card — but refused for a signed-in non-editor asking for the whole
+    list at once, which is the shape a bulk export takes.
+    """
     correctAnswer: String!
+    "Offered before answering, so it must never give the answer away."
     hint: String
+    "Shown after grading. Null for questions that predate the column."
+    explanation: String
     points: Int!
     """
     Part 107 subject area, e.g. "Regulations". Null for questions that predate
@@ -97,6 +105,14 @@ export const typeDefs = /* GraphQL */ `
   type SubmitAnswerResponse {
     success: Boolean!
     isCorrect: Boolean!
+    """
+    Returned once the answer is in. Revealing it here rather than on the
+    Question type is the point: a run can show what the right answer was
+    without the answer key ever being fetchable ahead of the attempt.
+    """
+    correctAnswer: String!
+    "Why that answer is correct. Null for questions that predate the column."
+    explanation: String
   }
 
   """
@@ -115,6 +131,22 @@ export const typeDefs = /* GraphQL */ `
     domain: String
   }
 
+  """
+  A question published as reference content on /practice/[domain]. Carries the
+  answer and the explanation because the whole purpose is to be readable — and
+  indexable — without an account. Separate from RunQuestion so that serving a
+  study page can never be confused with serving an unattempted run.
+  """
+  type PublishedQuestion {
+    id: ID!
+    questionText: String!
+    answers: [String!]!
+    correctAnswer: String!
+    explanation: String
+    hint: String
+    domain: String
+  }
+
   input AnswerInput {
     questionId: ID!
     selectedAnswer: String!
@@ -123,6 +155,8 @@ export const typeDefs = /* GraphQL */ `
   type GradedAnswer {
     questionId: ID!
     isCorrect: Boolean!
+    correctAnswer: String!
+    explanation: String
   }
 
   type UpdatePasswordResponse {
@@ -140,6 +174,21 @@ export const typeDefs = /* GraphQL */ `
     username: String!
     email: String!
     score: Int!
+  }
+
+  """
+  ALL_TIME ranks the stored score, which carries the history imported from the
+  old backend. The windowed periods are computed from answer history instead of
+  the daily/monthly/yearly point columns: nothing ever wrote those, and a
+  counter that needs a scheduled reset to mean anything is a second thing to
+  get wrong. Windowed boards therefore only know about answers recorded since
+  the cutover, which is the truth rather than a flattering approximation.
+  """
+  enum LeaderboardPeriod {
+    ALL_TIME
+    DAILY
+    WEEKLY
+    MONTHLY
   }
 
   type LeaderboardEntry {
@@ -171,6 +220,7 @@ export const typeDefs = /* GraphQL */ `
     answers: [String!]!
     correctAnswer: String!
     hint: String
+    explanation: String
     points: Int
     domain: String
   }
@@ -181,16 +231,29 @@ export const typeDefs = /* GraphQL */ `
     answers: [String!]!
     correctAnswer: String!
     hint: String
+    explanation: String
     points: Int
     domain: String
   }
 
   type Query {
     me: User
-    users: [User!]!
+    "limit defaults to 200 and is capped at 200; offset pages through the rest."
+    users(limit: Int, offset: Int): [User!]!
     user(id: ID!): User
-    "Optionally narrowed to a single domain. Unclassified questions are only returned when no domain is given."
-    questions(domain: String): [Question!]!
+    "How many accounts exist. Public — the landing page counts operators."
+    userCount: Int!
+    """
+    Optionally narrowed to a single domain. Unclassified questions are only
+    returned when no domain is given.
+
+    limit defaults to 500 and is capped at 500; offset pages through the rest.
+    The bank is small today, but this is the query the management table and the
+    flash-card deck both run, and neither should grow a payload without bound.
+    """
+    questions(domain: String, limit: Int, offset: Int): [Question!]!
+    "How many questions the bank holds, optionally within one domain. Public."
+    questionCount(domain: String): Int!
     question(id: ID!): Question
     """
     A run's worth of questions, in random order, without the answer key.
@@ -201,10 +264,22 @@ export const typeDefs = /* GraphQL */ `
     sees the same items. limit is clamped to 1-200.
     """
     sampleQuestions(limit: Int, domain: String): [RunQuestion!]!
-    "Every distinct domain present in the bank, sorted. Nulls omitted."
+    """
+    Questions published as study content for one domain, with answers and
+    explanations. Public and stable in order — these back server-rendered pages
+    that search engines crawl, and a random order would make every crawl look
+    like a different page.
+    """
+    publishedQuestions(domain: String!, limit: Int): [PublishedQuestion!]!
+    """
+    Every distinct domain present in the bank, sorted. Nulls omitted.
+
+    Public: it is the index of the published study pages, and requiring a token
+    to list them would leave nothing to link to.
+    """
     questionDomains: [String!]!
     getGoogleAuthUrl: GoogleAuthUrl!
-    getLeaderboard(limit: Int): LeaderboardResponse!
+    getLeaderboard(limit: Int, period: LeaderboardPeriod): LeaderboardResponse!
   }
 
   type Mutation {
@@ -228,6 +303,16 @@ export const typeDefs = /* GraphQL */ `
     towards stats and the leaderboard.
     """
     gradeAnswers(answers: [AnswerInput!]!): [GradedAnswer!]!
+
+    """
+    Records a flash-card verdict.
+
+    Writes a response row, so a deck worked through feeds domain accuracy and
+    the streak instead of evaporating on refresh — but awards no points. A card
+    you flipped over until you knew it is not the same evidence as answering it
+    cold, and the leaderboard ranks runs.
+    """
+    recordReview(questionId: ID!, known: Boolean!): SubmitAnswerResponse!
 
     changeUserRole(userId: ID!, newRole: Role!): User!
     deleteUser(userId: ID!): Boolean!

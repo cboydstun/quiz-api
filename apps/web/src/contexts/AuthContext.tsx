@@ -30,6 +30,9 @@ const GET_CURRENT_USER: TypedDocumentNode<GetCurrentUserResult> = gql`
       username
       email
       role
+      # Feeds the navbar's streak chip. Cheap — it is a column on the row the
+      # query already reads.
+      consecutiveLoginDays
     }
   }
 `;

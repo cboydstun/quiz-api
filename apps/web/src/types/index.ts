@@ -22,6 +22,11 @@ export interface User {
   username: string;
   email: string;
   role: Role;
+  /**
+   * Optional because not every `me` selection asks for it — the navbar does,
+   * to show the streak; the quiz page has no use for it.
+   */
+  consecutiveLoginDays?: number;
 }
 
 export type NewUser = Omit<User, "id"> & { password: string };
@@ -32,7 +37,10 @@ export interface Question {
   questionText: string;
   answers: string[];
   correctAnswer: string;
+  /** Offered before answering, so it must not give the answer away. */
   hint?: string;
+  /** Shown after grading and on the public practice pages. */
+  explanation?: string | null;
   points: number;
   /** Part 107 subject area. Null until an editor classifies the question. */
   domain?: string | null;

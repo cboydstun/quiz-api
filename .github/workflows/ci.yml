@@ -35,3 +35,16 @@ jobs:
           git diff --exit-code -- packages/db/drizzle
 
       - run: pnpm exec turbo run typecheck lint test
+
+      # `next build` is the only step that catches a broken server component,
+      # a bad metadata export, or a route that cannot be prerendered. Without
+      # it those first surfaced on Vercel, after merge.
+      #
+      # DATABASE_URL is a syntactically valid URL that resolves to nothing.
+      # The server-side reads behind the landing and study pages catch their
+      # own errors and return empty results, so the build proves the pages
+      # render without needing a live database in CI.
+      - run: pnpm exec turbo run build
+        env:
+          DATABASE_URL: postgres://ci:ci@127.0.0.1:5432/ci
+          JWT_SECRET: ci-build-only-secret

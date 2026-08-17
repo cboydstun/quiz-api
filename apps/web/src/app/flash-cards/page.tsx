@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { gql, type TypedDocumentNode } from "@apollo/client";
-import { useLazyQuery, useQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
 import {
   Alert,
   Button,
+  buttonClass,
   FlipCard,
   Label,
   Panel,
@@ -50,6 +52,29 @@ const GET_QUESTION: TypedDocumentNode<GetQuestionResult, GetQuestionVars> = gql`
     }
   }
 `;
+
+/**
+ * Persists the verdict. Without it a whole deck worked through left no trace:
+ * `known`/`again` lived in component state and a refresh erased them, so
+ * nothing a user studied ever reached their domain accuracy or their streak.
+ * It records but does not score — see the mutation's own comment.
+ */
+const RECORD_REVIEW: TypedDocumentNode<RecordReviewResult, RecordReviewVars> =
+  gql`
+    mutation RecordReview($questionId: ID!, $known: Boolean!) {
+      recordReview(questionId: $questionId, known: $known) {
+        success
+      }
+    }
+  `;
+
+interface RecordReviewResult {
+  recordReview: { success: boolean } | null;
+}
+interface RecordReviewVars {
+  questionId: string;
+  known: boolean;
+}
 
 interface FlashCard {
   id: string;
@@ -115,6 +140,7 @@ export default function FlashCardsPage() {
   });
   const { data: domainsData } = useQuery(GET_QUESTION_DOMAINS);
   const [getQuestion, { error: questionError }] = useLazyQuery(GET_QUESTION);
+  const [recordReview] = useMutation(RECORD_REVIEW);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -159,6 +185,12 @@ export default function FlashCardsPage() {
       setSeen((s) => s + 1);
       setIsFlipped(false);
 
+      // Fire and forget: a review that fails to record should not stall the
+      // deck, and there is nothing useful to tell the user about it.
+      recordReview({
+        variables: { questionId: currentId, known: verdict === "known" },
+      }).catch((err) => console.error("Error recording review:", err));
+
       if (verdict === "known") {
         setKnown((k) => (k.includes(currentId) ? k : [...k, currentId]));
         setQueue((q) => q.filter((id) => id !== currentId));
@@ -167,7 +199,7 @@ export default function FlashCardsPage() {
         setQueue((q) => [...q.filter((id) => id !== currentId), currentId]);
       }
     },
-    [currentId],
+    [currentId, recordReview],
   );
 
   const restart = useCallback(() => {
@@ -211,7 +243,7 @@ export default function FlashCardsPage() {
   const error = idsError ?? questionError;
   if (error) {
     return (
-      <div className="mx-auto max-w-mid px-8 py-16">
+      <div className="mx-auto max-w-mid px-4 sm:px-8 py-16">
         <Alert tone="abort">{error.message}</Alert>
       </div>
     );
@@ -223,7 +255,7 @@ export default function FlashCardsPage() {
   const domains = [ALL, ...(domainsData?.questionDomains ?? [])];
 
   return (
-    <div className="mx-auto max-w-mid px-8 py-16">
+    <div className="mx-auto max-w-mid px-4 sm:px-8 py-16">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-6">
         <div>
           <Label tag="///" className="mb-4">
@@ -299,14 +331,28 @@ export default function FlashCardsPage() {
                 {again.length
                   ? ` · ${again.length} required a second pass`
                   : " · no requeues"}
-                .
+                . Recorded against your domain accuracy.
               </p>
             </div>
-            <div className="flex gap-2">
+            {/*
+              Somewhere to go next. Clearing a deck used to offer exactly one
+              thing — the same deck again — which is the shape of a dead end.
+            */}
+            <div className="flex flex-wrap gap-2">
               <Status tone="go" filled>
                 Complete
               </Status>
-              <Button variant="signal" size="sm" onClick={restart}>
+              <Link
+                href={
+                  domain === ALL
+                    ? "/quiz"
+                    : `/quiz?domain=${encodeURIComponent(domain)}`
+                }
+                className={buttonClass({ variant: "signal", size: "sm" })}
+              >
+                Test It In A Run
+              </Link>
+              <Button variant="outline" size="sm" onClick={restart}>
                 Run Again
               </Button>
             </div>

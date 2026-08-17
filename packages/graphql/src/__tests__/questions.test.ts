@@ -83,14 +83,34 @@ describe("questions", () => {
   it("returns the author alongside each question in one pass", async () => {
     const author = await h.createUser({ role: "EDITOR", username: "author1" });
     await seedQuestion(h, author.id);
-    const reader = await h.createUser();
 
+    // An editor, because MANAGEMENT_LIST asks for correctAnswer and the bulk
+    // answer key is editors-only — see the next test.
     const res = await h.execute<{
       questions: { createdBy: { id: string; username: string } }[];
-    }>(MANAGEMENT_LIST, { token: h.tokenFor(reader) });
+    }>(MANAGEMENT_LIST, { token: h.tokenFor(author) });
 
     expect(res.errors).toEqual([]);
     expect(res.data?.questions[0]?.createdBy.username).toBe("author1");
+  });
+
+  /**
+   * One question's answer is the back of a flash card. Every question's
+   * answers in one response is an export, and with a score-ranked public
+   * leaderboard on the other end of it, that is the whole cheat.
+   */
+  it("refuses the whole answer key to a signed-in non-editor", async () => {
+    const author = await h.createUser({ role: "EDITOR", username: "author1b" });
+    await seedQuestion(h, author.id);
+    const reader = await h.createUser();
+
+    const res = await h.execute(MANAGEMENT_LIST, {
+      token: h.tokenFor(reader),
+    });
+
+    expect(res.errors[0]?.message).toMatch(/forbidden/i);
+    // Refusing must not log them out — they are a legitimate signed-in user.
+    expect(res.errors[0]?.message).not.toMatch(/unauthorized|unauthenticated/i);
   });
 
   it("serves the quiz selection without the correct answer", async () => {
