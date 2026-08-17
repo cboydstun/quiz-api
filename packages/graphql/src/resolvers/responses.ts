@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import { questions } from "@quiz/db";
 import type { Resolvers } from "../generated/types";
 import { requireAuth } from "../auth/guards";
@@ -51,6 +51,42 @@ export const responseResolvers: Resolvers = {
       `);
 
       return { success: true, isCorrect };
+    },
+
+    /**
+     * Grades a whole run in one round trip and writes nothing.
+     *
+     * Public: without it a signed-out visitor can play the run `sampleQuestions`
+     * serves but never learn how they did, which is the moment the sign-up
+     * prompt has to land on. Nothing here touches `user_responses` or any
+     * counter — recording a run is what `submitAnswer` is for, and that still
+     * requires a token.
+     *
+     * One query for the whole set rather than one per answer: this is the
+     * anonymous path, so it is also the unauthenticated-traffic path, and it
+     * should cost a single round trip no matter how long the run was.
+     */
+    gradeAnswers: async (_parent, { answers }, context) => {
+      if (answers.length === 0) return [];
+
+      const ids = [...new Set(answers.map((answer) => answer.questionId))];
+
+      const rows = await context.db
+        .select({
+          id: questions.id,
+          correctAnswer: questions.correctAnswer,
+        })
+        .from(questions)
+        .where(inArray(questions.id, ids));
+
+      const keyById = new Map(rows.map((row) => [row.id, row.correctAnswer]));
+
+      return answers.map((answer) => ({
+        questionId: answer.questionId,
+        // An id that is not in the bank grades as wrong rather than throwing:
+        // one stale question must not fail the whole run.
+        isCorrect: keyById.get(answer.questionId) === answer.selectedAnswer,
+      }));
     },
   },
 };

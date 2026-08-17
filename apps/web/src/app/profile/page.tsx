@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { formatDate } from "@/lib/format";
+import { messageFrom } from "@/lib/errors";
 import type { Role } from "@/types";
 import {
   Alert,
@@ -145,6 +147,7 @@ interface UpdateLoginStreakVars {
 }
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -162,6 +165,17 @@ export default function ProfilePage() {
   const streakRecordedForRef = useRef<string | null>(null);
   const profileUser = data?.me ?? null;
 
+  // There is no middleware and no guard component: every protected page owns
+  // its own redirect, the same way /quiz does. Without this one, a logged-out
+  // visitor stayed here and read the raw "Authorization header must be
+  // provided" off the wire — that message carries neither marker the Apollo
+  // error link watches for, so nothing else moved them along.
+  useEffect(() => {
+    if (!loading && !profileUser) {
+      router.push("/login");
+    }
+  }, [loading, profileUser, router]);
+
   useEffect(() => {
     const userId = profileUser?.id;
     if (!userId || streakRecordedForRef.current === userId) return;
@@ -177,14 +191,16 @@ export default function ProfilePage() {
       const result = await updateUsername({ variables: { username } });
       const updated = result.data?.updateUsername;
       if (!updated) {
-        setMessage("Failed to update username");
+        // errorPolicy "all" resolves rather than throws, so "Username is
+        // already taken" arrives here and never reached the catch below.
+        setMessage(messageFrom(result.error, "Failed to update username"));
         return;
       }
       setMessage(`Username updated successfully: ${updated.username}`);
       setUsername("");
       refetch();
     } catch (err) {
-      setMessage("Failed to update username");
+      setMessage(messageFrom(err, "Failed to update username"));
     }
   };
 
@@ -199,25 +215,21 @@ export default function ProfilePage() {
         variables: { currentPassword, newPassword },
       });
       setMessage(
-        result.data?.updatePassword?.message ?? "Failed to update password",
+        result.data?.updatePassword?.message ??
+          messageFrom(result.error, "Failed to update password"),
       );
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
-      setMessage("Failed to update password");
+      setMessage(messageFrom(err, "Failed to update password"));
     }
   };
 
   if (loading) return <Spinner label="Loading record" />;
 
-  if (error) {
-    return (
-      <div className="mx-auto max-w-wide px-8 py-16">
-        <Alert tone="abort">{error.message}</Alert>
-      </div>
-    );
-  }
+  // The effect above is already pushing to /login.
+  if (!profileUser) return null;
 
   const accuracy =
     profileUser && profileUser.questionsAnswered > 0
@@ -248,6 +260,14 @@ export default function ProfilePage() {
       <h1 className="m-0 mb-10 text-2xl font-medium tracking-tight text-bone-100">
         {profileUser?.username ?? "Operator"}
       </h1>
+
+      {error && (
+        <div className="mb-8">
+          <Alert tone="caution" kicker="PARTIAL">
+            {error.message}
+          </Alert>
+        </div>
+      )}
 
       {message && (
         <div className="mb-8">

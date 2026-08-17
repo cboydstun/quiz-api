@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { useRouter } from "next/navigation";
 import {
   Alert,
   Button,
+  buttonClass,
   Label,
   Panel,
   QuestionCard,
@@ -13,10 +13,17 @@ import {
   Status,
   Modal,
 } from "@/components/ds";
+import Link from "next/link";
 import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useMutation, useQuery } from "@apollo/client/react";
+import { trackEvent } from "@/lib/analytics";
+import { messageFrom } from "@/lib/errors";
 import type { QuizQuestion, User } from "@/types";
 
+/**
+ * Still asked for, but no longer a gate: a null `me` means the visitor is
+ * signed out and their run is graded rather than recorded.
+ */
 const GET_CURRENT_USER: TypedDocumentNode<GetCurrentUserResult> = gql`
   query GetCurrentUser {
     me {
@@ -28,9 +35,18 @@ const GET_CURRENT_USER: TypedDocumentNode<GetCurrentUserResult> = gql`
   }
 `;
 
-const GET_QUIZ_QUESTIONS: TypedDocumentNode<GetQuizQuestionsResult> = gql`
-  query GetQuizQuestions {
-    questions {
+/**
+ * The run feed. Public and randomised, so this one document serves signed-in
+ * and signed-out visitors alike — and neither is sent the answer key, which
+ * the old `questions` query included on every item whether it was asked for
+ * or not.
+ */
+const GET_RUN_QUESTIONS: TypedDocumentNode<
+  GetRunQuestionsResult,
+  GetRunQuestionsVars
+> = gql`
+  query SampleQuestions($limit: Int) {
+    sampleQuestions(limit: $limit) {
       id
       prompt
       questionText
@@ -51,12 +67,26 @@ const SUBMIT_ANSWER: TypedDocumentNode<SubmitAnswerResult, SubmitAnswerVars> =
     }
   `;
 
+/** The signed-out counterpart to SUBMIT_ANSWER: grades, records nothing. */
+const GRADE_ANSWERS: TypedDocumentNode<GradeAnswersResult, GradeAnswersVars> =
+  gql`
+    mutation GradeAnswers($answers: [AnswerInput!]!) {
+      gradeAnswers(answers: $answers) {
+        questionId
+        isCorrect
+      }
+    }
+  `;
+
 interface GetCurrentUserResult {
   me: User | null;
 }
 
-interface GetQuizQuestionsResult {
-  questions: QuizQuestion[] | null;
+interface GetRunQuestionsResult {
+  sampleQuestions: QuizQuestion[] | null;
+}
+interface GetRunQuestionsVars {
+  limit: number;
 }
 
 interface SubmitAnswerResult {
@@ -67,8 +97,18 @@ interface SubmitAnswerVars {
   selectedAnswer: string;
 }
 
+interface GradeAnswersResult {
+  gradeAnswers: { questionId: string; isCorrect: boolean }[] | null;
+}
+interface GradeAnswersVars {
+  answers: { questionId: string; selectedAnswer: string }[];
+}
+
 type Difficulty = "EASY" | "MEDIUM" | "HARD";
 type QuestionCount = 10 | 20 | 50 | 100 | 200 | "infinite";
+
+/** What "All" asks for. The server clamps to the same ceiling. */
+const RUN_MAX = 200;
 
 const SECONDS_PER_QUESTION: Record<Difficulty, number | null> = {
   EASY: null,
@@ -77,7 +117,6 @@ const SECONDS_PER_QUESTION: Record<Difficulty, number | null> = {
 };
 
 export default function QuizPage() {
-  const router = useRouter();
   const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
   const [questionCount, setQuestionCount] = useState<QuestionCount>(10);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -93,39 +132,33 @@ export default function QuizPage() {
   const [showQuitConfirmation, setShowQuitConfirmation] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
 
-  const {
-    loading: userLoading,
-    error: userError,
-    data: userData,
-  } = useQuery(GET_CURRENT_USER);
-
-  // Apollo Client 4 removed the onError callback from useQuery, so the
-  // missing-auth-header redirect reacts to the error result instead.
-  useEffect(() => {
-    if (userError?.message.includes("Authorization header must be provided")) {
-      router.push("/login");
-    }
-  }, [userError, router]);
+  // No redirect. The landing page offers this run without an account and now
+  // it genuinely works without one: an anonymous visitor plays, is graded, and
+  // is asked to sign in at the results screen — where there is finally
+  // something worth signing in for. `me` failing just means "signed out".
+  const { loading: userLoading, data: userData } = useQuery(GET_CURRENT_USER);
+  const currentUser = userData?.me ?? null;
 
   const {
     loading: questionsLoading,
     error: questionsError,
     data: questionsData,
-  } = useQuery(GET_QUIZ_QUESTIONS);
+    refetch: refetchQuestions,
+  } = useQuery(GET_RUN_QUESTIONS, {
+    variables: {
+      limit: questionCount === "infinite" ? RUN_MAX : questionCount,
+    },
+  });
   const [submitAnswer] = useMutation(SUBMIT_ANSWER);
+  const [gradeAnswers] = useMutation(GRADE_ANSWERS);
 
-  useEffect(() => {
-    if (!userLoading) {
-      if (!userData?.me) {
-        router.push("/login");
-      }
-    }
-  }, [userData, userLoading, router]);
-
-  const questions = useMemo(() => {
-    const all = questionsData?.questions ?? [];
-    return questionCount === "infinite" ? all : all.slice(0, questionCount);
-  }, [questionsData, questionCount]);
+  // The server already applied the limit and the random order — no slicing
+  // here. Slicing a createdAt-ordered bank client-side is exactly what made
+  // every run identical.
+  const questions = useMemo(
+    () => questionsData?.sampleQuestions ?? [],
+    [questionsData],
+  );
 
   const resetTimer = useCallback(() => {
     setTimeRemaining(difficulty ? SECONDS_PER_QUESTION[difficulty] : null);
@@ -133,30 +166,66 @@ export default function QuizPage() {
 
   const handleSubmitQuiz = useCallback(async () => {
     const totalQuestions = questions.length;
-    const answers = Object.entries(userAnswers);
+    const answers = Object.entries(userAnswers).map(
+      ([questionId, selectedAnswer]) => ({ questionId, selectedAnswer }),
+    );
 
     try {
-      // One round trip per answer, but issued concurrently rather than serially.
-      const results = await Promise.all(
-        answers.map(([questionId, selectedAnswer]) =>
-          submitAnswer({ variables: { questionId, selectedAnswer } }),
-        ),
-      );
+      let breakdown: { questionId: string; isCorrect: boolean }[];
 
-      const breakdown = results.map((result, i) => ({
-        questionId: answers[i]![0],
-        isCorrect: result.data?.submitAnswer?.isCorrect ?? false,
-      }));
+      if (currentUser) {
+        // One round trip per answer, but issued concurrently rather than
+        // serially. These are recorded: they move score and domain accuracy.
+        const results = await Promise.all(
+          answers.map(({ questionId, selectedAnswer }) =>
+            submitAnswer({ variables: { questionId, selectedAnswer } }),
+          ),
+        );
+
+        // errorPolicy is "all", so a rejected mutation resolves with data null
+        // rather than throwing. Reading `isCorrect ?? false` on its own turned
+        // a failed submission into a straight-faced 0/10 the user did not earn.
+        const failure = results.find(
+          (result) => !result.data?.submitAnswer && result.error,
+        );
+        if (failure) throw failure.error;
+
+        breakdown = results.map((result, i) => ({
+          questionId: answers[i]!.questionId,
+          isCorrect: result.data?.submitAnswer?.isCorrect ?? false,
+        }));
+      } else {
+        // Signed out: one round trip, graded and thrown away.
+        const result = await gradeAnswers({ variables: { answers } });
+        if (!result.data?.gradeAnswers) throw result.error;
+        breakdown = result.data.gradeAnswers;
+      }
 
       const score = breakdown.filter((entry) => entry.isCorrect).length;
 
       setQuizSubmitted(true);
       setQuizScore({ score, totalQuestions, breakdown });
+      trackEvent("quiz_complete", {
+        signed_in: Boolean(currentUser),
+        difficulty,
+        items: totalQuestions,
+        score,
+      });
+      if (!currentUser) trackEvent("quiz_signup_prompt");
     } catch (err) {
       console.error("Error submitting quiz:", err);
-      setNotice("There was an error submitting your quiz. Please try again.");
+      setNotice(
+        messageFrom(err, "There was an error submitting your run. Try again."),
+      );
     }
-  }, [questions.length, userAnswers, submitAnswer]);
+  }, [
+    questions.length,
+    userAnswers,
+    submitAnswer,
+    gradeAnswers,
+    currentUser,
+    difficulty,
+  ]);
 
   // Moves to the next question (or submits) without requiring an answer.
   // Used by Skip and by the timer, which must never leave the quiz stuck.
@@ -226,12 +295,25 @@ export default function QuizPage() {
       </div>
     );
 
-  const currentUser = userData?.me;
-  if (!currentUser || questions.length === 0) return null;
+  // An empty bank used to render `null`: a blank white page with no
+  // explanation, on the app's main route.
+  if (questions.length === 0)
+    return (
+      <div className="mx-auto max-w-mid px-8 py-16">
+        <Alert tone="caution" kicker="EMPTY">
+          No questions are available yet. Check back shortly.
+        </Alert>
+      </div>
+    );
 
   const handleDifficultySelection = (selectedDifficulty: Difficulty) => {
     setDifficulty(selectedDifficulty);
     setTimeRemaining(SECONDS_PER_QUESTION[selectedDifficulty]);
+    trackEvent("quiz_start", {
+      signed_in: Boolean(currentUser),
+      difficulty: selectedDifficulty,
+      items: questionCount,
+    });
   };
 
   const handleQuestionCountSelection = (count: QuestionCount) => {
@@ -270,6 +352,11 @@ export default function QuizPage() {
     setTimeRemaining(null);
     setShowHint(false);
     setNotice(null);
+    // The variables have not changed, so nothing would refetch on its own and
+    // "New Run" would deal the same hand again.
+    refetchQuestions().catch((err) =>
+      console.error("Error loading a new run:", err),
+    );
   };
 
   const confirmQuit = () => {
@@ -436,6 +523,38 @@ export default function QuizPage() {
             })}
           </div>
 
+          {/*
+            The wall, placed here rather than at the door. A visitor who has
+            just finished a run and been given a real score has a reason to
+            keep the result; one who has seen nothing yet does not.
+          */}
+          {!currentUser && (
+            <div className="border-t border-line-hairline bg-ink-700 px-5 py-6">
+              <Label tag="///" className="mb-3">
+                Not Recorded
+              </Label>
+              <p className="m-0 mb-5 max-w-[52ch] text-sm leading-normal text-mute-400">
+                This run was graded but not saved. Create an account to keep
+                your score, track accuracy by domain, and appear in the
+                standings.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/register"
+                  className={buttonClass({ variant: "signal", size: "md" })}
+                >
+                  Create Free Account
+                </Link>
+                <Link
+                  href="/login"
+                  className={buttonClass({ variant: "outline", size: "md" })}
+                >
+                  Sign In
+                </Link>
+              </div>
+            </div>
+          )}
+
           <div className="flex gap-2 border-t border-line-hairline px-5 py-4">
             <Button variant="signal" size="md" onClick={resetQuiz}>
               New Run
@@ -463,7 +582,7 @@ export default function QuizPage() {
       <div className="mx-auto max-w-mid px-8 py-16">
         <div className="mb-6 flex items-center justify-between gap-4">
           <Label tag="///">
-            {currentUser.username} · {difficulty} run ·{" "}
+            {currentUser?.username ?? "Guest"} · {difficulty} run ·{" "}
             {questionCount === "infinite" ? "all" : questionCount} items
           </Label>
           {difficulty && (

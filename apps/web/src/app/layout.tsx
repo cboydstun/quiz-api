@@ -48,11 +48,21 @@ export default function RootLayout({
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
               strategy="afterInteractive"
             />
+            {/*
+              The `config` call has to be here, not in an effect. GA4 emits the
+              first page_view from `config`, and gtag.js loads afterInteractive
+              — so an effect that guards on `typeof window.gtag === "function"`
+              finds nothing on a cold load and never retries, since the pathname
+              it depends on does not change. That dropped the landing hit: the
+              one that matters most for a referral. dataLayer.push queues fine
+              before the library arrives, so this is safe to call immediately.
+            */}
             <Script id="gtag-init" strategy="afterInteractive">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
+                gtag('config', '${GA_MEASUREMENT_ID}');
               `}
             </Script>
           </>

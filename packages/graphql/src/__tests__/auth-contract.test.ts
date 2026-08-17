@@ -62,6 +62,28 @@ describe("auth error contract", () => {
     expect(res.errors[0]?.message).not.toMatch(/unauthorized|unauthenticated/i);
   });
 
+  /**
+   * The one authentication failure that is not a dead token. The message is
+   * deliberately still "Unauthenticated: …" — it says nothing about whether
+   * the address exists, which is the point — so the frontend cannot tell this
+   * apart from an expired session by the string alone. ApolloWrapper.tsx
+   * therefore exempts the Login operation by name rather than by message; this
+   * test pins the wording that exemption is written against.
+   */
+  it("reports a wrong password as unauthenticated without naming the cause", async () => {
+    const user = await h.createUser({ password: "correct-horse" });
+    const res = await h.execute(
+      `mutation Login($email: String!, $password: String!) {
+         login(email: $email, password: $password) { token }
+       }`,
+      { variables: { email: user.email, password: "wrong-password" } },
+    );
+
+    expect(res.errors[0]?.message).toMatch(/unauthenticated/i);
+    // Must not distinguish "no such account" from "wrong password".
+    expect(res.errors[0]?.message).not.toMatch(/email|username|exist/i);
+  });
+
   it("masks unexpected errors instead of leaking internals", async () => {
     // A syntactically valid query for a field that does not exist is a
     // validation error, which must still not leak a stack trace.

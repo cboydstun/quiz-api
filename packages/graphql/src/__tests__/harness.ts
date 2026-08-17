@@ -35,7 +35,8 @@ export interface TestHarness {
 }
 
 export interface SeedUser {
-  username: string;
+  /** Nullable like the column: a Google sign-up never chose one. */
+  username: string | null;
   email: string;
   password: string | null;
   role: Role;

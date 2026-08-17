@@ -1,4 +1,4 @@
-import { asc, eq, isNotNull } from "drizzle-orm";
+import { asc, eq, isNotNull, sql } from "drizzle-orm";
 import { questions, users } from "@quiz/db";
 import type { Resolvers } from "../generated/types";
 import {
@@ -8,6 +8,11 @@ import {
 } from "../auth/guards";
 import { badInput, notFound } from "../errors";
 import type { QuestionModel } from "../models";
+
+/** Matches the ten-item run the landing page offers. */
+const DEFAULT_RUN_SIZE = 10;
+/** The "All" option on the run configuration screen. */
+const MAX_RUN_SIZE = 200;
 
 /**
  * The answer list must actually contain the correct answer, or the question is
@@ -41,6 +46,38 @@ export const questionResolvers: Resolvers = {
         .orderBy(asc(questions.createdAt));
 
       return rows.map((row) => ({ ...row.question, creator: row.creator }));
+    },
+
+    /**
+     * The run feed. Public, so the ten-item run the landing page advertises
+     * actually works without an account, and randomised, because the bank's
+     * own `createdAt` order made every run identical: the same first ten rows
+     * for every visitor, every time, drawn from only the two oldest domains.
+     *
+     * Selects columns explicitly rather than the whole row — `correctAnswer`
+     * must not leave the server on this path, and `RunQuestion` has no field
+     * for it either way.
+     */
+    sampleQuestions: async (_parent, { limit, domain }, context) => {
+      const size = Math.min(
+        Math.max(limit ?? DEFAULT_RUN_SIZE, 1),
+        MAX_RUN_SIZE,
+      );
+
+      return context.db
+        .select({
+          id: questions.id,
+          prompt: questions.prompt,
+          questionText: questions.questionText,
+          answers: questions.answers,
+          hint: questions.hint,
+          points: questions.points,
+          domain: questions.domain,
+        })
+        .from(questions)
+        .where(domain ? eq(questions.domain, domain) : undefined)
+        .orderBy(sql`random()`)
+        .limit(size);
     },
 
     // Drives the flash-card domain filter. Unclassified questions have no

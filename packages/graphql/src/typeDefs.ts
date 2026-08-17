@@ -99,6 +99,32 @@ export const typeDefs = /* GraphQL */ `
     isCorrect: Boolean!
   }
 
+  """
+  A question as served for a run. Deliberately not the Question type: that one
+  carries correctAnswer, and this is the only question shape an anonymous
+  visitor can reach. Grading happens server-side either way, so nothing that
+  plays a run has any need for the answer key.
+  """
+  type RunQuestion {
+    id: ID!
+    prompt: String!
+    questionText: String!
+    answers: [String!]!
+    hint: String
+    points: Int!
+    domain: String
+  }
+
+  input AnswerInput {
+    questionId: ID!
+    selectedAnswer: String!
+  }
+
+  type GradedAnswer {
+    questionId: ID!
+    isCorrect: Boolean!
+  }
+
   type UpdatePasswordResponse {
     success: Boolean!
     message: String!
@@ -166,6 +192,15 @@ export const typeDefs = /* GraphQL */ `
     "Optionally narrowed to a single domain. Unclassified questions are only returned when no domain is given."
     questions(domain: String): [Question!]!
     question(id: ID!): Question
+    """
+    A run's worth of questions, in random order, without the answer key.
+
+    Public on purpose: the landing page offers a ten-item run with no account,
+    and the questions query requires a token. Random rather than the bank's own
+    order, because a fixed order means every visitor — and every repeat run —
+    sees the same items. limit is clamped to 1-200.
+    """
+    sampleQuestions(limit: Int, domain: String): [RunQuestion!]!
     "Every distinct domain present in the bank, sorted. Nulls omitted."
     questionDomains: [String!]!
     getGoogleAuthUrl: GoogleAuthUrl!
@@ -185,6 +220,14 @@ export const typeDefs = /* GraphQL */ `
       questionId: ID!
       selectedAnswer: String!
     ): SubmitAnswerResponse!
+
+    """
+    Grades a run without recording it. Public, and writes nothing: it exists so
+    a signed-out visitor can finish the run the landing page promised and see a
+    real score. Signed-in runs go through submitAnswer, which is what counts
+    towards stats and the leaderboard.
+    """
+    gradeAnswers(answers: [AnswerInput!]!): [GradedAnswer!]!
 
     changeUserRole(userId: ID!, newRole: Role!): User!
     deleteUser(userId: ID!): Boolean!

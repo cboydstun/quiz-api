@@ -36,18 +36,35 @@ const authLink = new SetContextLink(({ headers }) => {
   };
 });
 
+/**
+ * Operations that authenticate rather than consume a token. A wrong password
+ * is an authentication failure — the server says "Unauthenticated: Invalid
+ * credentials", which matches the logout rule below — but there is no stale
+ * token to clear and nowhere better to send the user than the page they are
+ * already on. Redirecting reloads /login and throws away the error message
+ * before it paints, so a typo reads as a broken site. The server strings stay
+ * exactly as they are: `auth-contract.test.ts` pins them for the dead-token
+ * path, which is a different failure with the same wording.
+ */
+const AUTHENTICATING_OPERATIONS = new Set(["Login", "AuthenticateWithGoogle"]);
+
 // v4 hands the handler a single `error` rather than separate graphQLErrors /
 // networkError fields. GraphQL errors arrive wrapped in CombinedGraphQLErrors,
 // which narrows via its static is() and exposes them on `.errors`.
-const errorLink = new ErrorLink(({ error }) => {
+const errorLink = new ErrorLink(({ error, operation }) => {
   if (CombinedGraphQLErrors.is(error)) {
+    const isAuthenticating = AUTHENTICATING_OPERATIONS.has(
+      operation.operationName ?? "",
+    );
+
     error.errors.forEach(({ message, locations, path }) => {
       console.log(
         `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
       );
       if (
-        message.toLowerCase().includes("unauthorized") ||
-        message.toLowerCase().includes("unauthenticated")
+        !isAuthenticating &&
+        (message.toLowerCase().includes("unauthorized") ||
+          message.toLowerCase().includes("unauthenticated"))
       ) {
         // Handle unauthorized errors only on the client side
         if (typeof window !== "undefined") {

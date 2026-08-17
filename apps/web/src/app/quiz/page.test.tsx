@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { GraphQLError } from "graphql";
 import { createRecordingClient } from "@/test-utils/apollo";
 import QuizPage from "./page";
 
@@ -14,7 +15,7 @@ const me = {
 
 const questions = [
   {
-    __typename: "Question",
+    __typename: "RunQuestion",
     id: "q1",
     prompt: "Airspace basics",
     questionText: "Which class needs ATC authorization?",
@@ -23,7 +24,7 @@ const questions = [
     points: 5,
   },
   {
-    __typename: "Question",
+    __typename: "RunQuestion",
     id: "q2",
     prompt: "Weather",
     questionText: "What reduces visibility most?",
@@ -45,16 +46,35 @@ const gradeStrictly = (variables: Record<string, unknown>) => ({
   },
 });
 
+/** Grades every answer against the same key gradeStrictly uses. */
+const gradeBatch = (variables: Record<string, unknown>) => ({
+  data: {
+    gradeAnswers: (
+      variables.answers as { questionId: string; selectedAnswer: string }[]
+    ).map((answer) => ({
+      __typename: "GradedAnswer",
+      questionId: answer.questionId,
+      isCorrect:
+        answer.questionId === "q1" && answer.selectedAnswer === "Class B",
+    })),
+  },
+});
+
 const renderQuiz = (
   submitResponder: (
     variables: Record<string, unknown>,
   ) => unknown = gradeStrictly,
+  { signedIn = true }: { signedIn?: boolean } = {},
 ) => {
   const recorder = createRecordingClient((op) => {
-    if (op.operationName === "GetCurrentUser") return { data: { me } };
-    if (op.operationName === "GetQuizQuestions") return { data: { questions } };
+    if (op.operationName === "GetCurrentUser")
+      return { data: { me: signedIn ? me : null } };
+    if (op.operationName === "SampleQuestions")
+      return { data: { sampleQuestions: questions } };
     if (op.operationName === "SubmitAnswer")
       return submitResponder(op.variables) as never;
+    if (op.operationName === "GradeAnswers")
+      return gradeBatch(op.variables) as never;
     return { data: null };
   });
   render(
@@ -129,6 +149,84 @@ describe("QuizPage", () => {
     expect(
       await screen.findByText("What reduces visibility most?"),
     ).toBeVisible();
+  });
+
+  /**
+   * The landing page has always promised "Start with a ten-item run. No
+   * account required." This page used to redirect anonymous visitors to
+   * /login before they saw a single question.
+   */
+  it("lets a signed-out visitor play a run and grades it without recording", async () => {
+    const user = userEvent.setup();
+    const recorder = renderQuiz(gradeStrictly, { signedIn: false });
+    await startEasyQuiz(user);
+
+    await user.click(screen.getByLabelText("Class B"));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await screen.findByText("What reduces visibility most?");
+    await user.click(screen.getByLabelText("Sunshine"));
+    await user.click(screen.getByRole("button", { name: "Submit Run" }));
+
+    expect(await screen.findByText("1 / 2")).toBeVisible();
+    // Graded, never recorded.
+    expect(recorder.countOf("GradeAnswers")).toBe(1);
+    expect(recorder.countOf("SubmitAnswer")).toBe(0);
+  });
+
+  it("asks a signed-out visitor to sign up only once the score is on screen", async () => {
+    const user = userEvent.setup();
+    renderQuiz(gradeStrictly, { signedIn: false });
+    await startEasyQuiz(user);
+
+    expect(screen.queryByText(/create free account/i)).not.toBeInTheDocument();
+
+    await user.click(screen.getByLabelText("Class B"));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await screen.findByText("What reduces visibility most?");
+    await user.click(screen.getByLabelText("Fog"));
+    await user.click(screen.getByRole("button", { name: "Submit Run" }));
+
+    expect(
+      await screen.findByRole("link", { name: /create free account/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("does not ask a signed-in user to sign up", async () => {
+    const user = userEvent.setup();
+    renderQuiz();
+    await startEasyQuiz(user);
+
+    await user.click(screen.getByLabelText("Class B"));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await screen.findByText("What reduces visibility most?");
+    await user.click(screen.getByLabelText("Fog"));
+    await user.click(screen.getByRole("button", { name: "Submit Run" }));
+
+    await screen.findByText("1 / 2");
+    expect(screen.queryByText(/create free account/i)).not.toBeInTheDocument();
+  });
+
+  /**
+   * errorPolicy "all" resolves a failed mutation rather than rejecting it, so
+   * reading `isCorrect ?? false` on its own reported a 0/2 the user never
+   * earned. A failure has to say it failed.
+   */
+  it("reports a failed submission instead of scoring it zero", async () => {
+    const user = userEvent.setup();
+    renderQuiz(() => ({
+      data: { submitAnswer: null },
+      errors: [new GraphQLError("Question not found")],
+    }));
+    await startEasyQuiz(user);
+
+    await user.click(screen.getByLabelText("Class B"));
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await screen.findByText("What reduces visibility most?");
+    await user.click(screen.getByLabelText("Fog"));
+    await user.click(screen.getByRole("button", { name: "Submit Run" }));
+
+    expect(await screen.findByText(/question not found/i)).toBeVisible();
+    expect(screen.queryByText("0 / 2")).not.toBeInTheDocument();
   });
 
   it("advances an unanswered question when the HARD timer expires", async () => {

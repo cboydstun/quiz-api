@@ -1,7 +1,8 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { render, waitFor } from "@testing-library/react";
 import { gql } from "@apollo/client";
-import { useQuery } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { useEffect } from "react";
 import { ApolloWrapper } from "./ApolloWrapper";
 
 const PING = gql`
@@ -10,8 +11,26 @@ const PING = gql`
   }
 `;
 
+const LOGIN = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+    }
+  }
+`;
+
 function Probe() {
   useQuery(PING);
+  return null;
+}
+
+function LoginProbe() {
+  const [login] = useMutation(LOGIN);
+  useEffect(() => {
+    login({ variables: { email: "a@b.com", password: "wrong" } }).catch(
+      () => {},
+    );
+  }, [login]);
   return null;
 }
 
@@ -87,6 +106,44 @@ describe("ApolloWrapper auth link", () => {
 
     await waitFor(() => expect(localStorage.getItem("token")).toBeNull());
     expect(assign).toHaveBeenCalledWith("/login");
+  });
+
+  /**
+   * A wrong password comes back as "Unauthenticated: Invalid credentials",
+   * which matches the same substring rule as a dead token. Acting on it here
+   * hard-navigates to /login and wipes the error message the login page just
+   * set, so a typo looks like the site reloading for no reason.
+   */
+  it("does not log the user out when the login mutation itself fails", async () => {
+    const assign = vi.fn();
+    vi.stubGlobal("location", {
+      ...window.location,
+      set href(v: string) {
+        assign(v);
+      },
+    });
+
+    fetchMock.mockImplementation(async () => ({
+      ok: true,
+      status: 200,
+      headers: new Headers({ "content-type": "application/json" }),
+      text: async () =>
+        JSON.stringify({
+          errors: [{ message: "Unauthenticated: Invalid credentials" }],
+          data: null,
+        }),
+    }));
+
+    render(
+      <ApolloWrapper>
+        <LoginProbe />
+      </ApolloWrapper>,
+    );
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    // Give the error link the microtask it would need to redirect.
+    await Promise.resolve();
+    expect(assign).not.toHaveBeenCalled();
   });
 
   it("sends an empty authorization header when no token is stored", async () => {

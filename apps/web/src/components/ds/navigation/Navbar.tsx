@@ -104,7 +104,7 @@ export function Navbar({
                 className: "hidden lg:inline-flex",
               })}
             >
-              Request Access
+              Create Account
             </Link>
           )}
           <Button
@@ -149,7 +149,7 @@ export function Navbar({
           {!loggedIn && (
             <NavLink
               href="/register"
-              label="Request Access"
+              label="Create Account"
               block
               active={activeHref === "/register"}
               onNavigate={close}

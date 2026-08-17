@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { GraphQLError } from "graphql";
 import { createRecordingClient } from "@/test-utils/apollo";
+import { routerMock } from "../../../vitest.setup";
 import ProfilePage from "./page";
 
 const profile = (
@@ -102,6 +104,53 @@ describe("ProfilePage — accuracy by domain", () => {
     expect(
       await screen.findByText(/no classified answers yet/i),
     ).toBeInTheDocument();
+  });
+});
+
+describe("ProfilePage — access", () => {
+  /**
+   * The page used to render the backend's "Authorization header must be
+   * provided" verbatim to anonymous visitors. That message contains neither
+   * "unauthorized" nor "unauthenticated", so the Apollo error link ignores it
+   * and nothing moved the visitor along — the page just sat there quoting the
+   * wire protocol at them.
+   */
+  it("sends a signed-out visitor to /login instead of showing the wire error", async () => {
+    renderPage(({ operationName }) => {
+      if (operationName === "GetUserProfile") {
+        return {
+          data: null,
+          errors: [new GraphQLError("Authorization header must be provided")],
+        };
+      }
+      return { data: null };
+    });
+
+    await waitFor(() => expect(routerMock.push).toHaveBeenCalledWith("/login"));
+    expect(
+      screen.queryByText(/authorization header must be provided/i),
+    ).not.toBeInTheDocument();
+  });
+
+  /**
+   * errorPolicy is "all": `data` and `error` arrive together. domainAccuracy
+   * runs its own requireSelfOrAdmin, so it can fail while `me` is perfectly
+   * fine — that must not blank the whole record.
+   */
+  it("still renders the record when only a sub-field failed", async () => {
+    renderPage(({ operationName }) => {
+      if (operationName === "GetUserProfile") {
+        return {
+          data: { me: { ...profile([]), domainAccuracy: null } },
+          errors: [new GraphQLError("Forbidden: not your record")],
+        };
+      }
+      return { data: null };
+    });
+
+    expect(await screen.findByText("operator")).toBeInTheDocument();
+    expect(screen.getByText(/forbidden: not your record/i)).toBeInTheDocument();
+    expect(routerMock.push).not.toHaveBeenCalled();
   });
 });
 

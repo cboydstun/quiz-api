@@ -19,6 +19,8 @@ import {
   Spinner,
   TextField,
 } from "@/components/ds";
+import { messageFrom } from "@/lib/errors";
+import { trackEvent } from "@/lib/analytics";
 import type { Role, User } from "@/types";
 
 const LOGIN_MUTATION: TypedDocumentNode<LoginResult, LoginVars> = gql`
@@ -137,6 +139,7 @@ export default function LoginPage() {
           return;
         }
         await authLogin(payload.token);
+        trackEvent("login", { method: "google" });
         handleAuthenticationSuccess(payload);
       } catch (err: unknown) {
         let errorMessage = "Google authentication failed. Please try again.";
@@ -175,19 +178,18 @@ export default function LoginPage() {
       const result = await login({ variables: { email, password } });
       const payload = result.data?.login;
       if (!payload) {
-        setError(GENERIC_AUTH_ERROR);
+        // errorPolicy is "all": a rejected login resolves here with the
+        // message on `result.error` rather than throwing into the catch.
+        // Wrong credentials deliberately stay generic, but a validation
+        // failure should say what it was.
+        setError(messageFrom(result.error, GENERIC_AUTH_ERROR));
         return;
       }
       await authLogin(payload.token);
+      trackEvent("login", { method: "password" });
       handleAuthenticationSuccess(payload);
     } catch (err: unknown) {
-      if (CombinedGraphQLErrors.is(err) && err.errors.length > 0) {
-        setError(err.errors[0].message);
-      } else if (err instanceof Error) {
-        setError(err.message || "An error occurred. Please try again.");
-      } else {
-        setError("An unknown error occurred. Please try again.");
-      }
+      setError(messageFrom(err, "An error occurred. Please try again."));
       console.error(err);
     }
   };
@@ -295,7 +297,7 @@ export default function LoginPage() {
             href="/register"
             className="label-mono text-mute-500 transition-fast hover:text-signal"
           >
-            Request access instead
+            Create a free account
           </Link>
         </div>
       </div>

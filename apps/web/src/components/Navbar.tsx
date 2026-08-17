@@ -10,11 +10,15 @@ import { Alert, Navbar as DsNavbar, type NavLinkSpec } from "@/components/ds";
 
 // Operational vocabulary from the design system: a quiz is a run, the admin
 // area is Control, a user's page is their Record. The routes are unchanged.
+// Only routes a signed-out visitor can actually use. /quiz serves an
+// anonymous run and /leaderboard is public by design; /flash-cards still
+// requires a token, so advertising it to someone signed out only produces a
+// bounce to /login.
 const PUBLIC_LINKS: NavLinkSpec[] = [
   { href: "/", label: "Overview" },
   { href: "/quiz", label: "Evaluation" },
-  { href: "/flash-cards", label: "Flash Cards" },
   { href: "/study-materials", label: "Study Materials" },
+  { href: "/leaderboard", label: "Standings" },
 ];
 
 export default function Navbar() {
@@ -33,7 +37,7 @@ export default function Navbar() {
       ...PUBLIC_LINKS,
       ...(isLoggedIn
         ? [
-            { href: "/leaderboard", label: "Standings" },
+            { href: "/flash-cards", label: "Flash Cards" },
             ...(canAccessManagement
               ? [{ href: "/management", label: "Control" }]
               : []),

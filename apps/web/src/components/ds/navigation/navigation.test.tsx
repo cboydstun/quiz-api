@@ -30,22 +30,22 @@ describe("Navbar", () => {
     expect(active).toBeDefined();
   });
 
-  it("offers Sign In and Request Access when signed out", () => {
+  it("offers Sign In and Create Account when signed out", () => {
     render(<Navbar links={LINKS} onAuthClick={() => {}} />);
     expect(
       screen.getByRole("button", { name: /sign in/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getAllByRole("link", { name: /request access/i }).length,
+      screen.getAllByRole("link", { name: /create account/i }).length,
     ).toBeGreaterThan(0);
   });
 
-  it("offers Sign Out and no Request Access when signed in", () => {
+  it("offers Sign Out and no Create Account when signed in", () => {
     render(<Navbar links={LINKS} loggedIn onAuthClick={() => {}} />);
     expect(
       screen.getByRole("button", { name: /sign out/i }),
     ).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /request access/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /create account/i })).toBeNull();
   });
 
   it("calls onAuthClick from the auth button", async () => {

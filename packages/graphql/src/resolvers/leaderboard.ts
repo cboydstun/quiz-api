@@ -65,7 +65,11 @@ export const leaderboardResolvers: Resolvers = {
         score: row.score,
         user: {
           id: row.id,
-          username: row.username ?? row.email.split("@")[0] ?? row.email,
+          // Never fall back to the email's local part. `username` is null for
+          // every Google sign-up, and this endpoint is public — publishing the
+          // local part beside a masked `email` would undo the masking for the
+          // one group that never chose a display name.
+          username: row.username ?? `Operator ${row.position}`,
           email: maskEmail(row.email),
           score: row.score,
         },

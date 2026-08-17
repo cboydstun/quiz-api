@@ -100,6 +100,29 @@ describe("getLeaderboard", () => {
   });
 
   /**
+   * Google sign-ups arrive with a null username. Falling back to the email's
+   * local part would publish it in the clear, on a public endpoint, right next
+   * to the masked address — masking nothing at all for that group.
+   */
+  it("never falls back to the email local part for a user with no username", async () => {
+    const anonymous = await h.createUser({
+      username: null,
+      email: "distinctive-local-part@example.com",
+      // Top of the board as it stands here, but below the leader seeded later.
+      score: 500,
+    });
+
+    const res = await h.execute<Result>(LEADERBOARD, {
+      token: h.tokenFor(anonymous),
+      variables: { limit: 3 },
+    });
+
+    const shown = res.data!.getLeaderboard.leaderboard[0]!.user;
+    expect(shown.username).not.toContain("distinctive-local-part");
+    expect(JSON.stringify(res.data)).not.toContain("distinctive-local-part");
+  });
+
+  /**
    * The viewer's position is their rank in the whole table. Numbering only the
    * returned page would report the wrong position for anyone outside the top N.
    */

@@ -13,9 +13,13 @@ const CAPABILITIES = [
     body: "Medium and hard runs hold you to a per-question clock, so the pace you train at is the pace you sit at.",
   },
   {
+    // Was "Adaptive sequencing — missed items resurface", which nothing did:
+    // the bank was served in creation order and sliced, so every run was the
+    // same ten items. Runs are drawn at random now; weighting by weakest
+    // domain is still ahead of us and this should not claim it yet.
     code: "03",
-    title: "Adaptive sequencing",
-    body: "Missed items resurface. The bank weights toward the areas where your accuracy is lowest.",
+    title: "Randomised draw",
+    body: "Every run is dealt from the whole bank, so no two sessions rehearse the same ten questions.",
   },
 ];
 

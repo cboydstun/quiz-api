@@ -19,6 +19,11 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AnswerInput = {
+  questionId: Scalars['ID']['input'];
+  selectedAnswer: Scalars['String']['input'];
+};
+
 export type AuthPayload = {
   __typename?: 'AuthPayload';
   token: Scalars['String']['output'];
@@ -66,6 +71,12 @@ export type GoogleAuthUrl = {
   url: Scalars['String']['output'];
 };
 
+export type GradedAnswer = {
+  __typename?: 'GradedAnswer';
+  isCorrect: Scalars['Boolean']['output'];
+  questionId: Scalars['ID']['output'];
+};
+
 export type LeaderboardEntry = {
   __typename?: 'LeaderboardEntry';
   position: Scalars['Int']['output'];
@@ -100,6 +111,13 @@ export type Mutation = {
   createQuestion: Question;
   deleteQuestion: Scalars['Boolean']['output'];
   deleteUser: Scalars['Boolean']['output'];
+  /**
+   * Grades a run without recording it. Public, and writes nothing: it exists so
+   * a signed-out visitor can finish the run the landing page promised and see a
+   * real score. Signed-in runs go through submitAnswer, which is what counts
+   * towards stats and the leaderboard.
+   */
+  gradeAnswers: Array<GradedAnswer>;
   login: AuthPayload;
   register: AuthPayload;
   submitAnswer: SubmitAnswerResponse;
@@ -133,6 +151,11 @@ export type MutationDeleteQuestionArgs = {
 
 export type MutationDeleteUserArgs = {
   userId: Scalars['ID']['input'];
+};
+
+
+export type MutationGradeAnswersArgs = {
+  answers: Array<AnswerInput>;
 };
 
 
@@ -184,6 +207,15 @@ export type Query = {
   questionDomains: Array<Scalars['String']['output']>;
   /** Optionally narrowed to a single domain. Unclassified questions are only returned when no domain is given. */
   questions: Array<Question>;
+  /**
+   * A run's worth of questions, in random order, without the answer key.
+   *
+   * Public on purpose: the landing page offers a ten-item run with no account,
+   * and the questions query requires a token. Random rather than the bank's own
+   * order, because a fixed order means every visitor — and every repeat run —
+   * sees the same items. limit is clamped to 1-200.
+   */
+  sampleQuestions: Array<RunQuestion>;
   user?: Maybe<User>;
   users: Array<User>;
 };
@@ -201,6 +233,12 @@ export type QueryQuestionArgs = {
 
 export type QueryQuestionsArgs = {
   domain?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QuerySampleQuestionsArgs = {
+  domain?: InputMaybe<Scalars['String']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -232,6 +270,23 @@ export type Role =
   | 'EDITOR'
   | 'SUPER_ADMIN'
   | 'USER';
+
+/**
+ * A question as served for a run. Deliberately not the Question type: that one
+ * carries correctAnswer, and this is the only question shape an anonymous
+ * visitor can reach. Grading happens server-side either way, so nothing that
+ * plays a run has any need for the answer key.
+ */
+export type RunQuestion = {
+  __typename?: 'RunQuestion';
+  answers: Array<Scalars['String']['output']>;
+  domain?: Maybe<Scalars['String']['output']>;
+  hint?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  points: Scalars['Int']['output'];
+  prompt: Scalars['String']['output'];
+  questionText: Scalars['String']['output'];
+};
 
 export type SubmitAnswerResponse = {
   __typename?: 'SubmitAnswerResponse';
@@ -361,6 +416,7 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  AnswerInput: AnswerInput;
   AuthPayload: ResolverTypeWrapper<Omit<AuthPayload, 'user'> & { user: ResolversTypes['User'] }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateQuestionInput: CreateQuestionInput;
@@ -368,6 +424,7 @@ export type ResolversTypes = ResolversObject<{
   DomainAccuracy: ResolverTypeWrapper<DomainAccuracy>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   GoogleAuthUrl: ResolverTypeWrapper<GoogleAuthUrl>;
+  GradedAnswer: ResolverTypeWrapper<GradedAnswer>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LeaderboardEntry: ResolverTypeWrapper<LeaderboardEntry>;
@@ -377,6 +434,7 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Question: ResolverTypeWrapper<QuestionModel>;
   Role: Role;
+  RunQuestion: ResolverTypeWrapper<RunQuestion>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   SubmitAnswerResponse: ResolverTypeWrapper<SubmitAnswerResponse>;
   UpdatePasswordResponse: ResolverTypeWrapper<UpdatePasswordResponse>;
@@ -386,6 +444,7 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  AnswerInput: AnswerInput;
   AuthPayload: Omit<AuthPayload, 'user'> & { user: ResolversParentTypes['User'] };
   Boolean: Scalars['Boolean']['output'];
   CreateQuestionInput: CreateQuestionInput;
@@ -393,6 +452,7 @@ export type ResolversParentTypes = ResolversObject<{
   DomainAccuracy: DomainAccuracy;
   Float: Scalars['Float']['output'];
   GoogleAuthUrl: GoogleAuthUrl;
+  GradedAnswer: GradedAnswer;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   LeaderboardEntry: LeaderboardEntry;
@@ -401,6 +461,7 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: Record<PropertyKey, never>;
   Query: Record<PropertyKey, never>;
   Question: QuestionModel;
+  RunQuestion: RunQuestion;
   String: Scalars['String']['output'];
   SubmitAnswerResponse: SubmitAnswerResponse;
   UpdatePasswordResponse: UpdatePasswordResponse;
@@ -422,6 +483,11 @@ export type DomainAccuracyResolvers<ContextType = GraphQLContext, ParentType ext
 
 export type GoogleAuthUrlResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['GoogleAuthUrl'] = ResolversParentTypes['GoogleAuthUrl']> = ResolversObject<{
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+}>;
+
+export type GradedAnswerResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['GradedAnswer'] = ResolversParentTypes['GradedAnswer']> = ResolversObject<{
+  isCorrect?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  questionId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 }>;
 
 export type LeaderboardEntryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['LeaderboardEntry'] = ResolversParentTypes['LeaderboardEntry']> = ResolversObject<{
@@ -448,6 +514,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   createQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationCreateQuestionArgs, 'input'>>;
   deleteQuestion?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteQuestionArgs, 'id'>>;
   deleteUser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'userId'>>;
+  gradeAnswers?: Resolver<Array<ResolversTypes['GradedAnswer']>, ParentType, ContextType, RequireFields<MutationGradeAnswersArgs, 'answers'>>;
   login?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   register?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'input'>>;
   submitAnswer?: Resolver<ResolversTypes['SubmitAnswerResponse'], ParentType, ContextType, RequireFields<MutationSubmitAnswerArgs, 'questionId' | 'selectedAnswer'>>;
@@ -464,6 +531,7 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   question?: Resolver<Maybe<ResolversTypes['Question']>, ParentType, ContextType, RequireFields<QueryQuestionArgs, 'id'>>;
   questionDomains?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   questions?: Resolver<Array<ResolversTypes['Question']>, ParentType, ContextType, Partial<QueryQuestionsArgs>>;
+  sampleQuestions?: Resolver<Array<ResolversTypes['RunQuestion']>, ParentType, ContextType, Partial<QuerySampleQuestionsArgs>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 }>;
@@ -480,6 +548,16 @@ export type QuestionResolvers<ContextType = GraphQLContext, ParentType extends R
   prompt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   questionText?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+}>;
+
+export type RunQuestionResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['RunQuestion'] = ResolversParentTypes['RunQuestion']> = ResolversObject<{
+  answers?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  domain?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  hint?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  points?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  prompt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  questionText?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
 
 export type SubmitAnswerResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['SubmitAnswerResponse'] = ResolversParentTypes['SubmitAnswerResponse']> = ResolversObject<{
@@ -517,12 +595,14 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   AuthPayload?: AuthPayloadResolvers<ContextType>;
   DomainAccuracy?: DomainAccuracyResolvers<ContextType>;
   GoogleAuthUrl?: GoogleAuthUrlResolvers<ContextType>;
+  GradedAnswer?: GradedAnswerResolvers<ContextType>;
   LeaderboardEntry?: LeaderboardEntryResolvers<ContextType>;
   LeaderboardResponse?: LeaderboardResponseResolvers<ContextType>;
   LeaderboardUser?: LeaderboardUserResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Question?: QuestionResolvers<ContextType>;
+  RunQuestion?: RunQuestionResolvers<ContextType>;
   SubmitAnswerResponse?: SubmitAnswerResponseResolvers<ContextType>;
   UpdatePasswordResponse?: UpdatePasswordResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
