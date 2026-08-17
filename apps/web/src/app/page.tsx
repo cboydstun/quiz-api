@@ -75,7 +75,7 @@ export default function Home() {
               component with no auth. Update it when the bank grows; an
               understated figure is the safer way to be wrong.
             */}
-            <Readout label="Bank Size" value="98" unit="items" />
+            <Readout label="Bank Size" value="196" unit="items" />
           </div>
           <div className="bg-ink-900">
             <Readout label="Pass Rate" value="98" unit="%" tone="go" />

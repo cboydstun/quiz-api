@@ -1,11 +1,12 @@
 /**
- * Seeds the question bank from the FAA study-guide question set.
+ * Seeds the question bank from the JSON sets in this directory.
  *
  *   pnpm seed:questions owner@example.com
+ *   pnpm seed:questions owner@example.com --dry-run
  *
  * The bank shipped empty after the Postgres cutover: the MongoDB source this
  * repo used to import from no longer resolves, so `pnpm migrate:mongo` is a
- * dead path and this file is the only remaining source of questions.
+ * dead path and these files are the only remaining source of questions.
  *
  * `questions.created_by` is NOT NULL, so the questions need an owner that
  * already exists. That owner registers through the app in the normal way —
@@ -31,7 +32,49 @@ interface SeedQuestion {
   correctAnswer: string;
   hint: string;
   points: number;
+
+  /**
+   * Set only by the authored sets. The study-guide set has no domain field and
+   * is classified by citation instead — see `domainFor` below.
+   */
+  domain?: string | null;
 }
+
+/**
+ * Read in order. The study-guide set is a verbatim extraction and gets its
+ * domain inferred; every later set is written against a regulatory citation
+ * and carries its domain explicitly. Keeping them in separate files preserves
+ * that provenance — a merged file would lose which rows were transcribed and
+ * which were authored.
+ */
+const SEED_FILES = ["./seed-questions.json", "./seed-questions-authored.json"];
+
+/**
+ * The domain vocabulary, mirroring the twelve knowledge areas the landing page
+ * advertises (`apps/web/src/app/page.tsx`) and /study-materials lists.
+ *
+ * Copied rather than imported: `scripts/` must not depend on `apps/web`.
+ *
+ * `questions.domain` is plain nullable text with no enum and no CHECK, and the
+ * flash-cards filter is built from whatever distinct values are in the table.
+ * A typo would therefore create a thirteenth bucket in the UI and raise no
+ * error anywhere, so an explicit domain is validated against this list before
+ * anything is inserted.
+ */
+const PART_107_DOMAINS = [
+  "Regulations",
+  "Airspace classification",
+  "Weather sources",
+  "Loading and performance",
+  "Emergency procedures",
+  "Crew resource management",
+  "Radio procedures",
+  "Physiological effects",
+  "Decision-making",
+  "Airport operations",
+  "Maintenance",
+  "Night operations",
+];
 
 /**
  * Every prompt opens with its study-guide citation, and the guide's chapters
@@ -74,20 +117,97 @@ function domainFor(prompt: string): string | null {
   return CHAPTER_DOMAINS[chapter] ?? null;
 }
 
+/**
+ * An explicit domain wins; citation inference is the fallback for the sets that
+ * carry no domain field.
+ */
+function resolveDomain(question: SeedQuestion): string | null {
+  const explicit = question.domain?.trim();
+  if (explicit) return explicit;
+  return domainFor(question.prompt);
+}
+
+/**
+ * Everything that would otherwise fail late — halfway through a chunked insert,
+ * with no transaction to roll back — or not fail at all.
+ */
+function validate(questions: SeedQuestion[]): void {
+  const problems: string[] = [];
+  const seen = new Set<string>();
+
+  for (const [index, question] of questions.entries()) {
+    const where = `#${index + 1} ${question.questionText?.slice(0, 60) ?? "(no questionText)"}`;
+
+    if (!question.prompt?.trim()) problems.push(`${where}: empty prompt`);
+    if (!question.questionText?.trim()) {
+      problems.push(`${where}: empty questionText`);
+    } else if (seen.has(question.questionText)) {
+      problems.push(`${where}: duplicate questionText`);
+    } else {
+      seen.add(question.questionText);
+    }
+
+    // Mirrors `assertAnswerable` in the createQuestion resolver, so a seeded
+    // row is one the API would also have accepted.
+    if (!Array.isArray(question.answers) || question.answers.length < 2) {
+      problems.push(`${where}: needs at least two answers`);
+    } else if (!question.answers.includes(question.correctAnswer)) {
+      problems.push(`${where}: correctAnswer is not one of the answers`);
+    }
+
+    if (!Number.isInteger(question.points) || question.points < 1) {
+      problems.push(`${where}: points must be a positive integer`);
+    }
+
+    const explicit = question.domain?.trim();
+    if (explicit && !PART_107_DOMAINS.includes(explicit)) {
+      problems.push(`${where}: unknown domain "${explicit}"`);
+    }
+  }
+
+  if (problems.length > 0) {
+    throw new Error(
+      `${problems.length} problem(s) in the seed data:\n  ${problems.join("\n  ")}`,
+    );
+  }
+}
+
+function readSeedFiles(): SeedQuestion[] {
+  return SEED_FILES.flatMap((file) => {
+    const questions: SeedQuestion[] = JSON.parse(
+      readFileSync(fileURLToPath(new URL(file, import.meta.url)), "utf8"),
+    );
+    console.log(`  ${file}: ${questions.length}`);
+    return questions;
+  });
+}
+
 async function main(): Promise<void> {
   // pnpm forwards a literal "--" separator through to the script, so drop it
   // rather than treating it as the email and reporting a baffling lookup.
-  const email = process.argv
+  const args = process.argv
     .slice(2)
     .map((arg) => arg.trim())
-    .find((arg) => arg && arg !== "--");
+    .filter((arg) => arg && arg !== "--");
+
+  const dryRun = args.includes("--dry-run");
+  const email = args.find((arg) => !arg.startsWith("--"));
 
   if (!email) {
     throw new Error(
-      "Usage: pnpm seed:questions owner@example.com\n" +
+      "Usage: pnpm seed:questions owner@example.com [--dry-run]\n" +
         "The owner must already have registered through the app.",
     );
   }
+
+  if (dryRun) console.log("Dry run: nothing will be written.\n");
+
+  // Read and validate before opening a connection. Bad seed data should be
+  // reported without a database round trip, and a chunked insert has no
+  // transaction to roll back if a later chunk turns out to be malformed.
+  console.log("Seed files:");
+  const seed = readSeedFiles();
+  validate(seed);
 
   const db = drizzle(neon(requireEnv("DATABASE_URL")));
 
@@ -106,36 +226,36 @@ async function main(): Promise<void> {
   console.log(`Owner: ${owner.username ?? owner.email} (${owner.role})`);
 
   if (owner.role !== "SUPER_ADMIN") {
-    await db
-      .update(users)
-      .set({ role: "SUPER_ADMIN", updatedAt: new Date() })
-      .where(eq(users.id, owner.id));
-    console.log(`Promoted ${email} to SUPER_ADMIN.`);
+    if (dryRun) {
+      console.log(`Would promote ${email} to SUPER_ADMIN.`);
+    } else {
+      await db
+        .update(users)
+        .set({ role: "SUPER_ADMIN", updatedAt: new Date() })
+        .where(eq(users.id, owner.id));
+      console.log(`Promoted ${email} to SUPER_ADMIN.`);
+    }
   } else {
     console.log("Already SUPER_ADMIN, no change.");
   }
-
-  const seed: SeedQuestion[] = JSON.parse(
-    readFileSync(
-      fileURLToPath(new URL("./seed-questions.json", import.meta.url)),
-      "utf8",
-    ),
-  );
 
   const existing = await db
     .select({ questionText: questions.questionText })
     .from(questions);
   const known = new Set(existing.map((row) => row.questionText));
 
-  const pending = seed.filter((q) => !known.has(q.questionText));
+  // `known` grows as the filter runs. Without that a questionText repeated
+  // across two seed files would pass the check twice and insert twice — there
+  // is no unique constraint on the column to catch it.
+  const pending = seed.filter((q) => {
+    if (known.has(q.questionText)) return false;
+    known.add(q.questionText);
+    return true;
+  });
+
   console.log(
     `Bank: ${existing.length} present, ${seed.length} in seed, ${pending.length} to insert.`,
   );
-
-  if (pending.length === 0) {
-    console.log("Nothing to do.");
-    return;
-  }
 
   const rows = pending.map((q) => ({
     prompt: q.prompt,
@@ -144,9 +264,28 @@ async function main(): Promise<void> {
     correctAnswer: q.correctAnswer,
     hint: q.hint?.trim() ? q.hint.trim() : null,
     points: q.points,
-    domain: domainFor(q.prompt),
+    domain: resolveDomain(q),
     createdBy: owner.id,
   }));
+
+  const byDomain = new Map<string, number>();
+  for (const row of rows) {
+    const key = row.domain ?? "(unclassified)";
+    byDomain.set(key, (byDomain.get(key) ?? 0) + 1);
+  }
+  for (const [domain, count] of [...byDomain].sort((a, b) => b[1] - a[1])) {
+    console.log(`  ${String(count).padStart(4)}  ${domain}`);
+  }
+
+  if (dryRun) {
+    console.log(`\nDry run complete. ${rows.length} would be inserted.`);
+    return;
+  }
+
+  if (rows.length === 0) {
+    console.log("Nothing to do.");
+    return;
+  }
 
   // neon-http has no transactions, so this goes in chunks rather than one
   // statement. A partial failure leaves the bank short but never duplicated —
