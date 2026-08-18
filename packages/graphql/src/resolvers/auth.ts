@@ -7,7 +7,6 @@ import { hashPassword, verifyPassword } from "../auth/password";
 import { badInput, unauthenticated } from "../errors";
 import { requireWithinRateLimit } from "../auth/guards";
 import { AUTH_RULE } from "../rate-limit";
-import { uniqueUsername } from "../shared";
 
 const MIN_PASSWORD_LENGTH = 8;
 const MIN_USERNAME_LENGTH = 3;
@@ -172,17 +171,17 @@ export const authResolvers: Resolvers = {
         return { token: signToken(linked), user: linked };
       }
 
-      const username = await uniqueUsername(
-        context.db,
-        profile.name ?? profile.email.split("@")[0] ?? "user",
-      );
-
+      // No username. Google hands back the account holder's real full name,
+      // and writing it here publishes it: /leaderboard is public, and an
+      // editor's name is shown to every signed-in user on a flash card. A
+      // name is something a user chooses, through updateUsername — until they
+      // do, they are the id-derived stand-in from displayName().
       const [created] = await context.db
         .insert(users)
         .values({
           googleId: profile.googleId,
           email: profile.email,
-          username,
+          username: null,
           role: "USER",
         })
         .returning();

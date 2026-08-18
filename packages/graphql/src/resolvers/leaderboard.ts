@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import type { Resolvers } from "../generated/types";
+import { standInName } from "../shared";
 
 interface RankedRow extends Record<string, unknown> {
   id: string;
@@ -101,18 +102,11 @@ export const leaderboardResolvers: Resolvers = {
         score: row.score,
         user: {
           id: row.id,
-          // Never fall back to the email's local part. `username` is null for
-          // every Google sign-up, and this endpoint is public — publishing the
-          // local part would hand out an address for the one group that never
-          // chose a display name.
-          //
-          // The stand-in is keyed on the id, not the position: a position moves
-          // whenever anyone else scores, and differs between periods, so the
-          // same operator would carry a different name on the DAILY board than
-          // on ALL_TIME. The id is a random v4 uuid, encodes nothing, and is
-          // already published as `LeaderboardUser.id`.
-          username:
-            row.username ?? `Operator ${row.id.slice(0, 4).toUpperCase()}`,
+          // Same stand-in as displayName(), which is the point: a user who has
+          // not chosen a name is called one thing everywhere. Anyone who signed
+          // in with Google lands here until they use updateUsername, so on a
+          // public endpoint this is the common case, not the edge one.
+          username: row.username ?? standInName(row.id),
           score: row.score,
         },
       });

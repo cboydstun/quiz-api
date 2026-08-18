@@ -7,6 +7,8 @@ import {
   it,
   vi,
 } from "vitest";
+import { eq } from "drizzle-orm";
+import { users } from "@quiz/db";
 
 // Stub the Google client so the OAuth code exchange is exercised without a
 // network call. The mock must be declared before the modules under test load.
@@ -87,24 +89,55 @@ describe("Google sign-in", () => {
     expect(res.data?.authenticateWithGoogle.user.role).toBe("USER");
   });
 
-  it("derives a unique username when two people share a display name", async () => {
+  /**
+   * Google returns the account holder's real full name. Storing it as the
+   * username publishes it — /leaderboard is public, and an editor's name is
+   * shown to every signed-in user on a flash card. A name is something a user
+   * chooses through updateUsername; until then they get the stand-in.
+   */
+  it("never stores the name Google supplies", async () => {
     googleReturns({
       sub: "google-2",
+      email: "realname@example.com",
+      name: "Ada Lovelace",
+    });
+
+    const res = await h.execute<{
+      authenticateWithGoogle: { user: { id: string; username: string } };
+    }>(AUTHENTICATE, { variables: { code: "code-a" } });
+
+    expect(res.errors).toEqual([]);
+    const user = res.data!.authenticateWithGoogle.user;
+    expect(user.username).toMatch(/^Operator [0-9A-F]{4}$/);
+    expect(JSON.stringify(res.data)).not.toContain("Ada");
+    expect(JSON.stringify(res.data)).not.toContain("Lovelace");
+
+    // Not merely absent from the response — absent from the row.
+    const [row] = await h.db
+      .select({ username: users.username })
+      .from(users)
+      .where(eq(users.id, user.id));
+    expect(row?.username).toBeNull();
+  });
+
+  it("gives two people with the same Google display name distinct names", async () => {
+    googleReturns({
+      sub: "google-3",
       email: "twin-a@example.com",
       name: "Same Name",
     });
     const first = await h.execute<{
       authenticateWithGoogle: { user: { username: string } };
-    }>(AUTHENTICATE, { variables: { code: "code-a" } });
+    }>(AUTHENTICATE, { variables: { code: "code-b" } });
 
     googleReturns({
-      sub: "google-3",
+      sub: "google-4",
       email: "twin-b@example.com",
       name: "Same Name",
     });
     const second = await h.execute<{
       authenticateWithGoogle: { user: { username: string } };
-    }>(AUTHENTICATE, { variables: { code: "code-b" } });
+    }>(AUTHENTICATE, { variables: { code: "code-c" } });
 
     expect(second.errors).toEqual([]);
     expect(second.data?.authenticateWithGoogle.user.username).not.toBe(
@@ -119,7 +152,7 @@ describe("Google sign-in", () => {
     });
 
     googleReturns({
-      sub: "google-4",
+      sub: "google-5",
       email: "linkme@example.com",
       name: "Link Me",
     });

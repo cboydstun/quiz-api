@@ -72,7 +72,12 @@ describe("user queries and mutations", () => {
     expect(res.data?.me.lastLoginDate).toBeNull();
   });
 
-  it("falls back to the email local part when a user has no username", async () => {
+  /**
+   * The column is nullable and the API field is not, so something has to fill
+   * the gap. It must not be the email's local part: this field is shown to
+   * people other than its owner, so that fallback would publish an address.
+   */
+  it("stands in for a user with no username without using their email", async () => {
     const [user] = await h.db
       .insert(users)
       .values({ email: "nameless@example.com", username: null })
@@ -82,7 +87,8 @@ describe("user queries and mutations", () => {
       "{ me { username } }",
       { token: h.tokenFor(user!) },
     );
-    expect(res.data?.me.username).toBe("nameless");
+    expect(res.data?.me.username).toMatch(/^Operator [0-9A-F]{4}$/);
+    expect(res.data?.me.username).not.toContain("nameless");
   });
 
   it("lists users for an admin and refuses everyone else", async () => {

@@ -109,10 +109,9 @@ describe("getLeaderboard", () => {
   });
 
   /**
-   * Google sign-ups arrive with a null username. Falling back to the email's
-   * local part would publish it in the clear on a public endpoint — the one
-   * group that never chose a display name would be the only group whose
-   * address the board gives away.
+   * Anyone who signed in with Google has a null username until they call
+   * updateUsername, so on a public board this is the common case. Falling back
+   * to the email's local part would publish an address in the clear.
    */
   it("never falls back to the email local part for a user with no username", async () => {
     const anonymous = await h.createUser({

@@ -119,9 +119,9 @@ export type LeaderboardUser = {
   id: Scalars['ID']['output'];
   score: Scalars['Int']['output'];
   /**
-   * Unlike User.username, this never falls back to the email's local part. A
-   * user who never chose a display name gets a stand-in derived from their id,
-   * which is stable across both rank changes and periods.
+   * The same stand-in as User.username for a user who has not chosen a name,
+   * derived from their id — so it is stable across rank changes and identical
+   * on every period's board.
    */
   username: Scalars['String']['output'];
 };
@@ -450,8 +450,10 @@ export type User = {
   skills: Array<Scalars['String']['output']>;
   updatedAt: Scalars['String']['output'];
   /**
-   * Never null in the API even though the column is nullable: Google sign-ups
-   * without a display name fall back to the local part of their email.
+   * Never null in the API even though the column is nullable. A user who has
+   * not chosen one — every Google sign-up, until they call updateUsername —
+   * gets a stand-in derived from their id. Never the local part of their
+   * email: this field is shown to people other than its owner.
    */
   username: Scalars['String']['output'];
   yearlyPoints: Scalars['Int']['output'];
