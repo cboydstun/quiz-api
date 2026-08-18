@@ -18,8 +18,34 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
+/**
+ * jsdom does not implement matchMedia at all, so anything that reads it throws
+ * rather than degrading. Defaults to "no preference"; a test that cares calls
+ * `setReducedMotion(true)`.
+ */
+let reducedMotion = false;
+
+export function setReducedMotion(value: boolean): void {
+  reducedMotion = value;
+}
+
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: (query: string) => ({
+    matches: query.includes("prefers-reduced-motion: reduce") && reducedMotion,
+    media: query,
+    onchange: null,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }),
+});
+
 afterEach(() => {
   cleanup();
   localStorage.clear();
+  reducedMotion = false;
   Object.values(routerMock).forEach((fn) => fn.mockClear());
 });

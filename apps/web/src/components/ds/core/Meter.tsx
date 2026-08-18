@@ -90,6 +90,21 @@ export function Meter({
               "h-2 flex-1 transition-fast",
               i < lit ? palette.fill : "bg-ink-600",
             )}
+            /*
+              Segments change in sequence rather than together, counted from
+              the right, so a drop reads as the lit end burning back instead of
+              the whole bar blinking to a new length.
+
+              The delay is expressed in a duration token, not a raw number, so
+              the prefers-reduced-motion block that zeroes the tokens takes the
+              stagger with it — a 0ms transition with a 200ms delay would still
+              animate, just worse.
+            */
+            style={{
+              transitionDelay: `calc(var(--duration-instant) * 0.3 * ${
+                SEGMENTS - 1 - i
+              })`,
+            }}
           />
         ))}
       </div>

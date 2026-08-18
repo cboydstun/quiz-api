@@ -163,6 +163,13 @@ export const typeDefs = /* GraphQL */ `
     terrain: String!
     "Hazard legs damage the airframe on a miss. Ordinary legs only cost battery."
     hazard: Boolean!
+    """
+    The crossing beat, one entry per line of transmission. Dealt by the same
+    date seed as the route, so two operators flying today read the same thing.
+    Describes the crossing, never the outcome — the instruments carry what a
+    miss cost.
+    """
+    dispatch: [String!]!
     questions: [RunQuestion!]!
   }
 
@@ -174,6 +181,11 @@ export const typeDefs = /* GraphQL */ `
   type DailyTrail {
     "The UTC calendar day this route belongs to, YYYY-MM-DD."
     date: String!
+    """
+    The day's job, briefed before launch — one entry per line of transmission.
+    Present even when there are no legs to fly.
+    """
+    mission: [String!]!
     legs: [TrailLeg!]!
   }
 

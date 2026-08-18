@@ -62,6 +62,11 @@ export type DailyTrail = {
   /** The UTC calendar day this route belongs to, YYYY-MM-DD. */
   date: Scalars['String']['output'];
   legs: Array<TrailLeg>;
+  /**
+   * The day's job, briefed before launch — one entry per line of transmission.
+   * Present even when there are no legs to fly.
+   */
+  mission: Array<Scalars['String']['output']>;
 };
 
 /**
@@ -473,6 +478,13 @@ export type SubmitAnswerResponse = {
  */
 export type TrailLeg = {
   __typename?: 'TrailLeg';
+  /**
+   * The crossing beat, one entry per line of transmission. Dealt by the same
+   * date seed as the route, so two operators flying today read the same thing.
+   * Describes the crossing, never the outcome — the instruments carry what a
+   * miss cost.
+   */
+  dispatch: Array<Scalars['String']['output']>;
   domain: Scalars['String']['output'];
   /** Hazard legs damage the airframe on a miss. Ordinary legs only cost battery. */
   hazard: Scalars['Boolean']['output'];
@@ -699,6 +711,7 @@ export type AuthPayloadResolvers<ContextType = GraphQLContext, ParentType extend
 export type DailyTrailResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['DailyTrail'] = ResolversParentTypes['DailyTrail']> = ResolversObject<{
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   legs?: Resolver<Array<ResolversTypes['TrailLeg']>, ParentType, ContextType>;
+  mission?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
 }>;
 
 export type DomainAccuracyResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['DomainAccuracy'] = ResolversParentTypes['DomainAccuracy']> = ResolversObject<{
@@ -814,6 +827,7 @@ export type SubmitAnswerResponseResolvers<ContextType = GraphQLContext, ParentTy
 }>;
 
 export type TrailLegResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['TrailLeg'] = ResolversParentTypes['TrailLeg']> = ResolversObject<{
+  dispatch?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   domain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hazard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   index?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;

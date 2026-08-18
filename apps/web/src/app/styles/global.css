@@ -195,6 +195,82 @@
   }
 }
 
+/*
+  Motion. Three keyframes, all of them opacity or width — the system forbids
+  anything that scales or lifts, and a cockpit does not bounce anyway. Every
+  duration comes from a token so the reduced-motion block below can switch the
+  whole system off in one place.
+*/
+
+/* The teletype caret. steps(1) so it snaps rather than fades. */
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@utility cursor-blink {
+  animation: cursor-blink 1s steps(1) infinite;
+}
+
+/* Fade-in for a line arriving. Paired with an inline animation-delay to stagger
+   a group — an index-driven delay is the one thing a utility cannot carry. */
+@keyframes signal-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@utility signal-in {
+  animation: signal-in var(--duration-base) var(--ease-default) both;
+}
+
+/* The route line drawing across on a leg crossing. */
+@keyframes route-draw {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@utility route-draw {
+  animation: route-draw var(--duration-slow) var(--ease-default) both;
+}
+
+/*
+  Reduced motion. Zeroing the duration tokens turns off every transition and
+  every keyframe in the system at once — including FlipCard and the QuestionCard
+  progress bar, which predate any of this and were never covered.
+
+  The caret is handled separately because it is the one animation that is
+  deliberately untokenised and infinite, which is exactly the case this media
+  query exists for.
+*/
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0ms;
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+    --duration-flip: 0ms;
+  }
+
+  .cursor-blink {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 @layer base {
   :root {
     color-scheme: dark;

@@ -8,6 +8,7 @@ import {
   Alert,
   Button,
   buttonClass,
+  cn,
   Label,
   Meter,
   Panel,
@@ -16,6 +17,7 @@ import {
   Spinner,
   Status,
 } from "@/components/ds";
+import { Teletype } from "./Teletype";
 import { trackEvent } from "@/lib/analytics";
 import { messageFrom } from "@/lib/errors";
 import type { User } from "@/types";
@@ -47,11 +49,13 @@ const DAILY_TRAIL: TypedDocumentNode<DailyTrailResult> = gql`
   query DailyTrail {
     dailyTrail {
       date
+      mission
       legs {
         index
         domain
         terrain
         hazard
+        dispatch
         questions {
           id
           prompt
@@ -134,10 +138,12 @@ interface TrailLeg {
   domain: string;
   terrain: string;
   hazard: boolean;
+  /** The crossing beat, one entry per line of transmission. */
+  dispatch: string[];
   questions: TrailQuestion[];
 }
 interface DailyTrailResult {
-  dailyTrail: { date: string; legs: TrailLeg[] } | null;
+  dailyTrail: { date: string; mission: string[]; legs: TrailLeg[] } | null;
 }
 interface TrailRunRecord {
   trailDate: string;
@@ -220,6 +226,10 @@ export default function TrailPage() {
   const [grading, setGrading] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  /** Leg index whose crossing beat is on screen, or null when in the air. */
+  const [crossing, setCrossing] = useState<number | null>(null);
+  /** The ending beat plays once, before the debrief. */
+  const [endingSeen, setEndingSeen] = useState(false);
 
   /**
    * The anonymous half of "one attempt a day". Read in an effect rather than in
@@ -352,6 +362,13 @@ export default function TrailPage() {
         setSelected(null);
         setShowHint(false);
 
+        // Staged here rather than derived later: this is the only moment that
+        // knows a leg boundary was crossed. A run that ends does not cross —
+        // answerQuestion holds legIndex where it went down.
+        if (next.status === "FLYING" && next.legIndex !== state.legIndex) {
+          setCrossing(next.legIndex);
+        }
+
         if (next.status !== "FLYING") await finish(next);
       } catch (err) {
         console.error("Error grading the answer:", err);
@@ -374,24 +391,36 @@ export default function TrailPage() {
   );
 
   /**
+   * Anything on screen that is not a question. Daylight must not burn while the
+   * operator is reading a verdict or a dispatch — the clock is a difficulty
+   * knob, not a reading-speed test.
+   */
+  const paused = verdict !== null || crossing !== null;
+
+  /**
    * Daylight. The clock only ticks — it is reset where the run actually moves
-   * (`begin` and `resume`), not from inside the effect, because resetting it
-   * here would be a setState in an effect body and a cascading render for
-   * every question.
+   * (`begin`, `resume`, `dismissCrossing`), not from inside the effect, because
+   * resetting it here would be a setState in an effect body and a cascading
+   * render for every question.
    */
   useEffect(() => {
-    if (!flying || verdict) return;
+    if (!flying || paused) return;
 
     const timer = setInterval(() => {
       setDaylight((prev) => Math.max(0, prev - 1));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [flying, verdict]);
+  }, [flying, paused]);
 
   /** Clears the verdict and hands the next question a fresh clock. */
   const resume = () => {
     setVerdict(null);
+    setDaylight(TRAIL_RULES.SECONDS_PER_QUESTION);
+  };
+
+  const dismissCrossing = () => {
+    setCrossing(null);
     setDaylight(TRAIL_RULES.SECONDS_PER_QUESTION);
   };
 
@@ -403,10 +432,10 @@ export default function TrailPage() {
       expiredRef.current = false;
       return;
     }
-    if (!flying || verdict || grading || expiredRef.current) return;
+    if (!flying || paused || grading || expiredRef.current) return;
     expiredRef.current = true;
     void commit(selected);
-  }, [daylight, flying, verdict, grading, selected, commit]);
+  }, [daylight, flying, paused, grading, selected, commit]);
 
   const begin = () => {
     setState(startRun(legs));
@@ -414,6 +443,10 @@ export default function TrailPage() {
     setVerdict(null);
     setSelected(null);
     setNotice(null);
+    setEndingSeen(false);
+    // Launch puts you on the first crossing, not straight into a question:
+    // leg one is a crossing like any other.
+    setCrossing(0);
     setDaylight(TRAIL_RULES.SECONDS_PER_QUESTION);
     trackEvent("trail_start", {
       signed_in: Boolean(currentUser),
@@ -459,13 +492,19 @@ export default function TrailPage() {
       <h1 className="m-0 mb-4 text-2xl font-medium tracking-tight text-bone-100">
         Today&apos;s trail
       </h1>
-      <p className="m-0 mb-10 max-w-[62ch] text-sm leading-normal text-mute-500">
+      <p className="m-0 mb-8 max-w-[62ch] text-sm leading-normal text-mute-500">
         Every operator flies this same route today. {legs.length} legs,{" "}
         {totalQuestions} questions, one attempt. A wrong answer costs{" "}
         {TRAIL_RULES.MISS_COST}% battery; a wrong answer over a hazard costs{" "}
         {TRAIL_RULES.HAZARD_DAMAGE}% airframe. Run either to zero and the run
         ends where it ended.
       </p>
+
+      {/* The job. Types out, because a briefing that is simply there has
+          already been read before the operator decides to read it. */}
+      <Panel label="The Job" tag="///" padding="md" className="mb-px">
+        <Teletype lines={trail.mission} />
+      </Panel>
 
       <Panel label="Route" meta={`${legs.length} legs`} padding="none">
         <div className="grid gap-px bg-line-hairline sm:grid-cols-2">
@@ -551,8 +590,123 @@ export default function TrailPage() {
     </div>
   );
 
-  const renderInstruments = (run: TrailState) => (
-    <div className="mb-px grid grid-cols-1 gap-px bg-line-hairline sm:grid-cols-3">
+  /**
+   * The crossing. A hairline draws across, the terrain resolves in, then the
+   * dispatch types. Continue is available throughout — the beat is atmosphere,
+   * not a gate, and gating it would make the eighth run of the week a chore.
+   */
+  const renderCrossing = (index: number) => {
+    const active = legs[index];
+    if (!active) return null;
+
+    return (
+      <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
+        <Label tag="///" className="mb-6">
+          Leg {String(active.index).padStart(2, "0")} of{" "}
+          {String(legs.length).padStart(2, "0")}
+        </Label>
+
+        {/* The route line. Width only — the system forbids anything that
+            scales, and a line drawing across is what a crossing looks like. */}
+        <div className="mb-8 h-px bg-ink-600">
+          <div className="route-draw h-px bg-signal" />
+        </div>
+
+        <div className="mb-8 flex flex-wrap items-baseline justify-between gap-3">
+          <h1 className="signal-in m-0 font-mono text-3xl font-medium tracking-tight text-bone-100">
+            {active.terrain}
+          </h1>
+          {active.hazard && (
+            <Status tone="abort" filled>
+              Hazard
+            </Status>
+          )}
+        </div>
+
+        <Panel label={active.domain} tag="///" padding="md">
+          <Teletype lines={active.dispatch} />
+          <div className="mt-6 border-t border-line-hairline pt-5">
+            <Button
+              variant="signal"
+              size="md"
+              onClick={dismissCrossing}
+              autoFocus
+            >
+              Fly the leg
+            </Button>
+          </div>
+        </Panel>
+      </div>
+    );
+  };
+
+  /**
+   * The last beat before the numbers. This is the only place the fiction gets
+   * to land the outcome, so the debrief can stay a scoreboard.
+   */
+  const renderEnding = (run: TrailState) => {
+    const arrived = run.status === "ARRIVED";
+    const where = legs[run.legIndex]?.terrain ?? "the leg";
+
+    const lines = arrived
+      ? [
+          `All ${legs.length} legs flown. Cards are full.`,
+          `${run.battery}% charge and the airframe intact.`,
+          "The client gets the shots.",
+        ]
+      : run.airframe === 0
+        ? [
+            `Telemetry stopped over ${where}.`,
+            "The airframe did not survive the crossing.",
+            "The client is not getting the shots.",
+          ]
+        : [
+            `Charge ran out over ${where}.`,
+            "It came down where it came down.",
+            "The client is not getting the shots.",
+          ];
+
+    return (
+      <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
+        <Panel
+          label={arrived ? "On The Ground" : "Signal Lost"}
+          tag="///"
+          meta={trail.date}
+          padding="md"
+        >
+          <Status tone={arrived ? "go" : "abort"} filled>
+            {arrived ? "Arrived" : "Down"}
+          </Status>
+          <div className="mt-5">
+            <Teletype lines={lines} />
+          </div>
+          <div className="mt-6 border-t border-line-hairline pt-5">
+            <Button
+              variant="signal"
+              size="md"
+              onClick={() => setEndingSeen(true)}
+              autoFocus
+            >
+              Debrief
+            </Button>
+          </div>
+        </Panel>
+      </div>
+    );
+  };
+
+  /**
+   * `damaged` tints the row for exactly as long as a miss verdict is on screen.
+   * A timed flash would need a timer and a piece of state; tying it to the
+   * verdict makes it declarative and gives it the right duration for free.
+   */
+  const renderInstruments = (run: TrailState, damaged = false) => (
+    <div
+      className={cn(
+        "mb-px grid grid-cols-1 gap-px bg-line-hairline transition-fast sm:grid-cols-3",
+        damaged && "bg-abort",
+      )}
+    >
       <div className="bg-ink-800">
         <Meter label="Battery" value={run.battery} />
       </div>
@@ -570,11 +724,9 @@ export default function TrailPage() {
   );
 
   const renderVerdict = (run: TrailState, entry: DebriefEntry) => {
-    const over = run.status !== "FLYING";
-
     return (
       <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
-        {renderInstruments(run)}
+        {renderInstruments(run, !entry.isCorrect)}
         <Panel
           label={entry.terrain}
           tag="///"
@@ -613,13 +765,13 @@ export default function TrailPage() {
           )}
 
           <div className="mt-6">
-            <Button
-              variant="signal"
-              size="md"
-              onClick={resume}
-              autoFocus
-            >
-              {over ? "Debrief" : "Continue"}
+            {/*
+              Always "Continue" — what comes next is a crossing, or the ending
+              beat, never the debrief directly. Naming it for the destination
+              would be wrong three times out of four.
+            */}
+            <Button variant="signal" size="md" onClick={resume} autoFocus>
+              Continue
             </Button>
           </div>
         </Panel>
@@ -722,38 +874,48 @@ export default function TrailPage() {
           meta={trail.date}
           padding="none"
         >
-          <div className="grid grid-cols-2 gap-px border-b border-line-hairline bg-line-hairline sm:grid-cols-4">
-            <div className="bg-ink-800">
-              <Readout
-                label="Reached"
-                value={`${run.legIndex + 1} / ${legs.length}`}
-                tone={arrived ? "go" : "abort"}
-              />
-            </div>
-            <div className="bg-ink-800">
-              <Readout label="Correct" value={`${run.correct} / ${run.answered}`} />
-            </div>
-            <div className="bg-ink-800">
-              <Readout label="Battery" value={run.battery} unit="%" />
-            </div>
-            <div className="bg-ink-800">
-              <Readout label="Airframe" value={run.airframe} unit="%" />
-            </div>
-          </div>
+          {/*
+            The readouts fill in one after another rather than appearing as a
+            block — an instrument panel coming up, not a scorecard being
+            handed over. The delay is inline because it is index-driven; the
+            animation itself is a token, so reduced motion zeroes it.
 
-          <div className="px-5 py-5">
-            <p className="m-0 max-w-[62ch] text-sm leading-normal text-mute-400">
-              {arrived
-                ? `You flew all ${legs.length} legs and landed with ${run.battery}% charge.`
-                : run.airframe === 0
-                  ? `The airframe failed on ${legs[run.legIndex]?.terrain ?? "the leg"}. ${run.legIndex + 1} of ${legs.length} legs.`
-                  : `Charge ran out on ${legs[run.legIndex]?.terrain ?? "the leg"}. ${run.legIndex + 1} of ${legs.length} legs.`}
-            </p>
+            The prose summary that used to sit under here is gone: the ending
+            beat now says where the run stopped, and hearing it twice in two
+            screens made the debrief read like it was padding.
+          */}
+          <div className="grid grid-cols-2 gap-px border-b border-line-hairline bg-line-hairline sm:grid-cols-4">
+            {[
+              {
+                label: "Reached",
+                value: `${run.legIndex + 1} / ${legs.length}`,
+                tone: arrived ? ("go" as const) : ("abort" as const),
+              },
+              {
+                label: "Correct",
+                value: `${run.correct} / ${run.answered}`,
+              },
+              { label: "Battery", value: run.battery, unit: "%" },
+              { label: "Airframe", value: run.airframe, unit: "%" },
+            ].map((readout, i) => (
+              <div
+                key={readout.label}
+                className="signal-in bg-ink-800"
+                style={{ animationDelay: `calc(var(--duration-fast) * ${i})` }}
+              >
+                <Readout
+                  label={readout.label}
+                  value={readout.value}
+                  unit={readout.unit}
+                  tone={readout.tone}
+                />
+              </div>
+            ))}
           </div>
 
           {/* The review. Only the misses carry a correction — repeating a
               right answer back is noise. */}
-          <div className="flex flex-col gap-2 px-5 pb-5">
+          <div className="flex flex-col gap-2 px-5 py-5">
             {debrief.map((entry, i) => (
               <div
                 key={`${entry.questionText}-${i}`}
@@ -845,8 +1007,12 @@ export default function TrailPage() {
 
   // ── Routing between them ─────────────────────────────────────────────────
 
+  // Order is the flow. The verdict for the question just answered comes before
+  // the crossing it triggered, and the ending beat comes before the numbers.
   if (!state) return alreadyFlown ? renderSpent(alreadyFlown) : renderBriefing();
   if (verdict) return renderVerdict(state, verdict);
-  if (state.status !== "FLYING") return renderDebrief(state);
+  if (crossing !== null) return renderCrossing(crossing);
+  if (state.status !== "FLYING")
+    return endingSeen ? renderDebrief(state) : renderEnding(state);
   return leg ? renderQuestion(state, leg) : renderDebrief(state);
 }
