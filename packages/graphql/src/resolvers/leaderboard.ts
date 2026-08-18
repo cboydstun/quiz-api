@@ -4,26 +4,8 @@ import type { Resolvers } from "../generated/types";
 interface RankedRow extends Record<string, unknown> {
   id: string;
   username: string | null;
-  email: string;
   score: number;
   position: number;
-}
-
-/**
- * `a***z@example.com`. Names of two characters or fewer keep only their first
- * character. Ported verbatim from the previous backend so leaderboard entries
- * look the same after the cutover.
- */
-export function maskEmail(email: string): string {
-  const [local, domain] = email.split("@");
-  if (!local || !domain) return email;
-
-  const masked =
-    local.length <= 2
-      ? local.charAt(0) + "*".repeat(Math.max(local.length - 1, 0))
-      : `${local.charAt(0)}***${local.charAt(local.length - 1)}`;
-
-  return `${masked}@${domain}`;
 }
 
 /**
@@ -74,12 +56,11 @@ export const leaderboardResolvers: Resolvers = {
           select
             id,
             username,
-            email,
             score,
             row_number() over (order by score desc, username asc)::int as position
           from users
         )
-        select id, username, email, score, position from ranked
+        select id, username, score, position from ranked
         where position <= ${size}
            or id = ${viewerId}::uuid
         order by position asc
@@ -89,24 +70,22 @@ export const leaderboardResolvers: Resolvers = {
           select
             u.id,
             u.username,
-            u.email,
             coalesce(sum(case when r.is_correct then q.points else 0 end), 0)::int as score
           from users u
           join user_responses r on r.user_id = u.id
           join questions q on q.id = r.question_id
           where r.created_at >= now() - ${sql.raw(`interval '${since}'`)}
-          group by u.id, u.username, u.email
+          group by u.id, u.username
         ),
         ranked as (
           select
             id,
             username,
-            email,
             score,
             row_number() over (order by score desc, username asc)::int as position
           from earned
         )
-        select id, username, email, score, position from ranked
+        select id, username, score, position from ranked
         where position <= ${size}
            or id = ${viewerId}::uuid
         order by position asc
@@ -124,10 +103,16 @@ export const leaderboardResolvers: Resolvers = {
           id: row.id,
           // Never fall back to the email's local part. `username` is null for
           // every Google sign-up, and this endpoint is public — publishing the
-          // local part beside a masked `email` would undo the masking for the
-          // one group that never chose a display name.
-          username: row.username ?? `Operator ${row.position}`,
-          email: maskEmail(row.email),
+          // local part would hand out an address for the one group that never
+          // chose a display name.
+          //
+          // The stand-in is keyed on the id, not the position: a position moves
+          // whenever anyone else scores, and differs between periods, so the
+          // same operator would carry a different name on the DAILY board than
+          // on ALL_TIME. The id is a random v4 uuid, encodes nothing, and is
+          // already published as `LeaderboardUser.id`.
+          username:
+            row.username ?? `Operator ${row.id.slice(0, 4).toUpperCase()}`,
           score: row.score,
         },
       });

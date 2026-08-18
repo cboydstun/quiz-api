@@ -109,15 +109,20 @@ export type LeaderboardResponse = {
 };
 
 /**
- * Deliberately not the User type. Leaderboard emails are masked, and reusing
- * It would let a masked email overwrite the real one in Apollo's normalized
- * cache the moment both appear in the same session.
+ * Deliberately not the User type. getLeaderboard is public, so this is the
+ * projection of a user that an anonymous visitor is allowed to see — carrying
+ * no address of any kind. Keeping it separate means a field added to User can
+ * never reach an unauthenticated caller by accident.
  */
 export type LeaderboardUser = {
   __typename?: 'LeaderboardUser';
-  email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   score: Scalars['Int']['output'];
+  /**
+   * Unlike User.username, this never falls back to the email's local part. A
+   * user who never chose a display name gets a stand-in derived from their id,
+   * which is stable across both rank changes and periods.
+   */
   username: Scalars['String']['output'];
 };
 
@@ -617,7 +622,6 @@ export type LeaderboardResponseResolvers<ContextType = GraphQLContext, ParentTyp
 }>;
 
 export type LeaderboardUserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['LeaderboardUser'] = ResolversParentTypes['LeaderboardUser']> = ResolversObject<{
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   score?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

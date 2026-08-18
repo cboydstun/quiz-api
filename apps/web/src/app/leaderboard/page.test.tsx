@@ -30,7 +30,6 @@ const entry = (position: number, username: string, score: number) => ({
   user: {
     __typename: "LeaderboardUser",
     username,
-    email: `${username[0]}***@example.com`,
     score,
   },
 });

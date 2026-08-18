@@ -165,14 +165,19 @@ export const typeDefs = /* GraphQL */ `
   }
 
   """
-  Deliberately not the User type. Leaderboard emails are masked, and reusing
-  It would let a masked email overwrite the real one in Apollo's normalized
-  cache the moment both appear in the same session.
+  Deliberately not the User type. getLeaderboard is public, so this is the
+  projection of a user that an anonymous visitor is allowed to see — carrying
+  no address of any kind. Keeping it separate means a field added to User can
+  never reach an unauthenticated caller by accident.
   """
   type LeaderboardUser {
     id: ID!
+    """
+    Unlike User.username, this never falls back to the email's local part. A
+    user who never chose a display name gets a stand-in derived from their id,
+    which is stable across both rank changes and periods.
+    """
     username: String!
-    email: String!
     score: Int!
   }
 

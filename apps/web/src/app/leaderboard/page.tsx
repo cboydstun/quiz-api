@@ -24,7 +24,6 @@ const GET_LEADERBOARD: TypedDocumentNode<
         position
         user {
           username
-          email
           score
         }
         score
@@ -33,7 +32,6 @@ const GET_LEADERBOARD: TypedDocumentNode<
         position
         user {
           username
-          email
           score
         }
         score
@@ -57,7 +55,6 @@ const GET_MY_ACCURACY: TypedDocumentNode<GetMyAccuracyResult> = gql`
 
 interface LeaderboardUser {
   username: string;
-  email: string;
   score: number;
 }
 
