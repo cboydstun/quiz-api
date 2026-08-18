@@ -77,6 +77,36 @@ export function listPublishedQuestions(
   );
 }
 
+/**
+ * Every domain's count in one query.
+ *
+ * The practice index needs a count per domain and was calling countQuestions()
+ * once per domain — twelve round trips to produce what one GROUP BY returns,
+ * every time a cold instance rendered the page.
+ */
+export function countByDomain(): Promise<Record<string, number>> {
+  return cached("countByDomain", 60_000, () =>
+    withTimeout(
+      async () => {
+        const rows = await getDb()
+          .select({
+            domain: questions.domain,
+            total: sql<number>`count(*)::int`,
+          })
+          .from(questions)
+          .where(isNotNull(questions.domain))
+          .groupBy(questions.domain);
+
+        return Object.fromEntries(
+          rows.map((row) => [row.domain as string, row.total]),
+        );
+      },
+      {} as Record<string, number>,
+      "countByDomain",
+    ),
+  );
+}
+
 export function countQuestions(domain?: string): Promise<number> {
   return cached(`count:${domain ?? "all"}`, 60_000, () =>
     withTimeout(

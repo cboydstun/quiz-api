@@ -133,6 +133,11 @@ export const questionResolvers: Resolvers = {
     // it is the list of pages to link to. Unclassified questions have no
     // domain to offer, so they contribute nothing here.
     questionDomains: async (_parent, _args, context): Promise<string[]> => {
+      // Public like its neighbours, and rate-limited like them too — it was
+      // the one public query that dropped the guard, and it runs a distinct
+      // scan of the whole table on every flash-cards mount.
+      await requireWithinRateLimit(context, "domains", PUBLIC_RULE);
+
       const rows = await context.db
         .selectDistinct({ domain: questions.domain })
         .from(questions)

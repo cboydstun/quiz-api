@@ -44,6 +44,7 @@ const GET_QUESTION: TypedDocumentNode<GetQuestionResult, GetQuestionVars> = gql`
       questionText
       answers
       correctAnswer
+      explanation
       domain
       createdBy {
         id
@@ -82,6 +83,7 @@ interface FlashCard {
   questionText: string;
   answers: string[];
   correctAnswer: string | null;
+  explanation: string | null;
   domain: string | null;
 }
 
@@ -110,13 +112,19 @@ const ALL = "All";
  * for, because a card reading "all of the above" teaches nothing on its own.
  */
 function cardBack(card: FlashCard): string[] {
-  if (!card.correctAnswer) return ["No answer recorded"];
-  if (card.correctAnswer.toLowerCase() === "all of the above") {
-    return card.answers.filter(
-      (answer) => answer.toLowerCase() !== "all of the above",
-    );
-  }
-  return [card.correctAnswer];
+  const answer = (() => {
+    if (!card.correctAnswer) return ["No answer recorded"];
+    if (card.correctAnswer.toLowerCase() === "all of the above") {
+      return card.answers.filter(
+        (line) => line.toLowerCase() !== "all of the above",
+      );
+    }
+    return [card.correctAnswer];
+  })();
+
+  // The reason belongs on the back of the card, under the answer. A card that
+  // only names the answer drills recall; one that says why teaches.
+  return card.explanation ? [...answer, card.explanation] : answer;
 }
 
 export default function FlashCardsPage() {

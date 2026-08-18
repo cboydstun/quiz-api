@@ -3,13 +3,13 @@ import { render, screen } from "@testing-library/react";
 
 const listDomains = vi.fn();
 const listPublishedQuestions = vi.fn();
-const countQuestions = vi.fn();
+const countByDomain = vi.fn();
 
 vi.mock("@/lib/server/bank", () => ({
   listDomains: () => listDomains(),
   listPublishedQuestions: (domain: string, limit?: number) =>
     listPublishedQuestions(domain, limit),
-  countQuestions: (domain?: string) => countQuestions(domain),
+  countByDomain: () => countByDomain(),
 }));
 
 const notFound = vi.fn(() => {
@@ -41,7 +41,10 @@ describe("the published practice pages", () => {
     vi.clearAllMocks();
     listDomains.mockResolvedValue(["Regulations", "Airspace classification"]);
     listPublishedQuestions.mockResolvedValue([QUESTION]);
-    countQuestions.mockResolvedValue(12);
+    countByDomain.mockResolvedValue({
+      Regulations: 12,
+      "Airspace classification": 12,
+    });
   });
 
   it("lists every knowledge area with its question count", async () => {

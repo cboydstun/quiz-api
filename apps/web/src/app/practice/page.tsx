@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Label, Rule } from "@/components/ds";
-import { countQuestions, listDomains } from "@/lib/server/bank";
+import { countByDomain, listDomains } from "@/lib/server/bank";
 import { domainSlug } from "@/lib/site";
 
 /**
@@ -39,10 +39,8 @@ export const metadata: Metadata = {
 };
 
 export default async function PracticeIndexPage() {
-  const domains = await listDomains();
-  const counts = await Promise.all(
-    domains.map((domain) => countQuestions(domain)),
-  );
+  // One GROUP BY rather than a count query per domain.
+  const [domains, counts] = await Promise.all([listDomains(), countByDomain()]);
 
   return (
     <div className="mx-auto max-w-wide px-4 py-16 sm:px-8">
@@ -80,7 +78,8 @@ export default async function PracticeIndexPage() {
                   {domain}
                 </h2>
                 <p className="m-0 text-sm text-mute-500">
-                  {counts[i]} {counts[i] === 1 ? "question" : "questions"}
+                  {counts[domain] ?? 0}{" "}
+                  {(counts[domain] ?? 0) === 1 ? "question" : "questions"}
                 </p>
               </Link>
             ))}

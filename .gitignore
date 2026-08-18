@@ -24,5 +24,11 @@ next-env.d.ts
 # broad glob does not untrack it.
 .env*
 
+# Dumps of the pulled environment. envcheck.txt holds the live Neon password
+# and a Vercel OIDC token in plaintext; it was untracked but unignored, which
+# is one `git add .` away from being in the history forever.
+envcheck.txt
+env*.txt
+
 # Personal scratch file.
 IDEAS.md

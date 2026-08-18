@@ -20,6 +20,9 @@ import { domainSlug, SITE_NAME, siteOrigin } from "@/lib/site";
  */
 export const dynamic = "force-dynamic";
 
+/** Below this, the operator count argues against signing up rather than for it. */
+const MIN_OPERATORS_TO_SHOW = 250;
+
 const CAPABILITIES = [
   {
     code: "01",
@@ -108,8 +111,19 @@ export default async function Home() {
           <div className="bg-ink-900">
             <Readout label="Domains" value={domains.length} />
           </div>
+          {/*
+            The operator count is shown only once it is evidence of anything.
+            "10,000+" was invented and had to go; rendering the true figure of
+            2 is worse than saying nothing, because it is the one number on the
+            page arguing against signing up. Below the threshold the slot shows
+            what the run costs instead, which is the more persuasive fact.
+          */}
           <div className="bg-ink-900">
-            <Readout label="Operators" value={operators} />
+            {operators >= MIN_OPERATORS_TO_SHOW ? (
+              <Readout label="Operators" value={operators} />
+            ) : (
+              <Readout label="Price" value="Free" tone="go" />
+            )}
           </div>
           <div className="bg-ink-900">
             <Readout label="Account Needed" value="No" tone="go" />

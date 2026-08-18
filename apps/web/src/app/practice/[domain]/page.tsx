@@ -24,8 +24,16 @@ import { domainSlug, SITE_NAME, siteOrigin } from "@/lib/site";
  */
 export const dynamic = "force-dynamic";
 
-/** How many questions each page publishes. */
-const PAGE_SIZE = 25;
+/**
+ * How many questions each page publishes.
+ *
+ * 25 hid content: Weather sources holds 43 and Airspace 27, so twenty
+ * questions were in the bank, classified, and rendered on no page anywhere.
+ * 100 matches MAX_PUBLISHED_SIZE in the resolver and clears the largest domain
+ * with room to spare. A domain passing 100 needs real pagination — a bigger
+ * number here is not the fix a second time.
+ */
+const PAGE_SIZE = 100;
 
 async function resolveDomain(slug: string): Promise<string | null> {
   const domains = await listDomains();

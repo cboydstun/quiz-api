@@ -31,6 +31,17 @@ interface SeedQuestion {
   answers: string[];
   correctAnswer: string;
   hint: string;
+
+  /**
+   * Why the correct answer is correct, shown after a run is graded and on the
+   * public /practice pages. Distinct from `hint`, which is offered *before*
+   * answering and must not give the answer away.
+   *
+   * Optional so a set can be seeded before its explanations are written; a
+   * question without one simply shows its answer with no reasoning.
+   */
+  explanation?: string | null;
+
   points: number;
 
   /**
@@ -163,6 +174,18 @@ function validate(questions: SeedQuestion[]): void {
     if (explicit && !PART_107_DOMAINS.includes(explicit)) {
       problems.push(`${where}: unknown domain "${explicit}"`);
     }
+
+    // An explanation is optional, but an empty string is not a value — it
+    // would overwrite a real one on --update with something that renders as
+    // nothing. A copy of the hint is likewise not an explanation: the hint
+    // points at the answer beforehand, the explanation justifies it after.
+    if (question.explanation !== undefined && question.explanation !== null) {
+      if (!question.explanation.trim()) {
+        problems.push(`${where}: explanation is present but empty`);
+      } else if (question.explanation.trim() === question.hint?.trim()) {
+        problems.push(`${where}: explanation merely repeats the hint`);
+      }
+    }
   }
 
   if (problems.length > 0) {
@@ -248,6 +271,7 @@ async function main(): Promise<void> {
       answers: questions.answers,
       correctAnswer: questions.correctAnswer,
       hint: questions.hint,
+      explanation: questions.explanation,
       points: questions.points,
       domain: questions.domain,
     })
@@ -274,6 +298,7 @@ async function main(): Promise<void> {
     answers: q.answers,
     correctAnswer: q.correctAnswer,
     hint: q.hint?.trim() ? q.hint.trim() : null,
+    explanation: q.explanation?.trim() ? q.explanation.trim() : null,
     points: q.points,
     domain: resolveDomain(q),
     createdBy: owner.id,
@@ -301,6 +326,7 @@ async function main(): Promise<void> {
             answers: q.answers,
             correctAnswer: q.correctAnswer,
             hint: q.hint?.trim() ? q.hint.trim() : null,
+            explanation: q.explanation?.trim() ? q.explanation.trim() : null,
             points: q.points,
             domain: resolveDomain(q),
           };
@@ -308,6 +334,7 @@ async function main(): Promise<void> {
             row.prompt === next.prompt &&
             row.correctAnswer === next.correctAnswer &&
             row.hint === next.hint &&
+            row.explanation === next.explanation &&
             row.points === next.points &&
             row.domain === next.domain &&
             row.answers.length === next.answers.length &&
@@ -317,7 +344,8 @@ async function main(): Promise<void> {
         .filter((row) => row !== null)
     : [];
 
-  if (update) console.log(`${stale.length} existing rows differ from the seed.`);
+  if (update)
+    console.log(`${stale.length} existing rows differ from the seed.`);
 
   if (dryRun) {
     console.log(
