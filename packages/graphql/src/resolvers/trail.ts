@@ -10,6 +10,7 @@ import {
   QUESTIONS_PER_LEG,
   TRAIL_LEGS,
 } from "../trail/route";
+import { buildNarrative } from "../trail/narrative";
 
 const FULL_RESOURCE = 100;
 const MS_PER_DAY = 86_400_000;
@@ -93,7 +94,15 @@ export const trailResolvers: Resolvers = {
           .filter((domain): domain is string => domain !== null),
       );
 
-      if (route.length === 0) return { date, legs: [] };
+      // The briefing stands even with nothing to fly — the page shows the job
+      // and then explains there is no route, rather than showing a bare error.
+      const narrative = buildNarrative(
+        date,
+        route.map((leg) => leg.terrain),
+      );
+
+      if (route.length === 0)
+        return { date, mission: narrative.mission, legs: [] };
 
       /**
        * Which questions a leg gets is decided in SQL and seeded by the date:
@@ -152,11 +161,20 @@ export const trailResolvers: Resolvers = {
 
       return {
         date,
+        mission: narrative.mission,
         // A leg whose domain came back empty is dropped rather than served as
         // a leg you fly through with nothing to answer. Renumbered afterwards
         // so "LEG 3 OF 7" still counts up without a gap.
+        //
+        // The dispatch is attached by the leg's position in the *original*
+        // route, before any dropping, so which beat a terrain gets does not
+        // shift when an unrelated domain empties out.
         legs: route
-          .map((leg) => ({ ...leg, questions: byDomain.get(leg.domain) ?? [] }))
+          .map((leg, i) => ({
+            ...leg,
+            dispatch: narrative.dispatches[i] ?? [],
+            questions: byDomain.get(leg.domain) ?? [],
+          }))
           .filter((leg) => leg.questions.length > 0)
           .map((leg, i) => ({ ...leg, index: i + 1 })),
       };

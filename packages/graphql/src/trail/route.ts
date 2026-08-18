@@ -84,6 +84,17 @@ function prng(seed: number): () => number {
   };
 }
 
+/**
+ * A deterministic stream for one day.
+ *
+ * The salt is what keeps two decisions made on the same date from moving in
+ * lockstep — if the route and the mission drew from one stream, a given route
+ * would always come with the same job.
+ */
+export function seededRandom(dateISO: string, salt: string): () => number {
+  return prng(hashSeed(`${salt}:${dateISO}`));
+}
+
 function dressDomain(domain: string): { terrain: string; hazard: boolean } {
   // An editor can type any domain into /management — the column has no CHECK
   // constraint. An unrecognised one flies as plain terrain rather than being
@@ -106,7 +117,7 @@ export function buildRoute(
   const pool = [...new Set(available)].sort();
   if (pool.length === 0) return [];
 
-  const random = prng(hashSeed(dateISO));
+  const random = seededRandom(dateISO, "route");
 
   // Fisher-Yates, drawing from the end so the whole pool stays reachable.
   for (let i = pool.length - 1; i > 0; i -= 1) {

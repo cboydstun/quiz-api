@@ -151,6 +151,23 @@ describe("Meter", () => {
     expect(container.querySelectorAll(".bg-abort").length).toBe(0);
   });
 
+  // The stagger has to ride a duration token, or the reduced-motion block that
+  // zeroes the tokens leaves the delays behind and the bar still animates.
+  it("staggers segments from the right using a duration token", () => {
+    const { container } = render(<Meter label="Battery" value={100} />);
+    const segments = Array.from(
+      container.querySelectorAll<HTMLElement>("[role=meter] > span"),
+    );
+
+    expect(segments).toHaveLength(10);
+    for (const segment of segments) {
+      expect(segment.style.transitionDelay).toContain("--duration-instant");
+    }
+    // Rightmost changes first: its multiplier is the smallest.
+    expect(segments.at(-1)!.style.transitionDelay).toContain("* 0");
+    expect(segments[0]!.style.transitionDelay).toContain("* 9");
+  });
+
   // The tone carries the warning; a fixed tone would make a dying battery look
   // the same as a full one.
   it("colours itself by level unless told otherwise", () => {

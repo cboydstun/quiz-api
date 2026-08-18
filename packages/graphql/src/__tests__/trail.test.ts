@@ -7,11 +7,13 @@ const DAILY_TRAIL = /* GraphQL */ `
   query DailyTrail {
     dailyTrail {
       date
+      mission
       legs {
         index
         domain
         terrain
         hazard
+        dispatch
         questions {
           id
           questionText
@@ -56,6 +58,7 @@ interface TrailLeg {
   domain: string;
   terrain: string;
   hazard: boolean;
+  dispatch: string[];
   questions: {
     id: string;
     questionText: string;
@@ -64,7 +67,7 @@ interface TrailLeg {
   }[];
 }
 interface DailyTrailResult {
-  dailyTrail: { date: string; legs: TrailLeg[] };
+  dailyTrail: { date: string; mission: string[]; legs: TrailLeg[] };
 }
 interface TrailRunShape {
   trailDate: string;
@@ -196,6 +199,24 @@ describe("the daily trail", () => {
       );
 
       expect(texts.some((text) => text.startsWith("unclassified"))).toBe(false);
+    });
+
+    it("briefs a job before launch", async () => {
+      const trail = (await h.execute<DailyTrailResult>(DAILY_TRAIL, { token: "" }))
+        .data?.dailyTrail;
+
+      expect(trail?.mission.length).toBeGreaterThan(0);
+      for (const line of trail?.mission ?? []) expect(line.trim()).not.toBe("");
+    });
+
+    it("carries a dispatch on every leg", async () => {
+      const legs =
+        (await h.execute<DailyTrailResult>(DAILY_TRAIL)).data?.dailyTrail
+          .legs ?? [];
+
+      for (const leg of legs) {
+        expect(leg.dispatch.length, `no dispatch on ${leg.terrain}`).toBeGreaterThan(0);
+      }
     });
 
     it("dresses each leg in its terrain", async () => {
