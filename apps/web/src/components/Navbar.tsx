@@ -17,6 +17,7 @@ import { Alert, Navbar as DsNavbar, type NavLinkSpec } from "@/components/ds";
 const PUBLIC_LINKS: NavLinkSpec[] = [
   { href: "/", label: "Overview" },
   { href: "/quiz", label: "Evaluation" },
+  { href: "/trail", label: "Trail" },
   { href: "/study-materials", label: "Study Materials" },
   { href: "/leaderboard", label: "Standings" },
 ];

@@ -22,6 +22,13 @@
       "when": 1787006763063,
       "tag": "0002_mighty_thena",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1787016761751,
+      "tag": "0003_public_peter_quill",
+      "breakpoints": true
     }
   ]
 }

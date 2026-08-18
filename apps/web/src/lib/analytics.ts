@@ -19,7 +19,13 @@ declare global {
 }
 
 export type AnalyticsEvent =
-  "quiz_start" | "quiz_complete" | "quiz_signup_prompt" | "sign_up" | "login";
+  | "quiz_start"
+  | "quiz_complete"
+  | "quiz_signup_prompt"
+  | "trail_start"
+  | "trail_end"
+  | "sign_up"
+  | "login";
 
 export function trackEvent(
   name: AnalyticsEvent,

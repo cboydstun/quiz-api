@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { Button } from "./Button";
 import { Label } from "./Label";
+import { Meter } from "./Meter";
 import { Panel } from "./Panel";
 import { Readout } from "./Readout";
 import { Rule } from "./Rule";
@@ -106,6 +107,63 @@ describe("Status", () => {
       </Status>,
     );
     expect(container.querySelectorAll("span").length).toBe(1);
+  });
+});
+
+describe("Meter", () => {
+  it("exposes the level to assistive tech", () => {
+    render(<Meter label="Battery" value={61} />);
+    const meter = screen.getByRole("meter", { name: "Battery" });
+    expect(meter).toHaveAttribute("aria-valuenow", "61");
+    expect(meter).toHaveAttribute("aria-valuemax", "100");
+  });
+
+  it("shows the level as a percentage by default", () => {
+    render(<Meter label="Airframe" value={80} />);
+    expect(screen.getByText("80%")).toBeInTheDocument();
+  });
+
+  it("shows a readout instead when given one", () => {
+    render(<Meter label="Daylight" value={30} readout="2h" />);
+    expect(screen.getByText("2h")).toBeInTheDocument();
+    expect(screen.queryByText("30%")).not.toBeInTheDocument();
+  });
+
+  it("clamps out-of-range values rather than overflowing the bar", () => {
+    render(<Meter label="Battery" value={140} />);
+    expect(screen.getByRole("meter")).toHaveAttribute("aria-valuenow", "100");
+  });
+
+  it("clamps below zero too", () => {
+    render(<Meter label="Battery" value={-20} />);
+    expect(screen.getByRole("meter")).toHaveAttribute("aria-valuenow", "0");
+  });
+
+  // A bar reading empty while the run is still flying is a bug the user sees.
+  it("lights a segment for any charge at all", () => {
+    const { container } = render(<Meter label="Battery" value={1} />);
+    const lit = container.querySelectorAll(".bg-abort");
+    expect(lit.length).toBe(1);
+  });
+
+  it("goes dark at zero", () => {
+    const { container } = render(<Meter label="Battery" value={0} />);
+    expect(container.querySelectorAll(".bg-abort").length).toBe(0);
+  });
+
+  // The tone carries the warning; a fixed tone would make a dying battery look
+  // the same as a full one.
+  it("colours itself by level unless told otherwise", () => {
+    const { container: healthy } = render(<Meter label="A" value={90} />);
+    expect(healthy.querySelector(".bg-go")).not.toBeNull();
+
+    const { container: low } = render(<Meter label="B" value={10} />);
+    expect(low.querySelector(".bg-abort")).not.toBeNull();
+
+    const { container: fixed } = render(
+      <Meter label="C" value={10} tone="info" />,
+    );
+    expect(fixed.querySelector(".bg-info")).not.toBeNull();
   });
 });
 

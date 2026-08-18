@@ -7,6 +7,8 @@ export { Button, buttonClass } from "./core/Button";
 export type { ButtonProps, ButtonSize, ButtonVariant } from "./core/Button";
 export { Label } from "./core/Label";
 export type { LabelProps, LabelTone } from "./core/Label";
+export { Meter } from "./core/Meter";
+export type { MeterProps, MeterTone } from "./core/Meter";
 export { Panel } from "./core/Panel";
 export type { PanelPadding, PanelProps, PanelTone } from "./core/Panel";
 export { Readout } from "./core/Readout";

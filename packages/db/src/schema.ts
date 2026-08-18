@@ -1,12 +1,14 @@
 import { sql } from "drizzle-orm";
 import {
   boolean,
+  date,
   index,
   integer,
   pgEnum,
   pgTable,
   text,
   timestamp,
+  unique,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -148,9 +150,60 @@ export const userResponses = pgTable(
   ],
 );
 
+/**
+ * One row per operator per day of the trail.
+ *
+ * The trail is a permadeath run over the daily route: you get one attempt, and
+ * the `(user_id, trail_date)` unique index *is* that rule. An application-level
+ * "have you flown today?" check is a race, and the client can simply not ask.
+ *
+ * The answers themselves are not here — a signed-in run submits every question
+ * through `submitAnswer`, so points, score, and domain accuracy all move on the
+ * existing path and the trail needs no second ledger. What this table stores is
+ * only the run's outcome, which is what makes the day spent.
+ *
+ * A signed-out visitor has no row at all: `gradeAnswers` records nothing, so
+ * their one-per-day is localStorage and therefore bypassable. That is the gap
+ * the death screen sells an account against.
+ */
+export const trailRuns = pgTable(
+  "trail_runs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+
+    // The UTC calendar day whose route was flown, "YYYY-MM-DD". A date rather
+    // than a timestamp: the trail rolls over at midnight UTC for everyone.
+    trailDate: date("trail_date", { mode: "string" }).notNull(),
+
+    // How far the run got, 1-based. `completed` is not derivable from it: a
+    // thin bank can produce a trail shorter than eight legs.
+    legsReached: integer("legs_reached").notNull(),
+    completed: boolean("completed").notNull(),
+
+    batteryLeft: integer("battery_left").notNull(),
+    airframeLeft: integer("airframe_left").notNull(),
+
+    correct: integer("correct").notNull(),
+    total: integer("total").notNull(),
+
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    unique("trail_runs_user_date_key").on(table.userId, table.trailDate),
+    index("trail_runs_date_idx").on(table.trailDate),
+  ],
+);
+
 export type UserRow = typeof users.$inferSelect;
 export type NewUserRow = typeof users.$inferInsert;
 export type QuestionRow = typeof questions.$inferSelect;
 export type NewQuestionRow = typeof questions.$inferInsert;
 export type UserResponseRow = typeof userResponses.$inferSelect;
+export type TrailRunRow = typeof trailRuns.$inferSelect;
+export type NewTrailRunRow = typeof trailRuns.$inferInsert;
 export type Role = (typeof roleEnum.enumValues)[number];

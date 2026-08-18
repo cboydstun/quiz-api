@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TRAIL_LEGS } from "@quiz/graphql";
 import { buttonClass, Label, Readout, Rule } from "@/components/ds";
 import { countQuestions, listDomains } from "@/lib/server/bank";
 import { countUsers } from "@/lib/server/users";
@@ -145,6 +146,44 @@ export default async function Home() {
               </p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/*
+        The trail is a different proposition from an evaluation run and is sold
+        as one: same bank, one attempt, and it can be lost. It sits above the
+        domain list because it is the only thing on the page that expires.
+      */}
+      <section className="mx-auto max-w-shell px-4 pb-20 sm:px-8 sm:pb-24">
+        <Rule label="Daily" className="mb-8" />
+        <div className="grid gap-px border border-line-hairline bg-line-hairline md:grid-cols-[2fr_1fr]">
+          <div className="bg-ink-800 p-6 sm:p-8">
+            <Label tag="///" className="mb-6">
+              The Trail
+            </Label>
+            <h2 className="m-0 mb-4 max-w-[24ch] text-xl font-medium tracking-tight text-bone-100">
+              One route a day. Eight legs. No second attempt.
+            </h2>
+            <p className="m-0 max-w-[60ch] text-sm leading-normal text-mute-500">
+              Every operator flies the same route today. Each leg is a knowledge
+              area dressed as terrain, and the questions are what get you across
+              it. Miss too many and you go down where you went down.
+            </p>
+          </div>
+          <div className="flex flex-col justify-between gap-6 bg-ink-800 p-6 sm:p-8">
+            {/* A thin bank flies a shorter trail; the number must not lie. */}
+            <Readout
+              label="Legs"
+              value={Math.min(TRAIL_LEGS, domains.length)}
+              tone="signal"
+            />
+            <Link
+              href="/trail"
+              className={buttonClass({ variant: "signal", size: "md" })}
+            >
+              Fly Today&apos;s Trail
+            </Link>
+          </div>
         </div>
       </section>
 
