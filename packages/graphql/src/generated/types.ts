@@ -53,6 +53,18 @@ export type CreateUserInput = {
 };
 
 /**
+ * The day's route. Everyone gets the same one, derived from the UTC date, so
+ * that comparing runs means something. Fewer than eight legs when the bank has
+ * fewer than eight classified domains.
+ */
+export type DailyTrail = {
+  __typename?: 'DailyTrail';
+  /** The UTC calendar day this route belongs to, YYYY-MM-DD. */
+  date: Scalars['String']['output'];
+  legs: Array<TrailLeg>;
+};
+
+/**
  * One row per domain the user has answered in. The answered count is
  * submissions, not distinct questions — a question answered twice counts
  * twice, because user_responses has no uniqueness constraint on
@@ -150,6 +162,19 @@ export type Mutation = {
    * cold, and the leaderboard ranks runs.
    */
   recordReview: SubmitAnswerResponse;
+  /**
+   * Records the outcome of a trail run. Signed-in only — a signed-out run is
+   * graded and thrown away, exactly as on /quiz.
+   *
+   * The first attempt of the day wins: a second call for the same date returns
+   * the run already stored rather than overwriting it, so a refresh, a retry,
+   * or a double-click cannot rewrite history.
+   *
+   * The figures are reported by the client and deliberately not verified. What
+   * counts — points, score, domain accuracy — comes from submitAnswer on the
+   * server; this row only decides that the day is spent.
+   */
+  recordTrailRun: TrailRun;
   register: AuthPayload;
   submitAnswer: SubmitAnswerResponse;
   updateLoginStreak: User;
@@ -199,6 +224,11 @@ export type MutationLoginArgs = {
 export type MutationRecordReviewArgs = {
   known: Scalars['Boolean']['input'];
   questionId: Scalars['ID']['input'];
+};
+
+
+export type MutationRecordTrailRunArgs = {
+  input: RecordTrailRunInput;
 };
 
 
@@ -253,9 +283,25 @@ export type PublishedQuestion = {
 
 export type Query = {
   __typename?: 'Query';
+  /**
+   * Today's trail route, with the questions for every leg.
+   *
+   * Public for the same reason getLeaderboard is: /trail has no route guard on
+   * the client, so requiring a token would bounce every anonymous visitor to
+   * /login through the error link — and an anonymous visitor flying the trail
+   * and hitting the wall at the end is the whole acquisition path.
+   */
+  dailyTrail: DailyTrail;
   getGoogleAuthUrl: GoogleAuthUrl;
   getLeaderboard: LeaderboardResponse;
   me?: Maybe<User>;
+  /**
+   * The viewer's run on today's trail, or null if they have not flown it.
+   *
+   * This is what makes the day spent: the client refuses to start a run when
+   * this is non-null, and the unique index refuses to record a second one.
+   */
+  myTrailRun?: Maybe<TrailRun>;
   /**
    * Questions published as study content for one domain, with answers and
    * explanations. Public and stable in order — these back server-rendered pages
@@ -371,6 +417,17 @@ export type Question = {
   updatedAt: Scalars['String']['output'];
 };
 
+export type RecordTrailRunInput = {
+  airframeLeft: Scalars['Int']['input'];
+  batteryLeft: Scalars['Int']['input'];
+  completed: Scalars['Boolean']['input'];
+  correct: Scalars['Int']['input'];
+  legsReached: Scalars['Int']['input'];
+  total: Scalars['Int']['input'];
+  /** Must be today or yesterday in UTC — a run that crossed midnight still counts. */
+  trailDate: Scalars['String']['input'];
+};
+
 export type Role =
   | 'ADMIN'
   | 'EDITOR'
@@ -406,6 +463,43 @@ export type SubmitAnswerResponse = {
   explanation?: Maybe<Scalars['String']['output']>;
   isCorrect: Scalars['Boolean']['output'];
   success: Scalars['Boolean']['output'];
+};
+
+/**
+ * One leg of the daily trail: a knowledge domain dressed as terrain, plus the
+ * questions that stand between you and the next leg. Carries RunQuestion rather
+ * than Question — the trail is a run, and no answer key leaves the server ahead
+ * of an attempt.
+ */
+export type TrailLeg = {
+  __typename?: 'TrailLeg';
+  domain: Scalars['String']['output'];
+  /** Hazard legs damage the airframe on a miss. Ordinary legs only cost battery. */
+  hazard: Scalars['Boolean']['output'];
+  /** 1-based, as displayed: LEG 3 OF 8. */
+  index: Scalars['Int']['output'];
+  questions: Array<RunQuestion>;
+  /** The domain's terrain name, e.g. ICING LAYER for Weather sources. */
+  terrain: Scalars['String']['output'];
+};
+
+/**
+ * An operator's outcome on one day's trail. One per operator per day — the
+ * attempt is spent whether you arrived or went down.
+ *
+ * The answers are not here: a signed-in run submits each question through
+ * submitAnswer, so points and domain accuracy move on the existing path. This
+ * is only the run's shape.
+ */
+export type TrailRun = {
+  __typename?: 'TrailRun';
+  airframeLeft: Scalars['Int']['output'];
+  batteryLeft: Scalars['Int']['output'];
+  completed: Scalars['Boolean']['output'];
+  correct: Scalars['Int']['output'];
+  legsReached: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  trailDate: Scalars['String']['output'];
 };
 
 export type UpdatePasswordResponse = {
@@ -538,6 +632,7 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateQuestionInput: CreateQuestionInput;
   CreateUserInput: CreateUserInput;
+  DailyTrail: ResolverTypeWrapper<DailyTrail>;
   DomainAccuracy: ResolverTypeWrapper<DomainAccuracy>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   GoogleAuthUrl: ResolverTypeWrapper<GoogleAuthUrl>;
@@ -552,10 +647,13 @@ export type ResolversTypes = ResolversObject<{
   PublishedQuestion: ResolverTypeWrapper<PublishedQuestion>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Question: ResolverTypeWrapper<QuestionModel>;
+  RecordTrailRunInput: RecordTrailRunInput;
   Role: Role;
   RunQuestion: ResolverTypeWrapper<RunQuestion>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   SubmitAnswerResponse: ResolverTypeWrapper<SubmitAnswerResponse>;
+  TrailLeg: ResolverTypeWrapper<TrailLeg>;
+  TrailRun: ResolverTypeWrapper<TrailRun>;
   UpdatePasswordResponse: ResolverTypeWrapper<UpdatePasswordResponse>;
   UpdateQuestionInput: UpdateQuestionInput;
   User: ResolverTypeWrapper<UserModel>;
@@ -568,6 +666,7 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   CreateQuestionInput: CreateQuestionInput;
   CreateUserInput: CreateUserInput;
+  DailyTrail: DailyTrail;
   DomainAccuracy: DomainAccuracy;
   Float: Scalars['Float']['output'];
   GoogleAuthUrl: GoogleAuthUrl;
@@ -581,9 +680,12 @@ export type ResolversParentTypes = ResolversObject<{
   PublishedQuestion: PublishedQuestion;
   Query: Record<PropertyKey, never>;
   Question: QuestionModel;
+  RecordTrailRunInput: RecordTrailRunInput;
   RunQuestion: RunQuestion;
   String: Scalars['String']['output'];
   SubmitAnswerResponse: SubmitAnswerResponse;
+  TrailLeg: TrailLeg;
+  TrailRun: TrailRun;
   UpdatePasswordResponse: UpdatePasswordResponse;
   UpdateQuestionInput: UpdateQuestionInput;
   User: UserModel;
@@ -592,6 +694,11 @@ export type ResolversParentTypes = ResolversObject<{
 export type AuthPayloadResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = ResolversObject<{
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+}>;
+
+export type DailyTrailResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['DailyTrail'] = ResolversParentTypes['DailyTrail']> = ResolversObject<{
+  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  legs?: Resolver<Array<ResolversTypes['TrailLeg']>, ParentType, ContextType>;
 }>;
 
 export type DomainAccuracyResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['DomainAccuracy'] = ResolversParentTypes['DomainAccuracy']> = ResolversObject<{
@@ -638,6 +745,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   gradeAnswers?: Resolver<Array<ResolversTypes['GradedAnswer']>, ParentType, ContextType, RequireFields<MutationGradeAnswersArgs, 'answers'>>;
   login?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   recordReview?: Resolver<ResolversTypes['SubmitAnswerResponse'], ParentType, ContextType, RequireFields<MutationRecordReviewArgs, 'known' | 'questionId'>>;
+  recordTrailRun?: Resolver<ResolversTypes['TrailRun'], ParentType, ContextType, RequireFields<MutationRecordTrailRunArgs, 'input'>>;
   register?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'input'>>;
   submitAnswer?: Resolver<ResolversTypes['SubmitAnswerResponse'], ParentType, ContextType, RequireFields<MutationSubmitAnswerArgs, 'questionId' | 'selectedAnswer'>>;
   updateLoginStreak?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateLoginStreakArgs, 'userId'>>;
@@ -657,9 +765,11 @@ export type PublishedQuestionResolvers<ContextType = GraphQLContext, ParentType 
 }>;
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  dailyTrail?: Resolver<ResolversTypes['DailyTrail'], ParentType, ContextType>;
   getGoogleAuthUrl?: Resolver<ResolversTypes['GoogleAuthUrl'], ParentType, ContextType>;
   getLeaderboard?: Resolver<ResolversTypes['LeaderboardResponse'], ParentType, ContextType, Partial<QueryGetLeaderboardArgs>>;
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  myTrailRun?: Resolver<Maybe<ResolversTypes['TrailRun']>, ParentType, ContextType>;
   publishedQuestions?: Resolver<Array<ResolversTypes['PublishedQuestion']>, ParentType, ContextType, RequireFields<QueryPublishedQuestionsArgs, 'domain'>>;
   question?: Resolver<Maybe<ResolversTypes['Question']>, ParentType, ContextType, RequireFields<QueryQuestionArgs, 'id'>>;
   questionCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType, Partial<QueryQuestionCountArgs>>;
@@ -703,6 +813,24 @@ export type SubmitAnswerResponseResolvers<ContextType = GraphQLContext, ParentTy
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 }>;
 
+export type TrailLegResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['TrailLeg'] = ResolversParentTypes['TrailLeg']> = ResolversObject<{
+  domain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hazard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  index?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  questions?: Resolver<Array<ResolversTypes['RunQuestion']>, ParentType, ContextType>;
+  terrain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+}>;
+
+export type TrailRunResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['TrailRun'] = ResolversParentTypes['TrailRun']> = ResolversObject<{
+  airframeLeft?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  batteryLeft?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  completed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  correct?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  legsReached?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  trailDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+}>;
+
 export type UpdatePasswordResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['UpdatePasswordResponse'] = ResolversParentTypes['UpdatePasswordResponse']> = ResolversObject<{
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -731,6 +859,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
 
 export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   AuthPayload?: AuthPayloadResolvers<ContextType>;
+  DailyTrail?: DailyTrailResolvers<ContextType>;
   DomainAccuracy?: DomainAccuracyResolvers<ContextType>;
   GoogleAuthUrl?: GoogleAuthUrlResolvers<ContextType>;
   GradedAnswer?: GradedAnswerResolvers<ContextType>;
@@ -743,6 +872,8 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Question?: QuestionResolvers<ContextType>;
   RunQuestion?: RunQuestionResolvers<ContextType>;
   SubmitAnswerResponse?: SubmitAnswerResponseResolvers<ContextType>;
+  TrailLeg?: TrailLegResolvers<ContextType>;
+  TrailRun?: TrailRunResolvers<ContextType>;
   UpdatePasswordResponse?: UpdatePasswordResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 }>;

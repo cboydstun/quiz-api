@@ -19,6 +19,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${origin}/`, changeFrequency: "weekly", priority: 1 },
     { url: `${origin}/quiz`, changeFrequency: "weekly", priority: 0.9 },
+    // Daily, genuinely: the route is replotted at 00:00 UTC.
+    { url: `${origin}/trail`, changeFrequency: "daily", priority: 0.9 },
     { url: `${origin}/practice`, changeFrequency: "weekly", priority: 0.9 },
     {
       url: `${origin}/study-materials`,

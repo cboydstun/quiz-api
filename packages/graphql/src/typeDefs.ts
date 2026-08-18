@@ -149,6 +149,63 @@ export const typeDefs = /* GraphQL */ `
     domain: String
   }
 
+  """
+  One leg of the daily trail: a knowledge domain dressed as terrain, plus the
+  questions that stand between you and the next leg. Carries RunQuestion rather
+  than Question — the trail is a run, and no answer key leaves the server ahead
+  of an attempt.
+  """
+  type TrailLeg {
+    "1-based, as displayed: LEG 3 OF 8."
+    index: Int!
+    domain: String!
+    "The domain's terrain name, e.g. ICING LAYER for Weather sources."
+    terrain: String!
+    "Hazard legs damage the airframe on a miss. Ordinary legs only cost battery."
+    hazard: Boolean!
+    questions: [RunQuestion!]!
+  }
+
+  """
+  The day's route. Everyone gets the same one, derived from the UTC date, so
+  that comparing runs means something. Fewer than eight legs when the bank has
+  fewer than eight classified domains.
+  """
+  type DailyTrail {
+    "The UTC calendar day this route belongs to, YYYY-MM-DD."
+    date: String!
+    legs: [TrailLeg!]!
+  }
+
+  """
+  An operator's outcome on one day's trail. One per operator per day — the
+  attempt is spent whether you arrived or went down.
+
+  The answers are not here: a signed-in run submits each question through
+  submitAnswer, so points and domain accuracy move on the existing path. This
+  is only the run's shape.
+  """
+  type TrailRun {
+    trailDate: String!
+    legsReached: Int!
+    completed: Boolean!
+    batteryLeft: Int!
+    airframeLeft: Int!
+    correct: Int!
+    total: Int!
+  }
+
+  input RecordTrailRunInput {
+    "Must be today or yesterday in UTC — a run that crossed midnight still counts."
+    trailDate: String!
+    legsReached: Int!
+    completed: Boolean!
+    batteryLeft: Int!
+    airframeLeft: Int!
+    correct: Int!
+    total: Int!
+  }
+
   input AnswerInput {
     questionId: ID!
     selectedAnswer: String!
@@ -285,6 +342,22 @@ export const typeDefs = /* GraphQL */ `
     to list them would leave nothing to link to.
     """
     questionDomains: [String!]!
+    """
+    Today's trail route, with the questions for every leg.
+
+    Public for the same reason getLeaderboard is: /trail has no route guard on
+    the client, so requiring a token would bounce every anonymous visitor to
+    /login through the error link — and an anonymous visitor flying the trail
+    and hitting the wall at the end is the whole acquisition path.
+    """
+    dailyTrail: DailyTrail!
+    """
+    The viewer's run on today's trail, or null if they have not flown it.
+
+    This is what makes the day spent: the client refuses to start a run when
+    this is non-null, and the unique index refuses to record a second one.
+    """
+    myTrailRun: TrailRun
     getGoogleAuthUrl: GoogleAuthUrl!
     getLeaderboard(limit: Int, period: LeaderboardPeriod): LeaderboardResponse!
   }
@@ -320,6 +393,20 @@ export const typeDefs = /* GraphQL */ `
     cold, and the leaderboard ranks runs.
     """
     recordReview(questionId: ID!, known: Boolean!): SubmitAnswerResponse!
+
+    """
+    Records the outcome of a trail run. Signed-in only — a signed-out run is
+    graded and thrown away, exactly as on /quiz.
+
+    The first attempt of the day wins: a second call for the same date returns
+    the run already stored rather than overwriting it, so a refresh, a retry,
+    or a double-click cannot rewrite history.
+
+    The figures are reported by the client and deliberately not verified. What
+    counts — points, score, domain accuracy — comes from submitAnswer on the
+    server; this row only decides that the day is spent.
+    """
+    recordTrailRun(input: RecordTrailRunInput!): TrailRun!
 
     changeUserRole(userId: ID!, newRole: Role!): User!
     deleteUser(userId: ID!): Boolean!

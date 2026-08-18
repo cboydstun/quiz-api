@@ -4,6 +4,7 @@ import { leaderboardResolvers } from "./leaderboard";
 import { questionResolvers } from "./questions";
 import { responseResolvers } from "./responses";
 import { statsResolvers } from "./stats";
+import { trailResolvers } from "./trail";
 import { typeResolvers } from "./types";
 import { userResolvers } from "./users";
 
@@ -14,6 +15,7 @@ const modules: Resolvers[] = [
   responseResolvers,
   leaderboardResolvers,
   statsResolvers,
+  trailResolvers,
   typeResolvers,
 ];
 
