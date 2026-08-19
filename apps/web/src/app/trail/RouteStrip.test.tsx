@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { RouteStrip } from "./RouteStrip";
 
 const nodes = () => screen.getAllByTestId("route-node");
+const marker = () => screen.getByTestId("route-marker");
 
 describe("RouteStrip", () => {
   it("shows one node per leg", () => {
@@ -35,9 +36,24 @@ describe("RouteStrip", () => {
     expect(screen.getByRole("group", { name: "Leg 4 of 8" })).toBeInTheDocument();
   });
 
+  it("puts the aircraft on the leg node when no position is given", () => {
+    render(<RouteStrip total={5} current={2} />);
+    expect(marker().style.left).toBe("50%");
+  });
+
+  // The aircraft moves between nodes as the questions inside a leg are
+  // answered; the nodes themselves still only know whole legs.
+  it("puts the aircraft between nodes on a fractional position", () => {
+    render(<RouteStrip total={5} current={1} position={1.5} />);
+
+    expect(marker().style.left).toBe("37.5%");
+    expect(nodes()[1]?.dataset.state).toBe("current");
+  });
+
   it("does not divide by zero on a one-leg route", () => {
     render(<RouteStrip total={1} current={0} />);
     expect(nodes()).toHaveLength(1);
     expect(screen.getByRole("group", { name: "Leg 1 of 1" })).toBeInTheDocument();
+    expect(marker().style.left).toBe("100%");
   });
 });

@@ -10,6 +10,7 @@ import type { User } from "@/types";
 import {
   answerQuestion,
   currentLeg,
+  routePosition,
   startRun,
   TRAIL_RULES,
   type TrailState,
@@ -193,13 +194,15 @@ export default function TrailPage() {
   /** The ending beat plays once, before the debrief. */
   const [endingSeen, setEndingSeen] = useState(false);
   /**
-   * Resources as they stood before the answer being shown. Captured where the
-   * verdict is staged, so the verdict screen's meters have somewhere to drain
-   * from — a meter that mounts already spent has nothing to animate.
+   * Resources and route position as they stood before the answer being shown.
+   * Captured where the verdict is staged, so the verdict screen's meters have
+   * somewhere to drain from and its aircraft somewhere to fly from — anything
+   * that mounts already at its new value has nothing to animate.
    */
   const [before, setBefore] = useState<{
     battery: number;
     airframe: number;
+    position: number;
   } | null>(null);
 
   /**
@@ -326,7 +329,11 @@ export default function TrailPage() {
           explanation: graded?.explanation ?? null,
         };
 
-        setBefore({ battery: state.battery, airframe: state.airframe });
+        setBefore({
+          battery: state.battery,
+          airframe: state.airframe,
+          position: routePosition(state, legs),
+        });
 
         const next = answerQuestion(state, legs, isCorrect);
         setState(next);

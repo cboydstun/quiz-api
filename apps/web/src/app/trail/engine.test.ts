@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   answerQuestion,
   currentLeg,
+  routePosition,
   startRun,
   TRAIL_RULES,
   type EngineLeg,
@@ -218,5 +219,47 @@ describe("currentLeg", () => {
 
     expect(state.status).toBe("ARRIVED");
     expect(currentLeg({ ...state, legIndex: 9 }, legs)).toBeUndefined();
+  });
+});
+
+describe("routePosition", () => {
+  it("starts at the first leg", () => {
+    expect(routePosition(startRun(EIGHT_CLEAN), EIGHT_CLEAN)).toBe(0);
+  });
+
+  // The whole point: the aircraft moves on every answer, not once a leg.
+  it("advances a fraction of a gap per question inside a leg", () => {
+    const state = fly(EIGHT_CLEAN, allCorrect(1));
+
+    expect(routePosition(state, EIGHT_CLEAN)).toBeCloseTo(1 / 3);
+  });
+
+  it("lands exactly on the node at a leg boundary", () => {
+    const state = fly(EIGHT_CLEAN, allCorrect(3));
+
+    expect(state.legIndex).toBe(1);
+    expect(routePosition(state, EIGHT_CLEAN)).toBe(1);
+  });
+
+  // ARRIVED holds legIndex on the last leg with questionIndex on the last
+  // question, which is 7.67 of 7 — off the end of the rail.
+  it("clamps an arrived run to the end of the route", () => {
+    const state = fly(EIGHT_CLEAN, allCorrect(24));
+
+    expect(state.status).toBe("ARRIVED");
+    expect(routePosition(state, EIGHT_CLEAN)).toBe(EIGHT_CLEAN.length - 1);
+  });
+
+  it("carries the leg and the fraction together past the first leg", () => {
+    const legs = route([false, true, false]);
+    const state = fly(legs, [true, true, true, false]);
+
+    expect(state.legIndex).toBe(1);
+    expect(state.questionIndex).toBe(1);
+    expect(routePosition(state, legs)).toBeCloseTo(1 + 1 / 3);
+  });
+
+  it("is zero for an empty route", () => {
+    expect(routePosition(startRun([]), [])).toBe(0);
   });
 });

@@ -69,6 +69,33 @@ export function currentLeg<T extends EngineLeg>(
   return route[state.legIndex];
 }
 
+/**
+ * Where the aircraft is on the route, in legs, as a fraction.
+ *
+ * `legIndex` on its own moves once every three questions, which is a diagram
+ * rather than a flight. The question index inside the leg carries the rest, so
+ * every committed answer moves the aircraft a third of a gap.
+ *
+ * Clamped to the last leg because an `ARRIVED` run holds `legIndex` on the
+ * final leg with `questionIndex` still on the final question — a position past
+ * the end of the rail, and the final verdict screen does render it.
+ */
+export function routePosition(
+  state: TrailState,
+  route: readonly EngineLeg[],
+): number {
+  const leg = route[state.legIndex];
+  const within =
+    leg && leg.questions.length > 0
+      ? state.questionIndex / leg.questions.length
+      : 0;
+
+  return Math.min(
+    Math.max(state.legIndex + within, 0),
+    Math.max(route.length - 1, 0),
+  );
+}
+
 export function startRun(route: readonly EngineLeg[]): TrailState {
   const battery = clamp(TRAIL_RULES.START_BATTERY - TRAIL_RULES.TRANSIT_COST);
 
