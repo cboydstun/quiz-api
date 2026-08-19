@@ -1,11 +1,15 @@
 import { Alert, Button, Label, QuestionCard, Status } from "@/components/ds";
 import { Instruments } from "./Instruments";
+import { RouteStrip } from "../RouteStrip";
+import { Telemetry } from "../Telemetry";
 import { TRAIL_RULES, type TrailState } from "../engine";
 import type { TrailLeg } from "../types";
 
 export interface QuestionProps {
   run: TrailState;
   leg: TrailLeg;
+  /** The whole route, for the strip. */
+  legs: TrailLeg[];
   legCount: number;
   operator: string;
   daylight: number;
@@ -23,6 +27,7 @@ export interface QuestionProps {
 export function Question({
   run,
   leg,
+  legs,
   legCount,
   operator,
   daylight,
@@ -50,6 +55,14 @@ export function Question({
           </Status>
         )}
       </div>
+
+      <RouteStrip
+        total={legCount}
+        current={run.legIndex}
+        hazards={legs.map((item) => item.hazard)}
+        className="mb-3"
+      />
+      <Telemetry seed={leg.terrain} className="mb-6" />
 
       <Instruments run={run} daylight={daylight} />
 

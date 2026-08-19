@@ -1,25 +1,50 @@
 import { Button, Panel, Status } from "@/components/ds";
 import { Instruments } from "./Instruments";
+import { RouteStrip } from "../RouteStrip";
 import type { TrailState } from "../engine";
-import type { DebriefEntry } from "../types";
+import type { DebriefEntry, TrailLeg } from "../types";
 
 export interface VerdictProps {
   run: TrailState;
+  legs: TrailLeg[];
   entry: DebriefEntry;
   daylight: number;
+  /** Resources as they stood before this answer, so the meters can drain. */
+  before?: { battery: number; airframe: number };
   onContinue: () => void;
 }
 
 /** What the last answer was, and what it cost. */
-export function Verdict({ run, entry, daylight, onContinue }: VerdictProps) {
+export function Verdict({
+  run,
+  legs,
+  entry,
+  daylight,
+  before,
+  onContinue,
+}: VerdictProps) {
   return (
     <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
-      <Instruments run={run} daylight={daylight} damaged={!entry.isCorrect} />
+      <RouteStrip
+        total={legs.length}
+        current={run.legIndex}
+        hazards={legs.map((item) => item.hazard)}
+        className="mb-6"
+      />
+      <Instruments
+        run={run}
+        daylight={daylight}
+        damaged={!entry.isCorrect}
+        before={before}
+      />
+      {/* The stutter a miss earns. One shot, three steps, 2px — a reaction
+          rather than a shake, and it is over before it asks for attention. */}
       <Panel
         label={entry.terrain}
         tag="///"
         meta={entry.isCorrect ? "CLEARED" : "STRUCK"}
         padding="md"
+        className={entry.isCorrect ? undefined : "glitch"}
       >
         <Status tone={entry.isCorrect ? "go" : "abort"} filled>
           {entry.isCorrect ? "Correct" : "Missed"}
