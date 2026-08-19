@@ -2,7 +2,7 @@ import { Alert, Button, Label, QuestionCard, Status } from "@/components/ds";
 import { Instruments } from "./Instruments";
 import { RouteStrip } from "../RouteStrip";
 import { Telemetry } from "../Telemetry";
-import { TRAIL_RULES, type TrailState } from "../engine";
+import { routePosition, TRAIL_RULES, type TrailState } from "../engine";
 import type { TrailLeg } from "../types";
 
 export interface QuestionProps {
@@ -59,6 +59,7 @@ export function Question({
       <RouteStrip
         total={legCount}
         current={run.legIndex}
+        position={routePosition(run, legs)}
         hazards={legs.map((item) => item.hazard)}
         className="mb-3"
       />

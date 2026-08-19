@@ -1,7 +1,8 @@
 import { Button, Panel, Status } from "@/components/ds";
 import { Instruments } from "./Instruments";
+import { AnimatedRouteStrip } from "../AnimatedRouteStrip";
 import { RouteStrip } from "../RouteStrip";
-import type { TrailState } from "../engine";
+import { routePosition, type TrailState } from "../engine";
 import type { DebriefEntry, TrailLeg } from "../types";
 
 export interface VerdictProps {
@@ -9,8 +10,11 @@ export interface VerdictProps {
   legs: TrailLeg[];
   entry: DebriefEntry;
   daylight: number;
-  /** Resources as they stood before this answer, so the meters can drain. */
-  before?: { battery: number; airframe: number };
+  /**
+   * Resources and route position as they stood before this answer, so the
+   * meters can drain and the aircraft can fly to where the run now is.
+   */
+  before?: { battery: number; airframe: number; position: number };
   onContinue: () => void;
 }
 
@@ -25,12 +29,27 @@ export function Verdict({
 }: VerdictProps) {
   return (
     <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
-      <RouteStrip
-        total={legs.length}
-        current={run.legIndex}
-        hazards={legs.map((item) => item.hazard)}
-        className="mb-6"
-      />
+      {/* The advance this answer bought. Animated only when there is a prior
+          position to fly from, the same way the meters fall back to a plain
+          `Meter`. */}
+      {before ? (
+        <AnimatedRouteStrip
+          total={legs.length}
+          current={run.legIndex}
+          from={before.position}
+          to={routePosition(run, legs)}
+          hazards={legs.map((item) => item.hazard)}
+          className="mb-6"
+        />
+      ) : (
+        <RouteStrip
+          total={legs.length}
+          current={run.legIndex}
+          position={routePosition(run, legs)}
+          hazards={legs.map((item) => item.hazard)}
+          className="mb-6"
+        />
+      )}
       <Instruments
         run={run}
         daylight={daylight}
