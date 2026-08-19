@@ -1,23 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import { gql, type TypedDocumentNode } from "@apollo/client";
 import { useMutation, useQuery } from "@apollo/client/react";
-import {
-  Alert,
-  Button,
-  buttonClass,
-  cn,
-  Label,
-  Meter,
-  Panel,
-  QuestionCard,
-  Readout,
-  Spinner,
-  Status,
-} from "@/components/ds";
-import { Teletype } from "./Teletype";
+import { Alert, Spinner } from "@/components/ds";
 import { trackEvent } from "@/lib/analytics";
 import { messageFrom } from "@/lib/errors";
 import type { User } from "@/types";
@@ -28,6 +14,18 @@ import {
   TRAIL_RULES,
   type TrailState,
 } from "./engine";
+import type {
+  DailyTrail,
+  DebriefEntry,
+  TrailRunRecord,
+} from "./types";
+import { Briefing } from "./screens/Briefing";
+import { Crossing } from "./screens/Crossing";
+import { Debrief } from "./screens/Debrief";
+import { Ending } from "./screens/Ending";
+import { Question } from "./screens/Question";
+import { Spent } from "./screens/Spent";
+import { Verdict } from "./screens/Verdict";
 
 /**
  * Still asked for, but not a gate: a null `me` means the visitor is signed out
@@ -125,34 +123,8 @@ const GRADE_ANSWERS: TypedDocumentNode<GradeAnswersResult, GradeAnswersVars> =
     }
   `;
 
-interface TrailQuestion {
-  id: string;
-  prompt: string;
-  questionText: string;
-  answers: string[];
-  hint: string | null;
-  points: number;
-}
-interface TrailLeg {
-  index: number;
-  domain: string;
-  terrain: string;
-  hazard: boolean;
-  /** The crossing beat, one entry per line of transmission. */
-  dispatch: string[];
-  questions: TrailQuestion[];
-}
 interface DailyTrailResult {
-  dailyTrail: { date: string; mission: string[]; legs: TrailLeg[] } | null;
-}
-interface TrailRunRecord {
-  trailDate: string;
-  legsReached: number;
-  completed: boolean;
-  batteryLeft: number;
-  airframeLeft: number;
-  correct: number;
-  total: number;
+  dailyTrail: DailyTrail | null;
 }
 interface MyTrailRunResult {
   myTrailRun: TrailRunRecord | null;
@@ -174,16 +146,6 @@ interface GradeAnswersResult {
 }
 interface GradeAnswersVars {
   answers: { questionId: string; selectedAnswer: string }[];
-}
-
-/** One line of the debrief: what was asked, what happened, and why. */
-interface DebriefEntry {
-  terrain: string;
-  questionText: string;
-  chosen: string | null;
-  isCorrect: boolean;
-  correctAnswer: string | null;
-  explanation: string | null;
 }
 
 /**
@@ -477,542 +439,93 @@ export default function TrailPage() {
     );
 
   const alreadyFlown = runData?.myTrailRun ?? anonFlown;
-  const totalQuestions = legs.reduce(
-    (sum, item) => sum + item.questions.length,
-    0,
-  );
 
-  // ── Screens ──────────────────────────────────────────────────────────────
-
-  const renderBriefing = () => (
-    <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
-      <Label tag="///" className="mb-6">
-        Trail {trail.date}
-      </Label>
-      <h1 className="m-0 mb-4 text-2xl font-medium tracking-tight text-bone-100">
-        Today&apos;s trail
-      </h1>
-      <p className="m-0 mb-8 max-w-[62ch] text-sm leading-normal text-mute-500">
-        Every operator flies this same route today. {legs.length} legs,{" "}
-        {totalQuestions} questions, one attempt. A wrong answer costs{" "}
-        {TRAIL_RULES.MISS_COST}% battery; a wrong answer over a hazard costs{" "}
-        {TRAIL_RULES.HAZARD_DAMAGE}% airframe. Run either to zero and the run
-        ends where it ended.
-      </p>
-
-      {/* The job. Types out, because a briefing that is simply there has
-          already been read before the operator decides to read it. */}
-      <Panel label="The Job" tag="///" padding="md" className="mb-px">
-        <Teletype lines={trail.mission} />
-      </Panel>
-
-      <Panel label="Route" meta={`${legs.length} legs`} padding="none">
-        <div className="grid gap-px bg-line-hairline sm:grid-cols-2">
-          {legs.map((item) => (
-            <div key={item.domain} className="bg-ink-800 p-5">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <span className="label-mono text-mute-500">
-                  Leg {String(item.index).padStart(2, "0")}
-                </span>
-                {item.hazard && <Status tone="abort">Hazard</Status>}
-              </div>
-              <div className="mb-1 font-mono text-sm tracking-mono text-bone-100">
-                {item.terrain}
-              </div>
-              <div className="text-sm text-mute-500">{item.domain}</div>
-            </div>
-          ))}
-        </div>
-        <div className="border-t border-line-hairline px-5 py-4">
-          <Button variant="signal" size="md" onClick={begin}>
-            Launch
-          </Button>
-        </div>
-      </Panel>
-
-      {!currentUser && (
-        <p className="m-0 mt-6 max-w-[62ch] text-sm leading-normal text-mute-500">
-          You can fly without an account. Nothing will be recorded.
-        </p>
-      )}
-    </div>
-  );
-
-  const renderSpent = (run: TrailRunRecord) => (
-    <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
-      <Panel
-        label="Trail Flown"
-        tag="///"
-        meta={run.trailDate}
-        padding="none"
-      >
-        <div className="grid grid-cols-2 gap-px border-b border-line-hairline bg-line-hairline sm:grid-cols-4">
-          <div className="bg-ink-800">
-            <Readout
-              label="Reached"
-              value={`${run.legsReached} / ${legs.length}`}
-            />
-          </div>
-          <div className="bg-ink-800">
-            <Readout
-              label="Outcome"
-              value={run.completed ? "Arrived" : "Down"}
-              tone={run.completed ? "go" : "abort"}
-            />
-          </div>
-          <div className="bg-ink-800">
-            <Readout label="Correct" value={`${run.correct} / ${run.total}`} />
-          </div>
-          <div className="bg-ink-800">
-            <Readout label="Battery" value={run.batteryLeft} unit="%" />
-          </div>
-        </div>
-        <div className="px-5 py-6">
-          <p className="m-0 max-w-[52ch] text-sm leading-normal text-mute-400">
-            One trail a day. The next route is plotted at 00:00 UTC.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <Link
-              href="/quiz"
-              className={buttonClass({ variant: "signal", size: "md" })}
-            >
-              Take an Untimed Run
-            </Link>
-            <Link
-              href="/leaderboard"
-              className={buttonClass({ variant: "outline", size: "md" })}
-            >
-              Standings
-            </Link>
-          </div>
-        </div>
-      </Panel>
-    </div>
-  );
-
-  /**
-   * The crossing. A hairline draws across, the terrain resolves in, then the
-   * dispatch types. Continue is available throughout — the beat is atmosphere,
-   * not a gate, and gating it would make the eighth run of the week a chore.
+  /*
+   * Which screen is showing. Order is the flow: the verdict for the question
+   * just answered comes before the crossing it triggered, and the ending beat
+   * comes before the numbers.
+   *
+   * The screens themselves live in ./screens — this component owns the
+   * queries, the run state, and nothing else. It used to own all six inline
+   * and ran to a thousand lines.
    */
-  const renderCrossing = (index: number) => {
-    const active = legs[index];
-    if (!active) return null;
 
-    return (
-      <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
-        <Label tag="///" className="mb-6">
-          Leg {String(active.index).padStart(2, "0")} of{" "}
-          {String(legs.length).padStart(2, "0")}
-        </Label>
-
-        {/* The route line. Width only — the system forbids anything that
-            scales, and a line drawing across is what a crossing looks like. */}
-        <div className="mb-8 h-px bg-ink-600">
-          <div className="route-draw h-px bg-signal" />
-        </div>
-
-        <div className="mb-8 flex flex-wrap items-baseline justify-between gap-3">
-          <h1 className="signal-in m-0 font-mono text-3xl font-medium tracking-tight text-bone-100">
-            {active.terrain}
-          </h1>
-          {active.hazard && (
-            <Status tone="abort" filled>
-              Hazard
-            </Status>
-          )}
-        </div>
-
-        <Panel label={active.domain} tag="///" padding="md">
-          <Teletype lines={active.dispatch} />
-          <div className="mt-6 border-t border-line-hairline pt-5">
-            <Button
-              variant="signal"
-              size="md"
-              onClick={dismissCrossing}
-              autoFocus
-            >
-              Fly the leg
-            </Button>
-          </div>
-        </Panel>
-      </div>
+  if (!state) {
+    return alreadyFlown ? (
+      <Spent run={alreadyFlown} legCount={legs.length} />
+    ) : (
+      <Briefing
+        trail={trail}
+        signedIn={Boolean(currentUser)}
+        onLaunch={begin}
+      />
     );
-  };
+  }
 
-  /**
-   * The last beat before the numbers. This is the only place the fiction gets
-   * to land the outcome, so the debrief can stay a scoreboard.
-   */
-  const renderEnding = (run: TrailState) => {
-    const arrived = run.status === "ARRIVED";
-    const where = legs[run.legIndex]?.terrain ?? "the leg";
-
-    const lines = arrived
-      ? [
-          `All ${legs.length} legs flown. Cards are full.`,
-          `${run.battery}% charge and the airframe intact.`,
-          "The client gets the shots.",
-        ]
-      : run.airframe === 0
-        ? [
-            `Telemetry stopped over ${where}.`,
-            "The airframe did not survive the crossing.",
-            "The client is not getting the shots.",
-          ]
-        : [
-            `Charge ran out over ${where}.`,
-            "It came down where it came down.",
-            "The client is not getting the shots.",
-          ];
-
+  if (verdict) {
     return (
-      <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
-        <Panel
-          label={arrived ? "On The Ground" : "Signal Lost"}
-          tag="///"
-          meta={trail.date}
-          padding="md"
-        >
-          <Status tone={arrived ? "go" : "abort"} filled>
-            {arrived ? "Arrived" : "Down"}
-          </Status>
-          <div className="mt-5">
-            <Teletype lines={lines} />
-          </div>
-          <div className="mt-6 border-t border-line-hairline pt-5">
-            <Button
-              variant="signal"
-              size="md"
-              onClick={() => setEndingSeen(true)}
-              autoFocus
-            >
-              Debrief
-            </Button>
-          </div>
-        </Panel>
-      </div>
+      <Verdict
+        run={state}
+        entry={verdict}
+        daylight={daylight}
+        onContinue={resume}
+      />
     );
-  };
+  }
 
-  /**
-   * `damaged` tints the row for exactly as long as a miss verdict is on screen.
-   * A timed flash would need a timer and a piece of state; tying it to the
-   * verdict makes it declarative and gives it the right duration for free.
-   */
-  const renderInstruments = (run: TrailState, damaged = false) => (
-    <div
-      className={cn(
-        "mb-px grid grid-cols-1 gap-px bg-line-hairline transition-fast sm:grid-cols-3",
-        damaged && "bg-abort",
-      )}
-    >
-      <div className="bg-ink-800">
-        <Meter label="Battery" value={run.battery} />
-      </div>
-      <div className="bg-ink-800">
-        <Meter label="Airframe" value={run.airframe} />
-      </div>
-      <div className="bg-ink-800">
-        <Meter
-          label="Daylight"
-          value={(daylight / TRAIL_RULES.SECONDS_PER_QUESTION) * 100}
-          readout={`${daylight}s`}
-        />
-      </div>
-    </div>
+  if (crossing !== null) {
+    const active = legs[crossing];
+    return active ? (
+      <Crossing
+        leg={active}
+        legCount={legs.length}
+        onContinue={dismissCrossing}
+      />
+    ) : null;
+  }
+
+  if (state.status !== "FLYING") {
+    return endingSeen ? (
+      <Debrief
+        run={state}
+        legs={legs}
+        entries={debrief}
+        trailDate={trail.date}
+        signedIn={Boolean(currentUser)}
+      />
+    ) : (
+      <Ending
+        run={state}
+        legs={legs}
+        trailDate={trail.date}
+        onContinue={() => setEndingSeen(true)}
+      />
+    );
+  }
+
+  return leg ? (
+    <Question
+      run={state}
+      leg={leg}
+      legCount={legs.length}
+      operator={currentUser?.username ?? "Guest"}
+      daylight={daylight}
+      selected={selected}
+      grading={grading}
+      showHint={showHint}
+      notice={notice}
+      onSelect={setSelected}
+      onToggleHint={() => setShowHint(!showHint)}
+      onDismissNotice={() => setNotice(null)}
+      onCommit={() => void commit(selected)}
+    />
+  ) : (
+    <Debrief
+      run={state}
+      legs={legs}
+      entries={debrief}
+      trailDate={trail.date}
+      signedIn={Boolean(currentUser)}
+    />
   );
-
-  const renderVerdict = (run: TrailState, entry: DebriefEntry) => {
-    return (
-      <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
-        {renderInstruments(run, !entry.isCorrect)}
-        <Panel
-          label={entry.terrain}
-          tag="///"
-          meta={entry.isCorrect ? "CLEARED" : "STRUCK"}
-          padding="md"
-        >
-          <Status tone={entry.isCorrect ? "go" : "abort"} filled>
-            {entry.isCorrect ? "Correct" : "Missed"}
-          </Status>
-
-          {!entry.isCorrect && (
-            <div className="mt-5 flex flex-col gap-1 border-t border-line-hairline pt-5">
-              {entry.chosen ? (
-                <div className="text-sm text-mute-500">
-                  <span className="label-mono text-abort">Chose</span>{" "}
-                  {entry.chosen}
-                </div>
-              ) : (
-                <div className="text-sm text-mute-500">
-                  <span className="label-mono text-abort">Daylight</span> Out of
-                  daylight — no answer committed.
-                </div>
-              )}
-              {entry.correctAnswer && (
-                <div className="text-sm text-bone-100">
-                  <span className="label-mono text-go">Answer</span>{" "}
-                  {entry.correctAnswer}
-                </div>
-              )}
-              {entry.explanation && (
-                <p className="m-0 mt-2 max-w-[68ch] text-sm leading-normal text-mute-400">
-                  {entry.explanation}
-                </p>
-              )}
-            </div>
-          )}
-
-          <div className="mt-6">
-            {/*
-              Always "Continue" — what comes next is a crossing, or the ending
-              beat, never the debrief directly. Naming it for the destination
-              would be wrong three times out of four.
-            */}
-            <Button variant="signal" size="md" onClick={resume} autoFocus>
-              Continue
-            </Button>
-          </div>
-        </Panel>
-      </div>
-    );
-  };
-
-  const renderQuestion = (run: TrailState, active: TrailLeg) => {
-    const item = active.questions[run.questionIndex];
-    if (!item) return null;
-
-    return (
-      <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <Label tag="///">
-            {currentUser?.username ?? "Guest"} · Leg {active.index} of{" "}
-            {legs.length} · {active.terrain}
-          </Label>
-          {active.hazard && (
-            <Status tone="abort" filled>
-              Hazard
-            </Status>
-          )}
-        </div>
-
-        {renderInstruments(run)}
-
-        {notice && (
-          <div className="mb-6">
-            <Alert
-              tone="caution"
-              kicker="NOTICE"
-              onDismiss={() => setNotice(null)}
-            >
-              {notice}
-            </Alert>
-          </div>
-        )}
-
-        <QuestionCard
-          label={active.domain}
-          index={run.questionIndex + 1}
-          total={active.questions.length}
-          points={item.points}
-          timeRemaining={daylight}
-          prompt={item.prompt}
-          questionText={item.questionText}
-          answers={item.answers}
-          selected={selected ?? undefined}
-          onSelect={(answer) => setSelected(answer)}
-          footer={
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="label-mono text-mute-500">
-                {active.hazard
-                  ? `Miss: −${TRAIL_RULES.MISS_COST}% battery, −${TRAIL_RULES.HAZARD_DAMAGE}% airframe`
-                  : `Miss: −${TRAIL_RULES.MISS_COST}% battery`}
-              </span>
-              <Button
-                variant="signal"
-                size="sm"
-                disabled={!selected || grading}
-                onClick={() => void commit(selected)}
-              >
-                {grading ? "Grading" : "Commit"}
-              </Button>
-            </div>
-          }
-        >
-          {item.hint && (
-            <div>
-              <Button
-                variant="caution"
-                size="sm"
-                onClick={() => setShowHint(!showHint)}
-              >
-                {showHint ? "Hide Hint" : "Show Hint"}
-              </Button>
-              {showHint && (
-                <div className="mt-4">
-                  <Alert tone="caution" kicker="HINT">
-                    {item.hint}
-                  </Alert>
-                </div>
-              )}
-            </div>
-          )}
-        </QuestionCard>
-      </div>
-    );
-  };
-
-  const renderDebrief = (run: TrailState) => {
-    const arrived = run.status === "ARRIVED";
-
-    return (
-      <div className="mx-auto max-w-mid px-4 py-16 sm:px-8">
-        <Panel
-          label={arrived ? "Arrived" : "Down"}
-          tag="///"
-          meta={trail.date}
-          padding="none"
-        >
-          {/*
-            The readouts fill in one after another rather than appearing as a
-            block — an instrument panel coming up, not a scorecard being
-            handed over. The delay is inline because it is index-driven; the
-            animation itself is a token, so reduced motion zeroes it.
-
-            The prose summary that used to sit under here is gone: the ending
-            beat now says where the run stopped, and hearing it twice in two
-            screens made the debrief read like it was padding.
-          */}
-          <div className="grid grid-cols-2 gap-px border-b border-line-hairline bg-line-hairline sm:grid-cols-4">
-            {[
-              {
-                label: "Reached",
-                value: `${run.legIndex + 1} / ${legs.length}`,
-                tone: arrived ? ("go" as const) : ("abort" as const),
-              },
-              {
-                label: "Correct",
-                value: `${run.correct} / ${run.answered}`,
-              },
-              { label: "Battery", value: run.battery, unit: "%" },
-              { label: "Airframe", value: run.airframe, unit: "%" },
-            ].map((readout, i) => (
-              <div
-                key={readout.label}
-                className="signal-in bg-ink-800"
-                style={{ animationDelay: `calc(var(--duration-fast) * ${i})` }}
-              >
-                <Readout
-                  label={readout.label}
-                  value={readout.value}
-                  unit={readout.unit}
-                  tone={readout.tone}
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* The review. Only the misses carry a correction — repeating a
-              right answer back is noise. */}
-          <div className="flex flex-col gap-2 px-5 py-5">
-            {debrief.map((entry, i) => (
-              <div
-                key={`${entry.questionText}-${i}`}
-                className={`border border-line-hairline border-l-2 bg-ink-700 px-4 py-3 ${
-                  entry.isCorrect ? "border-l-go" : "border-l-abort"
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="font-mono text-3xs tracking-mono text-mute-500">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="flex-1 text-sm text-mute-400">
-                    {entry.questionText}
-                  </span>
-                  <Status tone={entry.isCorrect ? "go" : "abort"}>
-                    {entry.isCorrect ? "Correct" : "Missed"}
-                  </Status>
-                </div>
-
-                {!entry.isCorrect && entry.correctAnswer && (
-                  <div className="mt-3 flex flex-col gap-1 border-t border-line-hairline pt-3 pl-9">
-                    <div className="text-sm text-bone-100">
-                      <span className="label-mono text-go">Answer</span>{" "}
-                      {entry.correctAnswer}
-                    </div>
-                    {entry.explanation && (
-                      <p className="m-0 mt-1 max-w-[68ch] text-sm leading-normal text-mute-400">
-                        {entry.explanation}
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/*
-            The wall, placed at the end of the run rather than at the door. A
-            visitor who has just gone down on leg five has something worth
-            keeping; one who has seen nothing yet does not.
-          */}
-          {!currentUser && (
-            <div className="border-t border-line-hairline bg-ink-700 px-5 py-6">
-              <Label tag="///" className="mb-3">
-                Not Recorded
-              </Label>
-              <p className="m-0 mb-5 max-w-[52ch] text-sm leading-normal text-mute-400">
-                This run was graded but not saved. Create an account to keep
-                your trail results, track accuracy by knowledge area, and appear
-                in the standings.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  href="/register"
-                  className={buttonClass({ variant: "signal", size: "md" })}
-                >
-                  Create Free Account
-                </Link>
-                <Link
-                  href="/login"
-                  className={buttonClass({ variant: "outline", size: "md" })}
-                >
-                  Sign In
-                </Link>
-              </div>
-            </div>
-          )}
-
-          <div className="flex flex-wrap gap-2 border-t border-line-hairline px-5 py-4">
-            <Link
-              href="/quiz"
-              className={buttonClass({ variant: "outline", size: "md" })}
-            >
-              Take an Untimed Run
-            </Link>
-            {currentUser && (
-              <Link
-                href="/profile"
-                className={buttonClass({ variant: "ghost", size: "md" })}
-              >
-                View Record
-              </Link>
-            )}
-          </div>
-        </Panel>
-      </div>
-    );
-  };
-
-  // ── Routing between them ─────────────────────────────────────────────────
-
-  // Order is the flow. The verdict for the question just answered comes before
-  // the crossing it triggered, and the ending beat comes before the numbers.
-  if (!state) return alreadyFlown ? renderSpent(alreadyFlown) : renderBriefing();
-  if (verdict) return renderVerdict(state, verdict);
-  if (crossing !== null) return renderCrossing(crossing);
-  if (state.status !== "FLYING")
-    return endingSeen ? renderDebrief(state) : renderEnding(state);
-  return leg ? renderQuestion(state, leg) : renderDebrief(state);
 }
