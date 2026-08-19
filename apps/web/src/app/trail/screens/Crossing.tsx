@@ -1,5 +1,7 @@
 import { Button, Label, Panel, Status } from "@/components/ds";
 import { Teletype } from "../Teletype";
+import { TerrainProfile } from "../TerrainProfile";
+import { Telemetry } from "../Telemetry";
 import type { TrailLeg } from "../types";
 
 export interface CrossingProps {
@@ -21,8 +23,23 @@ export function Crossing({ leg, legCount, onContinue }: CrossingProps) {
         {String(legCount).padStart(2, "0")}
       </Label>
 
-      {/* The route line. Width only — the system forbids anything that scales,
-          and a line drawing across is what a crossing looks like. */}
+      {/* The ground, and the aircraft crossing it. This replaced a flat
+          hairline: a line drawing across says "something is happening", but a
+          profile says which leg you are on. */}
+      <div className="grid-overlay grid-drift relative overflow-hidden">
+        {/* One low bar crossing the panel, like a feed refreshing. Behind the
+            profile, never over the type. */}
+        <span
+          aria-hidden
+          className="scan-line pointer-events-none absolute inset-x-0 top-0 h-4 bg-bone-100/3"
+        />
+        <TerrainProfile
+          terrain={leg.terrain}
+          hazard={leg.hazard}
+          className="relative"
+        />
+      </div>
+      <Telemetry seed={leg.terrain} className="mt-2 mb-2" />
       <div className="mb-8 h-px bg-ink-600">
         <div className="route-draw h-px bg-signal" />
       </div>

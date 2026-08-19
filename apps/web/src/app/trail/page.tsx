@@ -192,6 +192,15 @@ export default function TrailPage() {
   const [crossing, setCrossing] = useState<number | null>(null);
   /** The ending beat plays once, before the debrief. */
   const [endingSeen, setEndingSeen] = useState(false);
+  /**
+   * Resources as they stood before the answer being shown. Captured where the
+   * verdict is staged, so the verdict screen's meters have somewhere to drain
+   * from — a meter that mounts already spent has nothing to animate.
+   */
+  const [before, setBefore] = useState<{
+    battery: number;
+    airframe: number;
+  } | null>(null);
 
   /**
    * The anonymous half of "one attempt a day". Read in an effect rather than in
@@ -317,6 +326,8 @@ export default function TrailPage() {
           explanation: graded?.explanation ?? null,
         };
 
+        setBefore({ battery: state.battery, airframe: state.airframe });
+
         const next = answerQuestion(state, legs, isCorrect);
         setState(next);
         setDebrief((prev) => [...prev, entry]);
@@ -406,6 +417,7 @@ export default function TrailPage() {
     setSelected(null);
     setNotice(null);
     setEndingSeen(false);
+    setBefore(null);
     // Launch puts you on the first crossing, not straight into a question:
     // leg one is a crossing like any other.
     setCrossing(0);
@@ -466,8 +478,10 @@ export default function TrailPage() {
     return (
       <Verdict
         run={state}
+        legs={legs}
         entry={verdict}
         daylight={daylight}
+        before={before ?? undefined}
         onContinue={resume}
       />
     );
@@ -507,6 +521,7 @@ export default function TrailPage() {
     <Question
       run={state}
       leg={leg}
+      legs={legs}
       legCount={legs.length}
       operator={currentUser?.username ?? "Guest"}
       daylight={daylight}

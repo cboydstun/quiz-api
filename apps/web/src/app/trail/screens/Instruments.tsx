@@ -1,4 +1,5 @@
 import { Meter, cn } from "@/components/ds";
+import { AnimatedMeter } from "../AnimatedMeter";
 import { TRAIL_RULES, type TrailState } from "../engine";
 
 export interface InstrumentsProps {
@@ -11,10 +12,20 @@ export interface InstrumentsProps {
    * for it does.
    */
   damaged?: boolean;
+  /**
+   * Battery and airframe as they stood before the last answer. Given, the two
+   * meters drain from there rather than arriving already spent.
+   */
+  before?: { battery: number; airframe: number };
 }
 
 /** Battery, airframe, daylight — the three things a run is measured in. */
-export function Instruments({ run, daylight, damaged = false }: InstrumentsProps) {
+export function Instruments({
+  run,
+  daylight,
+  damaged = false,
+  before,
+}: InstrumentsProps) {
   return (
     <div
       className={cn(
@@ -23,10 +34,22 @@ export function Instruments({ run, daylight, damaged = false }: InstrumentsProps
       )}
     >
       <div className="bg-ink-800">
-        <Meter label="Battery" value={run.battery} />
+        {before ? (
+          <AnimatedMeter label="Battery" from={before.battery} to={run.battery} />
+        ) : (
+          <Meter label="Battery" value={run.battery} />
+        )}
       </div>
       <div className="bg-ink-800">
-        <Meter label="Airframe" value={run.airframe} />
+        {before ? (
+          <AnimatedMeter
+            label="Airframe"
+            from={before.airframe}
+            to={run.airframe}
+          />
+        ) : (
+          <Meter label="Airframe" value={run.airframe} />
+        )}
       </div>
       <div className="bg-ink-800">
         <Meter

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createRecordingClient } from "@/test-utils/apollo";
 import { setReducedMotion } from "../../../vitest.setup";
@@ -228,6 +228,30 @@ describe("TrailPage", () => {
     ).toBeInTheDocument();
   });
 
+  // Position was previously something you had to remember between screens.
+  it("keeps the route strip visible while flying", async () => {
+    const user = userEvent.setup();
+    renderTrail();
+    await launch(user);
+
+    expect(screen.getByRole("group", { name: "Leg 1 of 2" })).toBeInTheDocument();
+
+    await answer(user, "Fog");
+    await cross(user);
+
+    expect(screen.getByRole("group", { name: "Leg 2 of 2" })).toBeInTheDocument();
+  });
+
+  it("draws the ground for the leg being crossed", async () => {
+    const user = userEvent.setup();
+    renderTrail();
+    await user.click(await screen.findByRole("button", { name: "Launch" }));
+
+    expect(
+      await screen.findByRole("img", { name: /ICING LAYER/ }),
+    ).toBeInTheDocument();
+  });
+
   it("names the terrain being entered on each crossing", async () => {
     const user = userEvent.setup();
     renderTrail();
@@ -267,21 +291,31 @@ describe("TrailPage", () => {
     await user.click(screen.getByRole("button", { name: "Commit" }));
 
     expect(await screen.findByText("Missed")).toBeInTheDocument();
-    // These legs hold one question each, so the miss also ends the leg: the
-    // instruments on the verdict screen are live state, already carrying the
-    // crossing into leg two.
+
+    // The meters arrive at the pre-damage reading and drain from there — that
+    // is the point of AnimatedMeter, and asserting the settled value alone
+    // would pass just as well if nothing ever moved.
     expect(screen.getByRole("meter", { name: "Battery" })).toHaveAttribute(
       "aria-valuenow",
-      String(
-        TRAIL_RULES.START_BATTERY -
-          TRAIL_RULES.TRANSIT_COST * 2 -
-          TRAIL_RULES.MISS_COST,
-      ),
+      String(TRAIL_RULES.START_BATTERY - TRAIL_RULES.TRANSIT_COST),
     );
-    expect(screen.getByRole("meter", { name: "Airframe" })).toHaveAttribute(
-      "aria-valuenow",
-      String(TRAIL_RULES.START_AIRFRAME - TRAIL_RULES.HAZARD_DAMAGE),
-    );
+
+    // These legs hold one question each, so the miss also ends the leg: the
+    // settled reading carries the crossing into leg two as well as the miss.
+    await waitFor(() => {
+      expect(screen.getByRole("meter", { name: "Battery" })).toHaveAttribute(
+        "aria-valuenow",
+        String(
+          TRAIL_RULES.START_BATTERY -
+            TRAIL_RULES.TRANSIT_COST * 2 -
+            TRAIL_RULES.MISS_COST,
+        ),
+      );
+      expect(screen.getByRole("meter", { name: "Airframe" })).toHaveAttribute(
+        "aria-valuenow",
+        String(TRAIL_RULES.START_AIRFRAME - TRAIL_RULES.HAZARD_DAMAGE),
+      );
+    });
   });
 
   it("explains a miss before moving on", async () => {

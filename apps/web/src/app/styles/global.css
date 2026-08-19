@@ -139,6 +139,14 @@
   --duration-base: 220ms;
   --duration-slow: 400ms;
   --duration-flip: 320ms;
+  /* One-shot damage stutter. Short enough to register without being a shake. */
+  --duration-glitch: 180ms;
+  /* Ambient loops. Seconds, not milliseconds — the ramp above is for
+     interactions, and reusing it would make the page twitch. */
+  --duration-ambient: 7s;
+  --duration-ambient-slow: 24s;
+  /* How long the aircraft takes to fly one leg on the crossing screen. */
+  --duration-crossing: 2600ms;
 
   --sidebar-width: 264px;
   --bar-height: 64px;
@@ -196,10 +204,13 @@
 }
 
 /*
-  Motion. Three keyframes, all of them opacity or width — the system forbids
-  anything that scales or lifts, and a cockpit does not bounce anyway. Every
-  duration comes from a token so the reduced-motion block below can switch the
-  whole system off in one place.
+  Motion. Opacity, width, translate and background-position — never scale, and
+  never a lift. The system's ban is on chrome bouncing under a cursor; a route
+  line drawing across or an aircraft tracking a profile is not chrome. A cockpit
+  does not bounce, but it does move.
+
+  Every duration comes from a token so the reduced-motion block below can reach
+  all of it from one place.
 */
 
 /* The teletype caret. steps(1) so it snaps rather than fades. */
@@ -247,6 +258,78 @@
   animation: route-draw var(--duration-slow) var(--ease-default) both;
 }
 
+/* The one-shot stutter a wrong answer earns. Three steps, 2px, over before it
+   draws attention to itself — a reaction, not a shake. Translate only: the
+   system forbids anything that scales. */
+@keyframes glitch {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(-2px);
+    opacity: 0.82;
+  }
+  55% {
+    transform: translateX(2px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-1px);
+    opacity: 0.94;
+  }
+}
+
+@utility glitch {
+  animation: glitch var(--duration-glitch) steps(3, end) 1;
+}
+
+/* Ambient: the survey grid creeping. Amplitude is one grid cell over the whole
+   cycle, so it reads as drift rather than movement. */
+@keyframes grid-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 32px 32px;
+  }
+}
+
+@utility grid-drift {
+  animation: grid-drift var(--duration-ambient-slow) linear infinite;
+}
+
+/* Ambient: a single low bar crossing the panel, like a feed refreshing. */
+@keyframes scan-line {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(1400%);
+  }
+}
+
+@utility scan-line {
+  animation: scan-line var(--duration-ambient) linear infinite;
+}
+
+/* The aircraft crossing its leg. offset-distance rather than a translate
+   keyframe, so the flight follows whatever ground terrain.ts generated. */
+@keyframes drone-track {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@utility drone-track {
+  offset-rotate: 0deg;
+  animation: drone-track var(--duration-crossing) var(--ease-default) both;
+}
+
 /*
   Reduced motion. Zeroing the duration tokens turns off every transition and
   every keyframe in the system at once — including FlipCard and the QuestionCard
@@ -263,11 +346,23 @@
     --duration-base: 0ms;
     --duration-slow: 0ms;
     --duration-flip: 0ms;
+    --duration-crossing: 0ms;
   }
 
   .cursor-blink {
     animation: none;
     opacity: 1;
+  }
+
+  /*
+    Ambient loops and the stutter are switched off outright rather than zeroed.
+    An infinite animation with a 0ms duration is a busy loop in some engines,
+    which is a worse outcome than the motion it was meant to remove.
+  */
+  .grid-drift,
+  .scan-line,
+  .glitch {
+    animation: none;
   }
 }
 
