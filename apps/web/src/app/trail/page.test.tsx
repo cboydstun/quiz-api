@@ -292,14 +292,12 @@ describe("TrailPage", () => {
 
     expect(await screen.findByText("Missed")).toBeInTheDocument();
 
-    // The meters arrive at the pre-damage reading and drain from there — that
-    // is the point of AnimatedMeter, and asserting the settled value alone
-    // would pass just as well if nothing ever moved.
-    expect(screen.getByRole("meter", { name: "Battery" })).toHaveAttribute(
-      "aria-valuenow",
-      String(TRAIL_RULES.START_BATTERY - TRAIL_RULES.TRANSIT_COST),
-    );
-
+    // Settled values only. That the meters *start* at the pre-damage reading
+    // and drain from there is AnimatedMeter's job and is asserted in its own
+    // test, synchronously, where no frame can have fired yet. Asserting the
+    // transient here raced the requestAnimationFrame and passed or failed on
+    // machine speed.
+    //
     // These legs hold one question each, so the miss also ends the leg: the
     // settled reading carries the crossing into leg two as well as the miss.
     await waitFor(() => {
