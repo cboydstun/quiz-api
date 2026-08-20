@@ -314,6 +314,90 @@
   animation: scan-line var(--duration-ambient) linear infinite;
 }
 
+/* The aircraft holding station: a slow 1.5px bob. The subject of the feed,
+   not chrome — the ban is on interface that moves under a cursor. */
+@keyframes drone-hover {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 1.5px;
+  }
+}
+
+@utility drone-hover {
+  animation: drone-hover var(--duration-ambient) ease-in-out infinite;
+}
+
+/* What a beat cost, rising off the instrument row and fading. One-shot;
+   keyed elements restart it without any timer choreography. */
+@keyframes damage-mark {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+  25%,
+  70% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  to {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+}
+
+@utility damage-mark {
+  animation: damage-mark calc(var(--duration-slow) * 6) var(--ease-default)
+    both;
+}
+
+/* The downlink failing: opacity steps, not a noise filter and not a gradient
+   — the system bans both, and a feed dies in frames anyway. */
+@keyframes feed-cut {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  35% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  70% {
+    opacity: 0.5;
+  }
+}
+
+@utility feed-cut {
+  animation: feed-cut calc(var(--duration-glitch) * 4) steps(6, end) 1;
+}
+
+/* The aircraft going down: a short descent that holds where it lands.
+   Translate and rotate only — the run ended, the mark stays on screen. */
+@keyframes drone-down {
+  from {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  to {
+    translate: 0 26px;
+    rotate: -14deg;
+  }
+}
+
+@utility drone-down {
+  animation: drone-down var(--duration-slow) var(--ease-default) both;
+}
+
 /* The aircraft crossing its leg. offset-distance rather than a translate
    keyframe, so the flight follows whatever ground terrain.ts generated. */
 @keyframes drone-track {
@@ -361,7 +445,11 @@
   */
   .grid-drift,
   .scan-line,
-  .glitch {
+  .glitch,
+  .drone-hover,
+  .drone-down,
+  .damage-mark,
+  .feed-cut {
     animation: none;
   }
 }

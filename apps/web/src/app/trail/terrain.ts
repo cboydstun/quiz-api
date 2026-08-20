@@ -125,3 +125,69 @@ export function buildSilhouette(terrain: string): Silhouette {
     fill: `${ground} L${PROFILE_WIDTH} ${PROFILE_HEIGHT} L0 ${PROFILE_HEIGHT} Z`,
   };
 }
+
+export interface Band {
+  /** The stitched ground line across every leg, as an SVG `d`. */
+  ground: string;
+  /** The same line closed down to the baseline, for a fill beneath it. */
+  fill: string;
+  /** Total width in viewBox units: one `PROFILE_WIDTH` per leg. */
+  width: number;
+}
+
+/**
+ * Builds the whole route's ground as one scrollable band.
+ *
+ * Stitching `buildSilhouette` tiles side by side would put a cliff at every
+ * seam — THE CLIMB exits at 0.82 and whatever follows enters wherever its own
+ * bias says. So each leg here starts from the height the previous leg actually
+ * ended on and interpolates toward its own `to`; noise is damped to zero at
+ * both edges exactly as in `buildSilhouette`, which is what makes the seam
+ * exact rather than merely close.
+ *
+ * Seeded by terrain name *and* leg index, so a route that repeats a terrain
+ * does not repeat its tile — while staying identical for every operator and
+ * the same tomorrow, like everything else in this file.
+ */
+export function buildBand(route: readonly string[]): Band {
+  // An empty route still gets ground to draw: one uncharted tile.
+  const legs = route.length > 0 ? route : [""];
+  const usable = PROFILE_HEIGHT - MARGIN * 2;
+  const points: [number, number][] = [];
+
+  let entry: number | null = null;
+  legs.forEach((terrain, legIndex) => {
+    const bias = BIAS[terrain] ?? UNCHARTED;
+    const from = entry ?? Math.max(0, Math.min(1, bias.from));
+    const to = Math.max(0, Math.min(1, bias.to));
+    const random = prng(hash(`${terrain}#${legIndex}`));
+
+    // The first point of every leg after the first is the previous leg's last
+    // point; starting at i=1 keeps the seam a single point, not a doubled one.
+    for (let i = legIndex === 0 ? 0 : 1; i <= STEPS; i += 1) {
+      const t = i / STEPS;
+      const x = legIndex * PROFILE_WIDTH + t * PROFILE_WIDTH;
+
+      const noise = (random() - 0.5) * bias.rough * Math.sin(Math.PI * t);
+      const height = from + (to - from) * t + noise;
+      const clamped = Math.max(0, Math.min(1, height));
+      const y = MARGIN + (1 - clamped) * usable;
+
+      points.push([round(x), round(y)]);
+    }
+
+    // Noise is zero at t=1, so the leg genuinely ends on its bias height.
+    entry = to;
+  });
+
+  const width = legs.length * PROFILE_WIDTH;
+  const ground = points
+    .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x} ${y}`)
+    .join(" ");
+
+  return {
+    ground,
+    fill: `${ground} L${width} ${PROFILE_HEIGHT} L0 ${PROFILE_HEIGHT} Z`,
+    width,
+  };
+}

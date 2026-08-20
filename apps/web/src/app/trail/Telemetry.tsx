@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { cn } from "@/components/ds";
+import { useReducedMotion } from "./useReducedMotion";
 
 /** How often the last digits move. Slow enough to read, fast enough to live. */
 const TICK_MS = 900;
@@ -10,11 +11,6 @@ export interface TelemetryProps {
   /** Seeds the readings so two legs do not show identical numbers. */
   seed: string;
   className?: string;
-}
-
-function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 function baseFrom(seed: string): { alt: number; hdg: number; link: number } {
@@ -37,14 +33,15 @@ function baseFrom(seed: string): { alt: number; hdg: number; link: number } {
  */
 export function Telemetry({ seed, className }: TelemetryProps) {
   const base = baseFrom(seed);
+  const reduced = useReducedMotion();
   const [drift, setDrift] = useState(0);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    if (reduced) return;
 
     const timer = setInterval(() => setDrift((d) => d + 1), TICK_MS);
     return () => clearInterval(timer);
-  }, [seed]);
+  }, [seed, reduced]);
 
   // Deterministic wander rather than Math.random: a value that jumps by a
   // different amount every tick reads as broken instrumentation, not drift.

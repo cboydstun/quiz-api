@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { useState } from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setReducedMotion } from "../../../vitest.setup";
@@ -118,5 +119,36 @@ describe("Teletype", () => {
     render(<Teletype lines={[]} onDone={onDone} />);
 
     expect(onDone).toHaveBeenCalledOnce();
+  });
+});
+
+describe("Teletype onDone re-entrancy", () => {
+  // The boot beat's onDone setStates in the parent. Fired from inside a
+  // setRevealed updater, that is a setState-during-render and React says so
+  // on the console. The transmission must complete without that warning.
+  it("lets onDone update a parent without a render-phase warning", async () => {
+    withTimers();
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    function Parent() {
+      const [done, setDone] = useState(false);
+      return done ? (
+        <p>transmission over</p>
+      ) : (
+        <Teletype lines={LINES} onDone={() => setDone(true)} />
+      );
+    }
+    render(<Parent />);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(FULL_MS);
+    });
+
+    expect(screen.getByText("transmission over")).toBeInTheDocument();
+    const badCalls = errors.mock.calls.filter((call) =>
+      String(call[0]).includes("while rendering a different component"),
+    );
+    errors.mockRestore();
+    expect(badCalls).toHaveLength(0);
   });
 });

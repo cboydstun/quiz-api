@@ -1,5 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createRecordingClient } from "@/test-utils/apollo";
 import { setReducedMotion } from "../../../vitest.setup";
@@ -80,9 +87,15 @@ const graded = (questionId: string, selectedAnswer: string) => {
 interface Options {
   signedIn?: boolean;
   myTrailRun?: Record<string, unknown> | null;
+  /** Makes RecordTrailRun fail, for the could-not-be-filed notice. */
+  recordFails?: boolean;
 }
 
-const renderTrail = ({ signedIn = true, myTrailRun = null }: Options = {}) => {
+const renderTrail = ({
+  signedIn = true,
+  myTrailRun = null,
+  recordFails = false,
+}: Options = {}) => {
   const recorder = createRecordingClient((op) => {
     if (op.operationName === "GetCurrentUser")
       return { data: { me: signedIn ? me : null } };
@@ -126,7 +139,8 @@ const renderTrail = ({ signedIn = true, myTrailRun = null }: Options = {}) => {
         },
       };
     }
-    if (op.operationName === "RecordTrailRun")
+    if (op.operationName === "RecordTrailRun") {
+      if (recordFails) return new Error("filing office unreachable");
       return {
         data: {
           recordTrailRun: {
@@ -135,6 +149,7 @@ const renderTrail = ({ signedIn = true, myTrailRun = null }: Options = {}) => {
           },
         },
       };
+    }
     return { data: null };
   });
 
@@ -489,6 +504,71 @@ describe("TrailPage", () => {
     );
 
     expect(await screen.findByText(/nothing to fly/)).toBeInTheDocument();
+  });
+
+  // The persistent HUD would otherwise show battery drop 6% unexplained at
+  // every leg boundary — transit is charged in the same update as any miss.
+  it("marks the transit charge while a dispatch is on screen", async () => {
+    const user = userEvent.setup();
+    renderTrail();
+
+    await user.click(await screen.findByRole("button", { name: "Launch" }));
+    await screen.findByText(/Ceiling coming down/);
+
+    expect(
+      screen.getByText(`TRANSIT −${TRAIL_RULES.TRANSIT_COST}%`),
+    ).toBeInTheDocument();
+  });
+
+  // Out of daylight: the expiry commits nothing rather than fabricating an
+  // answer the operator never chose.
+  it("grades an expired question as a miss with no answer committed", async () => {
+    // The whole flow runs under fake timers, so no findBy* (its waitFor never
+    // ticks) — the recorder resolves on microtasks, which one async act
+    // flushes.
+    // Only the timer families in play: faking the microtask queue too would
+    // strand the recorder's responses.
+    vi.useFakeTimers({
+      toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"],
+    });
+    // fireEvent, not userEvent: userEvent's event pipeline parks on faked
+    // timers no matter how it is configured, and a plain click is all the
+    // flow needs here.
+    renderTrail();
+
+    await act(async () => {});
+    fireEvent.click(screen.getByRole("button", { name: "Launch" }));
+    await act(async () => {});
+    fireEvent.click(screen.getByRole("button", { name: "Fly the leg" }));
+    screen.getByText("What reduces visibility most?");
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(
+        (TRAIL_RULES.SECONDS_PER_QUESTION + 1) * 1000,
+      );
+    });
+
+    expect(
+      screen.getByText(/Out of daylight — no answer committed/),
+    ).toBeInTheDocument();
+  });
+
+  // finish() used to stage this notice on a screen that could never show it:
+  // only the question screen rendered notices, and finish only runs when the
+  // run is over. The HUD carries it now, so the ending beat can say so.
+  it("says so on the ending beat when the run cannot be filed", async () => {
+    const user = userEvent.setup();
+    renderTrail({ recordFails: true });
+    await launch(user);
+    await answer(user, "Fog");
+    await cross(user);
+    await answer(user, "Class B");
+
+    expect(await screen.findByText(/The client gets the shots/)).toBeInTheDocument();
+    // messageFrom surfaces the real error's message over the fallback.
+    expect(
+      await screen.findByText(/filing office unreachable/),
+    ).toBeInTheDocument();
   });
 
   it("shows the debrief's outcome readout, not just a score", async () => {

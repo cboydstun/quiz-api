@@ -15,18 +15,17 @@ import {
   TRAIL_RULES,
   type TrailState,
 } from "./engine";
+import { useFlightClock } from "./useFlightClock";
+import { useReducedMotion } from "./useReducedMotion";
 import type {
   DailyTrail,
   DebriefEntry,
   TrailRunRecord,
 } from "./types";
 import { Briefing } from "./screens/Briefing";
-import { Crossing } from "./screens/Crossing";
 import { Debrief } from "./screens/Debrief";
-import { Ending } from "./screens/Ending";
-import { Question } from "./screens/Question";
 import { Spent } from "./screens/Spent";
-import { Verdict } from "./screens/Verdict";
+import { TrailShell } from "./TrailShell";
 
 /**
  * Still asked for, but not a gate: a null `me` means the visitor is signed out
@@ -183,9 +182,6 @@ export default function TrailPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [verdict, setVerdict] = useState<DebriefEntry | null>(null);
   const [debrief, setDebrief] = useState<DebriefEntry[]>([]);
-  const [daylight, setDaylight] = useState<number>(
-    TRAIL_RULES.SECONDS_PER_QUESTION,
-  );
   const [grading, setGrading] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -193,17 +189,6 @@ export default function TrailPage() {
   const [crossing, setCrossing] = useState<number | null>(null);
   /** The ending beat plays once, before the debrief. */
   const [endingSeen, setEndingSeen] = useState(false);
-  /**
-   * Resources and route position as they stood before the answer being shown.
-   * Captured where the verdict is staged, so the verdict screen's meters have
-   * somewhere to drain from and its aircraft somewhere to fly from — anything
-   * that mounts already at its new value has nothing to animate.
-   */
-  const [before, setBefore] = useState<{
-    battery: number;
-    airframe: number;
-    position: number;
-  } | null>(null);
 
   /**
    * The anonymous half of "one attempt a day". Read in an effect rather than in
@@ -228,6 +213,31 @@ export default function TrailPage() {
   const leg = state ? currentLeg(state, legs) : undefined;
   const question = leg?.questions[state?.questionIndex ?? 0];
   const flying = state?.status === "FLYING";
+
+  /**
+   * Anything on screen that is not a question. Daylight must not burn while
+   * the operator is reading a verdict or a dispatch — the clock is a
+   * difficulty knob, not a reading-speed test. `grading` joined the set with
+   * the redesign: the clock is visible motion now, and burning it against
+   * network latency would fly the aircraft somewhere the grade has not
+   * sanctioned yet.
+   */
+  const paused = verdict !== null || crossing !== null || grading;
+
+  const reducedMotion = useReducedMotion();
+
+  /**
+   * Expiry calls `commit`, which does not exist yet at this point in the
+   * function — the indirection ref breaks the cycle, and is reassigned below
+   * once `commit` is in scope.
+   */
+  const expireRef = useRef<() => void>(() => {});
+  const clock = useFlightClock({
+    seconds: TRAIL_RULES.SECONDS_PER_QUESTION,
+    running: Boolean(flying) && !paused,
+    reducedMotion,
+    onExpire: () => expireRef.current(),
+  });
 
   const outcomeFor = useCallback(
     (finished: TrailState, date: string): TrailRunRecord => ({
@@ -293,6 +303,8 @@ export default function TrailPage() {
       if (!state || !question || grading) return;
       setGrading(true);
       setNotice(null);
+      // The grade is in flight: the clock stops, the aircraft holds.
+      clock.freeze();
 
       try {
         let graded: Graded | null = null;
@@ -325,15 +337,10 @@ export default function TrailPage() {
           questionText: question.questionText,
           chosen: answer,
           isCorrect,
+          hazardStruck: !isCorrect && Boolean(leg?.hazard),
           correctAnswer: graded?.correctAnswer ?? null,
           explanation: graded?.explanation ?? null,
         };
-
-        setBefore({
-          battery: state.battery,
-          airframe: state.airframe,
-          position: routePosition(state, legs),
-        });
 
         const next = answerQuestion(state, legs, isCorrect);
         setState(next);
@@ -349,9 +356,20 @@ export default function TrailPage() {
           setCrossing(next.legIndex);
         }
 
+        // The verdict drives, the clock animates: a run that ended goes down
+        // where it is, anything else flies the advance the answer bought.
+        if (next.status === "DOWN") {
+          clock.crash();
+        } else {
+          clock.burst(routePosition(next, legs));
+        }
+
         if (next.status !== "FLYING") await finish(next);
       } catch (err) {
         console.error("Error grading the answer:", err);
+        // The clock resumes exactly where it froze — the answer was never
+        // graded, so nothing was spent.
+        clock.release();
         setNotice(messageFrom(err, "That answer could not be graded."));
       } finally {
         setGrading(false);
@@ -367,55 +385,26 @@ export default function TrailPage() {
       leg,
       legs,
       finish,
+      clock,
     ],
   );
 
-  /**
-   * Anything on screen that is not a question. Daylight must not burn while the
-   * operator is reading a verdict or a dispatch — the clock is a difficulty
-   * knob, not a reading-speed test.
-   */
-  const paused = verdict !== null || crossing !== null;
-
-  /**
-   * Daylight. The clock only ticks — it is reset where the run actually moves
-   * (`begin`, `resume`, `dismissCrossing`), not from inside the effect, because
-   * resetting it here would be a setState in an effect body and a cascading
-   * render for every question.
-   */
+  // Out of daylight: commit whatever is selected, or nothing. The hook fires
+  // this once per question; its own latch survives the render churn here.
   useEffect(() => {
-    if (!flying || paused) return;
-
-    const timer = setInterval(() => {
-      setDaylight((prev) => Math.max(0, prev - 1));
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [flying, paused]);
+    expireRef.current = () => void commit(selected);
+  }, [commit, selected]);
 
   /** Clears the verdict and hands the next question a fresh clock. */
   const resume = () => {
     setVerdict(null);
-    setDaylight(TRAIL_RULES.SECONDS_PER_QUESTION);
+    clock.resetDaylight();
   };
 
   const dismissCrossing = () => {
     setCrossing(null);
-    setDaylight(TRAIL_RULES.SECONDS_PER_QUESTION);
+    clock.resetDaylight();
   };
-
-  // Out of daylight: commit whatever is selected, or nothing. The ref latch
-  // keeps one zero-crossing from committing twice.
-  const expiredRef = useRef(false);
-  useEffect(() => {
-    if (daylight > 0) {
-      expiredRef.current = false;
-      return;
-    }
-    if (!flying || paused || grading || expiredRef.current) return;
-    expiredRef.current = true;
-    void commit(selected);
-  }, [daylight, flying, paused, grading, selected, commit]);
 
   const begin = () => {
     setState(startRun(legs));
@@ -424,11 +413,11 @@ export default function TrailPage() {
     setSelected(null);
     setNotice(null);
     setEndingSeen(false);
-    setBefore(null);
     // Launch puts you on the first crossing, not straight into a question:
     // leg one is a crossing like any other.
     setCrossing(0);
-    setDaylight(TRAIL_RULES.SECONDS_PER_QUESTION);
+    clock.setPosition(0);
+    clock.resetDaylight();
     trackEvent("trail_start", {
       signed_in: Boolean(currentUser),
       legs: legs.length,
@@ -460,13 +449,10 @@ export default function TrailPage() {
   const alreadyFlown = runData?.myTrailRun ?? anonFlown;
 
   /*
-   * Which screen is showing. Order is the flow: the verdict for the question
-   * just answered comes before the crossing it triggered, and the ending beat
-   * comes before the numbers.
-   *
-   * The screens themselves live in ./screens — this component owns the
-   * queries, the run state, and nothing else. It used to own all six inline
-   * and ran to a thousand lines.
+   * Which screen is showing. The door and the scoreboard are full pages; the
+   * run itself is the ground-station shell, which mounts at launch and does
+   * not unmount until the ending beat has played — every beat in between
+   * swaps a panel inside it, so the instruments and the world stay live.
    */
 
   if (!state) {
@@ -481,32 +467,8 @@ export default function TrailPage() {
     );
   }
 
-  if (verdict) {
+  if ((state.status !== "FLYING" && endingSeen) || !leg) {
     return (
-      <Verdict
-        run={state}
-        legs={legs}
-        entry={verdict}
-        daylight={daylight}
-        before={before ?? undefined}
-        onContinue={resume}
-      />
-    );
-  }
-
-  if (crossing !== null) {
-    const active = legs[crossing];
-    return active ? (
-      <Crossing
-        leg={active}
-        legCount={legs.length}
-        onContinue={dismissCrossing}
-      />
-    ) : null;
-  }
-
-  if (state.status !== "FLYING") {
-    return endingSeen ? (
       <Debrief
         run={state}
         legs={legs}
@@ -514,40 +476,31 @@ export default function TrailPage() {
         trailDate={trail.date}
         signedIn={Boolean(currentUser)}
       />
-    ) : (
-      <Ending
-        run={state}
-        legs={legs}
-        trailDate={trail.date}
-        onContinue={() => setEndingSeen(true)}
-      />
     );
   }
 
-  return leg ? (
-    <Question
+  return (
+    <TrailShell
       run={state}
-      leg={leg}
       legs={legs}
-      legCount={legs.length}
+      trailDate={trail.date}
       operator={currentUser?.username ?? "Guest"}
-      daylight={daylight}
+      daylight={clock.daylight}
+      verdict={verdict}
+      crossing={crossing}
+      notice={notice}
       selected={selected}
       grading={grading}
       showHint={showHint}
-      notice={notice}
+      clockRef={clock.ref}
+      mode={clock.mode}
       onSelect={setSelected}
       onToggleHint={() => setShowHint(!showHint)}
       onDismissNotice={() => setNotice(null)}
       onCommit={() => void commit(selected)}
-    />
-  ) : (
-    <Debrief
-      run={state}
-      legs={legs}
-      entries={debrief}
-      trailDate={trail.date}
-      signedIn={Boolean(currentUser)}
+      onResume={resume}
+      onDismissCrossing={dismissCrossing}
+      onEndingSeen={() => setEndingSeen(true)}
     />
   );
 }

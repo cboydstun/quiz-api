@@ -48,6 +48,8 @@ export interface DebriefEntry {
   questionText: string;
   chosen: string | null;
   isCorrect: boolean;
+  /** True when the miss happened over a hazard leg and cost airframe too. */
+  hazardStruck?: boolean;
   correctAnswer: string | null;
   explanation: string | null;
 }

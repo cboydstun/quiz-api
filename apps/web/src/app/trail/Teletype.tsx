@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "./useReducedMotion";
 
 /**
  * Milliseconds a character takes to arrive. Fast enough to read along with,
@@ -19,12 +20,6 @@ export interface TeletypeProps {
   className?: string;
 }
 
-/** True when the visitor has asked the system to stop moving. */
-function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
 /**
  * Types a transmission out a character at a time.
  *
@@ -39,9 +34,8 @@ function prefersReducedMotion(): boolean {
  */
 export function Teletype({ lines, onDone, className }: TeletypeProps) {
   const full = lines.join("\n");
-  const [revealed, setRevealed] = useState(() =>
-    prefersReducedMotion() ? full.length : 0,
-  );
+  const reduced = useReducedMotion();
+  const [revealed, setRevealed] = useState(() => (reduced ? full.length : 0));
 
   // onDone is called from an interval and from a click; the latch is what keeps
   // a skip that races the final character from reporting twice.
@@ -65,34 +59,33 @@ export function Teletype({ lines, onDone, className }: TeletypeProps) {
 
   useEffect(() => {
     doneRef.current = false;
-    const complete = prefersReducedMotion() || full.length === 0;
-    setRevealed(complete ? full.length : 0);
+    setRevealed(reduced ? full.length : 0);
+  }, [full, reduced]);
 
+  const complete = revealed >= full.length;
+
+  /**
+   * The ticker, and the finish line — two effects on purpose. The interval's
+   * updater only counts; completion is observed out here, because calling
+   * `onDone` from inside a state updater runs it during render, and a parent
+   * that setStates in `onDone` (the boot beat does) is then updating one
+   * component while another renders. React warns, and it is right to.
+   */
+  useEffect(() => {
     if (complete) {
-      doneRef.current = true;
-      onDoneRef.current?.();
+      if (!doneRef.current) {
+        doneRef.current = true;
+        onDoneRef.current?.();
+      }
       return;
     }
 
     const timer = setInterval(() => {
-      setRevealed((prev) => {
-        const next = prev + 1;
-        if (next >= full.length) {
-          clearInterval(timer);
-          if (!doneRef.current) {
-            doneRef.current = true;
-            onDoneRef.current?.();
-          }
-          return full.length;
-        }
-        return next;
-      });
+      setRevealed((prev) => Math.min(prev + 1, full.length));
     }, TELETYPE_MS_PER_CHAR);
 
     return () => clearInterval(timer);
-  }, [full]);
-
-  const complete = revealed >= full.length;
+  }, [complete, full]);
 
   const skip = () => {
     setRevealed(full.length);
